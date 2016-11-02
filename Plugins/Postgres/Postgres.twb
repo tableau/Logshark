@@ -1,0 +1,654 @@
+<?xml version='1.0' encoding='utf-8' ?>
+
+<!-- build 9300.16.0907.1515                                -->
+<workbook source-build='9.3.7 (9300.16.0907.1515)' source-platform='win' version='9.3' xmlns:user='http://www.tableausoftware.com/xml/user'>
+  <preferences>
+    <preference name='ui.encoding.shelf.height' value='24' />
+    <preference name='ui.shelf.height' value='26' />
+  </preferences>
+  <datasources>
+    <datasource inline='true' name='logshark data' version='9.3'>
+      <connection class='postgres' dbname='jmangue_16110120530854_samplelslogszip' odbc-native-protocol='yes' port='5432' server='logshark-adhoc-postgres' username='logshark'>
+        <relation name='postgres_event' table='[public].[postgres_event]' type='table' />
+        <metadata-records>
+          <metadata-record class='column'>
+            <remote-name>id</remote-name>
+            <remote-type>3</remote-type>
+            <local-name>[id]</local-name>
+            <parent-name>[postgres_event]</parent-name>
+            <remote-alias>id</remote-alias>
+            <ordinal>1</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <precision>10</precision>
+            <contains-null>false</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_INTEGER&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_SLONG&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>logset_hash</remote-name>
+            <remote-type>72</remote-type>
+            <local-name>[logset_hash]</local-name>
+            <parent-name>[postgres_event]</parent-name>
+            <remote-alias>logset_hash</remote-alias>
+            <ordinal>2</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <width>40</width>
+            <contains-null>false</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_GUID&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_GUID&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>event_hash</remote-name>
+            <remote-type>72</remote-type>
+            <local-name>[event_hash]</local-name>
+            <parent-name>[postgres_event]</parent-name>
+            <remote-alias>event_hash</remote-alias>
+            <ordinal>3</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <width>40</width>
+            <contains-null>false</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_GUID&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_GUID&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>timestamp</remote-name>
+            <remote-type>7</remote-type>
+            <local-name>[timestamp]</local-name>
+            <parent-name>[postgres_event]</parent-name>
+            <remote-alias>timestamp</remote-alias>
+            <ordinal>4</ordinal>
+            <local-type>datetime</local-type>
+            <aggregation>Year</aggregation>
+            <contains-null>false</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_TYPE_TIMESTAMP&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_TYPE_TIMESTAMP&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>process_id</remote-name>
+            <remote-type>130</remote-type>
+            <local-name>[process_id]</local-name>
+            <parent-name>[postgres_event]</parent-name>
+            <remote-alias>process_id</remote-alias>
+            <ordinal>5</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <width>8190</width>
+            <contains-null>true</contains-null>
+            <cast-to-local-type>true</cast-to-local-type>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_WLONGVARCHAR&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_WCHAR&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>severity</remote-name>
+            <remote-type>130</remote-type>
+            <local-name>[severity]</local-name>
+            <parent-name>[postgres_event]</parent-name>
+            <remote-alias>severity</remote-alias>
+            <ordinal>6</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <width>8190</width>
+            <contains-null>true</contains-null>
+            <cast-to-local-type>true</cast-to-local-type>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_WLONGVARCHAR&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_WCHAR&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>message</remote-name>
+            <remote-type>130</remote-type>
+            <local-name>[message]</local-name>
+            <parent-name>[postgres_event]</parent-name>
+            <remote-alias>message</remote-alias>
+            <ordinal>7</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <width>8190</width>
+            <contains-null>true</contains-null>
+            <cast-to-local-type>true</cast-to-local-type>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_WLONGVARCHAR&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_WCHAR&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>duration</remote-name>
+            <remote-type>3</remote-type>
+            <local-name>[duration]</local-name>
+            <parent-name>[postgres_event]</parent-name>
+            <remote-alias>duration</remote-alias>
+            <ordinal>8</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <precision>10</precision>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_INTEGER&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_SLONG&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>worker</remote-name>
+            <remote-type>3</remote-type>
+            <local-name>[worker]</local-name>
+            <parent-name>[postgres_event]</parent-name>
+            <remote-alias>worker</remote-alias>
+            <ordinal>9</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <precision>10</precision>
+            <contains-null>false</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_INTEGER&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_SLONG&quot;</attribute>
+            </attributes>
+          </metadata-record>
+        </metadata-records>
+      </connection>
+      <aliases enabled='yes' />
+      <column caption='Duration Corrected' datatype='real' name='[Calculation_1913466958962167808]' role='measure' type='quantitative'>
+        <calculation class='tableau' formula='-1*([duration]/86400000)' />
+      </column>
+      <column caption='Duration Tooltip' datatype='string' name='[Calculation_1913466958962745345]' role='dimension' type='nominal'>
+        <calculation class='tableau' formula='IF ISNULL([duration]) THEN &quot;NA&quot;&#13;&#10;ELSE STR([duration]) + &quot; ms&quot; END' />
+      </column>
+      <column caption='Truncated Message' datatype='string' name='[Calculation_1913466958964277251]' role='dimension' type='nominal'>
+        <calculation class='tableau' formula='IF LEN([message]) &gt; 1000 THEN LEFT([message], 1000) + &quot;... (Message Truncated)&quot;&#13;&#10;ELSE [message] END' />
+      </column>
+      <column caption='Duration' datatype='integer' name='[duration]' role='measure' type='quantitative' />
+      <column caption='Id' datatype='integer' name='[id]' role='dimension' type='ordinal' />
+      <column caption='Message' datatype='string' name='[message]' role='dimension' type='nominal' />
+      <column caption='Process Id' datatype='string' name='[process_id]' role='dimension' type='nominal' />
+      <column caption='Severity' datatype='string' name='[severity]' role='dimension' type='nominal' />
+      <column caption='Timestamp' datatype='datetime' name='[timestamp]' role='dimension' type='ordinal' />
+      <column aggregation='Sum' caption='Worker' datatype='integer' name='[worker]' role='dimension' type='ordinal' />
+      <column-instance column='[severity]' derivation='None' name='[none:severity:nk]' pivot='key' type='nominal' />
+      <layout dim-ordering='alphabetic' dim-percentage='0.528667' measure-ordering='alphabetic' measure-percentage='0.471333' show-structure='true' />
+      <style>
+        <style-rule element='mark'>
+          <encoding attr='shape' field='[none:severity:nk]' type='shape'>
+            <map to='circle'>
+              <bucket>&quot;ERROR&quot;</bucket>
+            </map>
+            <map to='times'>
+              <bucket>&quot;FATAL&quot;</bucket>
+            </map>
+          </encoding>
+          <encoding attr='color' field='[none:severity:nk]' type='palette'>
+            <map to='#1f77b4'>
+              <bucket>&quot;DETAIL&quot;</bucket>
+            </map>
+            <map to='#2ca02c'>
+              <bucket>&quot;LOG&quot;</bucket>
+            </map>
+            <map to='#8c564b'>
+              <bucket>&quot;WARNING&quot;</bucket>
+            </map>
+            <map to='#9467bd'>
+              <bucket>&quot;FATAL&quot;</bucket>
+            </map>
+            <map to='#d62728'>
+              <bucket>&quot;ERROR&quot;</bucket>
+            </map>
+            <map to='#d62728'>
+              <bucket>&quot;STATEMENT&quot;</bucket>
+            </map>
+            <map to='#e377c2'>
+              <bucket>&quot;HINT&quot;</bucket>
+            </map>
+            <map to='#ff7f0e'>
+              <bucket>&quot;CONTEXT&quot;</bucket>
+            </map>
+          </encoding>
+        </style-rule>
+      </style>
+      <semantic-values>
+        <semantic-value key='[Country].[Name]' value='&quot;United States&quot;' />
+      </semantic-values>
+    </datasource>
+  </datasources>
+  <shared-views>
+    <shared-view name='logshark data'>
+      <datasources>
+        <datasource name='logshark data' />
+      </datasources>
+      <datasource-dependencies datasource='logshark data'>
+        <column-instance column='[timestamp]' derivation='None' name='[none:timestamp:qk]' pivot='key' type='quantitative' />
+        <column caption='Timestamp' datatype='datetime' name='[timestamp]' role='dimension' type='ordinal' />
+      </datasource-dependencies>
+      <filter class='quantitative' column='[logshark data].[none:timestamp:qk]' included-values='all' />
+    </shared-view>
+  </shared-views>
+  <worksheets>
+    <worksheet name='Any Errors?'>
+      <table>
+        <view>
+          <datasources>
+            <datasource name='logshark data' />
+          </datasources>
+          <datasource-dependencies datasource='logshark data'>
+            <column caption='Truncated Message' datatype='string' name='[Calculation_1913466958964277251]' role='dimension' type='nominal'>
+              <calculation class='tableau' formula='IF LEN([message]) &gt; 1000 THEN LEFT([message], 1000) + &quot;... (Message Truncated)&quot;&#13;&#10;ELSE [message] END' />
+            </column>
+            <column-instance column='[Calculation_1913466958964277251]' derivation='Attribute' name='[attr:Calculation_1913466958964277251:nk]' pivot='key' type='nominal' />
+            <column caption='Message' datatype='string' name='[message]' role='dimension' type='nominal' />
+            <column-instance column='[process_id]' derivation='None' name='[none:process_id:nk]' pivot='key' type='nominal' />
+            <column-instance column='[severity]' derivation='None' name='[none:severity:nk]' pivot='key' type='nominal' />
+            <column-instance column='[timestamp]' derivation='None' name='[none:timestamp:qk]' pivot='key' type='quantitative' />
+            <column-instance column='[worker]' derivation='None' name='[none:worker:ok]' pivot='key' type='ordinal' />
+            <column caption='Process Id' datatype='string' name='[process_id]' role='dimension' type='nominal' />
+            <column caption='Severity' datatype='string' name='[severity]' role='dimension' type='nominal' />
+            <column caption='Timestamp' datatype='datetime' name='[timestamp]' role='dimension' type='ordinal' />
+            <column aggregation='Sum' caption='Worker' datatype='integer' name='[worker]' role='dimension' type='ordinal' />
+          </datasource-dependencies>
+          <filter class='categorical' column='[logshark data].[none:severity:nk]'>
+            <groupfilter function='union' user:ui-domain='database' user:ui-enumeration='inclusive' user:ui-manual-selection='true' user:ui-manual-selection-all-when-empty='true' user:ui-marker='enumerate'>
+              <groupfilter function='member' level='[none:severity:nk]' member='&quot;ERROR&quot;' />
+              <groupfilter function='member' level='[none:severity:nk]' member='&quot;FATAL&quot;' />
+            </groupfilter>
+          </filter>
+          <slices>
+            <column>[logshark data].[none:severity:nk]</column>
+            <column>[logshark data].[none:timestamp:qk]</column>
+          </slices>
+          <aggregation value='true' />
+        </view>
+        <style />
+        <panes>
+          <pane>
+            <view>
+              <breakdown value='auto' />
+            </view>
+            <mark class='Shape' />
+            <encodings>
+              <color column='[logshark data].[none:severity:nk]' />
+              <shape column='[logshark data].[none:severity:nk]' />
+              <tooltip column='[logshark data].[attr:Calculation_1913466958964277251:nk]' />
+            </encodings>
+            <style>
+              <style-rule element='mark'>
+                <format attr='shape' value='times' />
+              </style-rule>
+            </style>
+          </pane>
+        </panes>
+        <rows>([logshark data].[none:worker:ok] / [logshark data].[none:process_id:nk])</rows>
+        <cols>[logshark data].[none:timestamp:qk]</cols>
+      </table>
+    </worksheet>
+    <worksheet name='Messages'>
+      <table>
+        <view>
+          <datasources>
+            <datasource name='logshark data' />
+          </datasources>
+          <datasource-dependencies datasource='logshark data'>
+            <column caption='Duration Corrected' datatype='real' name='[Calculation_1913466958962167808]' role='measure' type='quantitative'>
+              <calculation class='tableau' formula='-1*([duration]/86400000)' />
+            </column>
+            <column caption='Duration Tooltip' datatype='string' name='[Calculation_1913466958962745345]' role='dimension' type='nominal'>
+              <calculation class='tableau' formula='IF ISNULL([duration]) THEN &quot;NA&quot;&#13;&#10;ELSE STR([duration]) + &quot; ms&quot; END' />
+            </column>
+            <column caption='Truncated Message' datatype='string' name='[Calculation_1913466958964277251]' role='dimension' type='nominal'>
+              <calculation class='tableau' formula='IF LEN([message]) &gt; 1000 THEN LEFT([message], 1000) + &quot;... (Message Truncated)&quot;&#13;&#10;ELSE [message] END' />
+            </column>
+            <column caption='Duration' datatype='integer' name='[duration]' role='measure' type='quantitative' />
+            <column caption='Message' datatype='string' name='[message]' role='dimension' type='nominal' />
+            <column-instance column='[timestamp]' derivation='Min' name='[min:timestamp:qk]' pivot='key' type='quantitative' />
+            <column-instance column='[Calculation_1913466958962745345]' derivation='None' name='[none:Calculation_1913466958962745345:nk]' pivot='key' type='nominal' />
+            <column-instance column='[Calculation_1913466958964277251]' derivation='None' name='[none:Calculation_1913466958964277251:nk]' pivot='key' type='nominal' />
+            <column-instance column='[message]' derivation='None' name='[none:message:nk]' pivot='key' type='nominal' />
+            <column-instance column='[severity]' derivation='None' name='[none:severity:nk]' pivot='key' type='nominal' />
+            <column-instance column='[timestamp]' derivation='None' name='[none:timestamp:qk]' pivot='key' type='quantitative' />
+            <column-instance column='[worker]' derivation='None' name='[none:worker:ok]' pivot='key' type='ordinal' />
+            <column caption='Severity' datatype='string' name='[severity]' role='dimension' type='nominal' />
+            <column-instance column='[Calculation_1913466958962167808]' derivation='Sum' name='[sum:Calculation_1913466958962167808:qk]' pivot='key' type='quantitative' />
+            <column caption='Timestamp' datatype='datetime' name='[timestamp]' role='dimension' type='ordinal' />
+            <column aggregation='Sum' caption='Worker' datatype='integer' name='[worker]' role='dimension' type='ordinal' />
+          </datasource-dependencies>
+          <sort class='computed' column='[logshark data].[none:message:nk]' direction='ASC' using='[logshark data].[min:timestamp:qk]' />
+          <slices>
+            <column>[logshark data].[none:timestamp:qk]</column>
+          </slices>
+          <aggregation value='true' />
+        </view>
+        <style />
+        <panes>
+          <pane>
+            <view>
+              <breakdown value='auto' />
+            </view>
+            <mark class='Automatic' />
+            <encodings>
+              <color column='[logshark data].[none:severity:nk]' />
+              <size column='[logshark data].[sum:Calculation_1913466958962167808:qk]' />
+              <lod column='[logshark data].[none:Calculation_1913466958962745345:nk]' />
+              <lod column='[logshark data].[none:Calculation_1913466958964277251:nk]' />
+            </encodings>
+            <customized-tooltip>
+              <formatted-text>
+                <run fontcolor='#787878'>Message:&#9;</run>
+                <run bold='true'>&lt;[logshark data].[none:Calculation_1913466958964277251:nk]&gt;</run>
+                <run fontcolor='#787878'>&#10;Severity:&#9;</run>
+                <run bold='true'>&lt;[logshark data].[none:severity:nk]&gt;</run>
+                <run fontcolor='#787878'>&#10;Timestamp:&#9;</run>
+                <run bold='true'>&lt;[logshark data].[none:timestamp:qk]&gt;</run>
+                <run fontcolor='#787878'>&#10;Worker:&#9;</run>
+                <run bold='true'>&lt;[logshark data].[none:worker:ok]&gt;</run>
+                <run fontcolor='#787878'>&#10;Duration:&#9;</run>
+                <run bold='true'>&lt;[logshark data].[none:Calculation_1913466958962745345:nk]&gt;</run>
+              </formatted-text>
+            </customized-tooltip>
+            <style>
+              <style-rule element='mark'>
+                <format attr='size' value='1.7031491994857788' />
+              </style-rule>
+            </style>
+          </pane>
+        </panes>
+        <rows>([logshark data].[none:worker:ok] / [logshark data].[none:message:nk])</rows>
+        <cols>[logshark data].[none:timestamp:qk]</cols>
+      </table>
+    </worksheet>
+  </worksheets>
+  <dashboards>
+    <dashboard name='Posgres Summary Overview'>
+      <style />
+      <size maxheight='800' maxwidth='1000' minheight='800' minwidth='1000' />
+      <datasources>
+        <datasource name='logshark data' />
+      </datasources>
+      <datasource-dependencies datasource='logshark data'>
+        <column-instance column='[timestamp]' derivation='None' name='[none:timestamp:qk]' pivot='key' type='quantitative' />
+        <column caption='Timestamp' datatype='datetime' name='[timestamp]' role='dimension' type='ordinal' />
+      </datasource-dependencies>
+      <zones>
+        <zone h='100000' id='2' type='layout-basic' w='100000' x='0' y='0'>
+          <zone h='100000' id='14' param='horz' type='layout-flow' w='100000' x='0' y='0'>
+            <zone h='100000' id='12' type='layout-basic' w='99600' x='0' y='0'>
+              <zone h='87375' id='9' param='horz' type='layout-flow' w='99600' x='0' y='12625'>
+                <zone h='87375' id='5' param='horz' type='layout-flow' w='99600' x='0' y='12625'>
+                  <zone h='87375' id='3' type='layout-basic' w='99600' x='0' y='12625'>
+                    <zone h='26649' id='1' name='Any Errors?' show-title='true' w='99600' x='0' y='73351' />
+                    <zone h='55811' id='7' name='Messages' show-title='true' w='99600' x='0' y='12625' />
+                    <zone h='4915' id='10' name='Messages' pane-specification-id='0' param='[logshark data].[none:severity:nk]' type='color' w='99600' x='0' y='68436' />
+                  </zone>
+                </zone>
+              </zone>
+              <zone forceUpdate='true' h='7000' id='11' type='text' w='99600' x='0' y='0'>
+                <formatted-text>
+                  <run bold='true' fontalignment='1' fontcolor='#000000' fontsize='12'>Postgres Activity Overview</run>
+                </formatted-text>
+              </zone>
+              <zone h='5625' id='15' name='Messages' param='[logshark data].[none:timestamp:qk]' show-domain='false' show-null-ctrls='false' type='filter' w='99600' x='0' y='7000' />
+            </zone>
+          </zone>
+        </zone>
+      </zones>
+    </dashboard>
+  </dashboards>
+  <windows source-height='28'>
+    <window class='dashboard' maximized='true' name='Posgres Summary Overview'>
+      <viewpoints>
+        <viewpoint name='Any Errors?'>
+          <highlight>
+            <color-one-way>
+              <field>[logshark data].[none:severity:nk]</field>
+            </color-one-way>
+          </highlight>
+        </viewpoint>
+        <viewpoint name='Messages'>
+          <highlight>
+            <color-one-way>
+              <field>[logshark data].[none:severity:nk]</field>
+            </color-one-way>
+          </highlight>
+        </viewpoint>
+      </viewpoints>
+      <active id='-1' />
+    </window>
+    <window class='worksheet' hidden='true' name='Any Errors?'>
+      <cards>
+        <edge name='left'>
+          <strip size='160'>
+            <card type='pages' />
+            <card type='filters' />
+            <card type='marks' />
+            <card pane-specification-id='0' param='[logshark data].[none:severity:nk]' type='color' />
+            <card pane-specification-id='0' param='[logshark data].[none:severity:nk]' type='shape' />
+          </strip>
+        </edge>
+        <edge name='top'>
+          <strip size='2147483647'>
+            <card type='columns' />
+          </strip>
+          <strip size='2147483647'>
+            <card type='rows' />
+          </strip>
+        </edge>
+        <edge name='right'>
+          <strip size='160'>
+            <card param='[logshark data].[none:timestamp:qk]' show-domain='false' show-null-ctrls='false' type='filter' />
+          </strip>
+        </edge>
+      </cards>
+      <viewpoint>
+        <highlight>
+          <color-one-way>
+            <field>[logshark data].[none:Calculation_1913466958964277251:nk]</field>
+            <field>[logshark data].[none:process_id:nk]</field>
+            <field>[logshark data].[none:severity:nk]</field>
+            <field>[logshark data].[none:timestamp:qk]</field>
+            <field>[logshark data].[none:worker:ok]</field>
+          </color-one-way>
+        </highlight>
+      </viewpoint>
+    </window>
+    <window class='worksheet' hidden='true' name='Messages'>
+      <cards>
+        <edge name='left'>
+          <strip size='160'>
+            <card type='pages' />
+            <card type='filters' />
+            <card type='marks' />
+            <card pane-specification-id='0' param='[logshark data].[none:severity:nk]' type='color' />
+          </strip>
+        </edge>
+        <edge name='top'>
+          <strip size='2147483647'>
+            <card type='columns' />
+          </strip>
+          <strip size='2147483647'>
+            <card type='rows' />
+          </strip>
+        </edge>
+      </cards>
+      <viewpoint>
+        <highlight>
+          <color-one-way>
+            <field>[logshark data].[none:Calculation_1913466958962745345:nk]</field>
+            <field>[logshark data].[none:Calculation_1913466958964277251:nk]</field>
+            <field>[logshark data].[none:message:nk]</field>
+            <field>[logshark data].[none:process_id:nk]</field>
+            <field>[logshark data].[none:severity:nk]</field>
+            <field>[logshark data].[none:timestamp:qk]</field>
+            <field>[logshark data].[none:worker:ok]</field>
+          </color-one-way>
+        </highlight>
+      </viewpoint>
+    </window>
+  </windows>
+  <thumbnails>
+    <thumbnail height='192' name='Posgres Summary Overview' width='192'>
+      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
+    </thumbnail>
+  </thumbnails>
+</workbook>

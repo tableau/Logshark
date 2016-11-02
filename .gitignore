@@ -1,0 +1,15 @@
+*.suo
+*.user
+.reviewboardrc
+packages/
+_Builds/
+.vs/
+*/bin/
+*/obj/
+*/Generated/
+Plugins/*/bin/
+Plugins/*/obj/
+Templates/*/bin/
+Templates/*/obj/
+Logshark.CLI.Installer.Bundle/Contents/
+Tableau.RestApi/GeneratedCode/*.cs
