@@ -4,17 +4,17 @@
 
 Logshark is a command line utility that you can run against Tableau Server logs to generate a set of workbooks that provide insights into system performance, content usage, and error conditions.
 
-![Sample Apache Workbook Screenshot](/Logshark.CLI/Resources/SampleScreenshot.png)
-
 Some common use cases for Logshark include: 
   * Troubleshooting issue(s) that are recorded in the logs. 
   * Analyzing system metrics from log data. 
   * Self-solving problems in Tableau without the fear of exposing sensitive corporate information. 
-  * Regularly validating Tableau Server application behavior against historical data when taking a new build or making a system change. 
+  * Regularly validating Tableau Server application behavior against historical data when taking a new build or making a system change.
+  
+![Sample Apache Workbook Screenshot](/Logshark.CLI/Resources/SampleScreenshot.png)
 
 # How do I set up Logshark?
 
-Logshark is deployed via a custom installer, which manages dependencies and also bundles MongoDB for ease of setup for new users. You will need to set up a Postgres database. To get up and running, follow the instructions in the installation guide.
+Logshark is deployed via a custom installer, which manages dependencies and also bundles MongoDB for ease of setup for new users. You will need to set up a Postgres database. To get up and running, follow the instructions in the [installation guide](https://github.com/tableau/Logshark/tree/master/Logshark.CLI/Documentation/UserGuide.pdf).
 
 Logshark requires a 64-bit version of Windows in order to run, and must be run as an account with administrator privileges.
 
