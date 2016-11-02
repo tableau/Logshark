@@ -1,7 +1,5 @@
 # Logshark
 
-# What is Logshark?
-
 Logshark is a command line utility that you can run against Tableau Server logs to generate a set of workbooks that provide insights into system performance, content usage, and error conditions.
 
 Some common use cases for Logshark include: 
