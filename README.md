@@ -16,6 +16,8 @@ Logshark is deployed via a custom installer, which manages dependencies and also
 
 Logshark requires a 64-bit version of Windows in order to run, and must be run as an account with administrator privileges.
 
+NOTE: If you are upgrading from a previous version of Logshark, the installer will handle most of the upgrade work for you, but during the upgrade your Logshark.config file will be overwritten.  If there are settings from this config you wish to preserve, please make a backup.
+
 # How do I analyze results from Logshark?
 
 The best way to analyze results is to run Logshark on your own logset and explore the generated workbooks via Tableau! Beyond what is included, you can configure Logshark to output your own custom workbooks. See the [installation guide](https://github.com/tableau/Logshark/tree/master/Logshark.CLI/Documentation/UserGuide.pdf) for more details on how to do this.
