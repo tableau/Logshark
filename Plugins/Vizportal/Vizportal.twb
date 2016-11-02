@@ -1,0 +1,1210 @@
+<?xml version='1.0' encoding='utf-8' ?>
+
+<!-- build 9300.16.0907.1515                                -->
+<workbook source-build='9.3.7 (9300.16.0907.1515)' source-platform='win' version='9.3' xmlns:user='http://www.tableausoftware.com/xml/user'>
+  <preferences>
+    <preference name='ui.encoding.shelf.height' value='24' />
+    <preference name='ui.shelf.height' value='26' />
+  </preferences>
+  <datasources>
+    <datasource caption='vizportal_events' inline='true' name='postgres.1y6xjiy1jwfces19g9byy14koss1' version='9.3'>
+      <connection class='postgres' dbname='jmangue_16110119542000_samplelslogszip' odbc-native-protocol='yes' port='5432' server='logshark-adhoc-postgres' username='logshark'>
+        <relation name='vizportal_event' table='[public].[vizportal_event]' type='table' />
+        <metadata-records>
+          <metadata-record class='column'>
+            <remote-name>id</remote-name>
+            <remote-type>3</remote-type>
+            <local-name>[id]</local-name>
+            <parent-name>[vizportal_event]</parent-name>
+            <remote-alias>id</remote-alias>
+            <ordinal>1</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <precision>10</precision>
+            <contains-null>false</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_INTEGER&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_SLONG&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>logset_hash</remote-name>
+            <remote-type>72</remote-type>
+            <local-name>[logset_hash]</local-name>
+            <parent-name>[vizportal_event]</parent-name>
+            <remote-alias>logset_hash</remote-alias>
+            <ordinal>2</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <width>40</width>
+            <contains-null>false</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_GUID&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_GUID&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>event_hash</remote-name>
+            <remote-type>72</remote-type>
+            <local-name>[event_hash]</local-name>
+            <parent-name>[vizportal_event]</parent-name>
+            <remote-alias>event_hash</remote-alias>
+            <ordinal>3</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <width>40</width>
+            <contains-null>false</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_GUID&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_GUID&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>request_id</remote-name>
+            <remote-type>130</remote-type>
+            <local-name>[request_id]</local-name>
+            <parent-name>[vizportal_event]</parent-name>
+            <remote-alias>request_id</remote-alias>
+            <ordinal>4</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <width>8190</width>
+            <contains-null>true</contains-null>
+            <cast-to-local-type>true</cast-to-local-type>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_WLONGVARCHAR&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_WCHAR&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>timestamp</remote-name>
+            <remote-type>7</remote-type>
+            <local-name>[timestamp]</local-name>
+            <parent-name>[vizportal_event]</parent-name>
+            <remote-alias>timestamp</remote-alias>
+            <ordinal>5</ordinal>
+            <local-type>datetime</local-type>
+            <aggregation>Year</aggregation>
+            <contains-null>false</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_TYPE_TIMESTAMP&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_TYPE_TIMESTAMP&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>worker</remote-name>
+            <remote-type>3</remote-type>
+            <local-name>[worker]</local-name>
+            <parent-name>[vizportal_event]</parent-name>
+            <remote-alias>worker</remote-alias>
+            <ordinal>6</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <precision>10</precision>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_INTEGER&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_SLONG&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>user</remote-name>
+            <remote-type>130</remote-type>
+            <local-name>[user]</local-name>
+            <parent-name>[vizportal_event]</parent-name>
+            <remote-alias>user</remote-alias>
+            <ordinal>7</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <width>8190</width>
+            <contains-null>true</contains-null>
+            <cast-to-local-type>true</cast-to-local-type>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_WLONGVARCHAR&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_WCHAR&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>session_id</remote-name>
+            <remote-type>130</remote-type>
+            <local-name>[session_id]</local-name>
+            <parent-name>[vizportal_event]</parent-name>
+            <remote-alias>session_id</remote-alias>
+            <ordinal>8</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <width>8190</width>
+            <contains-null>true</contains-null>
+            <cast-to-local-type>true</cast-to-local-type>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_WLONGVARCHAR&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_WCHAR&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>site</remote-name>
+            <remote-type>130</remote-type>
+            <local-name>[site]</local-name>
+            <parent-name>[vizportal_event]</parent-name>
+            <remote-alias>site</remote-alias>
+            <ordinal>9</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <width>8190</width>
+            <contains-null>true</contains-null>
+            <cast-to-local-type>true</cast-to-local-type>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_WLONGVARCHAR&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_WCHAR&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>severity</remote-name>
+            <remote-type>130</remote-type>
+            <local-name>[severity]</local-name>
+            <parent-name>[vizportal_event]</parent-name>
+            <remote-alias>severity</remote-alias>
+            <ordinal>10</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <width>8190</width>
+            <contains-null>true</contains-null>
+            <cast-to-local-type>true</cast-to-local-type>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_WLONGVARCHAR&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_WCHAR&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>class</remote-name>
+            <remote-type>130</remote-type>
+            <local-name>[class]</local-name>
+            <parent-name>[vizportal_event]</parent-name>
+            <remote-alias>class</remote-alias>
+            <ordinal>11</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <width>8190</width>
+            <contains-null>true</contains-null>
+            <cast-to-local-type>true</cast-to-local-type>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_WLONGVARCHAR&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_WCHAR&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>message</remote-name>
+            <remote-type>130</remote-type>
+            <local-name>[message]</local-name>
+            <parent-name>[vizportal_event]</parent-name>
+            <remote-alias>message</remote-alias>
+            <ordinal>12</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <width>8190</width>
+            <contains-null>true</contains-null>
+            <cast-to-local-type>true</cast-to-local-type>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_WLONGVARCHAR&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_WCHAR&quot;</attribute>
+            </attributes>
+          </metadata-record>
+        </metadata-records>
+      </connection>
+      <aliases enabled='yes' />
+      <column caption='Message - First 150 Characters' datatype='string' name='[Calculation_2617717343211286534]' role='dimension' type='nominal'>
+        <calculation class='tableau' formula='left([message],150)' />
+      </column>
+      <column caption='Number of Unique Messages per Day' datatype='integer' name='[Calculation_2617717343218003975]' role='measure' type='quantitative'>
+        <calculation class='tableau' formula='{INCLUDE [message] : COUNTD([message]) }' />
+      </column>
+      <column datatype='integer' name='[Number of Records]' role='measure' type='quantitative' user:auto-column='numrec'>
+        <calculation class='tableau' formula='1' />
+      </column>
+      <column caption='Class Final Portion' datatype='string' name='[class - Split 1]' role='dimension' type='nominal' user:SplitFieldIndex='1' user:SplitFieldOrigin='[postgres.1y6xjiy1jwfces19g9byy14koss1].[class]'>
+        <calculation class='tableau' formula='TRIM( SPLIT( [class], &quot;.&quot;, -1 ) )' />
+      </column>
+      <column caption='Class' datatype='string' name='[class]' role='dimension' type='nominal' />
+      <column caption='Event Hash' datatype='string' name='[event_hash]' role='dimension' type='nominal' />
+      <column caption='Id' datatype='integer' name='[id]' role='dimension' type='ordinal' />
+      <column caption='Logset Hash' datatype='string' name='[logset_hash]' role='dimension' type='nominal' />
+      <column caption='Message' datatype='string' name='[message]' role='dimension' type='nominal' />
+      <column caption='Request Id' datatype='string' name='[request_id]' role='dimension' type='nominal' />
+      <column caption='Session Id' datatype='string' name='[session_id]' role='dimension' type='nominal' />
+      <column caption='Severity' datatype='string' name='[severity]' role='dimension' type='nominal' />
+      <column caption='Site' datatype='string' name='[site]' role='dimension' type='nominal' />
+      <column caption='Timestamp' datatype='datetime' name='[timestamp]' role='dimension' type='ordinal' />
+      <column caption='User' datatype='string' name='[user]' role='dimension' type='nominal' />
+      <column aggregation='Sum' caption='Worker' datatype='integer' name='[worker]' role='dimension' type='ordinal' />
+      <column-instance column='[severity]' derivation='None' name='[none:severity:nk]' pivot='key' type='nominal' />
+      <column-instance column='[timestamp]' derivation='Day-Trunc' name='[tdy:timestamp:ok]' pivot='key' type='ordinal' />
+      <group caption='Action (Class Final Portion)' hidden='true' name='[Action (Class Final Portion)]' name-style='unqualified' user:auto-column='sheet_link'>
+        <groupfilter function='crossjoin'>
+          <groupfilter function='level-members' level='[class - Split 1]' />
+        </groupfilter>
+      </group>
+      <group caption='Action (DAY(Timestamp))' hidden='true' name='[Action (DAY(Timestamp))]' name-style='unqualified' user:auto-column='sheet_link'>
+        <groupfilter function='crossjoin'>
+          <groupfilter function='level-members' level='[tdy:timestamp:ok]' />
+        </groupfilter>
+      </group>
+      <group caption='Action (Message - First 150 Characters,Class Final Portion)' hidden='true' name='[Action (Message - First 150 Characters,Class Final Portion)]' name-style='unqualified' user:auto-column='sheet_link'>
+        <groupfilter function='crossjoin'>
+          <groupfilter function='level-members' level='[Calculation_2617717343211286534]' />
+          <groupfilter function='level-members' level='[class - Split 1]' />
+        </groupfilter>
+      </group>
+      <group name='[Class &amp; Message (Combined)]' name-style='unqualified' user:ui-builder='nest-group'>
+        <groupfilter function='crossjoin'>
+          <groupfilter function='level-members' level='[class]' />
+          <groupfilter function='level-members' level='[message]' />
+        </groupfilter>
+      </group>
+      <group name='[Severity &amp; Class Final Portion (Combined)]' name-style='unqualified' user:ui-builder='nest-group'>
+        <groupfilter function='crossjoin'>
+          <groupfilter function='level-members' level='[severity]' />
+          <groupfilter function='level-members' level='[class - Split 1]' />
+        </groupfilter>
+      </group>
+      <layout dim-ordering='alphabetic' dim-percentage='0.58898' measure-ordering='alphabetic' measure-percentage='0.41102' show-structure='true' />
+      <style>
+        <style-rule element='mark'>
+          <encoding attr='color' field='[none:severity:nk]' type='palette'>
+            <map to='#1f77b4'>
+              <bucket>&quot;INFO&quot;</bucket>
+            </map>
+            <map to='#bcbd22'>
+              <bucket>&quot;WARN&quot;</bucket>
+            </map>
+            <map to='#ff7f0e'>
+              <bucket>&quot;ERROR&quot;</bucket>
+            </map>
+          </encoding>
+        </style-rule>
+      </style>
+      <semantic-values>
+        <semantic-value key='[Country].[Name]' value='&quot;United States&quot;' />
+      </semantic-values>
+    </datasource>
+  </datasources>
+  <actions>
+    <action caption='Mid to Low' name='[Action10]'>
+      <activation auto-clear='true' type='on-select' />
+      <source dashboard='Vizportal Error and Warn Messages' type='sheet' worksheet='All Specific Errors' />
+      <link caption='Mid to Low' delimiter=',' escape='\' expression='tsl:Vizportal%20Error%20and%20Warn%20Messages?%5Bpostgres.1y6xjiy1jwfces19g9byy14koss1%5D.%5BCalculation_2617717343211286534%5D~s0=&lt;[Calculation_2617717343211286534]~na&gt;&amp;%5Bpostgres.1y6xjiy1jwfces19g9byy14koss1%5D.%5Bclass%20-%20Split%201%5D~s0=&lt;[class - Split 1]~na&gt;' include-null='true' multi-select='true' url-escape='true' />
+      <command command='tsc:tsl-filter'>
+        <param name='exclude' value='All Specific Errors,Error and Warn Classes,Error and Warn Timeline' />
+        <param name='on-empty' value='none' />
+        <param name='target' value='Vizportal Error and Warn Messages' />
+      </command>
+    </action>
+    <action caption='Day to Others' name='[Action11]'>
+      <activation auto-clear='true' type='on-select' />
+      <source dashboard='Vizportal Error and Warn Messages' type='sheet' worksheet='Error and Warn Timeline' />
+      <link caption='Day to Others' delimiter=',' escape='\' expression='tsl:Vizportal%20Error%20and%20Warn%20Messages?%5Bpostgres.1y6xjiy1jwfces19g9byy14koss1%5D.%5Btdy%3Atimestamp%3Aok%5D~s0=&lt;[tdy:timestamp:ok]~na&gt;' include-null='true' multi-select='true' url-escape='true' />
+      <command command='tsc:tsl-filter'>
+        <param name='exclude' value='Error and Warn Timeline' />
+        <param name='target' value='Vizportal Error and Warn Messages' />
+      </command>
+    </action>
+    <action caption='Top to Mid' name='[Action9]'>
+      <activation auto-clear='true' type='on-select' />
+      <source dashboard='Vizportal Error and Warn Messages' type='sheet' worksheet='Error and Warn Classes' />
+      <link caption='Top to Mid' delimiter=',' escape='\' expression='tsl:Vizportal%20Error%20and%20Warn%20Messages?%5Bpostgres.1y6xjiy1jwfces19g9byy14koss1%5D.%5Bclass%20-%20Split%201%5D~s0=&lt;[class - Split 1]~na&gt;' include-null='true' multi-select='true' url-escape='true' />
+      <command command='tsc:tsl-filter'>
+        <param name='exclude' value='Error and Warn Classes,Error and Warn Timeline,Specific Errors by Class and Session ID' />
+        <param name='target' value='Vizportal Error and Warn Messages' />
+      </command>
+    </action>
+    <datasources>
+      <datasource caption='vizportal_events' name='postgres.1y6xjiy1jwfces19g9byy14koss1' />
+    </datasources>
+    <datasource-dependencies datasource='postgres.1y6xjiy1jwfces19g9byy14koss1'>
+      <column caption='Message - First 150 Characters' datatype='string' name='[Calculation_2617717343211286534]' role='dimension' type='nominal'>
+        <calculation class='tableau' formula='left([message],150)' />
+      </column>
+      <column caption='Class Final Portion' datatype='string' name='[class - Split 1]' role='dimension' type='nominal' user:SplitFieldIndex='1' user:SplitFieldOrigin='[postgres.1y6xjiy1jwfces19g9byy14koss1].[class]'>
+        <calculation class='tableau' formula='TRIM( SPLIT( [class], &quot;.&quot;, -1 ) )' />
+      </column>
+      <column-instance column='[timestamp]' derivation='Day-Trunc' name='[tdy:timestamp:ok]' pivot='key' type='ordinal' />
+      <column caption='Timestamp' datatype='datetime' name='[timestamp]' role='dimension' type='ordinal' />
+    </datasource-dependencies>
+  </actions>
+  <worksheets>
+    <worksheet name='All Specific Errors'>
+      <layout-options>
+        <title>
+          <formatted-text>
+            <run>2. </run>
+            <run>&lt;</run>
+            <run>Sheet Name</run>
+            <run>&gt;</run>
+          </formatted-text>
+        </title>
+      </layout-options>
+      <table>
+        <view>
+          <datasources>
+            <datasource caption='vizportal_events' name='postgres.1y6xjiy1jwfces19g9byy14koss1' />
+          </datasources>
+          <datasource-dependencies datasource='postgres.1y6xjiy1jwfces19g9byy14koss1'>
+            <column caption='Message - First 150 Characters' datatype='string' name='[Calculation_2617717343211286534]' role='dimension' type='nominal'>
+              <calculation class='tableau' formula='left([message],150)' />
+            </column>
+            <column datatype='integer' name='[Number of Records]' role='measure' type='quantitative' user:auto-column='numrec'>
+              <calculation class='tableau' formula='1' />
+            </column>
+            <column caption='Class Final Portion' datatype='string' name='[class - Split 1]' role='dimension' type='nominal' user:SplitFieldIndex='1' user:SplitFieldOrigin='[postgres.1y6xjiy1jwfces19g9byy14koss1].[class]'>
+              <calculation class='tableau' formula='TRIM( SPLIT( [class], &quot;.&quot;, -1 ) )' />
+            </column>
+            <column caption='Class' datatype='string' name='[class]' role='dimension' type='nominal' />
+            <column caption='Message' datatype='string' name='[message]' role='dimension' type='nominal' />
+            <column-instance column='[Calculation_2617717343211286534]' derivation='None' name='[none:Calculation_2617717343211286534:nk]' pivot='key' type='nominal' />
+            <column-instance column='[class - Split 1]' derivation='None' name='[none:class - Split 1:nk]' pivot='key' type='nominal' />
+            <column-instance column='[class]' derivation='None' name='[none:class:nk]' pivot='key' type='nominal' />
+            <column-instance column='[message]' derivation='None' name='[none:message:nk]' pivot='key' type='nominal' />
+            <column-instance column='[severity]' derivation='None' name='[none:severity:nk]' pivot='key' type='nominal' />
+            <column-instance column='[site]' derivation='None' name='[none:site:nk]' pivot='key' type='nominal' />
+            <column caption='Severity' datatype='string' name='[severity]' role='dimension' type='nominal' />
+            <column caption='Site' datatype='string' name='[site]' role='dimension' type='nominal' />
+            <column-instance column='[Number of Records]' derivation='Sum' name='[sum:Number of Records:qk]' pivot='key' type='quantitative' />
+            <column-instance column='[timestamp]' derivation='Day-Trunc' name='[tdy:timestamp:ok]' pivot='key' type='ordinal' />
+            <column caption='Timestamp' datatype='datetime' name='[timestamp]' role='dimension' type='ordinal' />
+          </datasource-dependencies>
+          <filter class='categorical' column='[postgres.1y6xjiy1jwfces19g9byy14koss1].[Action (Class Final Portion)]'>
+            <groupfilter function='level-members' level='[class - Split 1]' user:ui-enumeration='all' user:ui-marker='enumerate' />
+          </filter>
+          <filter class='categorical' column='[postgres.1y6xjiy1jwfces19g9byy14koss1].[Action (DAY(Timestamp))]'>
+            <groupfilter function='level-members' level='[tdy:timestamp:ok]' user:ui-enumeration='all' user:ui-marker='enumerate' />
+          </filter>
+          <sort class='computed' column='[postgres.1y6xjiy1jwfces19g9byy14koss1].[Class &amp; Message (Combined)]' direction='DESC' using='[postgres.1y6xjiy1jwfces19g9byy14koss1].[sum:Number of Records:qk]' />
+          <sort class='computed' column='[postgres.1y6xjiy1jwfces19g9byy14koss1].[Severity &amp; Class Final Portion (Combined)]' direction='DESC' using='[postgres.1y6xjiy1jwfces19g9byy14koss1].[sum:Number of Records:qk]' />
+          <sort class='computed' column='[postgres.1y6xjiy1jwfces19g9byy14koss1].[none:class - Split 1:nk]' direction='DESC' using='[postgres.1y6xjiy1jwfces19g9byy14koss1].[sum:Number of Records:qk]' />
+          <filter class='categorical' column='[postgres.1y6xjiy1jwfces19g9byy14koss1].[none:severity:nk]'>
+            <groupfilter function='except' user:ui-domain='relevant' user:ui-enumeration='exclusive' user:ui-marker='enumerate'>
+              <groupfilter function='level-members' level='[none:severity:nk]' />
+              <groupfilter function='member' level='[none:severity:nk]' member='&quot;INFO&quot;' />
+            </groupfilter>
+          </filter>
+          <filter class='categorical' column='[postgres.1y6xjiy1jwfces19g9byy14koss1].[none:site:nk]'>
+            <groupfilter function='except' user:ui-domain='relevant' user:ui-enumeration='exclusive' user:ui-marker='enumerate'>
+              <groupfilter function='level-members' level='[none:site:nk]' />
+              <groupfilter function='member' level='[none:site:nk]' member='%null%' />
+            </groupfilter>
+          </filter>
+          <slices>
+            <column>[postgres.1y6xjiy1jwfces19g9byy14koss1].[none:site:nk]</column>
+            <column>[postgres.1y6xjiy1jwfces19g9byy14koss1].[none:severity:nk]</column>
+            <column>[postgres.1y6xjiy1jwfces19g9byy14koss1].[Action (Class Final Portion)]</column>
+            <column>[postgres.1y6xjiy1jwfces19g9byy14koss1].[Action (DAY(Timestamp))]</column>
+          </slices>
+          <aggregation value='true' />
+        </view>
+        <style>
+          <style-rule element='label'>
+            <format attr='display' field='[postgres.1y6xjiy1jwfces19g9byy14koss1].[Severity &amp; Class Final Portion (Combined)]' value='false' />
+            <format attr='display' field='[postgres.1y6xjiy1jwfces19g9byy14koss1].[Class &amp; Message (Combined)]' value='false' />
+          </style-rule>
+          <style-rule element='worksheet'>
+            <format attr='in-tooltip' field='[postgres.1y6xjiy1jwfces19g9byy14koss1].[Class &amp; Message (Combined)]' value='false' />
+            <format attr='in-tooltip' field='[postgres.1y6xjiy1jwfces19g9byy14koss1].[class]' value='false' />
+            <format attr='in-tooltip' field='[postgres.1y6xjiy1jwfces19g9byy14koss1].[message]' value='false' />
+            <format attr='in-tooltip' field='[postgres.1y6xjiy1jwfces19g9byy14koss1].[Severity &amp; Class Final Portion (Combined)]' value='false' />
+            <format attr='in-tooltip' field='[postgres.1y6xjiy1jwfces19g9byy14koss1].[severity]' value='false' />
+            <format attr='in-tooltip' field='[postgres.1y6xjiy1jwfces19g9byy14koss1].[class - Split 1]' value='false' />
+          </style-rule>
+        </style>
+        <panes>
+          <pane>
+            <view>
+              <breakdown value='auto' />
+            </view>
+            <mark class='Automatic' />
+            <encodings>
+              <color column='[postgres.1y6xjiy1jwfces19g9byy14koss1].[none:severity:nk]' />
+              <lod column='[postgres.1y6xjiy1jwfces19g9byy14koss1].[none:class:nk]' />
+              <lod column='[postgres.1y6xjiy1jwfces19g9byy14koss1].[none:message:nk]' />
+            </encodings>
+            <customized-tooltip>
+              <formatted-text>
+                <run>This</run>
+                <run bold='true'>Æ </run>
+                <run underline='true'>&lt;[postgres.1y6xjiy1jwfces19g9byy14koss1].[none:severity:nk]&gt;</run>
+                <run bold='true'>Æ </run>
+                <run>level message was given for</run>
+                <run bold='true'> &lt;[postgres.1y6xjiy1jwfces19g9byy14koss1].[sum:Number of Records:qk]&gt;</run>
+                <run> sessions&#10;&#10;This was raised by the </run>
+                <run bold='true'>&lt;[postgres.1y6xjiy1jwfces19g9byy14koss1].[none:class:nk]&gt; </run>
+                <run>class&#10;&#10;The first 150 characters of the message is below. The full message is in the underlying data</run>
+                <run bold='true'>&#10;&lt;[postgres.1y6xjiy1jwfces19g9byy14koss1].[none:Calculation_2617717343211286534:nk]&gt;</run>
+              </formatted-text>
+            </customized-tooltip>
+            <style>
+              <style-rule element='mark'>
+                <format attr='mark-labels-show' value='false' />
+              </style-rule>
+            </style>
+          </pane>
+        </panes>
+        <rows>([postgres.1y6xjiy1jwfces19g9byy14koss1].[none:severity:nk] / ([postgres.1y6xjiy1jwfces19g9byy14koss1].[Severity &amp; Class Final Portion (Combined)] / ([postgres.1y6xjiy1jwfces19g9byy14koss1].[none:class - Split 1:nk] / ([postgres.1y6xjiy1jwfces19g9byy14koss1].[Class &amp; Message (Combined)] / [postgres.1y6xjiy1jwfces19g9byy14koss1].[none:Calculation_2617717343211286534:nk]))))</rows>
+        <cols>[postgres.1y6xjiy1jwfces19g9byy14koss1].[sum:Number of Records:qk]</cols>
+      </table>
+    </worksheet>
+    <worksheet name='Error and Warn Classes'>
+      <layout-options>
+        <title>
+          <formatted-text>
+            <run>1. </run>
+            <run>&lt;</run>
+            <run>Sheet Name</run>
+            <run>&gt;</run>
+          </formatted-text>
+        </title>
+      </layout-options>
+      <table>
+        <view>
+          <datasources>
+            <datasource caption='vizportal_events' name='postgres.1y6xjiy1jwfces19g9byy14koss1' />
+          </datasources>
+          <datasource-dependencies datasource='postgres.1y6xjiy1jwfces19g9byy14koss1'>
+            <column datatype='integer' name='[Number of Records]' role='measure' type='quantitative' user:auto-column='numrec'>
+              <calculation class='tableau' formula='1' />
+            </column>
+            <column caption='Class Final Portion' datatype='string' name='[class - Split 1]' role='dimension' type='nominal' user:SplitFieldIndex='1' user:SplitFieldOrigin='[postgres.1y6xjiy1jwfces19g9byy14koss1].[class]'>
+              <calculation class='tableau' formula='TRIM( SPLIT( [class], &quot;.&quot;, -1 ) )' />
+            </column>
+            <column caption='Class' datatype='string' name='[class]' role='dimension' type='nominal' />
+            <column-instance column='[class - Split 1]' derivation='None' name='[none:class - Split 1:nk]' pivot='key' type='nominal' />
+            <column-instance column='[class]' derivation='None' name='[none:class:nk]' pivot='key' type='nominal' />
+            <column-instance column='[severity]' derivation='None' name='[none:severity:nk]' pivot='key' type='nominal' />
+            <column-instance column='[site]' derivation='None' name='[none:site:nk]' pivot='key' type='nominal' />
+            <column caption='Severity' datatype='string' name='[severity]' role='dimension' type='nominal' />
+            <column caption='Site' datatype='string' name='[site]' role='dimension' type='nominal' />
+            <column-instance column='[Number of Records]' derivation='Sum' name='[sum:Number of Records:qk]' pivot='key' type='quantitative' />
+            <column-instance column='[timestamp]' derivation='Day-Trunc' name='[tdy:timestamp:ok]' pivot='key' type='ordinal' />
+            <column caption='Timestamp' datatype='datetime' name='[timestamp]' role='dimension' type='ordinal' />
+          </datasource-dependencies>
+          <filter class='categorical' column='[postgres.1y6xjiy1jwfces19g9byy14koss1].[Action (DAY(Timestamp))]'>
+            <groupfilter function='level-members' level='[tdy:timestamp:ok]' user:ui-enumeration='all' user:ui-marker='enumerate' />
+          </filter>
+          <filter class='categorical' column='[postgres.1y6xjiy1jwfces19g9byy14koss1].[none:class - Split 1:nk]'>
+            <groupfilter function='level-members' level='[none:class - Split 1:nk]' />
+          </filter>
+          <sort class='computed' column='[postgres.1y6xjiy1jwfces19g9byy14koss1].[none:class - Split 1:nk]' direction='DESC' using='[postgres.1y6xjiy1jwfces19g9byy14koss1].[sum:Number of Records:qk]' />
+          <filter class='categorical' column='[postgres.1y6xjiy1jwfces19g9byy14koss1].[none:severity:nk]'>
+            <groupfilter function='except' user:ui-domain='relevant' user:ui-enumeration='exclusive' user:ui-marker='enumerate'>
+              <groupfilter function='level-members' level='[none:severity:nk]' />
+              <groupfilter function='member' level='[none:severity:nk]' member='&quot;INFO&quot;' />
+            </groupfilter>
+          </filter>
+          <filter class='categorical' column='[postgres.1y6xjiy1jwfces19g9byy14koss1].[none:site:nk]'>
+            <groupfilter function='except' user:ui-domain='relevant' user:ui-enumeration='exclusive' user:ui-marker='enumerate'>
+              <groupfilter function='level-members' level='[none:site:nk]' />
+              <groupfilter function='member' level='[none:site:nk]' member='%null%' />
+            </groupfilter>
+          </filter>
+          <slices>
+            <column>[postgres.1y6xjiy1jwfces19g9byy14koss1].[none:site:nk]</column>
+            <column>[postgres.1y6xjiy1jwfces19g9byy14koss1].[none:severity:nk]</column>
+            <column>[postgres.1y6xjiy1jwfces19g9byy14koss1].[none:class - Split 1:nk]</column>
+            <column>[postgres.1y6xjiy1jwfces19g9byy14koss1].[Action (DAY(Timestamp))]</column>
+          </slices>
+          <aggregation value='true' />
+        </view>
+        <style />
+        <panes>
+          <pane>
+            <view>
+              <breakdown value='auto' />
+            </view>
+            <mark class='Automatic' />
+            <encodings>
+              <color column='[postgres.1y6xjiy1jwfces19g9byy14koss1].[none:severity:nk]' />
+              <lod column='[postgres.1y6xjiy1jwfces19g9byy14koss1].[none:class:nk]' />
+            </encodings>
+            <customized-tooltip>
+              <formatted-text>
+                <run>This</run>
+                <run bold='true'> &lt;[postgres.1y6xjiy1jwfces19g9byy14koss1].[none:severity:nk]&gt; </run>
+                <run>level message was raised</run>
+                <run bold='true'> &lt;[postgres.1y6xjiy1jwfces19g9byy14koss1].[sum:Number of Records:qk]&gt; </run>
+                <run>times&#10;It was raised by</run>
+                <run bold='true'> &lt;[postgres.1y6xjiy1jwfces19g9byy14koss1].[none:class:nk]&gt;</run>
+              </formatted-text>
+            </customized-tooltip>
+            <style>
+              <style-rule element='mark'>
+                <format attr='mark-labels-show' value='false' />
+              </style-rule>
+            </style>
+          </pane>
+        </panes>
+        <rows>([postgres.1y6xjiy1jwfces19g9byy14koss1].[none:severity:nk] / [postgres.1y6xjiy1jwfces19g9byy14koss1].[none:class - Split 1:nk])</rows>
+        <cols>[postgres.1y6xjiy1jwfces19g9byy14koss1].[sum:Number of Records:qk]</cols>
+      </table>
+    </worksheet>
+    <worksheet name='Error and Warn Timeline'>
+      <table>
+        <view>
+          <datasources>
+            <datasource caption='vizportal_events' name='postgres.1y6xjiy1jwfces19g9byy14koss1' />
+          </datasources>
+          <datasource-dependencies datasource='postgres.1y6xjiy1jwfces19g9byy14koss1'>
+            <column caption='Number of Unique Messages per Day' datatype='integer' name='[Calculation_2617717343218003975]' role='measure' type='quantitative'>
+              <calculation class='tableau' formula='{INCLUDE [message] : COUNTD([message]) }' />
+            </column>
+            <column datatype='integer' name='[Number of Records]' role='measure' type='quantitative' user:auto-column='numrec'>
+              <calculation class='tableau' formula='1' />
+            </column>
+            <column caption='Message' datatype='string' name='[message]' role='dimension' type='nominal' />
+            <column-instance column='[severity]' derivation='None' name='[none:severity:nk]' pivot='key' type='nominal' />
+            <column-instance column='[site]' derivation='None' name='[none:site:nk]' pivot='key' type='nominal' />
+            <column caption='Severity' datatype='string' name='[severity]' role='dimension' type='nominal' />
+            <column caption='Site' datatype='string' name='[site]' role='dimension' type='nominal' />
+            <column-instance column='[Calculation_2617717343218003975]' derivation='Sum' name='[sum:Calculation_2617717343218003975:qk]' pivot='key' type='quantitative' />
+            <column-instance column='[Number of Records]' derivation='Sum' name='[sum:Number of Records:qk]' pivot='key' type='quantitative' />
+            <column-instance column='[timestamp]' derivation='Day-Trunc' name='[tdy:timestamp:ok]' pivot='key' type='ordinal' />
+            <column caption='Timestamp' datatype='datetime' name='[timestamp]' role='dimension' type='ordinal' />
+          </datasource-dependencies>
+          <filter class='categorical' column='[postgres.1y6xjiy1jwfces19g9byy14koss1].[none:severity:nk]'>
+            <groupfilter function='except' user:ui-domain='relevant' user:ui-enumeration='exclusive' user:ui-marker='enumerate'>
+              <groupfilter function='level-members' level='[none:severity:nk]' />
+              <groupfilter function='member' level='[none:severity:nk]' member='&quot;INFO&quot;' />
+            </groupfilter>
+          </filter>
+          <filter class='categorical' column='[postgres.1y6xjiy1jwfces19g9byy14koss1].[none:site:nk]'>
+            <groupfilter function='except' user:ui-domain='relevant' user:ui-enumeration='exclusive' user:ui-marker='enumerate'>
+              <groupfilter function='level-members' level='[none:site:nk]' />
+              <groupfilter function='member' level='[none:site:nk]' member='%null%' />
+            </groupfilter>
+          </filter>
+          <slices>
+            <column>[postgres.1y6xjiy1jwfces19g9byy14koss1].[none:site:nk]</column>
+            <column>[postgres.1y6xjiy1jwfces19g9byy14koss1].[none:severity:nk]</column>
+          </slices>
+          <aggregation value='true' />
+        </view>
+        <style>
+          <style-rule element='axis'>
+            <format attr='height' field='[postgres.1y6xjiy1jwfces19g9byy14koss1].[tdy:timestamp:ok]' value='39' />
+          </style-rule>
+          <style-rule element='refband'>
+            <format attr='reverse-palette' id='refline0' value='false' />
+          </style-rule>
+        </style>
+        <panes>
+          <pane>
+            <view>
+              <breakdown value='auto' />
+            </view>
+            <mark class='Automatic' />
+            <encodings>
+              <color column='[postgres.1y6xjiy1jwfces19g9byy14koss1].[none:severity:nk]' />
+              <lod column='[postgres.1y6xjiy1jwfces19g9byy14koss1].[sum:Calculation_2617717343218003975:qk]' />
+            </encodings>
+            <reference-line axis-column='[postgres.1y6xjiy1jwfces19g9byy14koss1].[sum:Number of Records:qk]' enable-instant-analytics='false' fill-above='true' fill-below='false' formula='stdev' id='refline0' label-type='automatic' scope='per-pane' symmetric='false' type='sample' value-column='[postgres.1y6xjiy1jwfces19g9byy14koss1].[sum:Number of Records:qk]' z-order='1'>
+              <reference-line-value factor='2' />
+              <reference-line-value factor='3' />
+            </reference-line>
+            <customized-tooltip>
+              <formatted-text>
+                <run>On</run>
+                <run bold='true'> &lt;[postgres.1y6xjiy1jwfces19g9byy14koss1].[tdy:timestamp:qk]&gt; </run>
+                <run>there were</run>
+                <run bold='true'> &lt;[postgres.1y6xjiy1jwfces19g9byy14koss1].[sum:Number of Records:qk]&gt; </run>
+                <run underline='true'>&lt;[postgres.1y6xjiy1jwfces19g9byy14koss1].[none:severity:nk]&gt;</run>
+                <run bold='true'>Æ </run>
+                <run>level messages&#10;There were</run>
+                <run bold='true'> &lt;[postgres.1y6xjiy1jwfces19g9byy14koss1].[sum:Calculation_2617717343218003975:qk]&gt; </run>
+                <run>unique messages thrown</run>
+              </formatted-text>
+            </customized-tooltip>
+            <style>
+              <style-rule element='mark'>
+                <format attr='mark-labels-show' value='false' />
+              </style-rule>
+            </style>
+          </pane>
+        </panes>
+        <rows>[postgres.1y6xjiy1jwfces19g9byy14koss1].[sum:Number of Records:qk]</rows>
+        <cols>[postgres.1y6xjiy1jwfces19g9byy14koss1].[tdy:timestamp:ok]</cols>
+      </table>
+    </worksheet>
+    <worksheet name='Specific Errors by Class and Session ID'>
+      <layout-options>
+        <title>
+          <formatted-text>
+            <run>3. &lt;Sheet Name&gt;</run>
+            <run bold='false' fontsize='10'>&#10;Select a specific Class or Message above to see Session and Request info</run>
+          </formatted-text>
+        </title>
+      </layout-options>
+      <table>
+        <view>
+          <datasources>
+            <datasource caption='vizportal_events' name='postgres.1y6xjiy1jwfces19g9byy14koss1' />
+          </datasources>
+          <datasource-dependencies datasource='postgres.1y6xjiy1jwfces19g9byy14koss1'>
+            <column caption='Message - First 150 Characters' datatype='string' name='[Calculation_2617717343211286534]' role='dimension' type='nominal'>
+              <calculation class='tableau' formula='left([message],150)' />
+            </column>
+            <column datatype='integer' name='[Number of Records]' role='measure' type='quantitative' user:auto-column='numrec'>
+              <calculation class='tableau' formula='1' />
+            </column>
+            <column caption='Class Final Portion' datatype='string' name='[class - Split 1]' role='dimension' type='nominal' user:SplitFieldIndex='1' user:SplitFieldOrigin='[postgres.1y6xjiy1jwfces19g9byy14koss1].[class]'>
+              <calculation class='tableau' formula='TRIM( SPLIT( [class], &quot;.&quot;, -1 ) )' />
+            </column>
+            <column caption='Class' datatype='string' name='[class]' role='dimension' type='nominal' />
+            <column caption='Message' datatype='string' name='[message]' role='dimension' type='nominal' />
+            <column-instance column='[Calculation_2617717343211286534]' derivation='None' name='[none:Calculation_2617717343211286534:nk]' pivot='key' type='nominal' />
+            <column-instance column='[class - Split 1]' derivation='None' name='[none:class - Split 1:nk]' pivot='key' type='nominal' />
+            <column-instance column='[class]' derivation='None' name='[none:class:nk]' pivot='key' type='nominal' />
+            <column-instance column='[message]' derivation='None' name='[none:message:nk]' pivot='key' type='nominal' />
+            <column-instance column='[request_id]' derivation='None' name='[none:request_id:nk]' pivot='key' type='nominal' />
+            <column-instance column='[session_id]' derivation='None' name='[none:session_id:nk]' pivot='key' type='nominal' />
+            <column-instance column='[severity]' derivation='None' name='[none:severity:nk]' pivot='key' type='nominal' />
+            <column-instance column='[site]' derivation='None' name='[none:site:nk]' pivot='key' type='nominal' />
+            <column-instance column='[timestamp]' derivation='None' name='[none:timestamp:ok]' pivot='key' type='ordinal' />
+            <column-instance column='[user]' derivation='None' name='[none:user:nk]' pivot='key' type='nominal' />
+            <column-instance column='[worker]' derivation='None' name='[none:worker:ok]' pivot='key' type='ordinal' />
+            <column caption='Request Id' datatype='string' name='[request_id]' role='dimension' type='nominal' />
+            <column caption='Session Id' datatype='string' name='[session_id]' role='dimension' type='nominal' />
+            <column caption='Severity' datatype='string' name='[severity]' role='dimension' type='nominal' />
+            <column caption='Site' datatype='string' name='[site]' role='dimension' type='nominal' />
+            <column-instance column='[Number of Records]' derivation='Sum' name='[sum:Number of Records:qk]' pivot='key' type='quantitative' />
+            <column-instance column='[timestamp]' derivation='Day-Trunc' name='[tdy:timestamp:ok]' pivot='key' type='ordinal' />
+            <column caption='Timestamp' datatype='datetime' name='[timestamp]' role='dimension' type='ordinal' />
+            <column caption='User' datatype='string' name='[user]' role='dimension' type='nominal' />
+            <column aggregation='Sum' caption='Worker' datatype='integer' name='[worker]' role='dimension' type='ordinal' />
+          </datasource-dependencies>
+          <filter class='categorical' column='[postgres.1y6xjiy1jwfces19g9byy14koss1].[Action (DAY(Timestamp))]'>
+            <groupfilter function='level-members' level='[tdy:timestamp:ok]' user:ui-enumeration='all' user:ui-marker='enumerate' />
+          </filter>
+          <filter class='categorical' column='[postgres.1y6xjiy1jwfces19g9byy14koss1].[Action (Message - First 150 Characters,Class Final Portion)]'>
+            <groupfilter function='crossjoin' user:ui-domain='relevant' user:ui-enumeration='inclusive' user:ui-marker='enumerate'>
+              <groupfilter function='empty-level' member='[Calculation_2617717343211286534]' />
+              <groupfilter function='empty-level' member='[class - Split 1]' />
+            </groupfilter>
+          </filter>
+          <sort class='computed' column='[postgres.1y6xjiy1jwfces19g9byy14koss1].[Class &amp; Message (Combined)]' direction='DESC' using='[postgres.1y6xjiy1jwfces19g9byy14koss1].[sum:Number of Records:qk]' />
+          <sort class='computed' column='[postgres.1y6xjiy1jwfces19g9byy14koss1].[Severity &amp; Class Final Portion (Combined)]' direction='DESC' using='[postgres.1y6xjiy1jwfces19g9byy14koss1].[sum:Number of Records:qk]' />
+          <sort class='computed' column='[postgres.1y6xjiy1jwfces19g9byy14koss1].[none:class - Split 1:nk]' direction='DESC' using='[postgres.1y6xjiy1jwfces19g9byy14koss1].[sum:Number of Records:qk]' />
+          <filter class='categorical' column='[postgres.1y6xjiy1jwfces19g9byy14koss1].[none:severity:nk]'>
+            <groupfilter function='except' user:ui-domain='relevant' user:ui-enumeration='exclusive' user:ui-marker='enumerate'>
+              <groupfilter function='level-members' level='[none:severity:nk]' />
+              <groupfilter function='member' level='[none:severity:nk]' member='&quot;INFO&quot;' />
+            </groupfilter>
+          </filter>
+          <filter class='categorical' column='[postgres.1y6xjiy1jwfces19g9byy14koss1].[none:site:nk]'>
+            <groupfilter function='except' user:ui-domain='relevant' user:ui-enumeration='exclusive' user:ui-marker='enumerate'>
+              <groupfilter function='level-members' level='[none:site:nk]' />
+              <groupfilter function='member' level='[none:site:nk]' member='%null%' />
+            </groupfilter>
+          </filter>
+          <slices>
+            <column>[postgres.1y6xjiy1jwfces19g9byy14koss1].[Action (Message - First 150 Characters,Class Final Portion)]</column>
+            <column>[postgres.1y6xjiy1jwfces19g9byy14koss1].[none:severity:nk]</column>
+            <column>[postgres.1y6xjiy1jwfces19g9byy14koss1].[none:site:nk]</column>
+            <column>[postgres.1y6xjiy1jwfces19g9byy14koss1].[Action (DAY(Timestamp))]</column>
+          </slices>
+          <aggregation value='true' />
+        </view>
+        <style>
+          <style-rule element='label'>
+            <format attr='display' field='[postgres.1y6xjiy1jwfces19g9byy14koss1].[Severity &amp; Class Final Portion (Combined)]' value='false' />
+            <format attr='display' field='[postgres.1y6xjiy1jwfces19g9byy14koss1].[Class &amp; Message (Combined)]' value='false' />
+            <format attr='display' field='[postgres.1y6xjiy1jwfces19g9byy14koss1].[none:session_id:nk]' value='true' />
+          </style-rule>
+          <style-rule element='worksheet'>
+            <format attr='in-tooltip' field='[postgres.1y6xjiy1jwfces19g9byy14koss1].[Class &amp; Message (Combined)]' value='false' />
+            <format attr='in-tooltip' field='[postgres.1y6xjiy1jwfces19g9byy14koss1].[class]' value='false' />
+            <format attr='in-tooltip' field='[postgres.1y6xjiy1jwfces19g9byy14koss1].[message]' value='false' />
+            <format attr='in-tooltip' field='[postgres.1y6xjiy1jwfces19g9byy14koss1].[Severity &amp; Class Final Portion (Combined)]' value='false' />
+            <format attr='in-tooltip' field='[postgres.1y6xjiy1jwfces19g9byy14koss1].[severity]' value='false' />
+            <format attr='in-tooltip' field='[postgres.1y6xjiy1jwfces19g9byy14koss1].[class - Split 1]' value='false' />
+          </style-rule>
+        </style>
+        <panes>
+          <pane>
+            <view>
+              <breakdown value='auto' />
+            </view>
+            <mark class='Automatic' />
+            <encodings>
+              <color column='[postgres.1y6xjiy1jwfces19g9byy14koss1].[none:severity:nk]' />
+              <text column='[postgres.1y6xjiy1jwfces19g9byy14koss1].[none:user:nk]' />
+              <text column='[postgres.1y6xjiy1jwfces19g9byy14koss1].[none:worker:ok]' />
+              <lod column='[postgres.1y6xjiy1jwfces19g9byy14koss1].[none:class:nk]' />
+              <lod column='[postgres.1y6xjiy1jwfces19g9byy14koss1].[none:message:nk]' />
+              <lod column='[postgres.1y6xjiy1jwfces19g9byy14koss1].[none:session_id:nk]' />
+              <lod column='[postgres.1y6xjiy1jwfces19g9byy14koss1].[none:request_id:nk]' />
+            </encodings>
+            <customized-tooltip>
+              <formatted-text>
+                <run>This was raised by the </run>
+                <run italic='true'>&lt;[postgres.1y6xjiy1jwfces19g9byy14koss1].[none:class:nk]&gt;</run>
+                <run bold='true'>Æ </run>
+                <run>class&#10;&#10;This was raised against Session ID </run>
+                <run bold='true'>&lt;[postgres.1y6xjiy1jwfces19g9byy14koss1].[none:session_id:nk]&gt;</run>
+                <run> &#10;with Request ID </run>
+                <run bold='true'>&lt;[postgres.1y6xjiy1jwfces19g9byy14koss1].[none:request_id:nk]&gt;</run>
+                <run>&#10;and occurred at </run>
+                <run>&#10;&#10;The first 150 characters of the message is below. The full message is in the underlying data</run>
+                <run bold='true'>&#10;&lt;[postgres.1y6xjiy1jwfces19g9byy14koss1].[none:Calculation_2617717343211286534:nk]&gt;</run>
+              </formatted-text>
+            </customized-tooltip>
+            <customized-label>
+              <formatted-text>
+                <run>&lt;</run>
+                <run>[postgres.1y6xjiy1jwfces19g9byy14koss1].[none:user:nk]</run>
+                <run>&gt;</run>
+                <run> on Worker </run>
+                <run>&lt;</run>
+                <run>[postgres.1y6xjiy1jwfces19g9byy14koss1].[none:worker:ok]</run>
+                <run>&gt;</run>
+              </formatted-text>
+            </customized-label>
+            <style>
+              <style-rule element='mark'>
+                <format attr='mark-labels-cull' value='true' />
+                <format attr='mark-labels-show' value='true' />
+              </style-rule>
+            </style>
+          </pane>
+        </panes>
+        <rows>([postgres.1y6xjiy1jwfces19g9byy14koss1].[none:severity:nk] / ([postgres.1y6xjiy1jwfces19g9byy14koss1].[Severity &amp; Class Final Portion (Combined)] / ([postgres.1y6xjiy1jwfces19g9byy14koss1].[none:class - Split 1:nk] / ([postgres.1y6xjiy1jwfces19g9byy14koss1].[Class &amp; Message (Combined)] / ([postgres.1y6xjiy1jwfces19g9byy14koss1].[none:Calculation_2617717343211286534:nk] / [postgres.1y6xjiy1jwfces19g9byy14koss1].[none:timestamp:ok])))))</rows>
+        <cols />
+      </table>
+    </worksheet>
+  </worksheets>
+  <dashboards>
+    <dashboard name='Vizportal Error and Warn Messages'>
+      <layout-options>
+        <title>
+          <formatted-text>
+            <run>&lt;Sheet Name&gt;</run>
+            <run fontsize='4'>Æ&#10; </run>
+            <run bold='false' fontsize='12'>&#10;This serves to show which classes are throwing the most Warn and Error messages through vizportal. Select items on the sheets to be able to filter to the session id level of detail</run>
+          </formatted-text>
+        </title>
+      </layout-options>
+      <style />
+      <size maxheight='1000' maxwidth='1200' minheight='1000' minwidth='1200' />
+      <zones>
+        <zone h='100000' id='2' type='layout-basic' w='100000' x='0' y='0'>
+          <zone h='50000' id='15' param='horz' type='layout-flow' w='100000' x='0' y='0'>
+            <zone h='50000' id='7' param='horz' type='layout-flow' w='100000' x='0' y='0'>
+              <zone h='50000' id='3' param='vert' type='layout-flow' w='100000' x='0' y='0'>
+                <zone h='8800' id='1' type='title' w='100000' x='0' y='0' />
+                <zone fixed-size='12' h='2000' id='11' is-fixed='true' type='empty' w='100000' x='0' y='8800' />
+                <zone h='39200' id='4' type='layout-basic' w='100000' x='0' y='10800'>
+                  <zone h='39200' id='9' name='Error and Warn Classes' show-title='true' w='50000' x='0' y='10800' />
+                  <zone h='39200' id='13' param='vert' type='layout-flow' w='50000' x='50000' y='10800'>
+                    <zone h='39200' id='10' name='All Specific Errors' show-title='true' w='50000' x='50000' y='10800'>
+                      <layout-cache fixed-size-h='2686' type-h='fixed' type-w='fixed' />
+                    </zone>
+                  </zone>
+                </zone>
+              </zone>
+            </zone>
+          </zone>
+          <zone h='50000' id='16' param='horz' type='layout-flow' w='100000' x='0' y='50000'>
+            <zone fixed-size='400' h='50000' id='5' is-fixed='true' name='Error and Warn Timeline' show-title='true' w='34332' x='0' y='50000'>
+              <layout-cache type-h='fixed' type-w='cell' />
+            </zone>
+            <zone h='50000' id='12' name='Specific Errors by Class and Session ID' show-title='true' w='65333' x='34332' y='50000'>
+              <layout-cache non-cell-size-w='776' type-h='fixed' type-w='cell' />
+            </zone>
+          </zone>
+        </zone>
+        <zone h='5500' id='8' leg-item-layout='horz' name='Error and Warn Timeline' pane-specification-id='0' param='[postgres.1y6xjiy1jwfces19g9byy14koss1].[none:severity:nk]' type='color' w='23167' x='75917' y='7200' />
+      </zones>
+    </dashboard>
+  </dashboards>
+  <windows source-height='28'>
+    <window class='dashboard' maximized='true' name='Vizportal Error and Warn Messages' tab-color='#dec77b'>
+      <viewpoints>
+        <viewpoint name='All Specific Errors' />
+        <viewpoint name='Error and Warn Classes' />
+        <viewpoint name='Error and Warn Timeline'>
+          <zoom type='entire-view' />
+          <highlight>
+            <color-one-way>
+              <field>[postgres.1y6xjiy1jwfces19g9byy14koss1].[none:severity:nk]</field>
+            </color-one-way>
+          </highlight>
+        </viewpoint>
+        <viewpoint name='Specific Errors by Class and Session ID'>
+          <zoom type='fit-width' />
+        </viewpoint>
+      </viewpoints>
+      <active id='-1' />
+    </window>
+    <window class='worksheet' hidden='true' name='All Specific Errors' tab-color='#dec77b'>
+      <cards>
+        <edge name='left'>
+          <strip size='160'>
+            <card type='pages' />
+            <card type='filters' />
+            <card type='marks' />
+            <card pane-specification-id='0' param='[postgres.1y6xjiy1jwfces19g9byy14koss1].[none:severity:nk]' type='color' />
+          </strip>
+        </edge>
+        <edge name='top'>
+          <strip size='2147483647'>
+            <card type='columns' />
+          </strip>
+          <strip size='2147483647'>
+            <card type='rows' />
+          </strip>
+        </edge>
+      </cards>
+      <viewpoint>
+        <highlight>
+          <color-one-way>
+            <field>[postgres.1y6xjiy1jwfces19g9byy14koss1].[Class &amp; Message (Combined)]</field>
+            <field>[postgres.1y6xjiy1jwfces19g9byy14koss1].[Severity &amp; Class Final Portion (Combined)]</field>
+            <field>[postgres.1y6xjiy1jwfces19g9byy14koss1].[attr:class:nk]</field>
+            <field>[postgres.1y6xjiy1jwfces19g9byy14koss1].[none:Calculation_2617717343211286534:nk]</field>
+            <field>[postgres.1y6xjiy1jwfces19g9byy14koss1].[none:class - Split 1:nk]</field>
+            <field>[postgres.1y6xjiy1jwfces19g9byy14koss1].[none:class:nk]</field>
+            <field>[postgres.1y6xjiy1jwfces19g9byy14koss1].[none:message:nk]</field>
+            <field>[postgres.1y6xjiy1jwfces19g9byy14koss1].[none:request_id:nk]</field>
+            <field>[postgres.1y6xjiy1jwfces19g9byy14koss1].[none:severity:nk]</field>
+            <field>[postgres.1y6xjiy1jwfces19g9byy14koss1].[none:site:nk]</field>
+            <field>[postgres.1y6xjiy1jwfces19g9byy14koss1].[none:timestamp:qk]</field>
+          </color-one-way>
+        </highlight>
+      </viewpoint>
+    </window>
+    <window class='worksheet' hidden='true' name='Error and Warn Classes' tab-color='#dec77b'>
+      <cards>
+        <edge name='left'>
+          <strip size='160'>
+            <card type='pages' />
+            <card type='filters' />
+            <card type='marks' />
+            <card pane-specification-id='0' param='[postgres.1y6xjiy1jwfces19g9byy14koss1].[none:severity:nk]' type='color' />
+          </strip>
+        </edge>
+        <edge name='top'>
+          <strip size='2147483647'>
+            <card type='columns' />
+          </strip>
+          <strip size='2147483647'>
+            <card type='rows' />
+          </strip>
+        </edge>
+      </cards>
+      <viewpoint>
+        <highlight>
+          <color-one-way>
+            <field>[postgres.1y6xjiy1jwfces19g9byy14koss1].[attr:class:nk]</field>
+            <field>[postgres.1y6xjiy1jwfces19g9byy14koss1].[none:class - Split 1:nk]</field>
+            <field>[postgres.1y6xjiy1jwfces19g9byy14koss1].[none:class:nk]</field>
+            <field>[postgres.1y6xjiy1jwfces19g9byy14koss1].[none:message:nk]</field>
+            <field>[postgres.1y6xjiy1jwfces19g9byy14koss1].[none:severity:nk]</field>
+            <field>[postgres.1y6xjiy1jwfces19g9byy14koss1].[none:site:nk]</field>
+            <field>[postgres.1y6xjiy1jwfces19g9byy14koss1].[none:timestamp:qk]</field>
+          </color-one-way>
+        </highlight>
+      </viewpoint>
+    </window>
+    <window class='worksheet' hidden='true' name='Error and Warn Timeline' tab-color='#dec77b'>
+      <cards>
+        <edge name='left'>
+          <strip size='160'>
+            <card type='pages' />
+            <card type='filters' />
+            <card type='marks' />
+            <card pane-specification-id='0' param='[postgres.1y6xjiy1jwfces19g9byy14koss1].[none:severity:nk]' type='color' />
+          </strip>
+        </edge>
+        <edge name='top'>
+          <strip size='2147483647'>
+            <card type='columns' />
+          </strip>
+          <strip size='2147483647'>
+            <card type='rows' />
+          </strip>
+        </edge>
+      </cards>
+      <viewpoint>
+        <highlight>
+          <color-one-way>
+            <field>[postgres.1y6xjiy1jwfces19g9byy14koss1].[none:class:nk]</field>
+            <field>[postgres.1y6xjiy1jwfces19g9byy14koss1].[none:message:nk]</field>
+            <field>[postgres.1y6xjiy1jwfces19g9byy14koss1].[none:severity:nk]</field>
+            <field>[postgres.1y6xjiy1jwfces19g9byy14koss1].[none:site:nk]</field>
+            <field>[postgres.1y6xjiy1jwfces19g9byy14koss1].[none:timestamp:qk]</field>
+          </color-one-way>
+        </highlight>
+      </viewpoint>
+    </window>
+    <window class='worksheet' hidden='true' name='Specific Errors by Class and Session ID' tab-color='#dec77b'>
+      <cards>
+        <edge name='left'>
+          <strip size='160'>
+            <card type='pages' />
+            <card type='filters' />
+            <card type='marks' />
+            <card pane-specification-id='0' param='[postgres.1y6xjiy1jwfces19g9byy14koss1].[none:severity:nk]' type='color' />
+          </strip>
+        </edge>
+        <edge name='top'>
+          <strip size='2147483647'>
+            <card type='columns' />
+          </strip>
+          <strip size='2147483647'>
+            <card type='rows' />
+          </strip>
+        </edge>
+      </cards>
+      <viewpoint>
+        <highlight>
+          <color-one-way>
+            <field>[postgres.1y6xjiy1jwfces19g9byy14koss1].[Class &amp; Message (Combined)]</field>
+            <field>[postgres.1y6xjiy1jwfces19g9byy14koss1].[Severity &amp; Class Final Portion (Combined)]</field>
+            <field>[postgres.1y6xjiy1jwfces19g9byy14koss1].[attr:class:nk]</field>
+            <field>[postgres.1y6xjiy1jwfces19g9byy14koss1].[none:Calculation_2617717343211286534:nk]</field>
+            <field>[postgres.1y6xjiy1jwfces19g9byy14koss1].[none:class - Split 1:nk]</field>
+            <field>[postgres.1y6xjiy1jwfces19g9byy14koss1].[none:class:nk]</field>
+            <field>[postgres.1y6xjiy1jwfces19g9byy14koss1].[none:message:nk]</field>
+            <field>[postgres.1y6xjiy1jwfces19g9byy14koss1].[none:request_id:nk]</field>
+            <field>[postgres.1y6xjiy1jwfces19g9byy14koss1].[none:session_id:nk]</field>
+            <field>[postgres.1y6xjiy1jwfces19g9byy14koss1].[none:severity:nk]</field>
+            <field>[postgres.1y6xjiy1jwfces19g9byy14koss1].[none:site:nk]</field>
+            <field>[postgres.1y6xjiy1jwfces19g9byy14koss1].[none:timestamp:ok]</field>
+            <field>[postgres.1y6xjiy1jwfces19g9byy14koss1].[none:timestamp:qk]</field>
+            <field>[postgres.1y6xjiy1jwfces19g9byy14koss1].[none:user:nk]</field>
+            <field>[postgres.1y6xjiy1jwfces19g9byy14koss1].[none:worker:ok]</field>
+            <field>[postgres.1y6xjiy1jwfces19g9byy14koss1].[yr:timestamp:ok]</field>
+          </color-one-way>
+        </highlight>
+      </viewpoint>
+    </window>
+  </windows>
+  <thumbnails>
+    <thumbnail height='192' name='Vizportal Error and Warn Messages' width='192'>
+      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
+      AAAAAElFTkSuQmCC
+    </thumbnail>
+  </thumbnails>
+</workbook>

@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- OVERWRITE THE CONTENTS OF THIS FILE WITH YOUR RAW WORKBOOK XML -->
+<workbook source-platform="win" version="9.3" xmlns:user="http://www.tableausoftware.com/xml/user">
+  <datasources>
+    <datasource caption="logshark data" inline="true" name="logshark data" version="9.3">
+      <connection class="postgres" dbname="AUTO_REPLACE_BY_LOGSHARK" odbc-native-protocol="yes" port="5432" server="AUTO_REPLACE_BY_LOGSHARK" username="AUTO_REPLACE_BY_LOGSHARK" password="AUTO_REPLACE_BY_LOGSHARK">
+      </connection>
+    </datasource>
+  </datasources>
+</workbook>
+<!-- OVERWRITE THE CONTENTS OF THIS FILE WITH YOUR RAW WORKBOOK XML -->

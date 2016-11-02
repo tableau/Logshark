@@ -1,0 +1,3 @@
+Placeholder for this directory.
+
+Generated code output is stored here upon project build.
