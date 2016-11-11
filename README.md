@@ -12,7 +12,7 @@ Some common use cases for Logshark include:
 
 # How do I set up Logshark?
 
-Logshark is deployed via a custom installer, which manages dependencies and also bundles MongoDB for ease of setup for new users. You will need to set up a Postgres database. To get up and running, follow the instructions in the [installation guide](https://github.com/tableau/Logshark/tree/master/Logshark.CLI/Documentation/UserGuide.pdf).
+Logshark is deployed via a custom installer, which you can download from the [releases page](https://github.com/tableau/Logshark/releases/latest).  The installer manages dependencies and also bundles MongoDB for ease of setup for new users.  You will need to set up a Postgres database.  To get up and running, download the installer and then follow the instructions in the [installation guide](https://github.com/tableau/Logshark/tree/master/Logshark.CLI/Documentation/UserGuide.pdf) to configure it.
 
 Logshark requires a 64-bit version of Windows in order to run, and must be run as an account with administrator privileges.
 
@@ -36,6 +36,8 @@ The current development requirements are:
   * Available at http://csd.codeplex.com
 
 It is recommended that you install the Logshark Project Templates extension by running the "Logshark Project Templates.vsix" file found in the root directory.  This adds a "Logshark Workbook Creation Plugin" project type to Visual Studio which you can use to easily get up and running developing a new plugin.
+
+Note that you do not need to build Logshark from source to use it; a pre-built installer is available on the [releases page](https://github.com/tableau/Logshark/releases/latest).
 
 # Is Logshark supported?
 
