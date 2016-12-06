@@ -2,7 +2,7 @@
 title: Logshark
 email: github@tableau.com
 description: Tableau log file analysis utility.
-baseurl: "/logshark"
+baseurl: "/Logshark"
 permalinks: pretty
 defaults:
   -
