@@ -1,0 +1,17 @@
+# Site settings
+title: Logshark
+email: github@tableau.com
+description: Tableau log file analysis utility.
+baseurl: "/logshark"
+permalinks: pretty
+defaults:
+  -
+    scope:
+      path: "" # Apply to all files
+    values:
+      layout: "default"
+
+# Build settings
+markdown: kramdown
+highlighter: rouge
+
