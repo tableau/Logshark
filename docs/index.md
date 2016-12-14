@@ -2,18 +2,20 @@
 title: Tableau Logshark
 layout: docs
 ---
+Logshark lets you analyze your Tableau logs – in Tableau! Logshark is a tool you can use to analyze and troubleshoot Tableau performance and activity. Logshark extracts data from Tableau Server and Tableau Desktop log files and builds workbooks that can help you identify and understand error conditions, performance bottlenecks, and background activity. Logshark works by running a set of targeted plugins that pull specific data out of the log files. Logshark builds a data source and provides Tableau workbooks which you can then use to analyze the log files in Tableau.
 
 <!--
 [Second page]({{ site.baseurl }}/second-page).
 -->
 
+In this section:
+
 * TOC
 {:toc}
 
-What is Logshark?
-==================
 
-Logshark lets you analyze your Tableau logs – in Tableau! Logshark is a tool you can use to analyze and troubleshoot Tableau performance and activity. Logshark extracts data from Tableau Server and Tableau Desktop log files and builds workbooks that can help you identify and understand error conditions, performance bottlenecks, and background activity. Logshark works by running a set of targeted plugins that pull specific data out of the log files. Logshark builds a data source and provides Tableau workbooks which you can then use to analyze the log files in Tableau.
+
+
 
 Logshark and Tableau Technical Support 
 =======================================
@@ -132,64 +134,57 @@ Some of these configuration settings can be overridden at the command line. Othe
 Edit the PostgreSQL connection information in Logshark.config
 -------------------------------------------------------------
 
-1.  In a text editor, open the configuration file: &lt;*install\_directory&gt;*\\Config\\Logshark.config file. In the Logshark.config file, change the &lt;PostgresConnection&gt; settings to match your PostgreSQL setup.
+1.  In a text editor, open the configuration file: &lt;*install\_directory&gt;*\\Config\\Logshark.config file. In the Logshark.config file, change the `<PostgresConnection>` settings to match your PostgreSQL setup.
 
-2.  Set the **Server address** attribute to the name of the computer that is running PostgreSQL. For example, if you have installed PostgreSQL on your local computer, use **localhost** as the Server address.
+2.  Set the Server `address` attribute to the name of the computer that is running PostgreSQL. For example, if you have installed PostgreSQL on your local computer, use **localhost** as the address.
 
-3.  Set the **port** attribute to the port your server uses if it is different from the default. The default port is **5432**.
+3.  Set the `port` attribute to the port your server uses if it is different from the default. The default port is **5432**.
 
-4.  For the user, set both the **username** and password to **logshark** to match the role/user and password you added when you [Configure PostgreSQL for Logshark](#configure-postgresql-for-logshark).
+4.  For the `user`, set both the `username` and `password` to **logshark** to match the role/user and password you added when you [Configure PostgreSQL for Logshark](#configure-postgresql-for-logshark).
 
-<table>
-<thead>
-<tr class="header">
-<th><p>...</p>
-<p><strong>  &lt;PostgresConnection&gt;</strong><br />
-<strong>    &lt;Server address=&quot;localhost&quot; port=&quot;5432&quot;/&gt;</strong><br />
-<strong>    &lt;User username=&quot;logshark&quot; password=&quot;logshark&quot;/&gt;</strong><br />
-<strong>  &lt;/PostgresConnection&gt;</strong><br />
-...</p></th>
-</tr>
-</thead>
-<tbody>
-</tbody>
-</table>
 
-1.  Save the file.
+ 
+```xml 
+    ...
+    <PostgresConnection>
+       <Server address="localhost" port="5432"/>
+       <User username="logshark" password="logshark"/>
+     </PostgresConnection>
+     ...
+```
+
+
+5.  Save the file.
 
     **NOTE:** You only need to edit the MongoDB connection information if you plan to use your own MongoDB installation to store the log data (recommended if logs are greater than 2GB). In most cases, you want to use the MongoDB instance that Logshark provides (using the **--startlocalmongo** command line option, or by setting **LocalMongoOptions useAlways=”true”** in the config). For more information, see [Use your own MongoDB instance](#use-your-own-mongodb-instance).
+
 
 Edit the Tableau Server connection information in Logshark.config
 -----------------------------------------------------------------
 
-> If you want to publish the workbooks that Logshark generates on Tableau Server, change the &lt;TableauConnection&gt; settings in the Logshark.config file to match your Tableau Server configuration.
->
-> When you edit the Tableau Server connection, follow these guidelines:
+If you want to publish the workbooks that Logshark generates on Tableau Server, change the `<TableauConnection>` settings in the Logshark.config file to match your Tableau Server configuration.
 
--   The ‘Server address’ attribute should just contain the hostname or IP address of the computer (*for example, mytableauserver.tableau.com*), and should not be prefixed with the protocol (*http or https*).
+When you edit the Tableau Server connection, follow these guidelines:
 
--   When using a non-standard port for your Tableau Server, ensure the ‘port’ attribute is set correctly (*for example, ‘http’ has port=80, and ‘https’ has port=443*).
+-   The Server `address` attribute should just contain the hostname or IP address of the computer (for example, *mytableauserver.tableau.com*), and should not be prefixed with the protocol (*http or https*).
 
--   The ‘site’ attribute cannot be blank. If you are using the default site *(for example, URL: http://localhost/\#)*, specify "Default" as the name (*site="Default"*).
+-   When using a non-standard port for your Tableau Server, ensure the `port` attribute is set correctly (by default, HTTP uses port **80** and HTTPS uses port **443**).
+
+-   The `site` attribute cannot be blank. If you are using the default site (for example, http://localhost/#), specify **Default** as the name (`site="Default"`).
 
 -   To publish workbooks, the user account you specify must exist on the Tableau Server (and the site) with Publisher permissions and the permissions to create projects. (*Site Administrator role will be the easiest option*).
 
-<table>
-<thead>
-<tr class="header">
-<th><blockquote>
-<p>...</p>
-</blockquote>
-<p><strong>&lt;TableauConnection protocol=&quot;http&quot;&gt;</strong><br />
-<strong>    &lt;Server address=&quot;myTableauServer&quot; port=&quot;80&quot; site=&quot;MySite&quot;/&gt;</strong><br />
-<strong>    &lt;User username=&quot;myUser&quot; password=&quot;myUserPassword&quot;/&gt;</strong><br />
-<strong>&lt;/TableauConnection&gt;</strong><br />
-...</p></th>
-</tr>
-</thead>
-<tbody>
-</tbody>
-</table>
+```xml
+...
+
+<TableauConnection protocol="http">
+    <Server address="myTableauServer" port="80" site="MySite"/>
+    <User username="myUser" password="myUserPassword"/>
+</TableauConnection>
+ ...
+
+```
+
 
 Running Logshark and Viewing the Results
 ========================================
