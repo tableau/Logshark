@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Product & Version Definitions -->
+<?define ApplicationName = "Logshark"?>
+<?define Manufacturer = "Tableau"?>
+<?define HelpLink = "http://www.tableau.com"?>
+<?define UrlInfoAbout = "http://www.tableau.com"?>
+<?define ProductUpgradeCode = "8c39f7f6-ad31-4efd-96ae-1f6f1a5e4f3b"?>
+<?define IconFile = "$(var.Logshark.CLI.TargetDir)\Resources\Logshark.ico"?>
+<?define Bin = "$(var.Logshark.CLI.TargetDir)"?>
+<!-- Architecture Detection & Definitions -->
+<?if $(var.Platform) = x64 ?>
+<?define bitness = "(64 bit)" ?>
+<?define Win64 = "yes" ?>
+<?define PlatformProgramFilesFolder = "ProgramFiles64Folder" ?>
+<?else ?>
+<?define bitness = "(32 bit)" ?>
+<?define Win64 = "no" ?>
+<?define PlatformProgramFilesFolder = "ProgramFilesFolder" ?>
+<?endif ?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
+    <Product Id="*" Name="$(var.ApplicationName)" Language="1033" Version="!(bind.fileVersion.LogsharkLibDll)" Manufacturer="$(var.Manufacturer)" UpgradeCode="$(var.ProductUpgradeCode)">
+        <!-- Fundamental Product Options -->
+        <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" InstallPrivileges="elevated" Manufacturer="$(var.Manufacturer)" />
+        <Media Id="1" Cabinet="$(var.ApplicationName).cab" EmbedCab="yes" />
+        <Icon Id="ProductIcon" SourceFile="$(var.IconFile)" />
+        <!-- Installer UI Configuration -->
+        <UI>
+            <UIRef Id="CustomInstallDir" />
+        </UI>
+        <!-- Properties -->
+        <Property Id="WIXUI_INSTALLDIR" Value="INSTALLFOLDER" />
+        <Property Id="ARPPRODUCTICON" Value="ProductIcon" />
+        <Property Id="ARPHELPLINK" Value="$(var.HelpLink)" />
+        <Property Id="ARPURLINFOABOUT" Value="$(var.UrlInfoAbout)" />
+        <Property Id="ARPNOREPAIR" Value="1" />
+        <Property Id="INSTALLSHORTCUTS" Value="1" />
+        <Property Id="INSTALLPATHVARIABLE" Value="1" />
+        <Property Id="INSTALLAMERCONFIG" Value="1" />
+        <Property Id="INSTALLEMEACONFIG" Value="0" />
+        <Property Id="LAUNCHUSERGUIDEONEXIT" Value="1" />
+        <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOX" Value="1" />
+        <Property Id="WixShellExecTarget" Value="[#UserGuide]" />
+        <!-- Dependency Management -->
+        <PropertyRef Id="WIX_IS_NETFRAMEWORK_451_OR_LATER_INSTALLED" />
+        <Condition Message="This application requires .NET Framework 4.5.1 or later. Please install the .NET Framework then run this installer again."><![CDATA[Installed OR WIX_IS_NETFRAMEWORK_451_OR_LATER_INSTALLED]]></Condition>
+        <Condition Message="This application requires a 64-bit edition of Windows Server 2008 R2, Windows 7 or higher."><![CDATA[Installed OR (VersionNT64 >= 601)]]></Condition>
+        <!-- Upgrade parameters -->
+        <Property Id="PREVIOUSVERSIONSINSTALLED" Secure="yes" />
+        <Upgrade Id="$(var.ProductUpgradeCode)">
+            <UpgradeVersion Minimum="1.0.0.0" Maximum="99.0.0.0" Property="PREVIOUSVERSIONSINSTALLED" IncludeMinimum="yes" IncludeMaximum="no" />
+        </Upgrade>
+        <!-- Directory structure -->
+        <Directory Id="TARGETDIR" Name="SourceDir">
+            <Directory Id="$(var.PlatformProgramFilesFolder)">
+                <Directory Id="INSTALLFOLDER" Name="$(var.ApplicationName)">
+                    <Directory Id="CONFIGFOLDER" Name="Config" />
+                    <Directory Id="CUSTOMWORKBOOKSFOLDER" Name="CustomWorkbooks" />
+                    <Directory Id="DOCUMENTATIONFOLDER" Name="Documentation" />
+                    <Directory Id="MONGODBFOLDER" Name="MongoDB">
+                      <Directory Id="MONGODBBINFOLDER" Name="bin" />
+                    </Directory>
+                    <Directory Id="OUTPUTFOLDER" Name="Output" />
+                    <Directory Id="PLUGINFOLDER" Name="Plugins" />
+                </Directory>
+            </Directory>
+            <Directory Id="ProgramMenuFolder">
+                <Directory Id="ApplicationProgramsFolder" Name="$(var.ApplicationName)" />
+            </Directory>
+        </Directory>
+        <!-- Main Application Folder -->
+        <DirectoryRef Id="INSTALLFOLDER">
+            <Component Id="Core" Win64="$(var.Win64)" Guid="9fd4a8c4-6da6-49a8-91ab-e40db98efcdd">
+                <!-- Core Executable & Library Files -->
+                <File Id="LogsharkExe" Name="Logshark.exe" Vital="yes" KeyPath="yes" Source="$(var.Bin)\Logshark.exe" Checksum="yes" />
+                <File Id="AppConfig" Name="Logshark.exe.config" Vital="yes" Source="$(var.Bin)\Logshark.exe.config" />
+                <File Id="BouncyCastleCryptoDll" Name="BouncyCastle.Crypto.dll" Vital="yes" Source="$(var.Bin)\BouncyCastle.Crypto.dll" />
+                <File Id="CommandLineDll" Name="CommandLine.dll" Vital="yes" Source="$(var.Bin)\CommandLine.dll" />
+                <File Id="CsvHelperDll" Name="CsvHelper.dll" Vital="yes" Source="$(var.Bin)\CsvHelper.dll" />
+                <File Id="Log4NetDll" Name="log4net.dll" Vital="yes" Source="$(var.Bin)\log4net.dll" />
+                <File Id="LogParsersDll" Name="LogParsers.dll" Vital="yes" Source="$(var.Bin)\LogParsers.dll" />
+                <File Id="LogsharkLibDll" Name="LogsharkLib.dll" Vital="yes" Source="$(var.Bin)\LogsharkLib.dll" />
+                <File Id="LogsharkPluginLibDll" Name="LogsharkPluginLib.dll" Vital="yes" Source="$(var.Bin)\LogsharkPluginLib.dll" />
+                <File Id="MongoDBBsonDll" Name="MongoDB.Bson.dll" Vital="yes" Source="$(var.Bin)\MongoDB.Bson.dll" />
+                <File Id="MongoDBDriverDll" Name="MongoDB.Driver.dll" Vital="yes" Source="$(var.Bin)\MongoDB.Driver.dll" />
+                <File Id="MongoDBDriverCoreDll" Name="MongoDB.Driver.Core.dll" Vital="yes" Source="$(var.Bin)\MongoDB.Driver.Core.dll" />
+                <File Id="NewtonsoftJsonDll" Name="Newtonsoft.Json.dll" Vital="yes" Source="$(var.Bin)\Newtonsoft.Json.dll" />
+                <File Id="NpgsqlDll" Name="Npgsql.dll" Vital="yes" Source="$(var.Bin)\Npgsql.dll" />
+                <File Id="ServiceStackCommonDll" Name="ServiceStack.Common.dll" Vital="yes" Source="$(var.Bin)\ServiceStack.Common.dll" />
+                <File Id="ServiceStackInterfacesDll" Name="ServiceStack.Interfaces.dll" Vital="yes" Source="$(var.Bin)\ServiceStack.Interfaces.dll" />
+                <File Id="ServiceStackOrmLitePostgreSQLDll" Name="ServiceStack.OrmLite.PostgreSQL.dll" Vital="yes" Source="$(var.Bin)\ServiceStack.OrmLite.PostgreSQL.dll" />
+                <File Id="ServiceStackOrmLiteDll" Name="ServiceStack.OrmLite.dll" Vital="yes" Source="$(var.Bin)\ServiceStack.OrmLite.dll" />
+                <File Id="ServiceStackTextDll" Name="ServiceStack.Text.dll" Vital="yes" Source="$(var.Bin)\ServiceStack.Text.dll" />
+                <File Id="SharpZipLibDll" Name="ICSharpCode.SharpZipLib.dll" Vital="yes" Source="$(var.Bin)\ICSharpCode.SharpZipLib.dll" />
+                <File Id="TableauRestApiDll" Name="TableauRestApi.dll" Vital="yes" Source="$(var.Bin)\TableauRestApi.dll" />
+                <File Id="YamlDotNetDll" Name="YamlDotNet.dll" Vital="yes" Source="$(var.Bin)\YamlDotNet.dll" />
+            </Component>
+            <!-- Registry Keys -->
+            <Component Id="LogsharkRegistryKeys" Guid="423aba43-1c94-4689-8d16-7007e83696b8" Win64="$(var.Win64)">
+                <RegistryValue Root='HKLM' Key='SOFTWARE\$(var.Manufacturer)\$(var.ApplicationName)'
+                               Name='InstallFolder' Value='[INSTALLFOLDER]' Type='string' KeyPath='yes' />
+            </Component>
+            <!-- Environment Path Variable -->
+            <Component Id="LogsharkPathVariable" Guid="5177c3ca-b31c-4997-9b0e-35b32881e871">
+                <CreateFolder />
+                <Environment Id="UpdatePath" Name="Path" Action="set" Part="last" Permanent="no" System="yes" Value="[INSTALLFOLDER]" />
+            </Component>
+        </DirectoryRef>
+        <!-- Config Files -->
+        <DirectoryRef Id="CONFIGFOLDER">
+          <Component Id="LoggingConfig" Guid="5fffa0bd-3c28-4eb5-890e-c16689c2d5c2">
+            <File Id="Log4NetConfig" Name="Log.config" Vital="yes" Source="$(var.Bin)\Config\Log.config" />
+          </Component>
+          <Component Id="LogsharkConfig" Guid="ff8c7249-3eb4-4420-9f56-3ff662fe03b1">
+            <File Id="LogsharkConfig" Name="Logshark.config" Vital="yes" KeyPath="yes" Source="$(var.Bin)\Config\Logshark-Prod.config" />
+          </Component>
+        </DirectoryRef>
+        <!-- Documentation Files -->
+        <DirectoryRef Id="DOCUMENTATIONFOLDER">
+            <Component Id="Documentation" Guid="c50f5944-a820-45e9-b5aa-edbc6330503b">
+                <!-- User Documentation -->
+                <File Id="UserGuide" Name="$(var.ApplicationName) User Guide.pdf" Vital="yes" Source="$(var.Bin)\Documentation\UserGuide.pdf" />
+            </Component>
+        </DirectoryRef>
+        <!-- MongoDB Binaries -->
+        <DirectoryRef Id="MONGODBFOLDER">
+          <Component Id="MongoDBDocs" Win64="$(var.Win64)" Guid="420750cb-d1fc-4be9-afd2-c0a21d42723b">
+            <File Id="MongoDBGnuPublicLicense" Name="GNU-AGPL-3.0" Vital="yes" Source="$(var.Bin)\MongoDB\GNU-AGPL-3.0" />
+            <File Id="MongoDBMozillaPublicLicense" Name="MPL-2" Vital="yes" Source="$(var.Bin)\MongoDB\MPL-2" />
+            <File Id="MongoDBReadme" Name="README" Vital="yes" Source="$(var.Bin)\MongoDB\README" />
+            <File Id="MongoDBThirdPartyNotices" Name="THIRD-PARTY-NOTICES" Vital="yes" Source="$(var.Bin)\MongoDB\THIRD-PARTY-NOTICES" />
+          </Component>
+        </DirectoryRef>
+        <DirectoryRef Id="MONGODBBINFOLDER">
+          <Component Id="MongoDBBinaries" Win64="$(var.Win64)" Guid="6fc149a1-c520-4253-81bc-2b871ea285ea">
+            <File Id="MongoDBExe" Name="mongod.exe" Vital="yes" Source="$(var.Bin)\MongoDB\bin\mongod.exe" />
+          </Component>
+        </DirectoryRef>
+        <!-- Output Files -->
+        <DirectoryRef Id="OUTPUTFOLDER">
+          <Component Id="OutputFolder" Guid="9a769621-1d86-416d-9298-4fff0824f7b6">
+            <!-- Placeholder Contents.txt -->
+            <File Id="ContentsTxt" Name="contents.txt" Vital="yes" Source="$(var.Bin)\Output\contents.txt" />
+          </Component>
+        </DirectoryRef>
+        <!-- Start Menu Shortcuts -->
+        <DirectoryRef Id="ApplicationProgramsFolder">
+            <Component Id="StartMenuShortcuts" Guid="*">
+              <Condition>(INSTALLSHORTCUTS = 1)</Condition>
+              <Shortcut Id="UserGuideStartMenuShortcut" Name="$(var.ApplicationName) User Guide" Description="Documentation on how to use $(var.ApplicationName)." Target="[#UserGuide]" WorkingDirectory="INSTALLFOLDER" />
+              <Shortcut Id="OutputFolderStartMenuShortcut" Name="$(var.ApplicationName) Output" Description="Folder containing output generated by $(var.ApplicationName)." Target="[OUTPUTFOLDER]" WorkingDirectory="INSTALLFOLDER" />
+              <RemoveFolder Id="ApplicationProgramsFolder" On="uninstall" />
+              <RegistryValue Root="HKCU" Key="Software\$(var.Manufacturer)\$(var.ApplicationName)" Name="installed" Type="integer" Value="1" KeyPath="yes" />
+            </Component>
+        </DirectoryRef>
+        <!-- Feature Definitions -->
+        <Feature Id="Complete" Title="$(var.ApplicationName)" Description="The complete package." Display="expand" Level="1" ConfigurableDirectory="TARGETDIR">
+            <Feature Id="ApplicationFeature" Title="Application" Description="Installs $(var.ApplicationName) application." Level="1">
+                <ComponentRef Id="Core" />
+                <ComponentRef Id="LoggingConfig" />
+                <ComponentRef Id="LogsharkConfig" />
+                <ComponentGroupRef Id="CustomWorkbooks" />
+                <ComponentRef Id="Documentation" />
+                <ComponentRef Id="MongoDBDocs"/>
+                <ComponentRef Id="MongoDBBinaries"/>
+                <ComponentRef Id="OutputFolder" />  
+                <ComponentRef Id="LogsharkPathVariable" />
+                <ComponentRef Id="LogsharkRegistryKeys" />
+                <ComponentRef Id="StartMenuShortcuts" />
+            </Feature>
+            <Feature Id="PluginsFeature" Title="Plugins" Description="Installs default log analysis plugins." Level="1">
+                <ComponentGroupRef Id="Plugins" />
+            </Feature>
+        </Feature>
+        <!-- Custom Actions -->
+        <!-- Prompt user to launch user manual after installing -->
+        <CustomAction Id="LaunchUserGuide" BinaryKey="WixCA" DllEntry="WixShellExec" Impersonate="yes" />
+        <!-- Install Sequence -->
+        <InstallExecuteSequence>
+            <RemoveExistingProducts Before="InstallInitialize" />
+            <WriteEnvironmentStrings>INSTALLPATHVARIABLE=1</WriteEnvironmentStrings>
+        </InstallExecuteSequence>
+    </Product>
+</Wix>
