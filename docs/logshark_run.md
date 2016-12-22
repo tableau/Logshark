@@ -46,7 +46,7 @@ The following command directs Logshark to process logs on a file share, and uses
 logshark \\workgroup\Files\Home\Shared\logs.zip -p --startlocalmongo
 
 ```
-For more information, see the [Logshark command options](logshark_cmds#logshark-command-options).
+For more information, see the [Logshark command options](logshark_cmds).
 
 
 

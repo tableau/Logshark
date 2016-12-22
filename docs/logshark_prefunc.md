@@ -1,9 +1,9 @@
 ---
-title: Get your computer set up for Logshark
+title: Get your Computer Set Up for Logshark
 layout: docs
 ---
 
-Before you install and run Logshark on your computer, review the following [System Requirements](#system-requirements), [Locally Installed Databases](#locally-installed-databases) and [Tableau Archive Log Requirements](#tableau-archive-log-requirements).
+Before you install and run Logshark on your computer, review the following [System Requirements](#system-requirements), [Database Requirements](#database-requirements) and [Tableau Archive Log Requirements](#tableau-archive-log-requirements).
 
 To get your computer ready to run Logshark, you need to install PostgreSQL, and possibly MongoDB if you will be working with large log files (greater than 2 GB).   
 
@@ -31,14 +31,14 @@ System Requirements
 -   Tableau Desktop version 9.3 (or later) to view workbooks. You can download Tableau from: <http://www.tableau.com/products/desktop>
 
 
-Locally Installed Databases
+Database Requirements
 ---------------------------
 
 -   MongoDB - a standalone instance is included with the Logshark installation. Logshark uses MongoDB when it is extracting data from the log files. In most cases, you can specify a command option to tell Logshark to utilize the local instance of MongoDB for processing.
 
     -   However, if you have large log files (greater than 2 GB) the recommendation is that you use a MongoDB instance located on another computer to minimize contention.
 
-    -   You can Download MongoDB Community Server at: <https://www.mongodb.com/download-center#community>. To configure it, see [Use your own MongoDB instance.](index#use-your-own-mongodb-instance)
+    -   You can Download MongoDB Community Server at: <https://www.mongodb.com/download-center#community>. To configure it, see [Use your own MongoDB instance.](logshark_mongo)
 
 -   PostgreSQL - Logshark requires a PostgreSQL database as the backing data source for the workbooks that analyze the Tableau log files. PostgreSQL is not included in the Logshark installation. To use Logshark, you need to download and install PostgreSQL (version 9.5 or later) on your computer. <https://www.postgresql.org/>. As with MongoDB, for best performance on very large log files, we recommend that you install PostgreSQL on a separate computer.
 

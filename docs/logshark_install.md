@@ -52,7 +52,7 @@ Some of these configuration settings can be overridden at the command line. Othe
 
 3.  Set the `port` attribute to the port your server uses if it is different from the default. The default port is **5432**.
 
-4.  For the `user`, set both the `username` and `password` to **logshark** to match the role/user and password you added when you [Configure PostgreSQL for Logshark](#configure-postgresql-for-logshark).
+4.  For the `user`, set both the `username` and `password` to **logshark** to match the role/user and password you added when you [Configure PostgreSQL for Logshark](logshark_postgres#configure-postgresql-for-logshark).
 
 
  
@@ -68,7 +68,7 @@ Some of these configuration settings can be overridden at the command line. Othe
 
 5.  Save the file.
 
-    **NOTE:** You only need to edit the MongoDB connection information if you plan to use your own MongoDB installation to store the log data (recommended if logs are greater than 2GB). In most cases, you want to use the MongoDB instance that Logshark provides (using the `--startlocalmongo` command line option, or by setting `LocalMongoOptions useAlways="true"` in the config). For more information, see [Use your own MongoDB instance](#use-your-own-mongodb-instance).
+    **NOTE:** You only need to edit the MongoDB connection information if you plan to use your own MongoDB installation to store the log data (recommended if logs are greater than 2GB). In most cases, you want to use the MongoDB instance that Logshark provides (using the `--startlocalmongo` command line option, or by setting `LocalMongoOptions useAlways="true"` in the config). For more information, see [Use your own MongoDB instance](logshark_mongo#use-your-own-mongodb-instance).
 
 
 

@@ -60,7 +60,7 @@ Target can be an archive (zip) file, a hash value (from a previous Logshark run)
 <tr class="even">
 <td><p>--plugins all | default | none | &lt;plugin&gt;</p>
 <p>--plugins &quot;&lt;plugin1&gt; &lt;plugin2&gt; ...&quot;</p></td>
-<td>(Default: default) Specifies the plugin (or list of plugins) to run against the processed log set. Also accepts &quot;all&quot; to run all plugins, or &quot;none&quot; to bypass plugin execution. To specify more than one plugin, separate the name of each plugin with a space, and enclose the list in quotation marks. See <a href="#logshark-plugins-and-generated-workbooks">Logshark plugins and generated workbooks</a>.</td>
+<td>(Default: default) Specifies the plugin (or list of plugins) to run against the processed log set. Also accepts &quot;all&quot; to run all plugins, or &quot;none&quot; to bypass plugin execution. To specify more than one plugin, separate the name of each plugin with a space, and enclose the list in quotation marks. See <a href="logshark_plugins">Logshark plugins and generated workbooks</a>.</td>
 </tr>
 <tr class="odd">
 <td>--parseall</td>
