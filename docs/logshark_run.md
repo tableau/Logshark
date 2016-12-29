@@ -66,4 +66,4 @@ For more information, see the [Logshark command options](logshark_cmds).
     The format of a project is *\<Host_Name>*`_DATETIME_`*\<Filename>*, where *&lt;Host\_Name&gt;* is the name of the computer where Logshark was run and *\<Filename>* is the name of the archive file. The project contains all the workbooks for the archive file.
 
 
-    ![]({{ site.baseurl }}/assets/SampleScreenShot.png)
+    ![]({{ site.baseurl }}/assets/SampleScreenshot.png)

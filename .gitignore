@@ -14,3 +14,7 @@ Templates/*/obj/
 Logshark.CLI.Installer.Bundle/Contents/
 Tableau.RestApi/GeneratedCode/*.cs
 docs/_site/
+_site/
+_site/docs
+_Builds/
+docs/OLD_site/
