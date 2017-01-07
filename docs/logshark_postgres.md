@@ -17,7 +17,7 @@ In this section:
 
 
 -   Download PostgreSQL
-    [http://www.enterprisedb.com/products-services-training/pgdownload\#bwindows](http://www.enterprisedb.com/products-services-training/pgdownload)
+    [http://www.enterprisedb.com/products-services-training/pgdownload](http://www.enterprisedb.com/products-services-training/pgdownload){:target="_blank"}
 
 -   Run the installer and configure the following options into the setup wizard:
 
@@ -53,9 +53,8 @@ The following instructions describe how to configure your PostgreSQL installatio
 
     Role privileges: Select the **Can create databases** and **Can login** options.
 
-5.  (Optional) If you installed PostgreSQL on a remote computer (not on the computer running Logshark), you need to add a pg\_hba.conf entry to enable a connection. See instructions for this at [https://www.postgresql.org/docs/current/static/auth-pg-hba-conf.html.
-    ](https://www.postgresql.org/docs/current/static/auth-pg-hba-conf.html.)
+5.  (Optional) If you installed PostgreSQL on a remote computer (not on the computer running Logshark), you need to add a pg\_hba.conf entry to enable a connection. See instructions for this at [https://www.postgresql.org/docs/current/static/auth-pg-hba-conf.html
+    ](https://www.postgresql.org/docs/current/static/auth-pg-hba-conf.html){:target="_blank"}
 
 
-    <!-- ![]({{ site.baseurl }}/assets/postgres-login-role.png) -->
-    <!-- <img src="../assets/postgres-login-role.png" width="273" height="160" /> -->
+  

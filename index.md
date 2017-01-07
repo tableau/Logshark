@@ -33,5 +33,5 @@ In this section:
 
 ### Logshark and Tableau Technical Support
  
-Logshark is made available AS-IS with **no** support from Tableau Technical Support. This is intended to be a self-service tool and includes this user guide. Any bugs discovered should be filed in the [Logshark Git Issue tracker](https://github.com/tableau/Logshark/issues).
+Logshark is made available AS-IS with **no** support from Tableau Technical Support. This is intended to be a self-service tool and includes this user guide. Any bugs discovered should be filed in the [Logshark Git Issue tracker](https://github.com/tableau/Logshark/issues){:target="_blank"}.
 

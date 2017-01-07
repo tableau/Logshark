@@ -18,7 +18,6 @@ Full usage can be viewed at any time by invoking `logshark --help`.  The only 
 Target can be an archive (zip) file, a hash value (from a previous Logshark run), or the path and name of a directory.
 
  
-
 <table>
 <thead>
 <tr class="header">
@@ -59,7 +58,7 @@ Target can be an archive (zip) file, a hash value (from a previous Logshark run)
 </tr>
 <tr class="even">
 <td><p><code>--plugins all | default | none | &lt;plugin&gt;</code></p>
-<p><code>--plugins &quot;&lt;plugin1&gt; &lt;plugin2&gt; ...&quot;<code></p></td>
+<p><code>--plugins &quot;&lt;plugin1&gt; &lt;plugin2&gt; ...&quot;</code></p></td>
 <td>(Default: <code>default</code>) Specifies the plugin (or list of plugins) to run against the processed log set. Also accepts <code>all</code> to run all plugins, or <code>none</code> to bypass plugin execution. To specify more than one plugin, separate the name of each plugin with a space, and enclose the list in quotation marks. See <a href="logshark_plugins">Logshark plugins and generated workbooks</a>.</td>
 </tr>
 <tr class="odd">
@@ -91,11 +90,15 @@ Target can be an archive (zip) file, a hash value (from a previous Logshark run)
 <tr class="odd">
 <td><code>--tags</code></td>
 <td>List of tags that will written to the resulting workbook(s).<br />
-For example: <code>--tags &quot;MyTag MyOtherTag&quot;</code.</td>
+For example: <code>--tags &quot;MyTag MyOtherTag&quot; </code></td>
 </tr>
 <tr class="even">
 <td><code>--help</code></td>
-<td>Display Logshark command help.</td>
+<td>Display Logshark command help.</td> 
 </tr>
 </tbody>
 </table>
+
+<!-- for some reason, the following tags show up at the top of the table -- >
+
+<!-- </tr>  -->
