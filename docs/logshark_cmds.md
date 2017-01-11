@@ -9,11 +9,13 @@ Full usage can be viewed at any time by invoking `logshark --help`.  The only 
 
 **Logshark command syntax**
 
-> **logshark** \[TARGET\] [OPTIONS]…
+   <code>logshark <i>Target</i> [<i>Options</i>]...</code>
 
 
 
-**\[TARGET\]**
+
+
+***Target***
 
 Target can be an archive (zip) file, a hash value (from a previous Logshark run), or the path and name of a directory.
 
@@ -21,14 +23,14 @@ Target can be an archive (zip) file, a hash value (from a previous Logshark run)
 <table>
 <thead>
 <tr class="header">
-<th>[OPTIONS]</th>
+<th>Options</th>
 <th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td><code>--args [&quot;arg1”] ...</code></td>
-<td><p>Set of custom arguments that will be passed to plugins. For example,</p>
+<td><p>Set of custom arguments that will be passed to plugins. For example:</p>
 <p><code>logshark --args &quot;PluginName.MyCustomArg:MyValue&quot; ...</code></p></td>
 </tr>
 <tr class="even">
@@ -53,7 +55,7 @@ Target can be an archive (zip) file, a hash value (from a previous Logshark run)
 </tr>
 <tr class="odd">
 <td><code>--metadata [&quot;key:value”] ...</code></td>
-<td><p>Set of custom metadata key/value pairs that will stored in the resulting Mongo database. For example,</p>
+<td><p>Set of custom metadata key/value pairs that will stored in the resulting Mongo database. For example:</p>
 <p><code>logshark ... --metadata &quot;SalesforceId:SomeValue TFSDefect:SomeOtherValue&quot; ...</code></p></td>
 </tr>
 <tr class="even">

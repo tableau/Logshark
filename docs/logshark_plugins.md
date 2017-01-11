@@ -15,16 +15,22 @@ The following table shows the list of available Logshark plugins and the names o
 
 **Usage:**
 
-> **logshark** \[TARGET\] **--plugins** &lt;*plugin*&gt;
->
-> **logshark** \[TARGET\] **--plugins** **\"**&lt;*plugin1&gt; &lt;plugin2&gt; &lt;plugin3&gt; ...**\"***
+   <code>logshark <i>Target</i> --plugins <i>plugin</i></code>
+
+   <code>logshark <i>Target</i> --plugins "<i>plugin1</i> <i>plugin2</i> <i>plugin3</i>..."</code>
+
+
 
 **Examples:**
 
- `logshark logs.zip --plugins Apache`
 
- `logshark logs.zip --plugins "Apache VizqlServer"`
-
+     
+     logshark logs.zip --plugins Apache
+     
+     
+     logshark logs.zip --plugins "Apache VizqlServer"
+            
+   
  
 
 | Plugin name            | Workbook                                     | Description  
@@ -46,13 +52,13 @@ The following table shows the list of available Logshark plugins and the names o
 ### Appending Logshark-generated Data to the Same Workbook
 
 
-When you run Logshark using the default command options, Logshark generates a new PostgreSQL database for each run. If you want to append data to the same database, so that the data will all be available in the same workbook, you can specify the name of the database on the command line, using the `--dbname` *\<database>* option. You can use this option to set a custom name for the database where the plugin output is stored (the data source for the plugin workbook).
+When you run Logshark using the default command options, Logshark generates a new PostgreSQL database for each run. If you want to append data to the same database, so that the data will all be available in the same workbook, you can specify the name of the database on the command line, using the <code>--dbname <i>database</i></code> option. You can use this option to set a custom name for the database where the plugin output is stored (the data source for the plugin workbook).
 
 
 **Example**
 
 ```
-logshark C:\\Logs\\logs.zip --plugins Apache --dbname myApacheData
+logshark C:\Logs\logs.zip --plugins Apache --dbname myApacheData
 ```
 
 If the `–-dbname` option is not specified, a new database will be generated.

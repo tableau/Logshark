@@ -167,6 +167,47 @@ html {
     }
 }
 
+.navbar-brand-logo {
+    margin-top: 0px;
+    margin-bottom: -10px;
+}
+
+div.sharkdiv {
+    margin-top: -5px;
+    margin-bottom: -5px;
+    position: relative;
+    -webkit-animation-name: swim; /* Safari 4.0 - 8.0 */
+    -webkit-animation-duration: 3s; /* Safari 4.0 - 8.0 */
+    -webkit-animation-iteration-count: 1; /* Safari 4.0 - 8.0 */
+    -webkit-animation-direction: normal; /* Safari 4.0 - 8.0 */
+    -webkit-animation-timing-function: ease-in-out; /* Safari 4.0 - 8.0 */
+    animation-name: swim;
+    animation-duration: 3s;
+    animation-iteration-count: 1;
+    animation-direction: normal; 
+    animation-timing-function: ease-in-out; 
+
+}
+
+/* Safari 4.0 - 8.0 */
+@-webkit-keyframes swim {
+    0%   {left:0px; top:0px; }
+    25%  {left:50px; top:0px;}
+    50%  {left:100px; top:0px;}    
+    75%  {left:50px; top:0px;}
+    100% {left:00px; top:0px;}
+}
+
+/* Standard syntax */
+@keyframes swim {
+    0%   {left:0px; top:0px; }
+    25%  {left:50px; top:0px;}
+    50%  {left:100px; top:0px; }
+    75%  {left:50px; top:0px;}
+    100% {left:0px; top:0px;}
+}
+
+
 
 /* Custom css for news section */
 .blog-content {

@@ -6,9 +6,9 @@ layout: docs
 
 
 If you have log files that are larger than 2 GB, you should install and set up your own MongoDB Community server. Download it from [https://www.mongodb.com/download-center\#community.
-](https://www.mongodb.com/download-center)
+](https://www.mongodb.com/download-center){:target="_blank"}
 
-If you install your own MongoDB, you must configure Logshark to use your MongoDB instance by editing the Logshark configuration file, *\<Logshark_install_location>*`\config\Logshark.config`.
+If you install your own MongoDB, you must configure Logshark to use your MongoDB instance by editing the Logshark configuration file. The file is located in your Logshark installation directory in `\config\Logshark.config`.
 
 The Logshark.config file contains the `<MongoConnection>` element that sets the options for the MongoDB that Logshark uses to store the BSON documents extracted from the archive (zipped logs).
 

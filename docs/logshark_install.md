@@ -35,7 +35,7 @@ In this section:
 ### Configure Logshark 
 
 
-Logshark uses a configuration file to point to the databases that are used for parsing and storing log data. The configuration file also lets you publish the Tableau workbooks to a specific Tableau Server. This configuration is located at *\<install_directory>*`\Config\Logshark.config`.
+Logshark uses a configuration file to point to the databases that are used for parsing and storing log data. The configuration file also lets you publish the Tableau workbooks to a specific Tableau Server. The path to the configuration file is *\<install_directory>*`\Config\Logshark.config`.
 
 Some of these configuration settings can be overridden at the command line. Other settings can only be set in the configuration file. For example, if you want to specify which Tableau Server to use when publishing workbooks, you need to set that option in the configuration file.
 

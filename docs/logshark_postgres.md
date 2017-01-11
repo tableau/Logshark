@@ -21,7 +21,7 @@ In this section:
 
 -   Run the installer and configure the following options into the setup wizard:
 
-    -   For the (**postgres**) superuser password: &lt;*your choice&gt;*
+    -   For the (**postgres**) superuser password: *you choose*
 
     -   Port: **5432**
 
