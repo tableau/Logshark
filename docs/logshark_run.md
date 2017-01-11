@@ -54,19 +54,39 @@ For more information, see the [Logshark command options](logshark_cmds).
 
 -----------------
 
-### View the generated Tableau workbooks:
+### View the generated Tableau workbooks (Desktop)
 
+By default, all workbooks (or other plugin-generated content) are placed in the `\Output` folder in the location where you installed Logshark. 
 
--   You can view all workbooks (or other plugin-generated content) by navigating to the `\Output` folder in the location where you installed Logshark. 
+1.  Navigate to the `\Output` folder (for example, `C:\Program Files\Logshark\Output`). 
+    
+    Or click **Start** &gt; **All Programs** &gt; **Logshark** &gt; **Logshark** **Output**
 
--   You can also click **Start** &gt; **All Programs** &gt; **Logshark** &gt; **Logshark** **Output**
+    When Logshark processes the log files it creates a new folder for the results in the `\Output` folder. The name of the folder is *`HostName_DateTime_FileName`*, where  *`HostName`* is the name of the computer where Logshark was run. *`DateTime`* is the time stamp that indicates when the logs were processed, and *`FileName`* is the name of the archive file. The folder contains all the workbooks for the plugins that were run in that instance.
 
+2.  Navigate to results folder you are interested in and double-click the Tableau workbook you want to view. 
 
--   If you want to publish the workbooks to Tableau Server, you can use use the `-p` option when you run Logshark. The workbooks are published on the Tableau Server you specify in the `Logshark.config` file. See [Edit the Tableau Server connection information in Logshark.config](logshark_install#edit-the-tableau-server-connection-information-in-logshark.config). The URL for your workbooks would look like the following:  
-<code>http://<i>yourServer</i>/#/site/<i>yourSite</i>/projects   </code>
+    For example, if you open the `Apache.twb` workbook, you can view the viz load statistics generated from the Apache log files.     
 
-    The format of a project is  *`HostName_DateTime_FileName`*, where  *`HostName`* is the name of the computer where Logshark was run and *`FileName`* is the name of the archive file. The project contains all the workbooks for the archive file.
-
-   
 
     ![]({{ site.baseurl }}/assets/SampleScreenshot.png)
+
+   For information about all the plugins and workbooks, see [Logshark Plugins and Generated Workbooks](logshark_plugins)
+
+### Publish and view results on Tableau Server
+
+If you want to publish the workbooks to Tableau Server instead of the default `\Output` folder, you need to modify the `Logshark.config` file and use the `-p` option when you run Logshark. 
+
+1. Modify the Logshark.config file. Change the  `<TableauConnection>` settings to match your Tableau Server configuration.   For information about setting up a Tableau Server, see [Edit the Tableau Server connection information in the Logshark configuration file](logshark_install#edit-the-tableau-server-connection-information-in-the-logshark-configuration-file). 
+
+2. Specify the `-p` or `--publishworkbooks` option when you run Logshark. When you use this option, the workbooks are published on the Tableau Server identified in the `Logshark.config` file.
+
+3.  Navigate to your Tableau Server. 
+    The URL for your workbooks would look like the following:  
+
+    <code>http://<i>yourServer</i>/#/site/<i>yourSite</i>/projects   </code>
+
+    The generated workbooks are organized in project folders. The name of a project is  *`HostName_DateTime_FileName`*, where  *`HostName`* is the name of the computer where Logshark was run. *`DateTime`* is the time stamp that indicates when the logs were processed, and *`FileName`* is the name of the archive file. The project contains all the workbooks for the archive file.
+
+4.   Navigate to projects folder you are interested in and double-click the Tableau workbook you want to view. 
+     For information about all the plugins and workbooks, see [Logshark Plugins and Generated Workbooks](logshark_plugins)

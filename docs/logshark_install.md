@@ -35,18 +35,18 @@ In this section:
 ### Configure Logshark 
 
 
-Logshark uses a configuration file to point to the databases that are used for parsing and storing log data. The configuration file also lets you publish the Tableau workbooks to a specific Tableau Server. The path to the configuration file is *\<install_directory>*`\Config\Logshark.config`.
+Logshark uses a configuration file to point to the databases that are used for parsing and storing log data. The configuration file also lets you publish the Tableau workbooks to a specific Tableau Server. The path to the configuration file is <code><i>installation-folder</i>\Config\Logshark.config</code>.
 
 Some of these configuration settings can be overridden at the command line. Other settings can only be set in the configuration file. For example, if you want to specify which Tableau Server to use when publishing workbooks, you need to set that option in the configuration file.
 
-**NOTE:** To be able to publish workbooks to Tableau Server, the REST API option (`api.server.enabled`) must be enabled. See the [REST API Requirements](https://onlinehelp.tableau.com/current/api/rest_api/en-us/help.htm#REST/rest_api_requ.htm%3FTocPath%3D_____3) article for more details.
+**NOTE:** To be able to publish workbooks to Tableau Server, the REST API option (`api.server.enabled`) must be enabled. See the [REST API Requirements](https://onlinehelp.tableau.com/current/api/rest_api/en-us/help.htm#REST/rest_api_requ.htm%3FTocPath%3D_____3){:target="_blank"} article for more details.
 
 -----
 
-#### Edit the PostgreSQL connection information in Logshark.config
+#### Edit the PostgreSQL connection information in the Logshark configuration file
 
 
-1.  In a text editor, open the configuration file: *\<install_directory>*`\Config\Logshark.config` file. In the Logshark.config file, change the `<PostgresConnection>` settings to match your PostgreSQL setup.
+1.  In a text editor, open the configuration file: <code><i>installation-folder</i>\Config\Logshark.config</code>. In the configuration file, change the `<PostgresConnection>` settings to match your PostgreSQL setup.
 
 2.  Set the Server `address` attribute to the name of the computer that is running PostgreSQL. For example, if you have installed PostgreSQL on your local computer, use **localhost** as the address.
 
@@ -68,13 +68,13 @@ Some of these configuration settings can be overridden at the command line. Othe
 
 5.  Save the file.
 
-    **NOTE:** You only need to edit the MongoDB connection information if you plan to use your own MongoDB installation to store the log data (recommended if logs are greater than 2GB). In most cases, you want to use the MongoDB instance that Logshark provides (using the `--startlocalmongo` command line option, or by setting `LocalMongoOptions useAlways="true"` in the config). For more information, see [Use your own MongoDB instance](logshark_mongo#use-your-own-mongodb-instance).
+    **NOTE:** You only need to edit the MongoDB connection information if you plan to use your own MongoDB installation to store the log data (recommended if logs are greater than 2GB). In most cases, you want to use the MongoDB instance that Logshark provides (using the `--startlocalmongo` command line option, or by setting `LocalMongoOptions useAlways="true"` in the config). For more information, see [Use your own MongoDB instance](logshark_mongo).
 
 
 
 ----
 
-#### Edit the Tableau Server connection information in Logshark.config
+#### Edit the Tableau Server connection information in the Logshark configuration file
 
 
 If you want to publish the workbooks that Logshark generates on Tableau Server, change the `<TableauConnection>` settings in the Logshark.config file to match your Tableau Server configuration.
