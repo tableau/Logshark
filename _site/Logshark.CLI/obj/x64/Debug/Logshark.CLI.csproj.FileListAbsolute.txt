@@ -1,1 +1,0 @@
-C:\Users\dhagen\Documents\GitHub\Logshark\Logshark.CLI\bin\x64\Debug\Logshark.exe.config
