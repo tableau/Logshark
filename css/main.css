@@ -172,9 +172,12 @@ html {
     margin-bottom: -10px;
 }
 
+.navbar-brand-text {
+    float: left;
+}
+
 div.sharkdiv {
-    margin-top: -5px;
-    margin-bottom: -5px;
+    float: left;
     position: relative;
     -webkit-animation-name: swim; /* Safari 4.0 - 8.0 */
     -webkit-animation-duration: 3s; /* Safari 4.0 - 8.0 */
@@ -184,27 +187,27 @@ div.sharkdiv {
     animation-name: swim;
     animation-duration: 3s;
     animation-iteration-count: 1;
-    animation-direction: normal; 
-    animation-timing-function: ease-in-out; 
+    animation-direction: normal;
+    animation-timing-function: ease-in-out;
 
 }
 
 /* Safari 4.0 - 8.0 */
 @-webkit-keyframes swim {
-    0%   {left:0px; top:0px; }
-    25%  {left:50px; top:0px;}
-    50%  {left:100px; top:0px;}    
-    75%  {left:50px; top:0px;}
-    100% {left:00px; top:0px;}
+    0%   {left:0px;}
+    25%  {left:50px;}
+    50%  {left:100px;}
+    75%  {left:50px;}
+    100% {left:00px;}
 }
 
 /* Standard syntax */
 @keyframes swim {
-    0%   {left:0px; top:0px; }
-    25%  {left:50px; top:0px;}
-    50%  {left:100px; top:0px; }
-    75%  {left:50px; top:0px;}
-    100% {left:0px; top:0px;}
+    0%   {left:0px;}
+    25%  {left:50px;}
+    50%  {left:100px;}
+    75%  {left:50px;}
+    100% {left:0px;}
 }
 
 
