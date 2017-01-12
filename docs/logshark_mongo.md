@@ -1,9 +1,6 @@
 ---
 title: Use your own MongoDB Instance
-layout: docs
 ---
-
-
 
 If you have log files that are larger than 2 GB, you should install and set up your own MongoDB Community server. Download it from [https://www.mongodb.com/download-center\#community.
 ](https://www.mongodb.com/download-center){:target="_blank"}

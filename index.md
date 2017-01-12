@@ -1,6 +1,5 @@
 ---
 title: Logshark Installation and User Guide
-layout: docs
 ---
 *Analyze your Tableau log files – in Tableau!*
 

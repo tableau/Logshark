@@ -1,9 +1,6 @@
 ---
 title: Add Your Own Custom Workbooks
-layout: docs
 ---
-
-
 
 Logshark provides an option to include your own custom workbooks in a Logshark run.  These workbooks will then be included in the run output if the CustomWorkbooks plugin is run and all of their dependencies are met.
 

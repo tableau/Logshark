@@ -1,6 +1,5 @@
 ---
 title: Run Logshark and View the Results
-layout: docs
 ---
 
 

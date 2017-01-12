@@ -1,9 +1,6 @@
 ---
 title: Logshark Command Options
-layout: docs
 ---
-
-
 
 Full usage can be viewed at any time by invoking `logshark --help`.  The only required argument is the target, which can be either an archive (zip file), a directory, or a logset hash. A logset is a set of log files that you process at one time with Logshark. Logshark generates a hash value (checksum) for each set of logs that gets processed.
 

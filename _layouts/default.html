@@ -8,26 +8,19 @@
 <body>
     <div class="container">
         {% include header.html %}
-        <ul class="blogul">
-            {% for post in site.posts %}
-            <div class="row">
-                <h1>{{ post.title }}</h1>
-                <hr>
-                <p><span class="glyphicon glyphicon-time"></span> Posted on {{ post.date | date: "%-d %B %Y" }}</p>
-                <hr>
-                <p class="lead">
-                    {{ post.abstract }}
-                </p>
-                {% if post.photoname %}
-                <img class="img-responsive" src="{{ site.baseurl }}/assets/{{ post.photoname}}" alt=""> {% endif %}
-                <hr>
-                <div class="blog-content">
-                    {{ post.content }}
-                </div>
+        {% include docs_menu.html %}
+
+        <div class="content .col-xs-12 .col-sm-8 .col-md-9">
+            <h1>{{ page.title }}</h1>
+            <div class="edit-container">
+                <a href="https://github.com/tableau/Logshark/edit/master/{{ page.path }}" class="edit-links"><span class="glyphicon glyphicon-pencil"></span> Edit this page</a>
+                &nbsp;
+                <a href="https://github.com/tableau/Logshark/issues" class="edit-links"><span class="glyphicon glyphicon-flag"></span> Submit an issue</a>
             </div>
-            {% endfor %}
-        </ul>
-        {% include footer.html %}
+            <br />
+            {{ content }}
+            {% include footer.html %}
+        </div>
     </div>
 </body>
 

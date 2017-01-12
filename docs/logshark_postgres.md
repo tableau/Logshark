@@ -1,6 +1,5 @@
 ---
 title: Install and Configure PostgreSQL
-layout: docs
 ---
 
 Use the following instructions to manually install PostgreSQL on your computer. Logshark needs to have its own PostgreSQL instance to store data. If you are using PostgreSQL on a remote computer, that is, not on the local computer running Logshark, you need to do a few additional steps to allow the remote connection. By default, PostgreSQL does not allow any remote connections.

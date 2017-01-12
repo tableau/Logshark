@@ -1,6 +1,5 @@
 ---
 title: Get your Computer Set Up for Logshark
-layout: docs
 ---
 
 Before you install and run Logshark on your computer, review the following [System Requirements](#system-requirements), [Database Requirements](#database-requirements) and [Tableau Archive Log Requirements](#tableau-archive-log-requirements).

@@ -1,6 +1,5 @@
 ---
 title: Install and Configure Logshark
-layout: docs
 ---
 
 If you have not done so already, you need to run the Logshark Setup program. If you need to uninstall or re-install Logshark, you should follow the [Uninstall Logshark](logshark_remove) instructions.

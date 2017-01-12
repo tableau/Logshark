@@ -1,6 +1,5 @@
 ---
 title: Logshark Plugins and Generated Workbooks
-layout: docs
 ---
 
 In this section:

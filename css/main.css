@@ -3,6 +3,8 @@
 
 body {
     font-family: "Open Sans", Helvetica, Arial, sans-serif;
+    color: #555;
+    line-height: 1.5;
 }
 
 img {
@@ -28,6 +30,25 @@ img {
 .edit-links {
     color: #cccccc;
 }
+
+/* Add spacing around headers, code blocks, and notes */
+h2, h3 {
+    margin-top: 1em;
+    margin-bottom: 0.5em;
+}
+
+.highlighter-rouge {
+    margin: 1.5em 0em;
+}
+
+.alert {
+    margin: 1.5em 0em;
+}
+
+.edit-container {
+    margin-bottom: 1em;
+}
+
 
 /* Prevent in-page links from scrolling under top nav */
 h2::before, h3::before {
@@ -210,8 +231,6 @@ div.sharkdiv {
     100% {left:0px;}
 }
 
-
-
 /* Custom css for news section */
 .blog-content {
     margin-bottom: 70px;
@@ -317,4 +336,42 @@ div.sharkdiv {
 .size-1of2 { width: 50%; }
 .size-1of3 { width: 33.333%; }
 
+/* Override bootstrap default colors */
+a {
+    color: #e8762c;
+    text-decoration: none;
+}
+a:hover,
+a:focus {
+    color: #e8762c;
+    text-decoration: underline;
+}
+.btn-primary {
+    background-color: #e8762c;
+    border-color: #ccc;
+}
+.btn-primary:hover,
+.btn-primary:active,
+.btn-primary:focus,
+.btn-primary:active:focus {
+    background-color: #d5641b;
+    border-color: #ccc;
+}
+.bg-primary {
+  color: #fff;
+  background-color: #e8762c;
+}
+a.bg-primary:hover,
+a.bg-primary:focus {
+  background-color: #e8762c;
+}
 
+.alert-info {
+    color: #555;
+    background-color: #e8f6fd;
+}
+
+.nav-nested {
+    padding-left: 1.5em;
+    list-style-type: none;
+}
