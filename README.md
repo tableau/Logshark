@@ -12,7 +12,7 @@ Some common use cases for Logshark include:
 
 # How do I set up Logshark?
 
-Logshark is deployed via a custom installer, which you can download from the [releases page](https://github.com/tableau/Logshark/releases/latest).  The installer manages dependencies and also bundles MongoDB for ease of setup for new users.  You will need to set up a Postgres database.  To get up and running, download the installer and then follow the instructions in the [installation guide](https://github.com/tableau/Logshark/tree/master/Logshark.CLI/Documentation/UserGuide.pdf) to configure it.
+Logshark is deployed via a custom installer, which you can download from the [releases page](https://github.com/tableau/Logshark/releases/latest).  The installer manages dependencies and also bundles MongoDB for ease of setup for new users.  You will need to set up a Postgres database.  To get up and running, download the installer and then follow the instructions in the [installation guide](https://tableau.github.io/Logshark/) to configure it.
 
 Logshark requires a 64-bit version of Windows in order to run, and must be run as an account with administrator privileges.
 
@@ -20,7 +20,7 @@ NOTE: If you are upgrading from a previous version of Logshark, the installer wi
 
 # How do I analyze results from Logshark?
 
-The best way to analyze results is to run Logshark on your own logset and explore the generated workbooks via Tableau! Beyond what is included, you can configure Logshark to output your own custom workbooks. See the [installation guide](https://github.com/tableau/Logshark/tree/master/Logshark.CLI/Documentation/UserGuide.pdf) for more details on how to do this.
+The best way to analyze results is to run Logshark on your own logset and explore the generated workbooks via Tableau! Beyond what is included, you can configure Logshark to output your own custom workbooks. See the [installation guide](https://tableau.github.io/Logshark/) for more details on how to do this.
 
 For the truly adventurous, Logshark features a plugin framework, so you can even build your own analysis plugin to leverage Logshark’s log parsing engine!
 
