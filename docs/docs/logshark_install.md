@@ -47,7 +47,9 @@ Some of these configuration settings can be overridden at the command line. Othe
 
 1.  In a text editor, open the configuration file: <code><i>installation-folder</i>\Config\Logshark.config</code>. In the configuration file, change the `<PostgresConnection>` settings to match your PostgreSQL setup.
 
-2.  Set the Server `address` attribute to the name of the computer that is running PostgreSQL. For example, if you have installed PostgreSQL on your local computer, use **localhost** as the address.
+2.  Set the Server `address` attribute to the name of the computer that is running PostgreSQL. For example, if you have installed PostgreSQL on your local computer, use **localhost** as the address. 
+
+    **NOTE:** If you plan to use Logshark to publish to a Tableau Server, make sure you specify the actual IP/DNS name of the Postgres server instead of `localhost`. If the server name is not specified, workbooks cannot be published to Tableau Server using the `-p` option.
 
 3.  Set the `port` attribute to the port your server uses if it is different from the default. The default port is **5432**.
 
