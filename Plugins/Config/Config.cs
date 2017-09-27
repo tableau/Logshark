@@ -1,6 +1,7 @@
 ﻿using Logshark.PluginLib.Extensions;
 using Logshark.PluginLib.Model;
 using Logshark.PluginLib.Model.Impl;
+using Logshark.PluginModel.Model;
 using Logshark.Plugins.Config.Helpers;
 using Logshark.Plugins.Config.Model;
 using System;
@@ -47,7 +48,7 @@ namespace Logshark.Plugins.Config
             try
             {
                 // Load config into memory.
-                var configReader = new ConfigReader(MongoDatabase);
+                var configReader = new ConfigReader(MongoDatabase, request.LogsetHash);
 
                 configEntries = configReader.GetConfigEntries();
                 configProcessInfo = configReader.GetConfigProcessInfo();

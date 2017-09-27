@@ -1,4 +1,5 @@
-﻿using MongoDB.Driver;
+﻿using Logshark.PluginModel.Model;
+using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
 
@@ -38,6 +39,11 @@ namespace Logshark.PluginLib.Model.Impl
         public ICollection<string> GetRequestArgumentKeys()
         {
             return requestArguments.Keys;
+        }
+
+        public IDictionary<string, object> GetRequestArguments()
+        {
+            return new SortedDictionary<string, object>(requestArguments);
         }
 
         public bool ContainsRequestArgument(string argumentName)

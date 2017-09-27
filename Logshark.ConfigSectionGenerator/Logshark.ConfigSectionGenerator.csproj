@@ -8,8 +8,8 @@
     <ProjectGuid>{58A100CE-CC7E-43BF-A054-D28648F092AC}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>LogsharkConfig</RootNamespace>
-    <AssemblyName>LogsharkConfig</AssemblyName>
+    <RootNamespace>Logshark.ConfigSectionGenerator</RootNamespace>
+    <AssemblyName>Logshark.ConfigSectionGenerator</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -100,7 +100,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy $(ProjectDir)ConfigurationSection.csd.cs $(SolutionDir)Logshark\Config\LogsharkConfigSection.cs /y</PostBuildEvent>
+    <PostBuildEvent>copy $(ProjectDir)ConfigurationSection.csd.cs $(SolutionDir)Logshark.ConfigSection\LogsharkConfigSection.cs /y</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

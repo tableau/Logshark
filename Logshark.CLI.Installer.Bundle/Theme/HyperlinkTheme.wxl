@@ -48,8 +48,9 @@ Click Install to continue, or Options to change target install directory and con
   <String Id="SuccessHeader">Setup Successful</String>
   <String Id="SuccessSetupHeader"></String>
   <String Id="SuccessUninstallHeader">Uninstall Successful</String>
-  <String Id="SuccessLaunchButton">&amp;User Guide</String>
-  <String Id="SuccessMessage">Setup has successfully finished installing/uninstalling [WixBundleName] on your computer. You may now click Exit to exit, or User Guide to launch the user guide before exiting.</String>
+  <String Id="SuccessMessage">Setup has successfully finished installing/uninstalling [WixBundleName] on your computer.
+
+You may now click Exit to exit.</String>
   <String Id="SuccessRestartText">You must restart your computer before you can use the software.</String>
   <String Id="SuccessRestartButton">&amp;Restart</String>
   <String Id="SuccessCloseButton">&amp;Exit</String>

@@ -2,6 +2,7 @@
 using Logshark.PluginLib.Model;
 using Logshark.PluginLib.Model.Impl;
 using Logshark.PluginLib.Persistence;
+using Logshark.PluginModel.Model;
 using Logshark.Plugins.Backgrounder.Helpers;
 using Logshark.Plugins.Backgrounder.Model;
 using System.Collections.Generic;
@@ -42,10 +43,10 @@ namespace Logshark.Plugins.Backgrounder
 
             Log.Info("Processing Backgrounder job events..");
 
-            IPersister<BackgrounderJob> backgrounderPersister = GetConcurrentCustomPersister<BackgrounderJob>(BackgrounderPersistenceHelper.PersistBackgrounderJob);
+            IPersister<BackgrounderJob> backgrounderPersister = GetConcurrentCustomPersister<BackgrounderJob>(pluginRequest, BackgrounderPersistenceHelper.PersistBackgrounderJob);
             using (GetPersisterStatusWriter(backgrounderPersister))
             {
-                BackgrounderJobProcessor backgrounderJobProcessor = new BackgrounderJobProcessor(MongoDatabase, backgrounderPersister);
+                BackgrounderJobProcessor backgrounderJobProcessor = new BackgrounderJobProcessor(MongoDatabase, backgrounderPersister, pluginRequest.LogsetHash);
                 backgrounderJobProcessor.ProcessJobs();
                 backgrounderPersister.Shutdown();
             }

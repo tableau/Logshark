@@ -35,7 +35,7 @@ namespace Logshark.CLI
                 Log.FatalFormat("Failed to initialize logging: {0}", ex.Message);
                 return 1;
             }
-            
+
             // Parse command line args.
             Log.DebugFormat("Logshark execution arguments: {0}", String.Join(" ", args));
             LogsharkCommandLineOptions options = new LogsharkCommandLineOptions();

@@ -17,7 +17,7 @@ In this section:
 
 1.  Open a Command Prompt window as administrator.
 
-2.  Run `Setup_Logshark_v1.0.exe` and specify the path to the Tableau archive and any other option you wish to set. Logshark uses the following syntax:
+2.  Run `Setup_Logshark_v2.0.exe` and specify the path to the Tableau archive and any other option you wish to set. Logshark uses the following syntax:
   
     <code>logshark <i>Target</i> [<i>Options</i>]</code>
 

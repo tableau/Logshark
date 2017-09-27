@@ -3,6 +3,7 @@ using Logshark.PluginLib;
 using Logshark.PluginLib.Helpers;
 using Logshark.PluginLib.Logging;
 using Logshark.PluginLib.Persistence;
+using Logshark.PluginModel.Model;
 using Logshark.Plugins.ResourceManager.Model;
 using Npgsql;
 using ServiceStack.OrmLite;
@@ -16,7 +17,7 @@ namespace Logshark.Plugins.ResourceManager.Helpers
     {
         private static readonly ILog Log = PluginLogFactory.GetLogger(Assembly.GetExecutingAssembly(), MethodBase.GetCurrentMethod());
 
-        public static InsertionResult PersistResourceManagerInfo(IDbConnection dbConnection, ResourceManagerEvent resourceManagerInfo)
+        public static InsertionResult PersistResourceManagerInfo(IPluginRequest pluginRequest, IDbConnection dbConnection, ResourceManagerEvent resourceManagerInfo)
         {
             try
             {

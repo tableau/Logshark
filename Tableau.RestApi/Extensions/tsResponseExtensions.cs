@@ -5,9 +5,13 @@ namespace Tableau.RestApi.Extensions
 {
     /// <summary>
     /// Extension methods for the auto-generated tsResponse class. Most of these are helper methods to handle a lot of the casting operations.
+    /// A note on casing conventions: The Tableau Server REST API XSD schema uses camel-casing throughout.  In order to maximize flexibility for new API versions,
+    /// this library relies on generated classes using the XSD schema, so many types are camel-cased here as well.
     /// </summary>
     public static class tsResponseExtensions
     {
+        #region Public Methods
+
         public static connectionType GetConnection(this tsResponse response)
         {
             return ExtractItemByType(response, typeof(connectionType)) as connectionType;
@@ -123,6 +127,10 @@ namespace Tableau.RestApi.Extensions
             return ExtractItemByType(response, typeof(workbookListType)) as workbookListType;
         }
 
+        #endregion Public Methods
+
+        #region Private Methods
+
         /// <summary>
         /// Searches a tsResponse's Items array for an object matching the given type.
         /// </summary>
@@ -146,5 +154,7 @@ namespace Tableau.RestApi.Extensions
             }
             throw new ArgumentException(String.Format("No '{0}' item is present in response", type));
         }
+
+        #endregion Private Methods
     }
 }

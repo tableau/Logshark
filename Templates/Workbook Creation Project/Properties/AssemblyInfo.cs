@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Workbook_Creation_Project")]
+[assembly: AssemblyTitle("Logshark Workbook Creation Plugin Project Template")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Logshark_Project_Templates")]
-[assembly: AssemblyCopyright("")]
+[assembly: AssemblyCompany("Tableau")]
+[assembly: AssemblyProduct("Logshark")]
+[assembly: AssemblyCopyright("Tableau")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

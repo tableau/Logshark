@@ -52,7 +52,7 @@ namespace Logshark.PluginLib.Extensions
                 {
                     throw new Exception(String.Format("Cannot migrate table {0} due to new non-nullable field {1}!", tableName, field.FieldName));
                 }
-                    
+
                 db.ExecuteSql(GetAddColumnStatement(tableName, field, namingStrategy));
 
                 //Add the appropriate index
@@ -73,7 +73,6 @@ namespace Logshark.PluginLib.Extensions
             {
                 db.ExecuteSql(GetMakeColumnNullableStatement(tableName, field, namingStrategy));
             }
-
         }
 
         private static List<string> GetColumnNames(IDbConnection db, string tableName, bool nullableOnly = false)
@@ -89,7 +88,7 @@ namespace Logshark.PluginLib.Extensions
                 {
                     cmd.CommandText = GetColumnsQuery(tableName);
                 }
-                
+
                 var reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
@@ -135,7 +134,7 @@ namespace Logshark.PluginLib.Extensions
         private static string GetAddIndexStatement(string tableName, FieldDefinition field, ModelDefinition model, INamingStrategy namingStrategy)
         {
             string columnName = namingStrategy.GetColumnName(field.FieldName);
-            if (field.IsUnique) 
+            if (field.IsUnique)
             {
                 return String.Format("CREATE UNIQUE INDEX uidx_{0}_{1} ON {2} ({3})", model.ModelName.ToLowerInvariant(), field.FieldName.ToLowerInvariant(), tableName, columnName);
             }

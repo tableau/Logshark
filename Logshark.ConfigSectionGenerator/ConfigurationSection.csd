@@ -11,7 +11,7 @@
     <externalType name="TimeSpan" namespace="System" />
   </typeDefinitions>
   <configurationElements>
-    <configurationSection name="LogsharkConfig" namespace="Logshark" codeGenOptions="Singleton, XmlnsProperty" xmlSectionName="Config">
+    <configurationSection name="LogsharkConfig" namespace="Logshark.ConfigSection" codeGenOptions="Singleton, XmlnsProperty" xmlSectionName="Config">
       <elementProperties>
         <elementProperty name="PostgresConnection" isRequired="true" isKey="false" isDefaultCollection="false" xmlName="PostgresConnection" isReadOnly="false" documentation="Settings pertaining to the Postgres database.">
           <type>
@@ -33,9 +33,9 @@
             <configurationElementMoniker name="/d0ed9acb-0435-4532-afdd-b5115bc4d562/TableauServerConnection" />
           </type>
         </elementProperty>
-        <elementProperty name="PluginOptions" isRequired="true" isKey="false" isDefaultCollection="false" xmlName="PluginOptions" isReadOnly="false" documentation="Options related to plugin execution.">
+        <elementProperty name="ArtifactProcessorOptions" isRequired="true" isKey="false" isDefaultCollection="false" xmlName="ArtifactProcessorOptions" isReadOnly="false" documentation="Options related to artifact processors.">
           <type>
-            <configurationElementMoniker name="/d0ed9acb-0435-4532-afdd-b5115bc4d562/PluginOptions" />
+            <configurationElementCollectionMoniker name="/d0ed9acb-0435-4532-afdd-b5115bc4d562/ArtifactProcessorOptions" />
           </type>
         </elementProperty>
       </elementProperties>
@@ -72,6 +72,32 @@
       </elementProperties>
     </configurationElement>
     <configurationElement name="PostgresConnection" namespace="Logshark.Config">
+      <attributeProperties>
+        <attributeProperty name="CommandTimeout" isRequired="false" isKey="false" isDefaultCollection="false" xmlName="commandTimeout" isReadOnly="false" documentation="The Postgres command timeout, in seconds" defaultValue="120">
+          <validator>
+            <integerValidatorMoniker name="/d0ed9acb-0435-4532-afdd-b5115bc4d562/Non-negative Integer" />
+          </validator>
+          <type>
+            <externalTypeMoniker name="/d0ed9acb-0435-4532-afdd-b5115bc4d562/Int32" />
+          </type>
+        </attributeProperty>
+        <attributeProperty name="TcpKeepalive" isRequired="false" isKey="false" isDefaultCollection="false" xmlName="tcpKeepalive" isReadOnly="false" documentation="The number of seconds of connection inactivity before a TCP keepalive query is sent. " defaultValue="0">
+          <validator>
+            <integerValidatorMoniker name="/d0ed9acb-0435-4532-afdd-b5115bc4d562/Non-negative Integer" />
+          </validator>
+          <type>
+            <externalTypeMoniker name="/d0ed9acb-0435-4532-afdd-b5115bc4d562/Int32" />
+          </type>
+        </attributeProperty>
+        <attributeProperty name="WriteBufferSize" isRequired="false" isKey="false" isDefaultCollection="false" xmlName="writeBufferSize" isReadOnly="false" documentation="The size of the Postgres write buffer, in bytes." defaultValue="16384">
+          <validator>
+            <integerValidatorMoniker name="/d0ed9acb-0435-4532-afdd-b5115bc4d562/Non-negative Integer" />
+          </validator>
+          <type>
+            <externalTypeMoniker name="/d0ed9acb-0435-4532-afdd-b5115bc4d562/Int32" />
+          </type>
+        </attributeProperty>
+      </attributeProperties>
       <elementProperties>
         <elementProperty name="Server" isRequired="true" isKey="false" isDefaultCollection="false" xmlName="Server" isReadOnly="false" documentation="Information about the Postgres server.">
           <type>
@@ -208,6 +234,14 @@
             <externalTypeMoniker name="/d0ed9acb-0435-4532-afdd-b5115bc4d562/String" />
           </type>
         </attributeProperty>
+        <attributeProperty name="PublishingTimeoutSeconds" isRequired="true" isKey="false" isDefaultCollection="false" xmlName="publishingTimeoutSeconds" isReadOnly="false" documentation="The number of seconds to wait for a response when publishing a workbook to Tableau Server." defaultValue="300">
+          <validator>
+            <integerValidatorMoniker name="/d0ed9acb-0435-4532-afdd-b5115bc4d562/Positive Integer" />
+          </validator>
+          <type>
+            <externalTypeMoniker name="/d0ed9acb-0435-4532-afdd-b5115bc4d562/Int32" />
+          </type>
+        </attributeProperty>
       </attributeProperties>
       <elementProperties>
         <elementProperty name="Server" isRequired="true" isKey="false" isDefaultCollection="false" xmlName="Server" isReadOnly="false">
@@ -267,16 +301,26 @@
         </attributeProperty>
       </attributeProperties>
     </configurationElement>
-    <configurationElement name="PluginOptions" namespace="Logshark.Config" documentation="Options related to plugin execution.">
+    <configurationElement name="ArtifactProcessorConfigNode" namespace="Logshark.Config" documentation="Options related to running an artifact processor.">
+      <attributeProperties>
+        <attributeProperty name="Name" isRequired="true" isKey="true" isDefaultCollection="false" xmlName="name" isReadOnly="false" documentation="The type name of the artifact processor." defaultValue="&quot;Default&quot;">
+          <validator>
+            <stringValidatorMoniker name="/d0ed9acb-0435-4532-afdd-b5115bc4d562/Non-empty String" />
+          </validator>
+          <type>
+            <externalTypeMoniker name="/d0ed9acb-0435-4532-afdd-b5115bc4d562/String" />
+          </type>
+        </attributeProperty>
+      </attributeProperties>
       <elementProperties>
-        <elementProperty name="DefaultPlugins" isRequired="true" isKey="false" isDefaultCollection="false" xmlName="DefaultPlugins" isReadOnly="false" documentation="The default set of plugins to run on every Logshark execution.">
+        <elementProperty name="DefaultPlugins" isRequired="true" isKey="false" isDefaultCollection="false" xmlName="DefaultPlugins" isReadOnly="false" documentation="The default set of plugins to run on every Logshark execution using the parent artifact processor.">
           <type>
             <configurationElementCollectionMoniker name="/d0ed9acb-0435-4532-afdd-b5115bc4d562/DefaultPlugins" />
           </type>
         </elementProperty>
       </elementProperties>
     </configurationElement>
-    <configurationElementCollection name="DefaultPlugins" namespace="Logshark.Config" documentation="The default set of plugins to run on every Logshark execution." xmlItemName="Plugin" codeGenOptions="Indexer, AddMethod, RemoveMethod, GetItemMethods">
+    <configurationElementCollection name="DefaultPlugins" namespace="Logshark.Config" documentation="The default set of plugins to run on every Logshark execution which uses the parent artifact processor." xmlItemName="Plugin" codeGenOptions="Indexer, AddMethod, RemoveMethod, GetItemMethods">
       <itemType>
         <configurationElementMoniker name="/d0ed9acb-0435-4532-afdd-b5115bc4d562/Plugin" />
       </itemType>
@@ -335,6 +379,11 @@
         </elementProperty>
       </elementProperties>
     </configurationElement>
+    <configurationElementCollection name="ArtifactProcessorOptions" namespace="Logshark.Config" documentation="Options pertaining to artifact processors." xmlItemName="ArtifactProcessor" codeGenOptions="Indexer, AddMethod, RemoveMethod, GetItemMethods">
+      <itemType>
+        <configurationElementMoniker name="/d0ed9acb-0435-4532-afdd-b5115bc4d562/ArtifactProcessorConfigNode" />
+      </itemType>
+    </configurationElementCollection>
   </configurationElements>
   <propertyValidators>
     <validators>
@@ -342,6 +391,7 @@
       <integerValidator name="Positive Integer" minValue="1" />
       <integerValidator name="Valid Port" maxValue="65535" minValue="0" />
       <stringValidator name="HttpProtocolValidator" maxLength="5" minLength="4" />
+      <integerValidator name="Non-negative Integer" minValue="0" />
     </validators>
   </propertyValidators>
 </configurationSectionModel>

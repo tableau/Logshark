@@ -56,16 +56,20 @@
     <EmbeddedResource Include="$safeprojectname$.twb" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Logshark.Plugins\Logshark.PluginLib.csproj">
+    <ProjectReference Include="..\Logshark.PluginLib\Logshark.PluginLib.csproj">
       <Project>{c80ed597-1c60-465b-a18d-b249b7c2849f}</Project>
       <Name>Logshark.PluginLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Logshark.PluginModel\Logshark.PluginModel.csproj">
+      <Project>{03D2B93A-3C04-4377-966C-051E102CD1BD}</Project>
+      <Name>Logshark.PluginModel</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>
-      if not exist "$(SolutionDir)Logshark\$(OutDir)Plugins" mkdir "$(SolutionDir)Logshark\$(OutDir)Plugins"
-      copy "$(TargetDir)$(TargetFileName)" "$(SolutionDir)Logshark\$(OutDir)Plugins" /y
+      if not exist "$(SolutionDir)Logshark.Core\$(OutDir)Plugins" mkdir "$(SolutionDir)Logshark.Core\$(OutDir)Plugins"
+      copy "$(TargetDir)$(TargetFileName)" "$(SolutionDir)Logshark.Core\$(OutDir)Plugins" /y
     </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

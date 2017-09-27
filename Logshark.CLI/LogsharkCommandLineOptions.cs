@@ -43,6 +43,12 @@ namespace Logshark.CLI
         [Option('f', "forceparse", DefaultValue = false, HelpText = "Forces a fresh parse of the logset, overriding any existing data in MongoDB.")]
         public bool ForceParse { get; set; }
 
+        [Option("id", DefaultValue = "", HelpText = "Sets a custom ID for the run that will be stored alongside the run metadata and tagged on any published workbooks.")]
+        public string Id { get; set; }
+
+        [Option("ignoredebuglogs", DefaultValue = false, HelpText = "Disables processing of DEBUG-level logs.")]
+        public bool IgnoreDebugLogs { get; set; }
+
         [Option('l', "listplugins", DefaultValue = false, HelpText = "Lists information about all available Logshark plugins.")]
         public bool ListPlugins { get; set; }
 
@@ -60,9 +66,6 @@ namespace Logshark.CLI
 
         [Option('p', "publishworkbooks", DefaultValue = false, HelpText = "Publish resulting workbooks to Tableau Server.")]
         public bool PublishWorkbooks { get; set; }
-
-        [Option("processdebug", DefaultValue = false, HelpText = "Enables processing of debug level logs.")]
-        public bool ProcessDebug { get; set; }
 
         [Option("projectdescription", DefaultValue = "", HelpText = "Sets the Tableau Server project description where any workbooks will be published.")]
         public string ProjectDescription { get; set; }

@@ -8,7 +8,7 @@ namespace Tableau.RestApi.Helpers
     /// <summary>
     /// Handles constructing requests for publishing workbooks.
     /// </summary>
-    public static class PublishRequestBuilder
+    internal static class PublishRequestBuilder
     {
         /// <summary>
         /// Builds the ugly multi-part request body for a Publish Workbook request. These requests are limited to 64Mb TWB files.

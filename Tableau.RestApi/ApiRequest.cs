@@ -6,16 +6,18 @@ using Tableau.RestApi.Extensions;
 
 namespace Tableau.RestApi
 {
-    public class ApiRequest
+    internal class ApiRequest
     {
         public Uri Uri { get; protected set; }
         public HttpMethod Method { get; protected set; }
         public WebHeaderCollection Headers { get; protected set; }
         public string ContentType { get; protected set; }
         public byte[] Body { get; protected set; }
-        public int? Timeout { get; protected set; }
+        public int? TimeoutSeconds { get; protected set; }
 
-        public ApiRequest(Uri uri, HttpMethod method, WebHeaderCollection headers = null, byte[] body = null, string authToken = null, string contentType = null, int? timeout = null)
+        #region Public Methods
+
+        public ApiRequest(Uri uri, HttpMethod method, string authToken = null, WebHeaderCollection headers = null, string contentType = null, byte[] body = null, int? timeoutSeconds = null)
         {
             Uri = uri;
             Method = method;
@@ -43,7 +45,7 @@ namespace Tableau.RestApi
                     ContentType = contentType;
                 }
             }
-            Timeout = timeout;
+            TimeoutSeconds = timeoutSeconds;
         }
 
         public tsResponse TryIssueRequest(string requestFailureMessage, int maxAttempts = Constants.DefaultMaxRequestAttempts)
@@ -66,7 +68,7 @@ namespace Tableau.RestApi
                 HttpWebRequest request = this.ToHttpWebRequest();
                 try
                 {
-                    HttpWebResponse response = (HttpWebResponse) request.GetResponse();
+                    HttpWebResponse response = (HttpWebResponse)request.GetResponse();
                     if (!IsSuccessfulStatusCode(response.StatusCode))
                     {
                         throw new HttpRequestException(String.Format("Received non-successful status code {0} ({1})", response.StatusCode, response.StatusDescription));
@@ -93,17 +95,22 @@ namespace Tableau.RestApi
             throw new HttpRequestException(String.Format("Failed to retrieve successful response for {0} request to '{1}' after {2} attempts.", Method, Uri, maxAttempts));
         }
 
+        #endregion Public Methods
+
+        #region Protected Methods
+
         protected HttpWebRequest ToHttpWebRequest()
         {
-            var webRequest = WebRequest.Create(Uri) as HttpWebRequest;
+            var webRequest = (HttpWebRequest)WebRequest.Create(Uri);
 
             webRequest.Method = Method.ToString();
             webRequest.Headers.Add(Headers);
             webRequest.ContentType = ContentType;
 
-            if (Timeout.HasValue && Timeout > 0)
+            if (TimeoutSeconds.HasValue && TimeoutSeconds > 0)
             {
-                webRequest.Timeout = Timeout.Value;
+                // Convert seconds to milliseconds.
+                webRequest.Timeout = TimeoutSeconds.Value * 1000;
             }
 
             if (HasBody())
@@ -123,12 +130,14 @@ namespace Tableau.RestApi
 
         protected bool IsSuccessfulStatusCode(HttpStatusCode code)
         {
-            return ((int)code >= 200) && ((int)code <= 299);
+            return (int)code >= 200 && (int)code <= 299;
         }
 
         protected bool HasBody()
         {
             return Body != null && (Method == HttpMethod.Post || Method == HttpMethod.Put);
         }
+
+        #endregion Protected Methods
     }
 }

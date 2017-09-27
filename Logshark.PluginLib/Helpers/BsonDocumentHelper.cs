@@ -52,7 +52,7 @@ namespace Logshark.PluginLib.Helpers
             try
             {
                 return GetBool(key, document);
-            } 
+            }
             catch (Exception)
             {
                 return null;
