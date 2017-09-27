@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Tableau")]
 [assembly: AssemblyProduct("$safeprojectname$")]
-[assembly: AssemblyCopyright("Copyright Tableau 2016")]
+[assembly: AssemblyCopyright("Tableau")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

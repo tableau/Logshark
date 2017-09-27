@@ -7,7 +7,9 @@ namespace Logshark.PluginLib.Persistence
         int ItemsPendingInsertion { get; }
 
         void Enqueue(T item);
+
         void Shutdown();
+
         void Destroy();
     }
 }

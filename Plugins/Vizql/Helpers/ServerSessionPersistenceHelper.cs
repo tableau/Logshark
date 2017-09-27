@@ -2,6 +2,7 @@
 using Logshark.PluginLib;
 using Logshark.PluginLib.Logging;
 using Logshark.PluginLib.Persistence;
+using Logshark.PluginModel.Model;
 using Logshark.Plugins.Vizql.Models;
 using Npgsql;
 using ServiceStack.OrmLite;
@@ -11,11 +12,11 @@ using System.Reflection;
 
 namespace Logshark.Plugins.Vizql.Helpers
 {
-    public class ServerSessionPersistenceHelper
+    public static class ServerSessionPersistenceHelper
     {
         private static readonly ILog Log = PluginLogFactory.GetLogger(Assembly.GetExecutingAssembly(), MethodBase.GetCurrentMethod());
 
-        public static InsertionResult PersistSession(IDbConnection database, VizqlServerSession currentSession)
+        public static InsertionResult PersistSession(IPluginRequest pluginRequest, IDbConnection database, VizqlServerSession currentSession)
         {
             try
             {

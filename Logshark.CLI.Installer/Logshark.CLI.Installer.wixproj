@@ -15,7 +15,9 @@
     <OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>
     <IntermediateOutputPath>obj\$(Platform)\$(Configuration)\</IntermediateOutputPath>
     <LinkerAdditionalOptions>-b "$(SolutionDir)Logshark.CLI\bin\x64\Debug\lib"
--b "$(SolutionDir)Logshark.CLI\bin\x64\Debug\Plugins"</LinkerAdditionalOptions>
+-b "$(SolutionDir)Logshark.CLI\bin\x64\Debug\ArtifactProcessors"
+-b "$(SolutionDir)Logshark.CLI\bin\x64\Debug\Plugins"
+-b "$(SolutionDir)Logshark.CLI\bin\x64\Installer\CustomWorkbooks"</LinkerAdditionalOptions>
     <DefineConstants>Debug</DefineConstants>
     <SuppressValidation>True</SuppressValidation>
   </PropertyGroup>
@@ -23,6 +25,7 @@
     <OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>
     <IntermediateOutputPath>obj\$(Platform)\$(Configuration)\</IntermediateOutputPath>
     <LinkerAdditionalOptions>-b "$(SolutionDir)Logshark.CLI\bin\x64\Release\lib"
+-b "$(SolutionDir)Logshark.CLI\bin\x64\Release\ArtifactProcessors"
 -b "$(SolutionDir)Logshark.CLI\bin\x64\Release\Plugins"
 -b "$(SolutionDir)Logshark.CLI\bin\x64\Release\CustomWorkbooks"</LinkerAdditionalOptions>
     <SuppressValidation>True</SuppressValidation>
@@ -31,15 +34,16 @@
     <OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>
     <IntermediateOutputPath>obj\$(Platform)\$(Configuration)\</IntermediateOutputPath>
     <LinkerAdditionalOptions>-b "$(SolutionDir)Logshark.CLI\bin\x64\Installer\lib"
+-b "$(SolutionDir)Logshark.CLI\bin\x64\Installer\ArtifactProcessors"
 -b "$(SolutionDir)Logshark.CLI\bin\x64\Installer\Plugins"
 -b "$(SolutionDir)Logshark.CLI\bin\x64\Installer\CustomWorkbooks"</LinkerAdditionalOptions>
     <SuppressValidation>True</SuppressValidation>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Generated\ArtifactProcessorsFilesFragment.wxs" />
     <Compile Include="Generated\CustomWorkbooksFilesFragment.wxs" />
     <Compile Include="Generated\PluginFilesFragment.wxs" />
     <Compile Include="Product.wxs" />
-    <Compile Include="Theme\CustomExitDialog.wxs" />
     <Compile Include="Theme\CustomInstallDir.wxs" />
     <Compile Include="Theme\CustomInstallDirDlg.wxs" />
   </ItemGroup>
@@ -71,9 +75,6 @@
     <Folder Include="Generated" />
     <Folder Include="Theme\" />
   </ItemGroup>
-  <ItemGroup>
-    <Content Include="Logshark.CLI.Installer.wixproj.user" />
-  </ItemGroup>
   <PropertyGroup>
     <WixToolPath>..\wix\3.10.1\</WixToolPath>
     <WixTargetsPath>$(WixToolPath)Wix.targets</WixTargetsPath>
@@ -100,6 +101,7 @@
   </Target>
   <PropertyGroup>
     <PreBuildEvent>
+"$(SolutionDir)wix\3.10.1\heat.exe" dir "$(SolutionDir)Logshark.CLI\$(OutDir)ArtifactProcessors" -cg ArtifactProcessors -gg -scom -sreg -sfrag -srd -dr ARTIFACTPROCESSORSFOLDER -out "$(ProjectDir)Generated\ArtifactProcessorsFilesFragment.wxs"
 "$(SolutionDir)wix\3.10.1\heat.exe" dir "$(SolutionDir)Logshark.CLI\$(OutDir)Plugins" -cg Plugins -gg -scom -sreg -sfrag -srd -dr PLUGINFOLDER -out "$(ProjectDir)Generated\PluginFilesFragment.wxs"
 "$(SolutionDir)wix\3.10.1\heat.exe" dir "$(SolutionDir)Logshark.CLI\$(OutDir)CustomWorkbooks" -cg CustomWorkbooks -gg -scom -sreg -sfrag -srd -dr CUSTOMWORKBOOKSFOLDER -out "$(ProjectDir)Generated\CustomWorkbooksFilesFragment.wxs"
 </PreBuildEvent>

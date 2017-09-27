@@ -2,6 +2,7 @@
 using Logshark.PluginLib.Model;
 using Logshark.PluginLib.Model.Impl;
 using Logshark.PluginLib.Persistence;
+using Logshark.PluginModel.Model;
 using Logshark.Plugins.ResourceManager.Helpers;
 using Logshark.Plugins.ResourceManager.Model;
 using MongoDB.Bson;
@@ -51,7 +52,7 @@ namespace Logshark.Plugins.ResourceManager
         {
             CreateTables();
             logsetHash = pluginRequest.LogsetHash;
-            resourceManagerPersister = GetConcurrentCustomPersister<ResourceManagerEvent>(ResourceManagerPersistenceHelper.PersistResourceManagerInfo, pluginRequest);
+            resourceManagerPersister = GetConcurrentCustomPersister<ResourceManagerEvent>(pluginRequest, ResourceManagerPersistenceHelper.PersistResourceManagerInfo);
         }
 
         public override IPluginResponse Execute(IPluginRequest pluginRequest)

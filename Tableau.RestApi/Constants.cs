@@ -1,7 +1,7 @@
 ﻿namespace Tableau.RestApi
 {
     /// <summary>
-    /// Runtime constants for Tableau Server Rest API.
+    /// Compile-time constants for Tableau Server Rest API.
     /// </summary>
     public static class Constants
     {

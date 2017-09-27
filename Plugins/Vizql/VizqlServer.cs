@@ -3,6 +3,7 @@ using Logshark.PluginLib.Helpers;
 using Logshark.PluginLib.Model;
 using Logshark.PluginLib.Model.Impl;
 using Logshark.PluginLib.Persistence;
+using Logshark.PluginModel.Model;
 using Logshark.Plugins.Vizql.Helpers;
 using Logshark.Plugins.Vizql.Models;
 using Logshark.Plugins.Vizql.Models.Events.Error;
@@ -70,7 +71,7 @@ namespace Logshark.Plugins.Vizql
 
         protected virtual IPersister<VizqlServerSession> GetPersister(IPluginRequest pluginRequest)
         {
-            return GetConcurrentCustomPersister<VizqlServerSession>(ServerSessionPersistenceHelper.PersistSession, pluginRequest);
+            return GetConcurrentCustomPersister<VizqlServerSession>(pluginRequest, ServerSessionPersistenceHelper.PersistSession);
         }
 
         protected virtual VizqlServerSession ProcessSession(string sessionId, IMongoCollection<BsonDocument> collection)

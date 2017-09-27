@@ -2,14 +2,15 @@
 using Logshark.PluginLib.Model;
 using Logshark.PluginLib.Model.Impl;
 using Logshark.PluginLib.Persistence;
+using Logshark.PluginModel.Model;
 using Logshark.Plugins.Vizportal.Helpers;
+using Logshark.Plugins.Vizportal.Models;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Logshark.Plugins.Vizportal.Models;
 
 namespace Logshark.Plugins.Vizportal
 {

@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyDescription("Logshark plugin framework libraries.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Logshark.PluginLib")]
+[assembly: AssemblyProduct("Logshark")]
 [assembly: AssemblyCopyright("Tableau")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

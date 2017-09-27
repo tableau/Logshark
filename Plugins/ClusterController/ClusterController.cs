@@ -2,6 +2,7 @@
 using Logshark.PluginLib.Model;
 using Logshark.PluginLib.Model.Impl;
 using Logshark.PluginLib.Persistence;
+using Logshark.PluginModel.Model;
 using Logshark.Plugins.ClusterController.Helpers;
 using Logshark.Plugins.ClusterController.Models;
 using MongoDB.Bson;

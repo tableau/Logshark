@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Logshark.PluginModel.Model;
+using System;
 using System.Collections.Generic;
 
 namespace Logshark.PluginLib.Model.Impl

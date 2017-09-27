@@ -2,6 +2,7 @@
 using Logshark.PluginLib.Model;
 using Logshark.PluginLib.Model.Impl;
 using Logshark.PluginLib.Persistence;
+using Logshark.PluginModel.Model;
 using Logshark.Plugins.Vizql.Helpers;
 using Logshark.Plugins.Vizql.Models;
 using Logshark.Plugins.Vizql.Models.Events;
@@ -69,7 +70,7 @@ namespace Logshark.Plugins.Vizql
 
             var tasks = new List<Task>();
 
-            persistenceHelper = GetConcurrentCustomPersister<VizqlDesktopSession>(DesktopSessionPersistenceHelper.PersistSession, pluginRequest);
+            persistenceHelper = GetConcurrentCustomPersister<VizqlDesktopSession>(pluginRequest, DesktopSessionPersistenceHelper.PersistSession);
 
             using (GetPersisterStatusWriter(persistenceHelper))
             {

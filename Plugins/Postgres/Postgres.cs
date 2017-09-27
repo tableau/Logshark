@@ -2,6 +2,7 @@
 using Logshark.PluginLib.Model;
 using Logshark.PluginLib.Model.Impl;
 using Logshark.PluginLib.Persistence;
+using Logshark.PluginModel.Model;
 using Logshark.Plugins.Postgres.Helpers;
 using Logshark.Plugins.Postgres.Model;
 using MongoDB.Bson;

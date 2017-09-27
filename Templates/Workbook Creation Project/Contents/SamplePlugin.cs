@@ -1,6 +1,9 @@
 ﻿using Logshark.PluginLib.Extensions;
+using Logshark.PluginLib.Helpers;
 using Logshark.PluginLib.Model;
 using Logshark.PluginLib.Model.Impl;
+using Logshark.PluginLib.Persistence;
+using Logshark.PluginModel.Model;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using System;
@@ -9,7 +12,11 @@ using System.Linq;
 
 namespace Logshark.Plugins.$safeprojectname$
 {
-    public class $safeprojectname$ : BaseWorkbookCreationPlugin, IServerPlugin  // Change "IServerPlugin" to "IDesktopPlugin" if this is a Tableau Desktop plugin.
+    /// <summary>
+    /// $safeprojectname Workbook Creation Plugin
+    /// TODO: Add this project as a build dependency to the Logshark.CLI project.
+    /// </summary>
+    public class $safeprojectname$ : BaseWorkbookCreationPlugin, IServerPlugin  // TODO: Change the plugin interface to match the artifact type, if you're working with something other than Tableau Server logs.
     {
         // The PluginResponse contains state about whether this plugin ran successfully, as well as any errors encountered.  Append any non-fatal errors to this.
         private IPluginResponse pluginResponse;
@@ -33,7 +40,7 @@ namespace Logshark.Plugins.$safeprojectname$
             {
                 return new HashSet<string>
                 {
-                    // Enter all of your collection dependencies here.  I.E. "vizqlserver_cpp"
+                    // TODO: Enter all of your collection dependencies here.  I.E. "vizqlserver_cpp"
                 };
             }
         }
@@ -55,7 +62,7 @@ namespace Logshark.Plugins.$safeprojectname$
         {
             pluginResponse = CreatePluginResponse();
 
-            // Your plugin logic goes here.
+            // TODO: Your plugin logic goes here.
 
             return pluginResponse;
         }

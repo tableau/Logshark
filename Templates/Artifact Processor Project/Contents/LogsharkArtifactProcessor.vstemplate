@@ -1,0 +1,34 @@
+<VSTemplate Version="3.0.0" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" Type="Project">
+  <TemplateData>
+    <Name>Logshark Artifact Processor</Name>
+    <Description>Creates an empty Logshark Artifact Processor with build configuration &amp; references already set up.  Any newly created projects of this type should be created under the "ArtifactProcessors" subdirectory.</Description>
+    <ProjectType>CSharp</ProjectType>
+    <ProjectSubType>
+    </ProjectSubType>
+    <SortOrder>1000</SortOrder>
+    <CreateNewFolder>true</CreateNewFolder>
+    <DefaultName>MyLogsharkArtifactProcessor</DefaultName>
+    <ProvideDefaultName>true</ProvideDefaultName>
+    <LocationField>Enabled</LocationField>
+    <EnableLocationBrowseButton>true</EnableLocationBrowseButton>
+    <Icon>__TemplateIcon.ico</Icon>
+  </TemplateData>
+  <TemplateContent>
+    <Project TargetFileName="$safeprojectname$.csproj" File="SampleArtifactProcessor.csproj" ReplaceParameters="true">
+      <Folder Name="Properties" TargetFolderName="Properties">
+        <ProjectItem ReplaceParameters="true" TargetFileName="AssemblyInfo.cs">AssemblyInfo.cs</ProjectItem>
+      </Folder>
+      <ProjectItem ReplaceParameters="true" TargetFileName="$safeprojectname$.cs">SampleArtifactProcessor.cs</ProjectItem>
+      <Folder Name="Parsing" TargetFolderName="Parsing">
+        <ProjectItem ReplaceParameters="true" TargetFileName="ParserConstants.cs">ParserConstants.cs</ProjectItem>
+        <ProjectItem ReplaceParameters="true" TargetFileName="ParserFactory.cs">ParserFactory.cs</ProjectItem>
+        <Folder Name="ParserBuilders" TargetFolderName="ParserBuilders">
+          <ProjectItem ReplaceParameters="true" TargetFileName="RootParserBuilder.cs">RootParserBuilder.cs</ProjectItem>
+        </Folder>
+        <Folder Name="Parsers" TargetFolderName="Parsers">
+          <ProjectItem ReplaceParameters="true" TargetFileName="SampleJsonParser.cs">SampleJsonParser.cs</ProjectItem>
+        </Folder>
+      </Folder>
+    </Project>
+  </TemplateContent>
+</VSTemplate>

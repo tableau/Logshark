@@ -1,5 +1,6 @@
 ﻿using Logshark.PluginLib.Model;
 using Logshark.PluginLib.Model.Impl;
+using Logshark.PluginModel.Model;
 using Logshark.Plugins.CustomWorkbooks.Dependencies;
 using System;
 using System.Collections.Generic;

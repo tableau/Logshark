@@ -54,11 +54,11 @@ namespace Logshark.PluginLib.StatusWriter
             long tasksCompleted = CountCompletedTasks();
             long tasksRunning = CountRunningTasks();
             long tasksRemaining = totalTasks - tasksCompleted;
-            
+
             string percentCompleteString;
             if (totalTasks <= 0 || tasksCompleted < 0)
             {
-                percentCompleteString ="N/A";
+                percentCompleteString = "N/A";
             }
             else
             {

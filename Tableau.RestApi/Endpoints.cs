@@ -5,7 +5,7 @@ namespace Tableau.RestApi
     /// <summary>
     /// Handles mapping various Rest API endpoints to URIs.
     /// </summary>
-    public static class Endpoints
+    internal static class Endpoints
     {
         public static Uri GetAddDefaultPermissionsWorkbookUri(Uri baseUri, string siteId, string projectId)
         {
@@ -22,6 +22,12 @@ namespace Tableau.RestApi
         public static Uri GetCreateProjectUri(Uri baseUri, string siteId)
         {
             var endpoint = String.Format("sites/{0}/projects", siteId);
+            return BuildRestApiUri(baseUri, endpoint);
+        }
+
+        public static Uri GetDeleteProjectUri(Uri baseUri, string siteId, string projectId)
+        {
+            var endpoint = String.Format("sites/{0}/projects/{1}", siteId, projectId);
             return BuildRestApiUri(baseUri, endpoint);
         }
 

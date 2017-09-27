@@ -6,8 +6,11 @@
     public interface IStatusWriter
     {
         void Start();
+
         void Stop();
+
         void WriteStatus();
+
         void Dispose();
     }
 }

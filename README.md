@@ -35,7 +35,7 @@ The current development requirements are:
 4. Configuration Section Designer Visual Studio Extension - Required if you wish to modify & regenerate the "LogsharkConfigSection" custom config section class.
   * Available at http://csd.codeplex.com
 
-It is recommended that you install the Logshark Project Templates extension by running the "Logshark Project Templates.vsix" file found in the root directory.  This adds a "Logshark Workbook Creation Plugin" project type to Visual Studio which you can use to easily get up and running developing a new plugin.
+It is recommended that you install the Logshark Workbook Creation Plugin Project Template extension by running the "Logshark Workbook Creation Plugin Project Template.vsix" file found in the root directory.  This adds a "Logshark Workbook Creation Plugin" project type to Visual Studio which you can use to easily get up and running developing a new plugin.
 
 Note that you do not need to build Logshark from source to use it; a pre-built installer is available on the [releases page](https://github.com/tableau/Logshark/releases/latest).
 

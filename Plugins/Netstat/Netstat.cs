@@ -3,12 +3,13 @@ using Logshark.PluginLib.Helpers;
 using Logshark.PluginLib.Model;
 using Logshark.PluginLib.Model.Impl;
 using Logshark.PluginLib.Persistence;
+using Logshark.PluginModel.Model;
+using Logshark.Plugins.Netstat.Helpers;
+using Logshark.Plugins.Netstat.Model;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
-using Logshark.Plugins.Netstat.Helpers;
-using Logshark.Plugins.Netstat.Model;
 
 namespace Logshark.Plugins.Netstat
 {

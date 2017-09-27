@@ -7,8 +7,10 @@ namespace Tableau.RestApi.Extensions
 {
     /// <summary>
     /// Extension methods for the auto-generated tsRequest class.
+    /// A note on casing conventions: The Tableau Server REST API XSD schema uses camel-casing throughout.  In order to maximize flexibility for new API versions,
+    /// this library relies on generated classes using the XSD schema, so many types are camel-cased here as well.
     /// </summary>
-    public static class tsRequestExtensions
+    internal static class tsRequestExtensions
     {
         /// <summary>
         /// Serializes the body of a tsRequest into a byte array.

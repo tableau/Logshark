@@ -25,11 +25,11 @@ namespace Logshark.Plugins.Backgrounder
         private static readonly ILog Log = PluginLogFactory.GetLogger(Assembly.GetExecutingAssembly(),
                                                                       MethodBase.GetCurrentMethod());
 
-        public BackgrounderJobProcessor(IMongoDatabase mongoDatabase, IPersister<BackgrounderJob> backgrounderPersister)
+        public BackgrounderJobProcessor(IMongoDatabase mongoDatabase, IPersister<BackgrounderJob> backgrounderPersister, Guid logsetHash)
         {
             backgrounderJavaCollection = mongoDatabase.GetCollection<BsonDocument>(BackgrounderConstants.BackgrounderJavaCollectionName);
             this.backgrounderPersister = backgrounderPersister;
-            logsetHash = Guid.Parse(backgrounderJavaCollection.CollectionNamespace.DatabaseNamespace.DatabaseName);
+            this.logsetHash = logsetHash;
         }
 
         #region Public Methods

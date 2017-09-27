@@ -2,6 +2,7 @@
 using Logshark.PluginLib;
 using Logshark.PluginLib.Logging;
 using Logshark.PluginLib.Persistence;
+using Logshark.PluginModel.Model;
 using Logshark.Plugins.Backgrounder.Model;
 using Npgsql;
 using ServiceStack.OrmLite;
@@ -14,7 +15,7 @@ namespace Logshark.Plugins.Backgrounder.Helpers
     {
         private static readonly ILog Log = PluginLogFactory.GetLogger(Assembly.GetExecutingAssembly(), MethodBase.GetCurrentMethod());
 
-        public static InsertionResult PersistBackgrounderJob(IDbConnection dbConnection, BackgrounderJob backgrounderJob)
+        public static InsertionResult PersistBackgrounderJob(IPluginRequest pluginRequest, IDbConnection dbConnection, BackgrounderJob backgrounderJob)
         {
             try
             {

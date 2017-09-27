@@ -1,9 +1,10 @@
-﻿using Logshark.PluginLib.Extensions;
+﻿using Logshark.Common.TaskSchedulers;
+using Logshark.PluginLib.Extensions;
 using Logshark.PluginLib.Helpers;
 using Logshark.PluginLib.Model;
 using Logshark.PluginLib.Model.Impl;
 using Logshark.PluginLib.Persistence;
-using Logshark.PluginLib.TaskSchedulers;
+using Logshark.PluginModel.Model;
 using Logshark.Plugins.DataEngine.Helpers;
 using Logshark.Plugins.DataEngine.Model;
 using MongoDB.Bson;

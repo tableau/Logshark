@@ -1,5 +1,5 @@
 ﻿using log4net;
-using Logshark.PluginLib.Model;
+using Logshark.PluginModel.Model;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -61,7 +61,5 @@ namespace Logshark.PluginLib.Helpers
                 return defaultIfNotFound;
             }
         }
-
-
     }
 }

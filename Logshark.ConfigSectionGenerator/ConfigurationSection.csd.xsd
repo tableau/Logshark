@@ -8,8 +8,8 @@
 </auto-generated>
 -->
 <xs:schema xmlns:tns="logshark" elementFormDefault="qualified" targetNamespace="logshark" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-	<xs:element name="Config" type="tns:Logshark.LogsharkConfigCT" />
-	<xs:complexType name="Logshark.LogsharkConfigCT">
+	<xs:element name="Config" type="tns:Logshark.ConfigSection.LogsharkConfigCT" />
+	<xs:complexType name="Logshark.ConfigSection.LogsharkConfigCT">
 		<xs:choice minOccurs="0" maxOccurs="unbounded">
 			<xs:element minOccurs="1" name="PostgresConnection" type="tns:Logshark.Config.PostgresConnectionCT">
 				<xs:annotation>
@@ -31,9 +31,9 @@
 					<xs:documentation>Settings pertaining to the Tableau Server connection.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-			<xs:element minOccurs="1" name="PluginOptions" type="tns:Logshark.Config.PluginOptionsCT">
+			<xs:element minOccurs="1" name="ArtifactProcessorOptions" type="tns:Logshark.Config.ArtifactProcessorOptionsCT">
 				<xs:annotation>
-					<xs:documentation>Options related to plugin execution.</xs:documentation>
+					<xs:documentation>Options related to artifact processors.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
 		</xs:choice>
@@ -85,6 +85,21 @@
 				</xs:annotation>
 			</xs:element>
 		</xs:choice>
+		<xs:attribute name="commandTimeout" use="optional" type="xs:int">
+			<xs:annotation>
+				<xs:documentation>The Postgres command timeout, in seconds</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="tcpKeepalive" use="optional" type="xs:int">
+			<xs:annotation>
+				<xs:documentation>The number of seconds of connection inactivity before a TCP keepalive query is sent. </xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="writeBufferSize" use="optional" type="xs:int">
+			<xs:annotation>
+				<xs:documentation>The size of the Postgres write buffer, in bytes.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
 	</xs:complexType>
 	<xs:complexType name="Logshark.Config.MongoServerCT">
 		<xs:attribute name="address" use="required" type="xs:string">
@@ -185,6 +200,11 @@
 				<xs:documentation>The communication protocol to use, i.e. "http" or "https".</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
+		<xs:attribute name="publishingTimeoutSeconds" use="required" type="xs:int">
+			<xs:annotation>
+				<xs:documentation>The number of seconds to wait for a response when publishing a workbook to Tableau Server.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
 	</xs:complexType>
 	<xs:complexType name="Logshark.Config.TableauServerCT">
 		<xs:attribute name="address" use="required" type="xs:string">
@@ -215,14 +235,19 @@
 			</xs:annotation>
 		</xs:attribute>
 	</xs:complexType>
-	<xs:complexType name="Logshark.Config.PluginOptionsCT">
+	<xs:complexType name="Logshark.Config.ArtifactProcessorConfigNodeCT">
 		<xs:choice minOccurs="0" maxOccurs="unbounded">
 			<xs:element minOccurs="1" name="DefaultPlugins" type="tns:Logshark.Config.DefaultPluginsCT">
 				<xs:annotation>
-					<xs:documentation>The default set of plugins to run on every Logshark execution.</xs:documentation>
+					<xs:documentation>The default set of plugins to run on every Logshark execution using the parent artifact processor.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
 		</xs:choice>
+		<xs:attribute name="name" use="required" type="xs:string">
+			<xs:annotation>
+				<xs:documentation>The type name of the artifact processor.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
 	</xs:complexType>
 	<xs:complexType name="Logshark.Config.DefaultPluginsCT">
 		<xs:choice minOccurs="0" maxOccurs="unbounded">
@@ -278,6 +303,15 @@
 			<xs:element minOccurs="1" name="LocalMongo" type="tns:Logshark.Config.LocalMongoOptionsCT">
 				<xs:annotation>
 					<xs:documentation>Settings pertaining to using a local MongoDB instance.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:choice>
+	</xs:complexType>
+	<xs:complexType name="Logshark.Config.ArtifactProcessorOptionsCT">
+		<xs:choice minOccurs="0" maxOccurs="unbounded">
+			<xs:element minOccurs="0" maxOccurs="unbounded" name="ArtifactProcessor" type="tns:Logshark.Config.ArtifactProcessorConfigNodeCT">
+				<xs:annotation>
+					<xs:documentation>Options related to running an artifact processor.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
 		</xs:choice>
