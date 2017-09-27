@@ -17,7 +17,7 @@ In this section:
 ### Run the Logshark Setup program
 
 
-1.  From the directory where you downloaded Logshark, run the Logshark Setup program, double-click the file `Setup_Logshark_v1.0.exe`.
+1.  From the directory where you downloaded Logshark, run the Logshark Setup program, double-click the file `Setup_Logshark_v2.0.exe`.
 
 2.  Click **Install** to use the default configuration. This adds Logshark to the PATH environment variable.
 
@@ -59,7 +59,7 @@ Some of these configuration settings can be overridden at the command line. Othe
  
     ```xml 
     ...
-    <PostgresConnection>
+    <PostgresConnection tcpKeepalive="60">
        <Server address="localhost" port="5432"/>
        <User username="logshark" password="logshark"/>
      </PostgresConnection>
@@ -92,7 +92,7 @@ When you edit the Tableau Server connection, follow these guidelines:
 
     ```xml
     ...
-    <TableauConnection protocol="http">
+    <TableauConnection protocol="http" publishingTimeoutSeconds="300">
         <Server address="myTableauServer" port="80" site="MySite"/>
         <User username="myUser" password="myUserPassword"/>
     </TableauConnection>
