@@ -13,35 +13,29 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logshark.CLI", "Logshark.CL
 		{F533384E-2613-4C13-8D33-FA9B652668A1} = {F533384E-2613-4C13-8D33-FA9B652668A1}
 		{4BC56D57-37A6-46E1-94C2-89D041860A7B} = {4BC56D57-37A6-46E1-94C2-89D041860A7B}
 		{5F52D264-A5AD-4003-B2F4-B888BD113844} = {5F52D264-A5AD-4003-B2F4-B888BD113844}
+		{D6D4516C-0CC6-40B3-9002-B84F81E2C90B} = {D6D4516C-0CC6-40B3-9002-B84F81E2C90B}
 		{5CE5F893-3BF2-469E-8658-4BA329746D60} = {5CE5F893-3BF2-469E-8658-4BA329746D60}
 		{2182D598-25C4-4C3A-9CC8-870F53982EE4} = {2182D598-25C4-4C3A-9CC8-870F53982EE4}
 		{DDC3D69A-22DE-47C6-B4C7-E6DAF44E434A} = {DDC3D69A-22DE-47C6-B4C7-E6DAF44E434A}
+		{D41508A6-3102-4453-BA41-5B408720505E} = {D41508A6-3102-4453-BA41-5B408720505E}
 		{98DF83B0-A950-45A4-B201-C5AFFD22E7F5} = {98DF83B0-A950-45A4-B201-C5AFFD22E7F5}
 		{7D07CDC1-54F0-4BF2-9D10-78CD0103A2AB} = {7D07CDC1-54F0-4BF2-9D10-78CD0103A2AB}
 		{8A8C0BCD-CD48-4546-9A04-3B6989A07EE8} = {8A8C0BCD-CD48-4546-9A04-3B6989A07EE8}
 		{785B1AFB-57A4-4EAC-8EA9-7C0CDE4395F8} = {785B1AFB-57A4-4EAC-8EA9-7C0CDE4395F8}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogParsers", "LogParsers\LogParsers.csproj", "{34590396-6F72-4629-A449-351C7DAD2B75}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logshark.ConfigSectionGenerator", "Logshark.ConfigSectionGenerator\Logshark.ConfigSectionGenerator.csproj", "{58A100CE-CC7E-43BF-A054-D28648F092AC}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logshark", "Logshark\Logshark.csproj", "{5CE5F893-3BF2-469E-8658-4BA329746D60}"
-	ProjectSection(ProjectDependencies) = postProject
-		{34590396-6F72-4629-A449-351C7DAD2B75} = {34590396-6F72-4629-A449-351C7DAD2B75}
-		{0AEFC6D8-33B4-444B-BD5F-66028B62AF73} = {0AEFC6D8-33B4-444B-BD5F-66028B62AF73}
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tableau.RestApi", "Tableau.RestApi\Tableau.RestApi.csproj", "{0AEFC6D8-33B4-444B-BD5F-66028B62AF73}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugins", "Plugins", "{C3D15D38-FD6D-426F-8B06-6F62FDFAC956}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentation", "{95BDB70A-93DB-41B8-A8B5-2D6EE3A124BC}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_Documentation", "_Documentation", "{95BDB70A-93DB-41B8-A8B5-2D6EE3A124BC}"
 	ProjectSection(SolutionItems) = preProject
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test Settings", "Test Settings", "{FDC35336-FD5B-4751-9855-844B6C875277}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_Test Settings", "_Test Settings", "{FDC35336-FD5B-4751-9855-844B6C875277}"
 	ProjectSection(SolutionItems) = preProject
 		Test.runsettings = Test.runsettings
 	EndProjectSection
@@ -69,15 +63,6 @@ EndProject
 Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "Logshark.CLI.Installer.Bundle", "Logshark.CLI.Installer.Bundle\Logshark.CLI.Installer.Bundle.wixproj", "{BD38B9E4-960B-40F7-8CCC-8840DB1A6BA8}"
 	ProjectSection(ProjectDependencies) = postProject
 		{E16C3065-10B8-4B7A-9863-91B9BD42DA09} = {E16C3065-10B8-4B7A-9863-91B9BD42DA09}
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Nuget", "Nuget", "{CD873F7A-E414-42FE-8581-1DE96E725284}"
-	ProjectSection(SolutionItems) = preProject
-		Nuget\Logshark.Core.nuspec = Nuget\Logshark.Core.nuspec
-		Nuget\Logshark.LogParsers.nuspec = Nuget\Logshark.LogParsers.nuspec
-		Nuget\Logshark.MongoBinaries.nuspec = Nuget\Logshark.MongoBinaries.nuspec
-		Nuget\Logshark.Plugins.nuspec = Nuget\Logshark.Plugins.nuspec
-		Nuget\Tableau.RestApi.nuspec = Nuget\Tableau.RestApi.nuspec
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Netstat", "Plugins\Netstat\Netstat.csproj", "{C5127A26-C2B3-485C-BDD3-D8417D63165E}"
@@ -108,6 +93,28 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vizql", "Plugins\Vizql\Vizq
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomWorkbooks", "Plugins\CustomWorkbooks\CustomWorkbooks.csproj", "{5F52D264-A5AD-4003-B2F4-B888BD113844}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logshark.RequestModel", "Logshark.RequestModel\Logshark.RequestModel.csproj", "{C3F0FAFA-1C38-42CF-A1AE-37EF00D0EAD5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logshark.ConnectionModel", "Logshark.ConnectionModel\Logshark.ConnectionModel.csproj", "{33EA5733-998C-4F71-AC5C-AD125268778E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logshark.ConfigSection", "Logshark.ConfigSection\Logshark.ConfigSection.csproj", "{FF0D6D52-BB14-4B6F-AF8F-EA2847B642C9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logshark.Common", "Logshark.Common\Logshark.Common.csproj", "{0F89755A-EA3C-49BF-AE10-C5EE09E99916}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logshark.PluginModel", "Logshark.PluginModel\Logshark.PluginModel.csproj", "{03D2B93A-3C04-4377-966C-051E102CD1BD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logshark.Core", "Logshark.Core\Logshark.Core.csproj", "{5CE5F893-3BF2-469E-8658-4BA329746D60}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logshark.ArtifactProcessorModel", "Logshark.ArtifactProcessorModel\Logshark.ArtifactProcessorModel.csproj", "{E3E36B60-8B5E-4EE6-A6A8-03AFEB1250F8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogParsers.Base", "LogParsers.Base\LogParsers.Base.csproj", "{1A35BB10-CC91-4515-A928-448DDE9955C9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ArtifactProcessors", "ArtifactProcessors", "{04A5C09D-1864-4C55-B011-42C08649C3E2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TableauDesktopLogProcessor", "ArtifactProcessors\TableauDesktopLogProcessor\TableauDesktopLogProcessor.csproj", "{D6D4516C-0CC6-40B3-9002-B84F81E2C90B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TableauServerLogProcessor", "ArtifactProcessors\TableauServerLogProcessor\TableauServerLogProcessor.csproj", "{D41508A6-3102-4453-BA41-5B408720505E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -122,21 +129,9 @@ Global
 		{523332E9-88D7-4F67-8162-BE69F30055F6}.Installer|x64.Build.0 = Installer|x64
 		{523332E9-88D7-4F67-8162-BE69F30055F6}.Release|x64.ActiveCfg = Release|x64
 		{523332E9-88D7-4F67-8162-BE69F30055F6}.Release|x64.Build.0 = Release|x64
-		{34590396-6F72-4629-A449-351C7DAD2B75}.Debug|x64.ActiveCfg = Debug|x64
-		{34590396-6F72-4629-A449-351C7DAD2B75}.Debug|x64.Build.0 = Debug|x64
-		{34590396-6F72-4629-A449-351C7DAD2B75}.Installer|x64.ActiveCfg = Installer|x64
-		{34590396-6F72-4629-A449-351C7DAD2B75}.Installer|x64.Build.0 = Installer|x64
-		{34590396-6F72-4629-A449-351C7DAD2B75}.Release|x64.ActiveCfg = Release|x64
-		{34590396-6F72-4629-A449-351C7DAD2B75}.Release|x64.Build.0 = Release|x64
 		{58A100CE-CC7E-43BF-A054-D28648F092AC}.Debug|x64.ActiveCfg = Debug|x64
 		{58A100CE-CC7E-43BF-A054-D28648F092AC}.Installer|x64.ActiveCfg = Installer|x64
 		{58A100CE-CC7E-43BF-A054-D28648F092AC}.Release|x64.ActiveCfg = Release|x64
-		{5CE5F893-3BF2-469E-8658-4BA329746D60}.Debug|x64.ActiveCfg = Debug|x64
-		{5CE5F893-3BF2-469E-8658-4BA329746D60}.Debug|x64.Build.0 = Debug|x64
-		{5CE5F893-3BF2-469E-8658-4BA329746D60}.Installer|x64.ActiveCfg = Installer|x64
-		{5CE5F893-3BF2-469E-8658-4BA329746D60}.Installer|x64.Build.0 = Installer|x64
-		{5CE5F893-3BF2-469E-8658-4BA329746D60}.Release|x64.ActiveCfg = Release|x64
-		{5CE5F893-3BF2-469E-8658-4BA329746D60}.Release|x64.Build.0 = Release|x64
 		{0AEFC6D8-33B4-444B-BD5F-66028B62AF73}.Debug|x64.ActiveCfg = Debug|x64
 		{0AEFC6D8-33B4-444B-BD5F-66028B62AF73}.Debug|x64.Build.0 = Debug|x64
 		{0AEFC6D8-33B4-444B-BD5F-66028B62AF73}.Installer|x64.ActiveCfg = Installer|x64
@@ -172,6 +167,7 @@ Global
 		{98DF83B0-A950-45A4-B201-C5AFFD22E7F5}.Debug|x64.ActiveCfg = Debug|x64
 		{98DF83B0-A950-45A4-B201-C5AFFD22E7F5}.Debug|x64.Build.0 = Debug|x64
 		{98DF83B0-A950-45A4-B201-C5AFFD22E7F5}.Installer|x64.ActiveCfg = Installer|x64
+		{98DF83B0-A950-45A4-B201-C5AFFD22E7F5}.Installer|x64.Build.0 = Installer|x64
 		{98DF83B0-A950-45A4-B201-C5AFFD22E7F5}.Release|x64.ActiveCfg = Release|x64
 		{98DF83B0-A950-45A4-B201-C5AFFD22E7F5}.Release|x64.Build.0 = Release|x64
 		{785B1AFB-57A4-4EAC-8EA9-7C0CDE4395F8}.Debug|x64.ActiveCfg = Debug|x64
@@ -201,21 +197,25 @@ Global
 		{2182D598-25C4-4C3A-9CC8-870F53982EE4}.Debug|x64.ActiveCfg = Debug|x64
 		{2182D598-25C4-4C3A-9CC8-870F53982EE4}.Debug|x64.Build.0 = Debug|x64
 		{2182D598-25C4-4C3A-9CC8-870F53982EE4}.Installer|x64.ActiveCfg = Installer|x64
+		{2182D598-25C4-4C3A-9CC8-870F53982EE4}.Installer|x64.Build.0 = Installer|x64
 		{2182D598-25C4-4C3A-9CC8-870F53982EE4}.Release|x64.ActiveCfg = Release|x64
 		{2182D598-25C4-4C3A-9CC8-870F53982EE4}.Release|x64.Build.0 = Release|x64
 		{D307BC0B-CF74-4CB3-AD7D-A1C9EF6F60EA}.Debug|x64.ActiveCfg = Debug|x64
 		{D307BC0B-CF74-4CB3-AD7D-A1C9EF6F60EA}.Debug|x64.Build.0 = Debug|x64
 		{D307BC0B-CF74-4CB3-AD7D-A1C9EF6F60EA}.Installer|x64.ActiveCfg = Installer|x64
+		{D307BC0B-CF74-4CB3-AD7D-A1C9EF6F60EA}.Installer|x64.Build.0 = Installer|x64
 		{D307BC0B-CF74-4CB3-AD7D-A1C9EF6F60EA}.Release|x64.ActiveCfg = Release|x64
 		{D307BC0B-CF74-4CB3-AD7D-A1C9EF6F60EA}.Release|x64.Build.0 = Release|x64
 		{771E9320-BC90-4396-AAC3-6ED8EEFC6AE2}.Debug|x64.ActiveCfg = Debug|x64
 		{771E9320-BC90-4396-AAC3-6ED8EEFC6AE2}.Debug|x64.Build.0 = Debug|x64
 		{771E9320-BC90-4396-AAC3-6ED8EEFC6AE2}.Installer|x64.ActiveCfg = Installer|x64
+		{771E9320-BC90-4396-AAC3-6ED8EEFC6AE2}.Installer|x64.Build.0 = Installer|x64
 		{771E9320-BC90-4396-AAC3-6ED8EEFC6AE2}.Release|x64.ActiveCfg = Release|x64
 		{771E9320-BC90-4396-AAC3-6ED8EEFC6AE2}.Release|x64.Build.0 = Release|x64
 		{7D07CDC1-54F0-4BF2-9D10-78CD0103A2AB}.Debug|x64.ActiveCfg = Debug|x64
 		{7D07CDC1-54F0-4BF2-9D10-78CD0103A2AB}.Debug|x64.Build.0 = Debug|x64
 		{7D07CDC1-54F0-4BF2-9D10-78CD0103A2AB}.Installer|x64.ActiveCfg = Installer|x64
+		{7D07CDC1-54F0-4BF2-9D10-78CD0103A2AB}.Installer|x64.Build.0 = Installer|x64
 		{7D07CDC1-54F0-4BF2-9D10-78CD0103A2AB}.Release|x64.ActiveCfg = Release|x64
 		{7D07CDC1-54F0-4BF2-9D10-78CD0103A2AB}.Release|x64.Build.0 = Release|x64
 		{51DE3E1E-0708-4DC1-963B-D734D705F296}.Debug|x64.ActiveCfg = Debug|x64
@@ -236,6 +236,66 @@ Global
 		{5F52D264-A5AD-4003-B2F4-B888BD113844}.Installer|x64.Build.0 = Installer|x64
 		{5F52D264-A5AD-4003-B2F4-B888BD113844}.Release|x64.ActiveCfg = Release|x64
 		{5F52D264-A5AD-4003-B2F4-B888BD113844}.Release|x64.Build.0 = Release|x64
+		{C3F0FAFA-1C38-42CF-A1AE-37EF00D0EAD5}.Debug|x64.ActiveCfg = Debug|x64
+		{C3F0FAFA-1C38-42CF-A1AE-37EF00D0EAD5}.Debug|x64.Build.0 = Debug|x64
+		{C3F0FAFA-1C38-42CF-A1AE-37EF00D0EAD5}.Installer|x64.ActiveCfg = Installer|x64
+		{C3F0FAFA-1C38-42CF-A1AE-37EF00D0EAD5}.Installer|x64.Build.0 = Installer|x64
+		{C3F0FAFA-1C38-42CF-A1AE-37EF00D0EAD5}.Release|x64.ActiveCfg = Release|x64
+		{C3F0FAFA-1C38-42CF-A1AE-37EF00D0EAD5}.Release|x64.Build.0 = Release|x64
+		{33EA5733-998C-4F71-AC5C-AD125268778E}.Debug|x64.ActiveCfg = Debug|x64
+		{33EA5733-998C-4F71-AC5C-AD125268778E}.Debug|x64.Build.0 = Debug|x64
+		{33EA5733-998C-4F71-AC5C-AD125268778E}.Installer|x64.ActiveCfg = Installer|x64
+		{33EA5733-998C-4F71-AC5C-AD125268778E}.Installer|x64.Build.0 = Installer|x64
+		{33EA5733-998C-4F71-AC5C-AD125268778E}.Release|x64.ActiveCfg = Release|x64
+		{33EA5733-998C-4F71-AC5C-AD125268778E}.Release|x64.Build.0 = Release|x64
+		{FF0D6D52-BB14-4B6F-AF8F-EA2847B642C9}.Debug|x64.ActiveCfg = Debug|x64
+		{FF0D6D52-BB14-4B6F-AF8F-EA2847B642C9}.Debug|x64.Build.0 = Debug|x64
+		{FF0D6D52-BB14-4B6F-AF8F-EA2847B642C9}.Installer|x64.ActiveCfg = Installer|x64
+		{FF0D6D52-BB14-4B6F-AF8F-EA2847B642C9}.Installer|x64.Build.0 = Installer|x64
+		{FF0D6D52-BB14-4B6F-AF8F-EA2847B642C9}.Release|x64.ActiveCfg = Release|x64
+		{FF0D6D52-BB14-4B6F-AF8F-EA2847B642C9}.Release|x64.Build.0 = Release|x64
+		{0F89755A-EA3C-49BF-AE10-C5EE09E99916}.Debug|x64.ActiveCfg = Debug|x64
+		{0F89755A-EA3C-49BF-AE10-C5EE09E99916}.Debug|x64.Build.0 = Debug|x64
+		{0F89755A-EA3C-49BF-AE10-C5EE09E99916}.Installer|x64.ActiveCfg = Installer|x64
+		{0F89755A-EA3C-49BF-AE10-C5EE09E99916}.Installer|x64.Build.0 = Installer|x64
+		{0F89755A-EA3C-49BF-AE10-C5EE09E99916}.Release|x64.ActiveCfg = Release|x64
+		{0F89755A-EA3C-49BF-AE10-C5EE09E99916}.Release|x64.Build.0 = Release|x64
+		{03D2B93A-3C04-4377-966C-051E102CD1BD}.Debug|x64.ActiveCfg = Debug|x64
+		{03D2B93A-3C04-4377-966C-051E102CD1BD}.Debug|x64.Build.0 = Debug|x64
+		{03D2B93A-3C04-4377-966C-051E102CD1BD}.Installer|x64.ActiveCfg = Installer|x64
+		{03D2B93A-3C04-4377-966C-051E102CD1BD}.Installer|x64.Build.0 = Installer|x64
+		{03D2B93A-3C04-4377-966C-051E102CD1BD}.Release|x64.ActiveCfg = Release|x64
+		{03D2B93A-3C04-4377-966C-051E102CD1BD}.Release|x64.Build.0 = Release|x64
+		{5CE5F893-3BF2-469E-8658-4BA329746D60}.Debug|x64.ActiveCfg = Debug|x64
+		{5CE5F893-3BF2-469E-8658-4BA329746D60}.Debug|x64.Build.0 = Debug|x64
+		{5CE5F893-3BF2-469E-8658-4BA329746D60}.Installer|x64.ActiveCfg = Installer|x64
+		{5CE5F893-3BF2-469E-8658-4BA329746D60}.Installer|x64.Build.0 = Installer|x64
+		{5CE5F893-3BF2-469E-8658-4BA329746D60}.Release|x64.ActiveCfg = Release|x64
+		{5CE5F893-3BF2-469E-8658-4BA329746D60}.Release|x64.Build.0 = Release|x64
+		{E3E36B60-8B5E-4EE6-A6A8-03AFEB1250F8}.Debug|x64.ActiveCfg = Debug|x64
+		{E3E36B60-8B5E-4EE6-A6A8-03AFEB1250F8}.Debug|x64.Build.0 = Debug|x64
+		{E3E36B60-8B5E-4EE6-A6A8-03AFEB1250F8}.Installer|x64.ActiveCfg = Installer|x64
+		{E3E36B60-8B5E-4EE6-A6A8-03AFEB1250F8}.Installer|x64.Build.0 = Installer|x64
+		{E3E36B60-8B5E-4EE6-A6A8-03AFEB1250F8}.Release|x64.ActiveCfg = Release|x64
+		{E3E36B60-8B5E-4EE6-A6A8-03AFEB1250F8}.Release|x64.Build.0 = Release|x64
+		{1A35BB10-CC91-4515-A928-448DDE9955C9}.Debug|x64.ActiveCfg = Debug|x64
+		{1A35BB10-CC91-4515-A928-448DDE9955C9}.Debug|x64.Build.0 = Debug|x64
+		{1A35BB10-CC91-4515-A928-448DDE9955C9}.Installer|x64.ActiveCfg = Installer|x64
+		{1A35BB10-CC91-4515-A928-448DDE9955C9}.Installer|x64.Build.0 = Installer|x64
+		{1A35BB10-CC91-4515-A928-448DDE9955C9}.Release|x64.ActiveCfg = Release|x64
+		{1A35BB10-CC91-4515-A928-448DDE9955C9}.Release|x64.Build.0 = Release|x64
+		{D6D4516C-0CC6-40B3-9002-B84F81E2C90B}.Debug|x64.ActiveCfg = Debug|x64
+		{D6D4516C-0CC6-40B3-9002-B84F81E2C90B}.Debug|x64.Build.0 = Debug|x64
+		{D6D4516C-0CC6-40B3-9002-B84F81E2C90B}.Installer|x64.ActiveCfg = Installer|x64
+		{D6D4516C-0CC6-40B3-9002-B84F81E2C90B}.Installer|x64.Build.0 = Installer|x64
+		{D6D4516C-0CC6-40B3-9002-B84F81E2C90B}.Release|x64.ActiveCfg = Release|x64
+		{D6D4516C-0CC6-40B3-9002-B84F81E2C90B}.Release|x64.Build.0 = Release|x64
+		{D41508A6-3102-4453-BA41-5B408720505E}.Debug|x64.ActiveCfg = Debug|x64
+		{D41508A6-3102-4453-BA41-5B408720505E}.Debug|x64.Build.0 = Debug|x64
+		{D41508A6-3102-4453-BA41-5B408720505E}.Installer|x64.ActiveCfg = Installer|x64
+		{D41508A6-3102-4453-BA41-5B408720505E}.Installer|x64.Build.0 = Installer|x64
+		{D41508A6-3102-4453-BA41-5B408720505E}.Release|x64.ActiveCfg = Release|x64
+		{D41508A6-3102-4453-BA41-5B408720505E}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -255,5 +315,7 @@ Global
 		{51DE3E1E-0708-4DC1-963B-D734D705F296} = {C3D15D38-FD6D-426F-8B06-6F62FDFAC956}
 		{8A8C0BCD-CD48-4546-9A04-3B6989A07EE8} = {C3D15D38-FD6D-426F-8B06-6F62FDFAC956}
 		{5F52D264-A5AD-4003-B2F4-B888BD113844} = {C3D15D38-FD6D-426F-8B06-6F62FDFAC956}
+		{D6D4516C-0CC6-40B3-9002-B84F81E2C90B} = {04A5C09D-1864-4C55-B011-42C08649C3E2}
+		{D41508A6-3102-4453-BA41-5B408720505E} = {04A5C09D-1864-4C55-B011-42C08649C3E2}
 	EndGlobalSection
 EndGlobal

@@ -3,6 +3,7 @@ using Logshark.PluginLib.Helpers;
 using Logshark.PluginLib.Model;
 using Logshark.PluginLib.Model.Impl;
 using Logshark.PluginLib.Persistence;
+using Logshark.PluginModel.Model;
 using Logshark.Plugins.Tabadmin.Helpers;
 using Logshark.Plugins.Tabadmin.Models;
 using MongoDB.Bson;

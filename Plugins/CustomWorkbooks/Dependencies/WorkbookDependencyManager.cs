@@ -1,6 +1,6 @@
 ﻿using log4net;
 using Logshark.PluginLib.Logging;
-using Logshark.PluginLib.Model;
+using Logshark.PluginModel.Model;
 using Logshark.Plugins.CustomWorkbooks.Config;
 using System;
 using System.Collections.Generic;

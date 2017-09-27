@@ -3,6 +3,7 @@ using Logshark.PluginLib.Helpers;
 using Logshark.PluginLib.Logging;
 using Logshark.PluginLib.Persistence;
 using Logshark.PluginLib.StatusWriter;
+using Logshark.PluginModel.Model;
 using MongoDB.Driver;
 using ServiceStack.OrmLite;
 using System;
@@ -23,7 +24,7 @@ namespace Logshark.PluginLib.Model.Impl
         public IMongoDatabase MongoDatabase { get; set; }
         public IDbConnectionFactory OutputDatabaseConnectionFactory { get; set; }
 
-        protected readonly ILog Log; 
+        protected readonly ILog Log;
 
         /// <summary>
         /// The method plugin creators will need to override to create a plugin.
@@ -56,11 +57,11 @@ namespace Logshark.PluginLib.Model.Impl
             Log = PluginLogFactory.GetLogger(this.GetType());
         }
 
-        protected ConcurrentBatchPersister<T> GetConcurrentBatchPersister<T>(IPluginRequest request = null) where T : new() 
+        protected ConcurrentBatchPersister<T> GetConcurrentBatchPersister<T>(IPluginRequest request = null) where T : new()
         {
             if (request == null)
             {
-                return new ConcurrentBatchPersister<T>(OutputDatabaseConnectionFactory, recordsPersisted:RecordsPersisted);
+                return new ConcurrentBatchPersister<T>(OutputDatabaseConnectionFactory, recordsPersisted: RecordsPersisted);
             }
             else
             {
@@ -70,17 +71,9 @@ namespace Logshark.PluginLib.Model.Impl
             }
         }
 
-        protected ConcurrentCustomPersister<T> GetConcurrentCustomPersister<T>(ConcurrentCustomPersister<T>.InsertionMethod insertionMethod, IPluginRequest request = null) where T : new()
+        protected ConcurrentCustomPersister<T> GetConcurrentCustomPersister<T>(IPluginRequest request, ConcurrentCustomPersister<T>.InsertionMethod insertionMethod) where T : new()
         {
-            if (request == null)
-            {
-                return new ConcurrentCustomPersister<T>(OutputDatabaseConnectionFactory, insertionMethod, recordsPersisted:RecordsPersisted);
-            }
-            else
-            {
-                int poolSize = GlobalPluginArgumentHelper.GetPersisterPoolSize(request);
-                return new ConcurrentCustomPersister<T>(OutputDatabaseConnectionFactory, insertionMethod, poolSize, RecordsPersisted);
-            }
+            return new ConcurrentCustomPersister<T>(request, OutputDatabaseConnectionFactory, insertionMethod, recordsPersisted: RecordsPersisted);
         }
 
         protected PersisterStatusWriter<T> GetPersisterStatusWriter<T>(IPersister<T> persister, long? expectedTotalPersistedItems = null) where T : new()
@@ -90,9 +83,9 @@ namespace Logshark.PluginLib.Model.Impl
 
             if (expectedTotalPersistedItems.HasValue)
             {
-                progressFormatMessage = PluginLibConstants.DEFAULT_PERSISTER_STATUS_WRITER_PROGRESS_MESSAGE_WITH_TOTAL.Replace("{PersistedType}", persistedType);   
-            } 
-            else 
+                progressFormatMessage = PluginLibConstants.DEFAULT_PERSISTER_STATUS_WRITER_PROGRESS_MESSAGE_WITH_TOTAL.Replace("{PersistedType}", persistedType);
+            }
+            else
             {
                 progressFormatMessage = PluginLibConstants.DEFAULT_PERSISTER_STATUS_WRITER_PROGRESS_MESSAGE.Replace("{PersistedType}", persistedType);
             }
@@ -106,7 +99,7 @@ namespace Logshark.PluginLib.Model.Impl
             if (expectedTotalTasks.HasValue)
             {
                 progressFormatMessage = PluginLibConstants.DEFAULT_TASK_STATUS_WRITER_PROGRESS_MESSAGE_WITH_TOTAL.Replace("{TaskType}", taskType);
-            } 
+            }
             else
             {
                 progressFormatMessage = PluginLibConstants.DEFAULT_PERSISTER_STATUS_WRITER_PROGRESS_MESSAGE.Replace("{TaskType}", taskType);
@@ -126,6 +119,6 @@ namespace Logshark.PluginLib.Model.Impl
             }
 
             return false;
-        } 
+        }
     }
 }

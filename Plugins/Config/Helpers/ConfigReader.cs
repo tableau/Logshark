@@ -17,14 +17,14 @@ namespace Logshark.Plugins.Config.Helpers
         protected readonly IDictionary<int, string> workerHostnameMap;
         protected readonly string logsetHash;
 
-        public ConfigReader(IMongoDatabase mongoDatabase)
+        public ConfigReader(IMongoDatabase mongoDatabase, Guid logsetHash)
         {
             this.mongoDatabase = mongoDatabase;
             configDocument = LoadConfigDocument();
             config = LoadConfig();
             fileLastModifiedTimestamp = GetConfigModificationTimestamp();
             workerHostnameMap = ConfigDataHelper.GetWorkerHostnameMap(mongoDatabase);
-            logsetHash = mongoDatabase.DatabaseNamespace.DatabaseName;
+            this.logsetHash = logsetHash.ToString();
         }
 
         #region Public Methods

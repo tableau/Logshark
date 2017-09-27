@@ -1,4 +1,5 @@
-﻿using Logshark.PluginLib.Helpers;
+﻿using System;
+using Logshark.PluginLib.Helpers;
 using MongoDB.Bson;
 
 namespace Logshark.Plugins.Vizql.Models.Events.Query
@@ -21,12 +22,25 @@ namespace Logshark.Plugins.Vizql.Models.Events.Query
             SetEventMetadata(document);
             BsonDocument values = BsonDocumentHelper.GetValuesStruct(document);
 
-            Query = BsonDocumentHelper.TruncateString(BsonDocumentHelper.GetString("query", values), 1024);
+            Query = BsonDocumentHelper.GetString("query", values);
             ProtocolId = BsonDocumentHelper.GetNullableLong("protocol-id", values);
             Cols = BsonDocumentHelper.GetInt("cols", values);
             Rows = BsonDocumentHelper.GetInt("rows", values);
             QueryHash = BsonDocumentHelper.GetNullableLong("query-hash", values);
             Elapsed = BsonDocumentHelper.GetDouble("elapsed", values);
+        }
+
+        /// <summary>
+        /// The queries in the logs can be absolutely massive (> 100MB) so we may wish to truncate these to avoid memory or database bloat.
+        /// </summary>
+        public VizqlEndQuery WithTruncatedQueryText(int maxQueryLength)
+        {
+            if (maxQueryLength >= 0 && !String.IsNullOrEmpty(Query) && Query.Length > maxQueryLength)
+            {
+                Query = Query.Substring(0, maxQueryLength);
+            }
+
+            return this;
         }
 
         public override double? GetElapsedTimeInSeconds()

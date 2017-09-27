@@ -8,7 +8,7 @@ namespace Tableau.RestApi.Extensions
     /// <summary>
     /// Extension methods for the WebResponse class.
     /// </summary>
-    public static class WebResponseExtensions
+    internal static class WebResponseExtensions
     {
         /// <summary>
         /// Deserializes a WebResponse into a tsResponse object.
@@ -19,7 +19,13 @@ namespace Tableau.RestApi.Extensions
         {
             var deserializer = new XmlSerializer(typeof(tsResponse));
 
-            using (var responseReader = new StreamReader(response.GetResponseStream()))
+            var responseStream = response.GetResponseStream();
+            if (responseStream == null)
+            {
+                return null;
+            }
+
+            using (var responseReader = new StreamReader(responseStream))
             {
                 try
                 {

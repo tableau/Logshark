@@ -1,10 +1,11 @@
 ﻿using log4net;
-using Logshark.Config;
-using Logshark.Controller;
-using Logshark.Controller.Extraction;
-using Logshark.Controller.Metadata.Run;
-using Logshark.Exceptions;
-using Logshark.Extensions;
+using Logshark.Common.Extensions;
+using Logshark.ConnectionModel.Exceptions;
+using Logshark.Core;
+using Logshark.Core.Controller.Metadata.Run;
+using Logshark.Core.Exceptions;
+using Logshark.RequestModel;
+using Logshark.RequestModel.Config;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -42,7 +43,7 @@ namespace Logshark.CLI
             {
                 try
                 {
-                    LogsharkController.PrintAvailablePlugins();
+                    LogsharkRequestProcessor.PrintAvailablePlugins();
                     return;
                 }
                 catch (Exception ex)
@@ -97,28 +98,29 @@ namespace Logshark.CLI
             }
 
             // If the target is a relative path, we first need to convert it to an absolute path.
-            if (!LogsetHashUtil.IsValidMD5(target) && !Path.IsPathRooted(target))
+            if (!target.IsValidMD5() && !Path.IsPathRooted(target))
             {
                 target = Path.Combine(currentWorkingDirectory, target);
             }
 
             var request = new LogsharkRequestBuilder(target, configuration)
+                .WithCustomId(commandLineArgs.Id)
+                .WithDropParsedLogset(commandLineArgs.DropParsedLogset)
+                .WithForceParse(commandLineArgs.ForceParse)
+                .WithIgnoreDebugLogs(commandLineArgs.IgnoreDebugLogs)
+                .WithLocalMongoPort(commandLineArgs.LocalMongoPort)
+                .WithMetadata(ParseCommandLineArgToDictionary(commandLineArgs.Metadata))
+                .WithPluginCustomArguments(ParseCommandLineArgToDictionary(commandLineArgs.CustomArgs))
+                .WithPluginsToExecute(commandLineArgs.Plugins)
+                .WithPostgresDatabaseName(commandLineArgs.DatabaseName)
+                .WithProcessFullLogset(commandLineArgs.ParseAll)
                 .WithProjectDescription(commandLineArgs.ProjectDescription)
                 .WithProjectName(commandLineArgs.ProjectName)
-                .WithSiteName(commandLineArgs.SiteName)
-                .WithPostgresDatabaseName(commandLineArgs.DatabaseName)
-                .WithForceParse(commandLineArgs.ForceParse)
-                .WithProcessDebug(commandLineArgs.ProcessDebug)
-                .WithDropParsedLogset(commandLineArgs.DropParsedLogset)
                 .WithPublishWorkbooks(commandLineArgs.PublishWorkbooks)
-                .WithMetadata(ParseCommandLineArgToDictionary(commandLineArgs.Metadata))
-                .WithWorkbookTags(commandLineArgs.WorkbookTags)
-                .WithPluginsToExecute(commandLineArgs.Plugins)
-                .WithPluginCustomArguments(ParseCommandLineArgToDictionary(commandLineArgs.CustomArgs))
-                .WithProcessFullLogset(commandLineArgs.ParseAll)
-                .WithStartLocalMongo(commandLineArgs.StartLocalMongo)
-                .WithLocalMongoPort(commandLineArgs.LocalMongoPort)
+                .WithSiteName(commandLineArgs.SiteName)
                 .WithSource("CLI")
+                .WithStartLocalMongo(commandLineArgs.StartLocalMongo)
+                .WithWorkbookTags(commandLineArgs.WorkbookTags)
                 .GetRequest();
 
             return request;
@@ -155,6 +157,7 @@ namespace Logshark.CLI
         {
             return ex is ExtractionException ||
                    ex is InsufficientDiskSpaceException ||
+                   ex is ArtifactProcessorInitializationException ||
                    ex is ProcessingException ||
                    ex is InvalidLogsetException ||
                    ex is PublishingException;

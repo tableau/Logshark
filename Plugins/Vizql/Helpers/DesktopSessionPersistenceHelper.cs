@@ -1,58 +1,64 @@
 ﻿using log4net;
 using Logshark.PluginLib.Logging;
 using Logshark.PluginLib.Persistence;
+using Logshark.PluginModel.Model;
 using Logshark.Plugins.Vizql.Models;
+using Logshark.Plugins.Vizql.Models.Events.Query;
 using ServiceStack.OrmLite;
 using System;
 using System.Data;
+using System.Linq;
 using System.Reflection;
-using Logshark.Plugins.Vizql.Models.Events.Query;
 
 namespace Logshark.Plugins.Vizql.Helpers
 {
-    public class DesktopSessionPersistenceHelper
+    public static class DesktopSessionPersistenceHelper
     {
+        private static readonly string MaxQueryLengthArgumentKey = "VizqlDesktop.MaxQueryLength";
+        private static readonly int DefaultMaxQueryLength = 10000;
+
         private static readonly ILog Log = PluginLogFactory.GetLogger(Assembly.GetExecutingAssembly(), MethodBase.GetCurrentMethod());
 
-        public static InsertionResult PersistSession(IDbConnection database, VizqlDesktopSession currentSession)
+        public static InsertionResult PersistSession(IPluginRequest pluginRequest, IDbConnection database, VizqlDesktopSession currentSession)
         {
             try
             {
                 database.Insert(currentSession);
 
-                //Error
+                // Error
                 database.InsertAll(currentSession.ErrorEvents);
 
-                //Performance
+                // Performance
                 database.InsertAll(currentSession.PerformanceEvents);
 
-                //Connection
+                // Connection
                 database.InsertAll(currentSession.ConstructProtocolEvents);
                 database.InsertAll(currentSession.ConstructProtocolGroupEvents);
                 database.InsertAll(currentSession.DsConnectEvents);
 
-                //Compute
+                // Compute
                 database.InsertAll(currentSession.EndComputeQuickFilterStateEvents);
 
-                //Render
+                // Render
                 database.InsertAll(currentSession.EndUpdateSheetEvents);
 
-                //Caching
+                // Caching
                 database.InsertAll(currentSession.EcDropEvents);
                 database.InsertAll(currentSession.EcStoreEvents);
                 database.InsertAll(currentSession.EcLoadEvents);
                 database.InsertAll(currentSession.EqcStoreEvents);
                 database.InsertAll(currentSession.EqcLoadEvents);
 
-                //Message
+                // Message
                 database.InsertAll(currentSession.MessageEvents);
 
-                //Etc
+                // Etc
                 database.InsertAll(currentSession.EtcEvents);
 
-                //Query
+                // Query
+                int maxQueryLength = VizqlPluginArgumentHelper.GetMaxQueryLength(pluginRequest, MaxQueryLengthArgumentKey, DefaultMaxQueryLength);
                 database.InsertAll(currentSession.DsInterpretMetadataEvents);
-                database.InsertAll(currentSession.EndQueryEvents);
+                database.InsertAll(currentSession.EndQueryEvents.Select(queryEvent => queryEvent.WithTruncatedQueryText(maxQueryLength)));
                 database.InsertAll(currentSession.QpQueryEndEvents);
                 database.InsertAll(currentSession.EndPrepareQuickFilterQueriesEvents);
                 database.InsertAll(currentSession.EndSqlTempTableTuplesCreateEvents);
@@ -62,7 +68,7 @@ namespace Logshark.Plugins.Vizql.Helpers
                 foreach (VizqlQpBatchSummary qpBatchSummaryEvent in currentSession.QpBatchSummaryEvents)
                 {
                     database.Insert(qpBatchSummaryEvent);
-                    database.InsertAll(qpBatchSummaryEvent.QpBatchSummaryJobs);
+                    database.InsertAll(qpBatchSummaryEvent.QpBatchSummaryJobs.Select(queryEvent => queryEvent.WithTruncatedQueryText(maxQueryLength)));
                 }
 
                 Log.DebugFormat("Persisted session {0}", currentSession.VizqlSessionId);

@@ -7,6 +7,8 @@ _Builds/
 */bin/
 */obj/
 */Generated/
+ArtifactProcessors/*/bin/
+ArtifactProcessors/*/obj/
 Plugins/*/bin/
 Plugins/*/obj/
 Templates/*/bin/

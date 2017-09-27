@@ -40,7 +40,7 @@ namespace Logshark.Plugins.Vizql.Models.Events.Query
             BsonArray jobs = values.GetValue("jobs").AsBsonArray;
             foreach (BsonDocument job in jobs)
             {
-                QpBatchSummaryJobs.Add(new VizqlQpBatchSummaryJob(QpBatchSummaryEventGuid, job));
+                QpBatchSummaryJobs.Add(new VizqlQpBatchSummaryJob(QpBatchSummaryEventGuid, VizqlSessionId, job));
             }
         }
 

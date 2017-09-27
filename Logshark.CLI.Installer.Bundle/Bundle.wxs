@@ -29,7 +29,6 @@
     <!-- Core Install Options -->
     <Variable Name="OptionCreateStartMenuShortcuts" bal:Overridable="yes" Type="numeric" Persisted="yes" Value="1" />
     <Variable Name="OptionAddInstallLocationToPath" bal:Overridable="yes" Type="numeric" Persisted="yes" Value="1" />
-    <Variable Name="LaunchTarget" Value="[InstallFolder]\Documentation\Logshark User Guide.pdf" />
     
     <!-- Check Registry Key & Use Previous Install Folder If Available -->
     <util:RegistrySearch Id="PreviousInstallFolderSearch" Win64="yes"
@@ -49,7 +48,6 @@
       <RollbackBoundary />
       <MsiPackage Id="MainPackage" SourceFile="$(var.MainPackageFile)" DisplayInternalUI="no" Compressed="yes" Vital="yes">
         <MsiProperty Name="INSTALLFOLDER" Value="[InstallFolder] "/>
-        <MsiProperty Name="WIXUI_EXITDIALOGOPTIONALCHECKBOX" Value="[OptionLaunchUserGuideOnExit]" />
         <MsiProperty Name="INSTALLSHORTCUTS" Value="[OptionCreateStartMenuShortcuts]" />
         <MsiProperty Name="INSTALLPATHVARIABLE" Value="[OptionAddInstallLocationToPath]" />
       </MsiPackage>

@@ -11,62 +11,81 @@ namespace Logshark.Plugins.Apache.Model
         [AutoIncrement]
         public int Id { get; set; }
 
-        public Guid LogsetHash { get; set; }
-
         [Index(Unique = true)]
         public Guid EventHash { get; set; }
+
+        #region Apache Data Fields
+
+        public long? ContentLength { get; set; }
+
+        public int? Port { get; set; }
+
+        public string RequestBody { get; set; }
 
         [Index]
         public string RequestId { get; set; }
 
-        public string XForwardedFor { get; set; }
         public string RequestIp { get; set; }
+
+        public string RequestMethod { get; set; }
+
+        public long? RequestTimeMS { get; set; }
+
+        [Index]
+        public string Requester { get; set; }
+
+        [Index]
+        public int? StatusCode { get; set; }
 
         [Index]
         public DateTime Timestamp { get; set; }
 
         public string TimestampOffset { get; set; }
-        public int? Port { get; set; }
-        public string RequestMethod { get; set; }
-        public string RequestBody { get; set; }
 
-        [Index]
-        public int? StatusCode { get; set; }
+        public string XForwardedFor { get; set; }
 
-        public int? RequestTimeMS { get; set; }
+        #endregion Apache Data Fields
 
-        [Index]
-        public int? Worker { get; set; }
+        #region Metadata Fields
 
         [Index]
         public string File { get; set; }
 
-        public int LineNumber { get; set; }
+        public int? LineNumber { get; set; }
+
+        public Guid LogsetHash { get; set; }
+
+        [Index]
+        public int? Worker { get; set; }
+
+        #endregion Metadata Fields
 
         public HttpdRequest() { }
 
         public HttpdRequest(BsonDocument logLine, Guid logsetHash)
         {
-            LogsetHash = logsetHash;
+            // Initialize Apache Data fields
+            ContentLength = BsonDocumentHelper.GetNullableLong("content_length", logLine);
+            Port = BsonDocumentHelper.GetNullableInt("port", logLine);
+            RequestBody = BsonDocumentHelper.GetString("resource", logLine);
             RequestId = BsonDocumentHelper.GetString("request_id", logLine);
-            XForwardedFor = BsonDocumentHelper.GetString("xforwarded_for", logLine);
             RequestIp = BsonDocumentHelper.GetString("request_ip", logLine);
+            RequestMethod = BsonDocumentHelper.GetString("request_method", logLine);
+            RequestTimeMS = BsonDocumentHelper.GetNullableLong("request_time", logLine);
+            Requester = BsonDocumentHelper.GetString("requester", logLine);
+            StatusCode = BsonDocumentHelper.GetNullableInt("status_code", logLine);
             Timestamp = BsonDocumentHelper.GetDateTime("ts", logLine);
             TimestampOffset = BsonDocumentHelper.GetString("ts_offset", logLine);
-            Port = BsonDocumentHelper.GetNullableInt("port", logLine);
-            RequestMethod = BsonDocumentHelper.GetString("request_method", logLine);
-            RequestBody = BsonDocumentHelper.GetString("resource", logLine);
-            StatusCode = BsonDocumentHelper.GetNullableInt("status_code", logLine);
-            RequestTimeMS = BsonDocumentHelper.GetNullableInt("request_time", logLine);
-            Worker = BsonDocumentHelper.GetNullableInt("worker", logLine);
-            File = String.Format(@"{0}\{1}", BsonDocumentHelper.GetString("file_path", logLine), BsonDocumentHelper.GetString("file", logLine));
-            LineNumber = BsonDocumentHelper.GetInt("line", logLine);
-            EventHash = GetEventHash(logLine);
-        }
+            XForwardedFor = BsonDocumentHelper.GetString("xforwarded_for", logLine);
 
-        protected Guid GetEventHash(BsonDocument logLine)
-        {
-            return HashHelper.GenerateHashGuid(RequestId, Timestamp, TimestampOffset, File);
+            // Initialize Metadata fields
+            File = String.Format(@"{0}\{1}", BsonDocumentHelper.GetString("file_path", logLine), BsonDocumentHelper.GetString("file", logLine));
+            LineNumber = BsonDocumentHelper.GetNullableInt("line", logLine);
+            LogsetHash = logsetHash;
+            Worker = BsonDocumentHelper.GetNullableInt("worker", logLine);
+
+            // Generate unique event hash
+            EventHash = HashHelper.GenerateHashGuid(RequestId, Timestamp, TimestampOffset, File);
         }
     }
 }

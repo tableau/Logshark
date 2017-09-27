@@ -32,7 +32,9 @@ namespace Logshark.PluginLib.StatusWriter
             progressHeartbeatTimer.AutoReset = true;
         }
 
-        protected BaseStatusWriter() { }
+        protected BaseStatusWriter()
+        {
+        }
 
         public void Start()
         {

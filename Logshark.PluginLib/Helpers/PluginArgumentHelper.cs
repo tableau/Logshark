@@ -1,4 +1,4 @@
-﻿using Logshark.PluginLib.Model;
+﻿using Logshark.PluginModel.Model;
 using System;
 
 namespace Logshark.PluginLib.Helpers

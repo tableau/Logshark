@@ -1,0 +1,169 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x64</Platform>
+    <ProjectGuid>{D41508A6-3102-4453-BA41-5B408720505E}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Logshark.ArtifactProcessors.TableauServerLogProcessor</RootNamespace>
+    <AssemblyName>TableauServerLogProcessor</AssemblyName>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Installer|x64'">
+    <OutputPath>bin\x64\Installer\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="CsvHelper, Version=2.0.0.0, Culture=neutral, PublicKeyToken=8c4959082be5c823, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\CsvHelper.2.16.3.0\lib\net45\CsvHelper.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="FluentAssertions, Version=4.19.0.0, Culture=neutral, PublicKeyToken=33f2691a05b67b6a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\FluentAssertions.4.19.0\lib\net45\FluentAssertions.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="FluentAssertions.Core, Version=4.19.0.0, Culture=neutral, PublicKeyToken=33f2691a05b67b6a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\FluentAssertions.4.19.0\lib\net45\FluentAssertions.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="nunit.framework, Version=3.6.0.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\NUnit.3.6.0\lib\net45\nunit.framework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Parsing\ParserBuilders\BackgrounderParserBuilder.cs" />
+    <Compile Include="Parsing\ParserBuilders\CacheServerParserBuilder.cs" />
+    <Compile Include="Parsing\ParserBuilders\ClusterControllerParserBuilder.cs" />
+    <Compile Include="Parsing\ParserBuilders\ConfigParserBuilder.cs" />
+    <Compile Include="Parsing\ParserBuilders\DataEngineParserBuilder.cs" />
+    <Compile Include="Parsing\ParserBuilders\DataserverParserBuilder.cs" />
+    <Compile Include="Parsing\ParserBuilders\FilestoreParserBuilder.cs" />
+    <Compile Include="Parsing\ParserBuilders\HttpdParserBuilder.cs" />
+    <Compile Include="Parsing\ParserBuilders\HyperParserBuilder.cs" />
+    <Compile Include="Parsing\ParserBuilders\LicensingParserBuilder.cs" />
+    <Compile Include="Parsing\ParserBuilders\LogsParserBuilder.cs" />
+    <Compile Include="Parsing\ParserBuilders\PgsqlParserBuilder.cs" />
+    <Compile Include="Parsing\ParserBuilders\SearchServerParserBuilder.cs" />
+    <Compile Include="Parsing\ParserBuilders\ServiceParserBuilder.cs" />
+    <Compile Include="Parsing\ParserBuilders\SolrParserBuilder.cs" />
+    <Compile Include="Parsing\ParserBuilders\TabAdminParserBuilder.cs" />
+    <Compile Include="Parsing\ParserBuilders\TabAdminServiceParserBuilder.cs" />
+    <Compile Include="Parsing\ParserBuilders\VizportalParserBuilder.cs" />
+    <Compile Include="Parsing\ParserBuilders\VizqlParserBuilder.cs" />
+    <Compile Include="Parsing\ParserBuilders\WgServerParserBuilder.cs" />
+    <Compile Include="Parsing\ParserBuilders\ZookeeperParserBuilder.cs" />
+    <Compile Include="Parsing\Parsers\BackgrounderCppParser.cs" />
+    <Compile Include="Parsing\Parsers\BackgrounderJavaParser.cs" />
+    <Compile Include="Parsing\Parsers\BuildVersionParser.cs" />
+    <Compile Include="Parsing\Parsers\CacheServerParser.cs" />
+    <Compile Include="Parsing\Parsers\ClusterControllerParser.cs" />
+    <Compile Include="Parsing\Parsers\ConfigYamlParser.cs" />
+    <Compile Include="Parsing\Parsers\ConnectionsConfigParser.cs" />
+    <Compile Include="Parsing\Parsers\DataServerCppParser.cs" />
+    <Compile Include="Parsing\Parsers\DataServerJavaParser.cs" />
+    <Compile Include="Parsing\Parsers\FilestoreParser.cs" />
+    <Compile Include="Parsing\Parsers\HttpdErrorParser.cs" />
+    <Compile Include="Parsing\Parsers\HttpdParser.cs" />
+    <Compile Include="Parsing\Parsers\HyperParser.cs" />
+    <Compile Include="Parsing\Parsers\LicensingParser.cs" />
+    <Compile Include="Parsing\Parsers\NetstatParser.cs" />
+    <Compile Include="Parsing\Parsers\PostgresHostConfigParser.cs" />
+    <Compile Include="Parsing\Parsers\PostgresLegacyParser.cs" />
+    <Compile Include="Parsing\Parsers\PostgresParser.cs" />
+    <Compile Include="Parsing\Parsers\SearchServerLocalhostParser.cs" />
+    <Compile Include="Parsing\Parsers\SearchServerParser.cs" />
+    <Compile Include="Parsing\Parsers\SolrParser.cs" />
+    <Compile Include="Parsing\Parsers\TabAdminParser.cs" />
+    <Compile Include="Parsing\Parsers\TabAdminServiceParser.cs" />
+    <Compile Include="Parsing\Parsers\TabLicSrvParser.cs" />
+    <Compile Include="Parsing\Parsers\TabSvcParser.cs" />
+    <Compile Include="Parsing\Parsers\TasksYamlParser.cs" />
+    <Compile Include="Parsing\Parsers\VizPortalCppParser.cs" />
+    <Compile Include="Parsing\Parsers\VizportalJavaParser.cs" />
+    <Compile Include="Parsing\Parsers\VizqlServerCppParser.cs" />
+    <Compile Include="Parsing\Parsers\VizqlServerJavaParser.cs" />
+    <Compile Include="Parsing\Parsers\WgServerCppParser.cs" />
+    <Compile Include="Parsing\Parsers\WgServerJavaParser.cs" />
+    <Compile Include="Parsing\Parsers\ZookeeperParser.cs" />
+    <Compile Include="TableauServerLogProcessor.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Parsing\ParserFactory.cs" />
+    <Compile Include="Parsing\ParserBuilders\RootParserBuilder.cs" />
+    <Compile Include="Parsing\ParserConstants.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\LogParsers.Base\LogParsers.Base.csproj">
+      <Project>{1a35bb10-cc91-4515-a928-448dde9955c9}</Project>
+      <Name>LogParsers.Base</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Logshark.ArtifactProcessorModel\Logshark.ArtifactProcessorModel.csproj">
+      <Project>{e3e36b60-8b5e-4ee6-a6a8-03afeb1250f8}</Project>
+      <Name>Logshark.ArtifactProcessorModel</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Logshark.Common\Logshark.Common.csproj">
+      <Project>{0f89755a-ea3c-49bf-ae10-c5ee09e99916}</Project>
+      <Name>Logshark.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Logshark.PluginLib\Logshark.PluginLib.csproj">
+      <Project>{C80ED597-1C60-465B-A18D-B249B7C2849F}</Project>
+      <Name>Logshark.PluginLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Logshark.RequestModel\Logshark.RequestModel.csproj">
+      <Project>{c3f0fafa-1c38-42cf-a1ae-37ef00d0ead5}</Project>
+      <Name>Logshark.RequestModel</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>
+      if not exist "$(SolutionDir)Logshark.Core\$(OutDir)ArtifactProcessors" mkdir "$(SolutionDir)Logshark.Core\$(OutDir)ArtifactProcessors"
+      copy "$(TargetDir)$(TargetFileName)" "$(SolutionDir)Logshark.Core\$(OutDir)ArtifactProcessors" /y
+    </PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
