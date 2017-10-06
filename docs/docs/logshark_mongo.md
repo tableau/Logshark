@@ -12,7 +12,7 @@ The Logshark.config file contains the `<MongoConnection>` element that sets the 
 ```xml
   <MongoConnection poolSize="200" timeout="60" insertionRetries="3"> 
     <Server address="logshark-mongo-prod" port="27000"/> 
-    <User username="logshark" password="logshark"/> 
+    <User username="logshark" password="password"/> 
   </MongoConnection> 
 ```
 
