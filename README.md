@@ -1,4 +1,5 @@
 # Logshark
+[![Community Supported](https://img.shields.io/badge/Support%20Level-Tableau%20Supported-53bd92.svg)](https://www.tableau.com/support-levels-it-and-developer-tools)
 
 Logshark is a command line utility that you can run against Tableau Server logs to generate a set of workbooks that provide insights into system performance, content usage, and error conditions.
 
@@ -41,7 +42,7 @@ Note that you do not need to build Logshark from source to use it; a pre-built i
 
 # Is Logshark supported?
 
-Logshark is made available AS-IS with no support. This is intended to be a self-service tool and includes a user guide. Any bugs discovered should be filed in the Logshark [Git issue tracker](https://github.com/tableau/Logshark/issues).
+Logshark is Community Supported. This is intended to be a self-service tool and includes a user guide. Any bugs discovered should be filed in the Logshark [Git issue tracker](https://github.com/tableau/Logshark/issues).
 
 # How can I contribute to Logshark?
 
