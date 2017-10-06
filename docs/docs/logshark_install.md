@@ -53,7 +53,7 @@ Some of these configuration settings can be overridden at the command line. Othe
 
 3.  Set the `port` attribute to the port your server uses if it is different from the default. The default port is **5432**.
 
-4.  For the `user`, set both the `username` and `password` to **logshark** to match the role/user and password you added when you [Configure PostgreSQL for Logshark](logshark_postgres#configure-postgresql-for-logshark).
+4.  For the `user`, set both the `username` and `password` to match the role/user and password you added when you followed the steps in [Configure PostgreSQL for Logshark](logshark_postgres#configure-postgresql-for-logshark).
 
 
  
@@ -61,7 +61,7 @@ Some of these configuration settings can be overridden at the command line. Othe
     ...
     <PostgresConnection tcpKeepalive="60">
        <Server address="localhost" port="5432"/>
-       <User username="logshark" password="logshark"/>
+       <User username="logshark" password="password"/>
      </PostgresConnection>
      ...
     ```
