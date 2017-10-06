@@ -48,7 +48,7 @@ The following instructions describe how to configure your PostgreSQL installatio
 
     Role name: **logshark**
 
-    Password: **password** (on the Definition tab).  You should set this to a custom password, but please note that you will need to update the corresponding password in Logshark.config when you [Configure PostgreSQL for Logshark](logshark_install).
+    Password: **password** (on the Definition tab).  You should set this to a custom password, but please note that you will need to update the corresponding password in Logshark.config when you [Install and Configure Logshark](logshark_install).
 
     Role privileges: Select the **Can create databases** and **Can login** options.
 
