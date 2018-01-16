@@ -15,3 +15,4 @@ Templates/*/bin/
 Templates/*/obj/
 Logshark.CLI.Installer.Bundle/Contents/
 Tableau.RestApi/GeneratedCode/*.cs
+docs/Gemfile.lock
