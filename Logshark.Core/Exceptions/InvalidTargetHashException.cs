@@ -2,7 +2,8 @@
 
 namespace Logshark.Core.Exceptions
 {
-    public class InvalidTargetHashException : ProcessingException
+    [Serializable]
+    public class InvalidTargetHashException : InvalidLogsetException
     {
         public InvalidTargetHashException()
         {

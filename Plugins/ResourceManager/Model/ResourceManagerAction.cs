@@ -7,8 +7,12 @@ namespace Logshark.Plugins.ResourceManager.Model
 {
     public class ResourceManagerAction : ResourceManagerEvent
     {
-        public static Regex TotalMemoryUsageExceededRegex = new Regex(@"^Resource Manager: Exceeded allowed memory usage across all processes.\s(?<total_usage>\d+?)\s.*", RegexOptions.Compiled | RegexOptions.ExplicitCapture);
-        public static Regex ProcessMemoryUsageExceededRegex = new Regex(@"^Resource Manager: Exceeded allowed memory usage per process.\s(?<process_usage>\d+?)\s.*", RegexOptions.Compiled | RegexOptions.ExplicitCapture);
+        // Extract an optionally comma-separated numeric total memory byte count value (and optional process memory byte count) from the end of a static Resource Manager string
+        public static Regex TotalMemoryUsageExceededRegex = new Regex(@"Resource Manager: Exceeded allowed memory usage across all processes\D+\s(?<total_usage>[\d,]+?)\s(\D+\s(?<process_usage>[\d,]+?)\s)?", RegexOptions.Compiled | RegexOptions.ExplicitCapture);
+
+        // Extract an optionally comma-separated numeric process memory byte count value from the end of a static Resource Manager string
+        public static Regex ProcessMemoryUsageExceededRegex = new Regex(@"^Resource Manager: Exceeded allowed memory usage per process.\s(?<process_usage>[\d,]+?)\s.*", RegexOptions.Compiled | RegexOptions.ExplicitCapture);
+
         public static Regex CpuUsageExceededRegex = new Regex(@"^Resource Manager: Exceeded sustained high CPU threshold above\s(?<cpu_threshold>\d+?)%.*\s(?<duration>\d+?)\s.*\s(?<process_cpu_util>\d+?)%", RegexOptions.Compiled | RegexOptions.ExplicitCapture);
 
         public bool CpuUtilTermination { get; set; }
@@ -45,12 +49,12 @@ namespace Logshark.Plugins.ResourceManager.Model
                 }
                 else if (processMemoryUsageMatch.Success)
                 {
-                    ProcessMemoryUtil = Int64.Parse(processMemoryUsageMatch.Groups["process_usage"].Value);
+                    ProcessMemoryUtil = Int64.Parse(processMemoryUsageMatch.Groups["process_usage"].Value.Replace(",", ""));
                     ProcessMemoryUtilTermination = true;
                 }
                 else if (totalMemoryUsageMatch.Success)
                 {
-                    TotalMemoryUtil = Int64.Parse(totalMemoryUsageMatch.Groups["total_usage"].Value);
+                    TotalMemoryUtil = Int64.Parse(totalMemoryUsageMatch.Groups["total_usage"].Value.Replace(",", ""));
                     TotalMemoryUtilTermination = true;
                 }
                 else

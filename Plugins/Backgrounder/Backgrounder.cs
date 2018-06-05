@@ -1,5 +1,6 @@
-﻿using Logshark.PluginLib.Extensions;
-using Logshark.PluginLib.Model;
+﻿using Logshark.ArtifactProcessors.TableauServerLogProcessor.Parsers;
+using Logshark.ArtifactProcessors.TableauServerLogProcessor.PluginInterfaces;
+using Logshark.PluginLib.Extensions;
 using Logshark.PluginLib.Model.Impl;
 using Logshark.PluginLib.Persistence;
 using Logshark.PluginModel.Model;
@@ -9,7 +10,7 @@ using System.Collections.Generic;
 
 namespace Logshark.Plugins.Backgrounder
 {
-    public class Backgrounder : BaseWorkbookCreationPlugin, IServerPlugin
+    public class Backgrounder : BaseWorkbookCreationPlugin, IServerClassicPlugin, IServerTsmPlugin
     {
         private PluginResponse pluginResponse;
 
@@ -19,7 +20,7 @@ namespace Logshark.Plugins.Backgrounder
             {
                 return new HashSet<string>
                 {
-                    BackgrounderConstants.BackgrounderJavaCollectionName
+                    ParserConstants.BackgrounderJavaCollectionName
                 };
             }
         }

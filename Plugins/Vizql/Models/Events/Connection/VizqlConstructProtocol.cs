@@ -21,7 +21,8 @@ namespace Logshark.Plugins.Vizql.Models.Events.Connection
             SetEventMetadata(document);
 
             BsonDocument values = BsonDocumentHelper.GetValuesStruct(document);
-            Elapsed = BsonDocumentHelper.GetDouble("created-elapsed", values);
+
+            Elapsed = BsonDocumentHelper.GetNullableDouble("created-elapsed", values);
             ProtocolId = BsonDocumentHelper.GetNullableInt("id", values);
             ProtocolGroupId = BsonDocumentHelper.GetNullableInt("group_id", values);
 

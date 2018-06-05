@@ -1,5 +1,6 @@
-﻿using Logshark.PluginLib.Extensions;
-using Logshark.PluginLib.Model;
+﻿using Logshark.ArtifactProcessors.TableauServerLogProcessor.Parsers;
+using Logshark.ArtifactProcessors.TableauServerLogProcessor.PluginInterfaces;
+using Logshark.PluginLib.Extensions;
 using Logshark.PluginLib.Model.Impl;
 using Logshark.PluginLib.Persistence;
 using Logshark.PluginModel.Model;
@@ -14,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace Logshark.Plugins.Vizportal
 {
-    public class Vizportal : BaseWorkbookCreationPlugin, IServerPlugin
+    public class Vizportal : BaseWorkbookCreationPlugin, IServerClassicPlugin, IServerTsmPlugin
     {
         private PluginResponse pluginResponse;
         private IPersister<VizportalEvent> vizportalPersister;
@@ -26,7 +27,7 @@ namespace Logshark.Plugins.Vizportal
             {
                 return new HashSet<string>
                 {
-                    "vizportal_java"
+                    ParserConstants.VizportalJavaCollectionName
                 };
             }
         }

@@ -1,4 +1,5 @@
-﻿using Logshark.PluginLib.Helpers;
+﻿using Logshark.ArtifactProcessors.TableauServerLogProcessor.Parsers;
+using Logshark.PluginLib.Helpers;
 using Logshark.Plugins.Config.Model;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -90,7 +91,7 @@ namespace Logshark.Plugins.Config.Helpers
 
         protected BsonDocument LoadConfigDocument()
         {
-            IMongoCollection<BsonDocument> configCollection = mongoDatabase.GetCollection<BsonDocument>(Config.ConfigCollectionName);
+            IMongoCollection<BsonDocument> configCollection = mongoDatabase.GetCollection<BsonDocument>(ParserConstants.ConfigCollectionName);
 
             // Get a handle on the config.
             var query = MongoQueryHelper.GetConfig(configCollection);
@@ -178,7 +179,7 @@ namespace Logshark.Plugins.Config.Helpers
 
                     if (parsedPort && workerIndex.HasValue)
                     {
-                        postgresProcessInfo.Add(new ConfigProcessInfo(logsetHash, fileLastModifiedTimestamp, hostname, pgsqlProcessName, workerIndex.Value, port));
+                        postgresProcessInfo.Add(new ConfigProcessInfo(logsetHash, fileLastModifiedTimestamp, hostname, pgsqlProcessName, workerIndex.Value.ToString(), port));
                     }
                 }
             }
@@ -201,7 +202,7 @@ namespace Logshark.Plugins.Config.Helpers
 
         protected BsonDocument GetTabSvcYml()
         {
-            IMongoCollection<BsonDocument> configCollection = mongoDatabase.GetCollection<BsonDocument>(Config.ConfigCollectionName);
+            IMongoCollection<BsonDocument> configCollection = mongoDatabase.GetCollection<BsonDocument>(ParserConstants.ConfigCollectionName);
             var query = MongoQueryHelper.GetTabSvcYml(configCollection);
             BsonDocument tabSvcDocument = configCollection.Find(query).FirstOrDefault();
 
@@ -252,7 +253,7 @@ namespace Logshark.Plugins.Config.Helpers
             ICollection<ConfigProcessInfo> results = new List<ConfigProcessInfo>();
             for (int i = 0; i < processCount; i++)
             {
-                var configProcessInfo = new ConfigProcessInfo(logsetHash, fileLastModifiedTimestamp, hostname, processName, workerIndex, processPort.Value + i);
+                var configProcessInfo = new ConfigProcessInfo(logsetHash, fileLastModifiedTimestamp, hostname, processName, workerIndex.ToString(), processPort.Value + i);
                 results.Add(configProcessInfo);
             }
 
@@ -378,6 +379,10 @@ namespace Logshark.Plugins.Config.Helpers
             else if (element.Value.IsBsonNull)
             {
                 entries.Add(new KeyValuePair<string, string>(key, null));
+            }
+            else if (element.Value.IsBsonArray)
+            {
+                entries.Add(new KeyValuePair<string, string>(key, String.Join(",", element.Value.AsBsonArray)));
             }
             else
             {

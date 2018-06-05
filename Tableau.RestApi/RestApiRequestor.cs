@@ -14,7 +14,7 @@ namespace Tableau.RestApi
     /// A note on casing conventions: The Tableau Server REST API XSD schema uses camel-casing throughout.  In order to maximize flexibility for new API versions,
     /// this library relies on generated classes using the XSD schema, so many types are camel-cased here as well.
     /// </summary>
-    public class RestApiRequestor
+    public class RestApiRequestor : IRestApiRequestor
     {
         protected string authToken;
         protected string siteId;
@@ -66,7 +66,7 @@ namespace Tableau.RestApi
             // Issue request.
             var errorMessage = String.Format("Failed to set default workbook permissions for project in site '{0}'", siteName);
             ApiRequest request = new ApiRequest(uri, HttpMethod.Put, GetAuthToken(), headers: null, body: requestPayload.SerializeBody());
-            request.TryIssueRequest(errorMessage);
+            request.IssueRequest(errorMessage);
         }
 
         /// <summary>
@@ -103,7 +103,7 @@ namespace Tableau.RestApi
             // Issue request.
             var errorMessage = "Failed to add tags to workbook";
             ApiRequest request = new ApiRequest(uri, HttpMethod.Put, GetAuthToken(), headers: null, body: requestPayload.SerializeBody());
-            request.TryIssueRequest(errorMessage);
+            request.IssueRequest(errorMessage);
         }
 
         /// <summary>
@@ -131,7 +131,7 @@ namespace Tableau.RestApi
             // Issue request.
             var errorMessage = String.Format("Failed to authenticate user '{0}'", userName);
             ApiRequest request = new ApiRequest(uri, HttpMethod.Post, authToken: null, headers: null, body: requestPayload.SerializeBody());
-            tsResponse response = request.TryIssueRequest(errorMessage);
+            tsResponse response = request.IssueRequest(errorMessage);
 
             // Extract authentication token.
             tableauCredentialsType credentials = response.GetTableauCredentials();
@@ -162,7 +162,7 @@ namespace Tableau.RestApi
             // Issue request.
             var errorMessage = String.Format("Failed to create project '{0}' on site '{1}'", projectName, siteName);
             ApiRequest request = new ApiRequest(uri, HttpMethod.Post, GetAuthToken(), headers: null, body: requestPayload.SerializeBody());
-            tsResponse response = request.TryIssueRequest(errorMessage);
+            tsResponse response = request.IssueRequest(errorMessage);
 
             // Return ID of created project.
             projectType createdProject = response.GetProject();
@@ -179,7 +179,7 @@ namespace Tableau.RestApi
 
             var errorMessage = String.Format("Failed to delete project '{0}'", projectId);
             ApiRequest request = new ApiRequest(uri, HttpMethod.Delete, GetAuthToken());
-            request.TryIssueRequest(errorMessage);
+            request.IssueRequest(errorMessage);
         }
 
         /// <summary>
@@ -192,7 +192,7 @@ namespace Tableau.RestApi
 
             var errorMessage = String.Format("Failed to delete workbook '{0}'", workbookId);
             ApiRequest request = new ApiRequest(uri, HttpMethod.Delete, GetAuthToken());
-            request.TryIssueRequest(errorMessage);
+            request.IssueRequest(errorMessage);
         }
 
         /// <summary>
@@ -212,7 +212,7 @@ namespace Tableau.RestApi
                 // Issue request.
                 var errorMessage = String.Format("Failed to retrieve group list for site '{0}'", siteName);
                 ApiRequest request = new ApiRequest(uri, HttpMethod.Get, GetAuthToken());
-                tsResponse response = request.TryIssueRequest(errorMessage);
+                tsResponse response = request.IssueRequest(errorMessage);
 
                 // Rip group names out of response and check for a match.
                 groupListType groupList = response.GetGroupList();
@@ -272,7 +272,7 @@ namespace Tableau.RestApi
             // Issue request.
             var errorMessage = String.Format("Failed to retrieve project details for project '{0}' in site '{1}'", projectId, siteName);
             ApiRequest request = new ApiRequest(uri, HttpMethod.Put, GetAuthToken(), headers: null, body: requestPayload.SerializeBody());
-            tsResponse response = request.TryIssueRequest(errorMessage);
+            tsResponse response = request.IssueRequest(errorMessage);
 
             return response.GetProject();
         }
@@ -294,7 +294,7 @@ namespace Tableau.RestApi
                 // Issue request.
                 var errorMessage = String.Format("Failed to retrieve project list for site '{0}'", siteName);
                 ApiRequest request = new ApiRequest(uri, HttpMethod.Get, GetAuthToken());
-                tsResponse response = request.TryIssueRequest(errorMessage);
+                tsResponse response = request.IssueRequest(errorMessage);
 
                 // Rip project names out of response and check for a match.
                 projectListType projectList = response.GetProjectList();
@@ -329,7 +329,7 @@ namespace Tableau.RestApi
                 // Issue request.
                 var errorMessage = String.Format("Failed to retrieve site ID for site '{0}'", siteName);
                 ApiRequest request = new ApiRequest(uri, HttpMethod.Get, GetAuthToken());
-                tsResponse response = request.TryIssueRequest(errorMessage);
+                tsResponse response = request.IssueRequest(errorMessage);
 
                 // Extract site ID.
                 siteType site = response.GetSite();
@@ -341,8 +341,37 @@ namespace Tableau.RestApi
 
         public PublishedWorkbookResult PublishWorkbookWithEmbeddedCredentials(PublishWorkbookRequest publishRequest)
         {
-            PublishedWorkbookResult publishedWorkbookResult = new PublishedWorkbookResult(publishRequest);
+            long fileSize = new System.IO.FileInfo(publishRequest.FilePath).Length;
 
+            PublishedWorkbookResult result;
+            if (fileSize > Constants.MaxFilePartSize ||
+                Path.GetExtension(publishRequest.FilePath).Equals(".twbx", StringComparison.OrdinalIgnoreCase))
+            {
+                result = PublishMultiPart(publishRequest);
+            }
+            else
+            {
+                result = Publish(publishRequest);
+            }
+
+            // Add any tags to the newly-published workbook.
+            if (result.IsSuccessful)
+            {
+                try
+                {
+                    AddTagsToWorkbook(result.WorkbookId, publishRequest.Tags);
+                }
+                catch
+                {
+                    // We swallow any errors here.
+                }
+            }
+
+            return result;
+        }
+
+        public workbookType PublishWorkbook(PublishWorkbookRequest publishRequest)
+        {
             // Construct URI & compose request payload.
             var uri = Endpoints.GetPublishWorkbookUri(baseUri, publishRequest.SiteId, publishRequest.OverwriteExistingWorkbook);
             tsRequest requestPayload = new tsRequest
@@ -369,39 +398,74 @@ namespace Tableau.RestApi
             // Construct multipart request body using a boundary string to delimit sections.
             var boundaryString = Guid.NewGuid().ToString().Replace("-", "");
             string contentType = String.Format("multipart/mixed; boundary={0}", boundaryString);
-            byte[] requestBody = PublishRequestBuilder.BuildRequestBody(publishRequest.FilePath, requestPayload, boundaryString);
+            byte[] requestBody = PublishRequestBuilder.BuildFileUploadBody(publishRequest.FilePath, requestPayload, boundaryString);
 
             // Issue request.
             var errorMessage = String.Format("Failed to publish workbook '{0}'", publishRequest.WorkbookName);
-            ApiRequest apiRequest = new ApiRequest(uri, HttpMethod.Post, GetAuthToken(), headers: null, contentType: contentType, body: requestBody, timeoutSeconds: publishRequest.publishingTimeoutSeconds);
-            try
-            {
-                tsResponse response = apiRequest.TryIssueRequest(errorMessage);
+            ApiRequest apiRequest = new ApiRequest(uri, HttpMethod.Post, GetAuthToken(), headers: null, contentType: contentType, body: requestBody, timeoutSeconds: publishRequest.PublishingTimeoutSeconds);
+            tsResponse response = apiRequest.IssueRequest(errorMessage);
 
-                publishedWorkbookResult.IsSuccessful = true;
-                publishedWorkbookResult.WorkbookId = response.GetWorkbook().id;
-                publishedWorkbookResult.Uri = GetWorkbookUrl(response.GetWorkbook().contentUrl);
-            }
-            catch (Exception ex)
-            {
-                publishedWorkbookResult.IsSuccessful = false;
-                publishedWorkbookResult.ErrorMessage = ex.Message;
-            }
+            return response.GetWorkbook();
+        }
 
-            // Add any tags to the newly-published workbook.
-            if (publishedWorkbookResult.IsSuccessful)
+        public fileUploadType InitiateFileUpload(PublishWorkbookRequest publishRequest)
+        {
+            var uri = Endpoints.GetFileUploadUri(baseUri, publishRequest.SiteId);
+            ApiRequest request = new ApiRequest(uri, HttpMethod.Post, GetAuthToken(), headers: null, contentType: null, body: null, timeoutSeconds: publishRequest.PublishingTimeoutSeconds);
+
+            var errorMessage = String.Format("Failed to retrieve session id for new upload to site '{0}'", siteName);
+            tsResponse response = request.IssueRequest(errorMessage);
+
+            // Extract site ID.
+            fileUploadType uploadSession = response.GetFileUpload();
+
+            return uploadSession;
+        }
+
+        public fileUploadType AppendToFileUpload(PublishWorkbookRequest publishRequest, fileUploadType fileUploadSession, FileStream fileStream)
+        {
+            var uri = Endpoints.GetFileUploadUri(baseUri, publishRequest.SiteId, fileUploadSession.uploadSessionId);
+            var boundaryString = Guid.NewGuid().ToString().Replace("-", "");
+            string contentType = String.Format("multipart/mixed; boundary={0}", boundaryString);
+
+            byte[] requestBody = PublishRequestBuilder.BuildMultiPartAppendBody(publishRequest.FilePath, boundaryString, fileStream);
+
+            var errorMessage = String.Format("Failed to append file part for upload to site '{0}' with upload session id '{1}'", siteName, fileUploadSession.uploadSessionId);
+            ApiRequest request = new ApiRequest(uri, HttpMethod.Put, GetAuthToken(), headers: null, contentType: contentType, body: requestBody, timeoutSeconds: publishRequest.PublishingTimeoutSeconds);
+            tsResponse response = request.IssueRequest(errorMessage);
+
+            return response.GetFileUpload();
+        }
+
+        public workbookType FinishUploadAndPublishWorkbook(PublishWorkbookRequest publishRequest, fileUploadType session)
+        {
+            var uri = Endpoints.GetFinishPublishWorkbookUri(baseUri, publishRequest.SiteId, 
+                publishRequest.OverwriteExistingWorkbook, session.uploadSessionId, 
+                Path.GetExtension(publishRequest.FilePath).Replace(".", ""));
+            tsRequest requestPayload = new tsRequest
             {
-                try
+                Item = new workbookType
                 {
-                    AddTagsToWorkbook(publishedWorkbookResult.WorkbookId, publishRequest.Tags);
+                    name = Path.GetFileNameWithoutExtension(publishRequest.FilePath),
+                    //showTabs = publishRequest.ShowSheetsAsTabs,
+                    //showTabsSpecified = publishRequest.ShowSheetsAsTabs,
+                    project = new projectType
+                    {
+                        id = publishRequest.ProjectId
+                    },
                 }
-                catch
-                {
-                    // We swallow any errors here.
-                }
-            }
+            };
 
-            return publishedWorkbookResult;
+            var boundaryString = Guid.NewGuid().ToString().Replace("-", "");
+            string contentType = String.Format("multipart/mixed; boundary={0}", boundaryString);
+            byte[] requestBody = PublishRequestBuilder.BuildFinishUploadBody(publishRequest.FilePath, requestPayload, boundaryString);
+            ApiRequest apiRequest = new ApiRequest(uri, HttpMethod.Post, GetAuthToken(), headers: null, contentType: contentType, body: requestBody, timeoutSeconds: publishRequest.PublishingTimeoutSeconds);
+
+            // Issue request.
+            var errorMessage = String.Format("Failed to finish multipart publish workbook '{0}'", publishRequest.WorkbookName);
+            tsResponse response = apiRequest.IssueRequest(errorMessage);
+
+            return response.GetWorkbook();
         }
 
         /// <summary>
@@ -422,7 +486,7 @@ namespace Tableau.RestApi
                 // Issue request.
                 var errorMessage = String.Format("Failed to retrieve project list for site '{0}'", siteName);
                 ApiRequest request = new ApiRequest(uri, HttpMethod.Get, GetAuthToken());
-                tsResponse response = request.TryIssueRequest(errorMessage);
+                tsResponse response = request.IssueRequest(errorMessage);
 
                 // Add all projects in current page to our result set
                 projectListType projectList = response.GetProjectList();
@@ -463,7 +527,7 @@ namespace Tableau.RestApi
             // Issue request.
             var errorMessage = String.Format("Failed to update project in site '{0}'", siteName);
             ApiRequest request = new ApiRequest(uri, HttpMethod.Put, GetAuthToken(), headers: null, body: requestPayload.SerializeBody());
-            request.TryIssueRequest(errorMessage);
+            request.IssueRequest(errorMessage);
         }
 
         #endregion Public Methods
@@ -528,5 +592,64 @@ namespace Tableau.RestApi
         }
 
         #endregion Protected Methods
+
+        #region Private Methods
+
+        private PublishedWorkbookResult Publish(PublishWorkbookRequest publishRequest)
+        {
+            PublishedWorkbookResult publishedWorkbookResult = new PublishedWorkbookResult(publishRequest);
+
+            try
+            {
+                var workbook = PublishWorkbook(publishRequest);
+
+                publishedWorkbookResult.IsSuccessful = true;
+                publishedWorkbookResult.WorkbookId = workbook.id;
+                publishedWorkbookResult.Uri = GetWorkbookUrl(workbook.contentUrl);
+            }
+            catch (Exception ex)
+            {
+                publishedWorkbookResult.IsSuccessful = false;
+                publishedWorkbookResult.ErrorMessage = ex.Message;
+            }
+
+            return publishedWorkbookResult;
+        }
+
+        private PublishedWorkbookResult PublishMultiPart(PublishWorkbookRequest publishRequest)
+        {
+            PublishedWorkbookResult publishedWorkbookResult = new PublishedWorkbookResult(publishRequest);
+
+            try
+            {
+                // request a new upload session
+                var session = this.InitiateFileUpload(publishRequest);
+
+                // upload parts until there are no parts left to upload
+                using (FileStream fs = new FileStream(publishRequest.FilePath, FileMode.Open, FileAccess.Read))
+                {
+                    while (fs.Position < fs.Length)
+                    {
+                        this.AppendToFileUpload(publishRequest, session, fs);
+                    }
+                }
+
+                // Finish file upload
+                var workbook = this.FinishUploadAndPublishWorkbook(publishRequest, session);
+
+                publishedWorkbookResult.IsSuccessful = true;
+                publishedWorkbookResult.WorkbookId = workbook.id;
+                publishedWorkbookResult.Uri = GetWorkbookUrl(workbook.contentUrl);
+            }
+            catch (Exception ex)
+            {
+                publishedWorkbookResult.IsSuccessful = false;
+                publishedWorkbookResult.ErrorMessage = ex.Message;
+            }
+
+            return publishedWorkbookResult;
+        }
+
+        #endregion
     }
 }

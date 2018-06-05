@@ -157,18 +157,20 @@
           </metadata-record>
           <metadata-record class='column'>
             <remote-name>worker</remote-name>
-            <remote-type>3</remote-type>
+            <remote-type>130</remote-type>
             <local-name>[worker]</local-name>
             <parent-name>[searchserver_event]</parent-name>
             <remote-alias>worker</remote-alias>
             <ordinal>9</ordinal>
-            <local-type>integer</local-type>
-            <aggregation>Sum</aggregation>
-            <precision>10</precision>
-            <contains-null>false</contains-null>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <width>8190</width>
+            <contains-null>true</contains-null>
+            <cast-to-local-type>true</cast-to-local-type>
+            <collation flag='0' name='LEN_RUS' />
             <attributes>
-              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_INTEGER&quot;</attribute>
-              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_SLONG&quot;</attribute>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_WLONGVARCHAR&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_WCHAR&quot;</attribute>
             </attributes>
           </metadata-record>
         </metadata-records>
@@ -185,7 +187,7 @@
       <column caption='Severity' datatype='string' name='[severity]' role='dimension' type='nominal' />
       <column caption='Timestamp' datatype='datetime' name='[timestamp]' role='dimension' type='ordinal' />
       <column caption='Timestamp Offset' datatype='string' name='[timestamp_offset]' role='dimension' type='nominal' />
-      <column aggregation='Sum' caption='Worker' datatype='integer' name='[worker]' role='dimension' type='ordinal' />
+      <column caption='Worker' datatype='string' name='[worker]' role='dimension' type='nominal' />
       <column-instance column='[class]' derivation='None' name='[none:class:nk]' pivot='key' type='nominal' />
       <column-instance column='[severity]' derivation='None' name='[none:severity:nk]' pivot='key' type='nominal' />
       <group caption='Action (Class,Severity)' hidden='true' name='[Action (Class,Severity)]' name-style='unqualified' user:auto-column='sheet_link'>
@@ -540,7 +542,7 @@
           </metadata-records>
         </connection>
       </extract>
-      <layout dim-ordering='alphabetic' dim-percentage='0.540684' measure-ordering='alphabetic' measure-percentage='0.459316' show-structure='true' />
+      <layout dim-ordering='alphabetic' dim-percentage='0.59235' measure-ordering='alphabetic' measure-percentage='0.40765' show-structure='true' />
       <style>
         <style-rule element='mark'>
           <encoding attr='shape' field='[none:severity:nk]' type='shape'>
@@ -648,10 +650,10 @@
             <column-instance column='[message]' derivation='None' name='[none:message:nk]' pivot='key' type='nominal' />
             <column-instance column='[severity]' derivation='None' name='[none:severity:nk]' pivot='key' type='nominal' />
             <column-instance column='[timestamp]' derivation='None' name='[none:timestamp:ok]' pivot='key' type='ordinal' />
-            <column-instance column='[worker]' derivation='None' name='[none:worker:ok]' pivot='key' type='ordinal' />
+            <column-instance column='[worker]' derivation='None' name='[none:worker:ok]' pivot='key' type='nominal' />
             <column caption='Severity' datatype='string' name='[severity]' role='dimension' type='nominal' />
             <column caption='Timestamp' datatype='datetime' name='[timestamp]' role='dimension' type='ordinal' />
-            <column aggregation='Sum' caption='Worker' datatype='integer' name='[worker]' role='dimension' type='ordinal' />
+            <column caption='Worker' datatype='string' name='[worker]' role='dimension' type='nominal' />
           </datasource-dependencies>
           <filter class='categorical' column='[postgres.0xrsfis0nu2cme1gacc1z1idz3jl].[Action (Class,Severity)]'>
             <groupfilter function='crossjoin' user:ui-enumeration='all' user:ui-marker='enumerate'>
@@ -753,17 +755,16 @@
           <datasource-dependencies datasource='postgres.0xrsfis0nu2cme1gacc1z1idz3jl'>
             <column-instance column='[class]' derivation='Attribute' name='[attr:class:nk]' pivot='key' type='nominal' />
             <column-instance column='[message]' derivation='Attribute' name='[attr:message:nk]' pivot='key' type='nominal' />
-            <column-instance column='[worker]' derivation='Attribute' name='[attr:worker:qk]' pivot='key' type='quantitative' />
             <column caption='Class' datatype='string' name='[class]' role='dimension' type='nominal' />
             <column caption='Id' datatype='integer' name='[id]' role='dimension' type='ordinal' />
             <column caption='Message' datatype='string' name='[message]' role='dimension' type='nominal' />
             <column-instance column='[id]' derivation='None' name='[none:id:ok]' pivot='key' type='ordinal' />
             <column-instance column='[severity]' derivation='None' name='[none:severity:nk]' pivot='key' type='nominal' />
             <column-instance column='[timestamp]' derivation='None' name='[none:timestamp:qk]' pivot='key' type='quantitative' />
-            <column-instance column='[worker]' derivation='None' name='[none:worker:ok]' pivot='key' type='ordinal' />
+            <column-instance column='[worker]' derivation='None' name='[none:worker:ok]' pivot='key' type='nominal' />
             <column caption='Severity' datatype='string' name='[severity]' role='dimension' type='nominal' />
             <column caption='Timestamp' datatype='datetime' name='[timestamp]' role='dimension' type='ordinal' />
-            <column aggregation='Sum' caption='Worker' datatype='integer' name='[worker]' role='dimension' type='ordinal' />
+            <column caption='Worker' datatype='string' name='[worker]' role='dimension' type='nominal' />
           </datasource-dependencies>
           <filter class='categorical' column='[postgres.0xrsfis0nu2cme1gacc1z1idz3jl].[Action (Class,Severity)]'>
             <groupfilter function='crossjoin' user:ui-enumeration='all' user:ui-marker='enumerate'>
@@ -801,7 +802,7 @@
               <bucket>%all%</bucket>
             </dictionary>
           </sort>
-          <filter class='quantitative' column='[postgres.0xrsfis0nu2cme1gacc1z1idz3jl].[none:timestamp:qk]' context='true' filter-group='4' included-values='non-null' />
+          <filter class='quantitative' column='[postgres.0xrsfis0nu2cme1gacc1z1idz3jl].[none:timestamp:qk]' context='true' filter-group='4' included-values='all' />
           <slices>
             <column>[postgres.0xrsfis0nu2cme1gacc1z1idz3jl].[none:severity:nk]</column>
             <column>[postgres.0xrsfis0nu2cme1gacc1z1idz3jl].[none:timestamp:qk]</column>
@@ -842,7 +843,6 @@
               <color column='[postgres.0xrsfis0nu2cme1gacc1z1idz3jl].[none:severity:nk]' />
               <lod column='[postgres.0xrsfis0nu2cme1gacc1z1idz3jl].[none:id:ok]' />
               <tooltip column='[postgres.0xrsfis0nu2cme1gacc1z1idz3jl].[attr:message:nk]' />
-              <tooltip column='[postgres.0xrsfis0nu2cme1gacc1z1idz3jl].[attr:worker:qk]' />
               <tooltip column='[postgres.0xrsfis0nu2cme1gacc1z1idz3jl].[attr:class:nk]' />
             </encodings>
             <customized-tooltip>
@@ -894,11 +894,11 @@
             </column>
             <column caption='Id' datatype='integer' name='[id]' role='dimension' type='ordinal' />
             <column-instance column='[severity]' derivation='None' name='[none:severity:nk]' pivot='key' type='nominal' />
-            <column-instance column='[worker]' derivation='None' name='[none:worker:ok]' pivot='key' type='ordinal' />
+            <column-instance column='[worker]' derivation='None' name='[none:worker:ok]' pivot='key' type='nominal' />
             <column caption='Severity' datatype='string' name='[severity]' role='dimension' type='nominal' />
             <column-instance column='[Number of Records]' derivation='Sum' name='[sum:Number of Records:qk]' pivot='key' type='quantitative' />
             <column caption='Timestamp' datatype='datetime' name='[timestamp]' role='dimension' type='ordinal' />
-            <column aggregation='Sum' caption='Worker' datatype='integer' name='[worker]' role='dimension' type='ordinal' />
+            <column caption='Worker' datatype='string' name='[worker]' role='dimension' type='nominal' />
           </datasource-dependencies>
           <filter class='categorical' column='[postgres.0xrsfis0nu2cme1gacc1z1idz3jl].[Action (Id,Severity,Timestamp,Worker)]'>
             <groupfilter function='crossjoin' user:ui-enumeration='all' user:ui-marker='enumerate'>
@@ -991,7 +991,7 @@
             <column-instance column='[timestamp]' derivation='None' name='[none:timestamp:qk]' pivot='key' type='quantitative' />
             <column caption='Severity' datatype='string' name='[severity]' role='dimension' type='nominal' />
             <column caption='Timestamp' datatype='datetime' name='[timestamp]' role='dimension' type='ordinal' />
-            <column aggregation='Sum' caption='Worker' datatype='integer' name='[worker]' role='dimension' type='ordinal' />
+            <column caption='Worker' datatype='string' name='[worker]' role='dimension' type='nominal' />
           </datasource-dependencies>
           <filter class='categorical' column='[postgres.0xrsfis0nu2cme1gacc1z1idz3jl].[Action (Id,Severity,Timestamp,Worker)]'>
             <groupfilter function='crossjoin' user:ui-enumeration='all' user:ui-marker='enumerate'>
@@ -1029,7 +1029,7 @@
               <groupfilter function='member' level='[none:severity:nk]' member='&quot;INFO&quot;' />
             </groupfilter>
           </filter>
-          <filter class='quantitative' column='[postgres.0xrsfis0nu2cme1gacc1z1idz3jl].[none:timestamp:qk]' context='true' filter-group='4' included-values='non-null' />
+          <filter class='quantitative' column='[postgres.0xrsfis0nu2cme1gacc1z1idz3jl].[none:timestamp:qk]' context='true' filter-group='4' included-values='all' />
           <slices>
             <column>[postgres.0xrsfis0nu2cme1gacc1z1idz3jl].[none:severity:nk]</column>
             <column>[postgres.0xrsfis0nu2cme1gacc1z1idz3jl].[none:timestamp:qk]</column>
@@ -1107,7 +1107,7 @@
             <column caption='Severity' datatype='string' name='[severity]' role='dimension' type='nominal' />
             <column-instance column='[Number of Records]' derivation='Sum' name='[sum:Number of Records:qk]' pivot='key' type='quantitative' />
             <column caption='Timestamp' datatype='datetime' name='[timestamp]' role='dimension' type='ordinal' />
-            <column aggregation='Sum' caption='Worker' datatype='integer' name='[worker]' role='dimension' type='ordinal' />
+            <column caption='Worker' datatype='string' name='[worker]' role='dimension' type='nominal' />
           </datasource-dependencies>
           <filter class='categorical' column='[postgres.0xrsfis0nu2cme1gacc1z1idz3jl].[Action (Class,Severity)]' context='true'>
             <groupfilter function='crossjoin' user:ui-enumeration='all' user:ui-marker='enumerate'>
@@ -1150,7 +1150,7 @@
               <groupfilter function='member' level='[none:severity:nk]' member='&quot;INFO&quot;' />
             </groupfilter>
           </filter>
-          <filter class='quantitative' column='[postgres.0xrsfis0nu2cme1gacc1z1idz3jl].[none:timestamp:qk]' context='true' filter-group='4' included-values='non-null' />
+          <filter class='quantitative' column='[postgres.0xrsfis0nu2cme1gacc1z1idz3jl].[none:timestamp:qk]' context='true' filter-group='4' included-values='all' />
           <slices>
             <column>[postgres.0xrsfis0nu2cme1gacc1z1idz3jl].[Action (Class,Severity)]</column>
             <column>[postgres.0xrsfis0nu2cme1gacc1z1idz3jl].[Action (Severity,Timestamp,Worker)]</column>
@@ -1322,7 +1322,6 @@
             <card type='pages' />
             <card type='filters' />
             <card type='marks' />
-            <card pane-specification-id='0' param='[postgres.0xrsfis0nu2cme1gacc1z1idz3jl].[none:severity:nk]' type='color' />
           </strip>
         </edge>
         <edge name='top'>
@@ -1337,6 +1336,7 @@
           <strip size='160'>
             <card param='[postgres.0xrsfis0nu2cme1gacc1z1idz3jl].[none:severity:nk]' type='filter' />
             <card param='[postgres.0xrsfis0nu2cme1gacc1z1idz3jl].[none:timestamp:qk]' show-domain='false' show-null-ctrls='false' type='filter' />
+            <card pane-specification-id='0' param='[postgres.0xrsfis0nu2cme1gacc1z1idz3jl].[none:severity:nk]' type='color' />
           </strip>
         </edge>
       </cards>

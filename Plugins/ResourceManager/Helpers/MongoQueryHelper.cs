@@ -14,26 +14,28 @@ namespace Logshark.Plugins.ResourceManager.Helpers
     public class MongoQueryHelper
     {
         private static readonly Regex CpuLimitRegex = new Regex(@".*\s(?<cpu_limit>\d+?)%.*", RegexOptions.Compiled | RegexOptions.ExplicitCapture);
-        private static readonly Regex MemoryLimitRegex = new Regex(@".*\s(?<memory_limit>\d+?)\s.*", RegexOptions.Compiled | RegexOptions.ExplicitCapture);
+
+        // Gets byte count by greedily capturing a numeric sequence (composed of digits and comma separators) from between the "Limit:" and "bytes\n" tokens.
+        private static readonly Regex MemoryLimitRegex = new Regex(@".*Limit: (?<memory_limit>[\d,]+?) bytes$", RegexOptions.Compiled | RegexOptions.ExplicitCapture);
 
         private static readonly FilterDefinitionBuilder<BsonDocument> Query = Builders<BsonDocument>.Filter;
 
         private static readonly ILog Log = PluginLogFactory.GetLogger(Assembly.GetExecutingAssembly(),
                                                                       MethodBase.GetCurrentMethod());
 
-        public static IEnumerable<int> GetDistinctWorkerIndexes(IMongoCollection<BsonDocument> collection)
+        public static IEnumerable<string> GetDistinctWorkers(IMongoCollection<BsonDocument> collection)
         {
             var filter = Query.Exists("worker");
-            return collection.Distinct<int>("worker", filter).ToList();
+            return collection.Distinct<string>("worker", filter).ToList();
         }
 
-        public static IEnumerable<int> GetAllUniquePidsByWorker(int workerId, IMongoCollection<BsonDocument> collection)
+        public static IEnumerable<int> GetAllUniquePidsByWorker(string workerId, IMongoCollection<BsonDocument> collection)
         {
             var filter = Query.Eq("worker", workerId);
             return collection.Distinct<int>("pid", filter).ToList();
         }
 
-        public static IList<BsonDocument> GetSrmStartEventsForWorker(int workerId, IMongoCollection<BsonDocument> collection)
+        public static IList<BsonDocument> GetSrmStartEventsForWorker(string workerId, IMongoCollection<BsonDocument> collection)
         {
             var filter = Query.And(Query.Eq("worker", workerId),
                                    Query.Eq("k", "msg"),
@@ -51,8 +53,7 @@ namespace Logshark.Plugins.ResourceManager.Helpers
             var match = CpuLimitRegex.Match(cpuLimitString);
             if (match.Success)
             {
-                int limit = Int32.Parse(match.Groups["cpu_limit"].Value);
-                return limit;
+                return Int32.Parse(match.Groups["cpu_limit"].Value);
             }
             else
             {
@@ -70,8 +71,7 @@ namespace Logshark.Plugins.ResourceManager.Helpers
             var match = MemoryLimitRegex.Match(memoryLimitString);
             if (match.Success)
             {
-                long limit = Int64.Parse(match.Groups["memory_limit"].Value);
-                return limit;
+                return Int64.Parse(match.Groups["memory_limit"].Value.Replace(",", ""));
             }
             else
             {
@@ -89,8 +89,7 @@ namespace Logshark.Plugins.ResourceManager.Helpers
             var match = MemoryLimitRegex.Match(memoryLimitString);
             if (match.Success)
             {
-                long limit = Int64.Parse(match.Groups["memory_limit"].Value);
-                return limit;
+                return Int64.Parse(match.Groups["memory_limit"].Value.Replace(",", ""));
             }
             else
             {
@@ -110,7 +109,7 @@ namespace Logshark.Plugins.ResourceManager.Helpers
             return threshold;
         }
 
-        public static IList<ResourceManagerCpuInfo> GetCpuInfos(int workerId, int pid, IMongoCollection<BsonDocument> collection)
+        public static IList<ResourceManagerCpuInfo> GetCpuInfos(string workerId, int pid, IMongoCollection<BsonDocument> collection)
         {
             IList<ResourceManagerCpuInfo> cpuInfos = new List<ResourceManagerCpuInfo>();
 
@@ -137,7 +136,7 @@ namespace Logshark.Plugins.ResourceManager.Helpers
             return cpuInfos;
         }
 
-        public static IList<ResourceManagerMemoryInfo> GetMemoryInfos(int workerId, int pid, IMongoCollection<BsonDocument> collection)
+        public static IList<ResourceManagerMemoryInfo> GetMemoryInfos(string workerId, int pid, IMongoCollection<BsonDocument> collection)
         {
             IList<ResourceManagerMemoryInfo> memoryInfos = new List<ResourceManagerMemoryInfo>();
 
@@ -164,7 +163,7 @@ namespace Logshark.Plugins.ResourceManager.Helpers
             return memoryInfos;
         }
 
-        public static IList<ResourceManagerAction> GetActions(int workerId, int pid, IMongoCollection<BsonDocument> collection)
+        public static IList<ResourceManagerAction> GetActions(string workerId, int pid, IMongoCollection<BsonDocument> collection)
         {
             IList<ResourceManagerAction> actions = new List<ResourceManagerAction>();
 
@@ -197,7 +196,7 @@ namespace Logshark.Plugins.ResourceManager.Helpers
             return actions;
         }
 
-        public static FilterDefinition<BsonDocument> FilterMessagesByWorkerAndPid(int workerId, int pid)
+        public static FilterDefinition<BsonDocument> FilterMessagesByWorkerAndPid(string workerId, int pid)
         {
             return Query.And(Query.Eq("worker", workerId),
                              Query.Eq("pid", pid),
@@ -206,7 +205,7 @@ namespace Logshark.Plugins.ResourceManager.Helpers
 
         public static FilterDefinition<BsonDocument> FilterMessagesByWorkerPidAndFile(BsonDocument document)
         {
-            return Query.And(Query.Eq("worker", BsonDocumentHelper.GetInt("worker", document)),
+            return Query.And(Query.Eq("worker", BsonDocumentHelper.GetString("worker", document)),
                              Query.Eq("pid", BsonDocumentHelper.GetInt("pid", document)),
                              Query.Eq("file", BsonDocumentHelper.GetString("file", document)),
                              Query.Eq("k", "msg"));

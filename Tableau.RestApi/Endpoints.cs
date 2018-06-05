@@ -37,9 +37,27 @@ namespace Tableau.RestApi
             return BuildRestApiUri(baseUri, endpoint);
         }
 
+        public static Uri GetFileUploadUri(Uri baseUri, string siteId)
+        {
+            var endpoint = String.Format("sites/{0}/fileUploads", siteId);
+            return BuildRestApiUri(baseUri, endpoint);
+        }
+
+        public static Uri GetFileUploadUri(Uri baseUri, string siteId, string sessionId)
+        {
+            var endpoint = String.Format("sites/{0}/fileUploads/{1}", siteId, sessionId);
+            return BuildRestApiUri(baseUri, endpoint);
+        }
+
         public static Uri GetPublishWorkbookUri(Uri baseUri, string siteId, bool overwrite)
         {
             var endpoint = String.Format("sites/{0}/workbooks?overwrite={1}", siteId, overwrite);
+            return BuildRestApiUri(baseUri, endpoint);
+        }
+
+        public static Uri GetFinishPublishWorkbookUri(Uri baseUri, string siteId, bool overwrite, string sessionId, string fileType)
+        {
+            var endpoint = String.Format("sites/{0}/workbooks?overwrite={1}&uploadSessionId={2}&workbookType={3}", siteId, overwrite, sessionId, fileType);
             return BuildRestApiUri(baseUri, endpoint);
         }
 

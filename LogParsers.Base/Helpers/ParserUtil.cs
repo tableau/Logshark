@@ -25,23 +25,6 @@ namespace LogParsers.Base.Helpers
         }
 
         /// <summary>
-        /// Given a file path, attempt to glean a worker index from it.
-        /// </summary>
-        /// <param name="filePath">The absolute path to the log file</param>
-        /// <param name="rootLogLocation">The absolute path to the root of the log directory structure.</param>
-        /// <returns>Index of worker node</returns>
-        public static int GetWorkerIndex(string filePath, string rootLogLocation)
-        {
-
-            var workerName = (from parentLogDir in GetParentLogDirs(filePath, rootLogLocation)
-                              where parentLogDir.StartsWith("worker")
-                              select parentLogDir).DefaultIfEmpty("worker0").First();
-
-            var workerIndex = Int32.Parse(workerName.Replace("worker", ""));
-            return workerIndex;
-        }
-
-        /// <summary>
         /// New up a CollectionSchema object for a given collection name & index list.
         /// </summary>
         /// <param name="collectionName">The name of the collection.</param>

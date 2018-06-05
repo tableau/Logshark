@@ -1,0 +1,68 @@
+2015-05-18 00:03:50.539 GMT 16432 LOG:  database system was interrupted; last known up at 2015-05-17 23:49:55 GMT
+2015-05-18 00:03:50.555 GMT 16432 LOG:  database system was not properly shut down; automatic recovery in progress
+2015-05-18 00:03:50.555 GMT 16432 LOG:  redo starts at 5/9548E0C8
+2015-05-18 00:03:50.555 GMT 16432 LOG:  record with zero length at 5/9548E168
+2015-05-18 00:03:50.555 GMT 16432 LOG:  redo done at 5/9548E100
+2015-05-18 00:03:50.617 GMT 9076 LOG:  database system is ready to accept connections
+2015-05-18 00:03:50.680 GMT 8612 LOG:  autovacuum launcher started
+2015-05-18 00:06:31.072 GMT 11228 WARNING:  no privileges were granted for "workgroup"
+2015-05-18 00:06:31.072 GMT 11228 WARNING:  no privileges were granted for "public"
+2015-05-18 00:06:31.400 GMT 11228 WARNING:  skipping "pg_statistic" --- only superuser or database owner can analyze it
+2015-05-18 00:06:31.400 GMT 11228 WARNING:  skipping "pg_type" --- only superuser or database owner can analyze it
+2015-05-18 00:06:32.009 GMT 11228 WARNING:  skipping "pg_authid" --- only superuser can analyze it
+2015-05-18 00:06:32.009 GMT 11228 WARNING:  skipping "sql_features" --- only table or database owner can analyze it
+2015-05-18 00:06:36.431 GMT 11228 LOG:  duration: 5031.000 ms  execute <unnamed>: ANALYZE
+2015-05-18 00:06:36.525 GMT 11228 WARNING:  no privileges were granted for "workgroup"
+2015-05-18 00:06:36.525 GMT 11228 WARNING:  no privileges were granted for "public"
+2015-05-18 00:06:39.729 GMT 11228 LOG:  duration: 1110.000 ms  execute <unnamed>: 
+	      -- Add luid to data_connections.
+	      ALTER TABLE data_connections
+	        ADD COLUMN luid uuid
+	        NOT NULL
+	        DEFAULT generate_uuid_safer()
+2015-05-18 00:06:44.588 GMT 11228 LOG:  could not receive data from client: No connection could be made because the target machine actively refused it.
+
+	
+2015-05-18 00:06:44.588 GMT 5256 LOG:  could not receive data from client: No connection could be made because the target machine actively refused it.
+
+	
+2015-05-18 00:06:47.510 GMT 16352 LOG:  duration: 1359.000 ms  statement: INSERT INTO tab1 
+
+	SELECT
+
+	   c.table_name
+
+	  ,c.column_name
+
+	  ,c.column_default
+
+	  ,c.data_type
+
+	  ,c.is_nullable
+
+	FROM information_schema.columns AS c
+
+	JOIN information_schema.tables AS t on (t.table_name=c.table_name)
+
+	WHERE c.table_schema = 'public'
+
+	AND   t.table_schema = 'public'
+
+	AND   t.table_type = 'BASE TABLE';
+2015-05-18 00:08:06.255 GMT 2336 LOG:  duration: 1063.000 ms  execute <unnamed>: delete from repository_data where id=$1
+2015-05-18 00:08:06.255 GMT 2336 DETAIL:  parameters: $1 = '2248'
+2015-05-18 00:08:59.089 GMT 2336 LOG:  duration: 1640.000 ms  execute <unnamed>: delete from repository_data where id=$1
+2015-05-18 00:08:59.089 GMT 2336 DETAIL:  parameters: $1 = '11269'
+2015-05-18 00:09:26.451 GMT 9076 LOG:  received fast shutdown request
+2015-05-18 00:09:26.466 GMT 9076 LOG:  aborting any active transactions
+2015-05-18 00:09:26.466 GMT 8772 ERROR:  canceling autovacuum task
+2015-05-18 00:09:26.466 GMT 8772 CONTEXT:  automatic analyze of table "workgroup.pg_catalog.pg_largeobject"
+2015-05-18 00:09:26.466 GMT 2336 FATAL:  terminating connection due to administrator command
+2015-05-18 00:09:26.466 GMT 3444 FATAL:  terminating connection due to administrator command
+2015-05-18 00:09:26.466 GMT 8612 LOG:  autovacuum launcher shutting down
+2015-05-18 00:09:26.466 GMT 8612 ERROR:  canceling statement due to user request
+2015-05-18 00:09:26.466 GMT 1096 FATAL:  terminating connection due to administrator command
+2015-05-18 00:09:26.482 GMT 8772 FATAL:  terminating autovacuum process due to administrator command
+2015-05-18 00:09:26.513 GMT 8612 LOG:  autovacuum launcher shutting down
+2015-05-18 00:09:27.092 GMT 14792 LOG:  shutting down
+2015-05-18 00:09:27.107 GMT 14792 LOG:  database system is shut down

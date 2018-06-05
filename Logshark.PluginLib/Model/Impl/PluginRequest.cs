@@ -1,5 +1,4 @@
 ﻿using Logshark.PluginModel.Model;
-using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
 
@@ -7,17 +6,17 @@ namespace Logshark.PluginLib.Model.Impl
 {
     public class PluginRequest : IPluginRequest
     {
-        public IMongoDatabase MongoDatabase { get; private set; }
         public Guid LogsetHash { get; private set; }
         public string OutputDirectory { get; private set; }
+        public string RunId { get; private set; }
 
         private readonly IDictionary<string, object> requestArguments;
 
-        public PluginRequest(IMongoDatabase mongoDatabase, Guid logsetHash, string outputDirectory)
+        public PluginRequest(Guid logsetHash, string outputDirectory, string runId)
         {
-            MongoDatabase = mongoDatabase;
             LogsetHash = logsetHash;
             OutputDirectory = outputDirectory;
+            RunId = runId;
             requestArguments = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
         }
 

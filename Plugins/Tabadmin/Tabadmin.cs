@@ -1,6 +1,7 @@
-﻿using Logshark.PluginLib.Extensions;
+﻿using Logshark.ArtifactProcessors.TableauServerLogProcessor.Parsers;
+using Logshark.ArtifactProcessors.TableauServerLogProcessor.PluginInterfaces;
+using Logshark.PluginLib.Extensions;
 using Logshark.PluginLib.Helpers;
-using Logshark.PluginLib.Model;
 using Logshark.PluginLib.Model.Impl;
 using Logshark.PluginLib.Persistence;
 using Logshark.PluginModel.Model;
@@ -18,7 +19,7 @@ namespace Logshark.Plugins.Tabadmin
     /// <summary>
     /// Process tabadmin log data and extract action, error, and version information.
     /// </summary>
-    public class Tabadmin : BaseWorkbookCreationPlugin, IServerPlugin
+    public class Tabadmin : BaseWorkbookCreationPlugin, IServerClassicPlugin
     {
         // The PluginResponse contains state about whether this plugin ran successfully, as well as any errors encountered.  Append any non-fatal errors to this.
         private PluginResponse pluginResponse;
@@ -38,7 +39,7 @@ namespace Logshark.Plugins.Tabadmin
             {
                 return new HashSet<string>
                 {
-                    "tabadmin"
+                    ParserConstants.TabAdminCollectionName
                 };
             }
         }

@@ -1,5 +1,6 @@
-﻿using Logshark.PluginLib.Extensions;
-using Logshark.PluginLib.Model;
+﻿using Logshark.ArtifactProcessors.TableauServerLogProcessor.Parsers;
+using Logshark.ArtifactProcessors.TableauServerLogProcessor.PluginInterfaces;
+using Logshark.PluginLib.Extensions;
 using Logshark.PluginLib.Model.Impl;
 using Logshark.PluginLib.Persistence;
 using Logshark.PluginModel.Model;
@@ -14,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace Logshark.Plugins.Postgres
 {
-    public class Postgres : BaseWorkbookCreationPlugin, IServerPlugin
+    public class Postgres : BaseWorkbookCreationPlugin, IServerClassicPlugin, IServerTsmPlugin
     {
         // The PluginResponse contains state about whether this plugin ran successfully, as well as any errors encountered.  Append any non-fatal errors to this.
         private PluginResponse pluginResponse;
@@ -33,7 +34,7 @@ namespace Logshark.Plugins.Postgres
             {
                 return new HashSet<string>
                 {
-                    "pgsql"
+                    ParserConstants.PgSqlCollectionName
                 };
             }
         }

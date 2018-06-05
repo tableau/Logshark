@@ -25,7 +25,7 @@ namespace Logshark.Plugins.Postgres.Model
         public string Severity { get; set; }
         public string Message { get; set; }
         public int? Duration { get; set; }
-        public int Worker { get; set; }
+        public string Worker { get; set; }
 
         public PostgresEvent() { }
 
@@ -49,7 +49,7 @@ namespace Logshark.Plugins.Postgres.Model
                     }
                 }
             }
-            Worker = BsonDocumentHelper.GetInt("worker", logLine);
+            Worker = BsonDocumentHelper.GetString("worker", logLine);
             EventHash = GetEventHash(logLine);
         }
 

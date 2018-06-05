@@ -1,0 +1,29 @@
+2017-02-22 16:00:04.764 -0800 NIOServerCxn.Factory:0.0.0.0/0.0.0.0:12000 : INFO  org.apache.zookeeper.server.NIOServerCnxnFactory - Accepted socket connection from /10.10.10.10:52243
+2017-02-22 16:00:04.764 -0800 NIOServerCxn.Factory:0.0.0.0/0.0.0.0:12000 : INFO  org.apache.zookeeper.server.NIOServerCnxn - Processing ruok command from /10.10.10.10:52243
+2017-02-22 16:00:04.764 -0800 Thread-1076272 : INFO  org.apache.zookeeper.server.NIOServerCnxn - Closed socket connection for client /10.10.10.10:52243 (no session established for client)
+2017-02-22 16:00:10.764 -0800 NIOServerCxn.Factory:0.0.0.0/0.0.0.0:12000 : INFO  org.apache.zookeeper.server.NIOServerCnxnFactory - Accepted socket connection from /10.10.10.10:52255
+2017-02-22 16:00:10.764 -0800 NIOServerCxn.Factory:0.0.0.0/0.0.0.0:12000 : INFO  org.apache.zookeeper.server.NIOServerCnxn - Processing ruok command from /10.10.10.10:52255
+2017-02-22 16:00:10.764 -0800 Thread-1076273 : INFO  org.apache.zookeeper.server.NIOServerCnxn - Closed socket connection for client /10.10.10.10:52255 (no session established for client)
+2017-02-22 16:00:16.764 -0800 NIOServerCxn.Factory:0.0.0.0/0.0.0.0:12000 : INFO  org.apache.zookeeper.server.NIOServerCnxnFactory - Accepted socket connection from /10.10.10.10:52265
+2017-02-22 16:00:16.764 -0800 NIOServerCxn.Factory:0.0.0.0/0.0.0.0:12000 : INFO  org.apache.zookeeper.server.NIOServerCnxn - Processing ruok command from /10.10.10.10:52265
+2017-02-22 16:00:16.764 -0800 Thread-1076274 : INFO  org.apache.zookeeper.server.NIOServerCnxn - Closed socket connection for client /10.10.10.10:52265 (no session established for client)
+2017-02-22 16:00:22.764 -0800 NIOServerCxn.Factory:0.0.0.0/0.0.0.0:12000 : INFO  org.apache.zookeeper.server.NIOServerCnxnFactory - Accepted socket connection from /10.10.10.10:52271
+2017-02-22 16:00:22.764 -0800 NIOServerCxn.Factory:0.0.0.0/0.0.0.0:12000 : INFO  org.apache.zookeeper.server.NIOServerCnxn - Processing ruok command from /10.10.10.10:52271
+2017-02-22 16:00:22.764 -0800 Thread-1076275 : INFO  org.apache.zookeeper.server.NIOServerCnxn - Closed socket connection for client /10.10.10.10:52271 (no session established for client)
+2017-02-22 16:00:28.764 -0800 NIOServerCxn.Factory:0.0.0.0/0.0.0.0:12000 : INFO  org.apache.zookeeper.server.NIOServerCnxnFactory - Accepted socket connection from /10.10.10.10:52275
+2017-02-22 16:00:28.764 -0800 NIOServerCxn.Factory:0.0.0.0/0.0.0.0:12000 : INFO  org.apache.zookeeper.server.NIOServerCnxn - Processing ruok command from /10.10.10.10:52275
+2017-02-22 16:00:28.764 -0800 Thread-1076276 : INFO  org.apache.zookeeper.server.NIOServerCnxn - Closed socket connection for client /10.10.10.10:52275 (no session established for client)
+2017-02-22 16:00:34.764 -0800 NIOServerCxn.Factory:0.0.0.0/0.0.0.0:12000 : INFO  org.apache.zookeeper.server.NIOServerCnxnFactory - Accepted socket connection from /10.10.10.10:52279
+2017-02-22 16:00:34.764 -0800 NIOServerCxn.Factory:0.0.0.0/0.0.0.0:12000 : INFO  org.apache.zookeeper.server.NIOServerCnxn - Processing ruok command from /10.10.10.10:52279
+2017-02-22 16:00:34.764 -0800 Thread-1076277 : INFO  org.apache.zookeeper.server.NIOServerCnxn - Closed socket connection for client /10.10.10.10:52279 (no session established for client)
+2017-02-22 16:00:40.764 -0800 NIOServerCxn.Factory:0.0.0.0/0.0.0.0:12000 : INFO  org.apache.zookeeper.server.NIOServerCnxnFactory - Accepted socket connection from /10.10.10.10:52285
+2017-02-22 16:00:40.764 -0800 NIOServerCxn.Factory:0.0.0.0/0.0.0.0:12000 : INFO  org.apache.zookeeper.server.NIOServerCnxn - Processing ruok command from /10.10.10.10:52285
+2017-02-22 16:00:40.764 -0800 Thread-1076278 : INFO  org.apache.zookeeper.server.NIOServerCnxn - Closed socket connection for client /10.10.10.10:52285 (no session established for client)
+2017-02-22 16:00:46.764 -0800 NIOServerCxn.Factory:0.0.0.0/0.0.0.0:12000 : INFO  org.apache.zookeeper.server.NIOServerCnxnFactory - Accepted socket connection from /10.10.10.10:52290
+2017-02-22 16:00:46.764 -0800 NIOServerCxn.Factory:0.0.0.0/0.0.0.0:12000 : INFO  org.apache.zookeeper.server.NIOServerCnxn - Processing ruok command from /10.10.10.10:52290
+2017-02-22 16:00:46.764 -0800 Thread-1076279 : INFO  org.apache.zookeeper.server.NIOServerCnxn - Closed socket connection for client /10.10.10.10:52290 (no session established for client)
+2017-02-22 23:23:01.648 -0800 NIOServerCxn.Factory:0.0.0.0/0.0.0.0:12000 : INFO  org.apache.zookeeper.server.NIOServerCnxnFactory - Accepted socket connection from /fe80:ffff:ffff:ffff:ffff:ffff:ffff:fff%12:55548
+2017-02-22 23:23:01.648 -0800 NIOServerCxn.Factory:0.0.0.0/0.0.0.0:12000 : INFO  org.apache.zookeeper.server.ZooKeeperServer - Client attempting to establish new session at /fe80:ffff:ffff:ffff:ffff:ffff:ffff:fff%12:55548
+2017-02-22 23:23:01.663 -0800 CommitProcessor:1 : INFO  org.apache.zookeeper.server.ZooKeeperServer - Established session 0x1590e45dc4a04ae with negotiated timeout 20000 for client /fe80:ffff:ffff:ffff:ffff:ffff:ffff:fff%12:55548
+2017-02-22 23:23:04.788 -0800 NIOServerCxn.Factory:0.0.0.0/0.0.0.0:12000 : INFO  org.apache.zookeeper.server.NIOServerCnxnFactory - Accepted socket connection from /10.10.10.10:55928
+2017-02-22 23:23:04.788 -0800 NIOServerCxn.Factory:0.0.0.0/0.0.0.0:12000 : INFO  org.apache.zookeeper.server.NIOServerCnxn - Processing ruok command from /10.10.10.10:55928

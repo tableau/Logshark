@@ -1,0 +1,35 @@
+--- 
+access_token.enable: true
+admin_service.component.descriptions: C:/Tableau Server/data/tabsvc/config/tabadmsrv_tasks.yml
+api.server.enabled: true
+asset_host: 
+auditing.enabled: true
+auditing.recorders: db, alert
+autosave.enabled: false
+autosave.reap_unused_days: 4
+autosave.save_interval_s: 30
+autosave.threads: 2
+backgrounder.attempts_remaining.enabled: true
+backgrounder.default_job.attempts_remaining: 1
+backgrounder.deploy.dir: C:/Tableau Server/data/tabsvc/backgrounder
+backgrounder.enable_health_check: false
+backgrounder.external_cache.concurrency_limit: 10
+backgrounder.external_cache.num_connections: 1
+backgrounder.external_native_query_cache_disable: true
+backgrounder.externalquerycachewarmup.enabled: false
+backgrounder.extra_timeout_in_seconds: 1800
+backgrounder.failure_threshold_for_run_prevention: 5
+backgrounder.increment_extracts.attempts_remaining: 2
+backgrounder.jdbc.wg.connections: 8
+backgrounder.jdbc.wg.idle_connections: 4
+backgrounder.log.dir: C:/Tableau Server/data/tabsvc/logs/backgrounder
+backgrounder.log.level: info
+backgrounder.native_api.external_cache_disable: false
+backgrounder.native_api.log.level: info
+backgrounder.out_of_date_schedule_minutes: 240
+backgrounder.ping_dataengine.millis_to_wait: 5000
+backgrounder.ping_dataengine.num_retries: 24
+backgrounder.ping_services.num_retries: 10000000
+backgrounder.ping_services.time_to_wait: 5000
+backgrounder.purge_directories.directories: ""
+backgrounder.querylimit: 7200

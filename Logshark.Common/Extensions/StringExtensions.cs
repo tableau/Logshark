@@ -35,6 +35,17 @@ namespace Logshark.Common.Extensions
         }
 
         /// <summary>
+        /// Returns a string containing a specified number of characters from the left side of a string.
+        /// </summary>
+        /// <param name="str">String expression from which the leftmost characters are returned.</param>
+        /// <param name="length">The number of characters to return.  If greater than or equal to the number of characters in str, the entire string is returned.</param>
+        /// <returns>Returns a string containing a specified number of characters from the left side of a string.</returns>
+        public static string Left(this string str, int length)
+        {
+            return str.Substring(0, Math.Min(length, str.Length));
+        }
+
+        /// <summary>
         /// Pluralizes a string.
         /// </summary>
         /// <param name="str">The string to pluralize.</param>
@@ -91,6 +102,17 @@ namespace Logshark.Common.Extensions
             }
 
             return sb.ToString();
+        }
+
+        /// <summary>
+        /// Returns a string containing a specified number of characters from the right side of a string.
+        /// </summary>
+        /// <param name="str">String expression from which the rightmost characters are returned.</param>
+        /// <param name="length">The number of characters to return.  If greater than or equal to the number of characters in str, the entire string is returned.</param>
+        /// <returns>Returns a string containing a specified number of characters from the right side of a string.</returns>
+        public static string Right(this string str, int length)
+        {
+            return str.Substring(str.Length - Math.Min(length, str.Length));
         }
     }
 }

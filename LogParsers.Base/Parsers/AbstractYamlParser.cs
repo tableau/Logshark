@@ -1,7 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Newtonsoft.Json.Linq;
+using System.Collections.Generic;
 using System.IO;
-using LogParsers.Base.Helpers;
-using Newtonsoft.Json.Linq;
 using YamlDotNet.Core;
 using YamlDotNet.Core.Events;
 using YamlDotNet.Serialization;
@@ -17,8 +16,14 @@ namespace LogParsers.Base.Parsers
 
         protected override bool UseLineNumbers { get { return false; } }
 
-        protected AbstractYamlParser() { }
-        protected AbstractYamlParser(LogFileContext fileContext) : base(fileContext) { }
+        protected AbstractYamlParser()
+        {
+        }
+
+        protected AbstractYamlParser(LogFileContext fileContext)
+            : base(fileContext)
+        {
+        }
 
         /// <summary>
         /// Reads the entire file and parses it as a collection of YAML documents, then converts it all to JSON.

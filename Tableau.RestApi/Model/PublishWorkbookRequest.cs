@@ -21,7 +21,7 @@ namespace Tableau.RestApi.Model
         public string SiteId { get; set; }
         public string SiteName { get; set; }
         public ISet<string> Tags { get; set; }
-        public int publishingTimeoutSeconds { get; set; }
+        public int PublishingTimeoutSeconds { get; set; }
 
         public PublishWorkbookRequest(string filePath)
         {

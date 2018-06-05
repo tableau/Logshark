@@ -69,6 +69,10 @@
       <HintPath>..\packages\Npgsql.3.2.4.1\lib\net451\Npgsql.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Optional, Version=3.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Optional.3.2.0\lib\net451\Optional.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="RestSharp, Version=105.2.3.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\RestSharp.105.2.3\lib\net451\RestSharp.dll</HintPath>
       <Private>True</Private>
@@ -97,6 +101,8 @@
     <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Extensions\BsonDocumentExtensions.cs" />
+    <Compile Include="Extensions\DictionaryExtensions.cs" />
     <Compile Include="Extensions\PostgresDbConnectionExtensions.cs" />
     <Compile Include="Extensions\RegexExtensions.cs" />
     <Compile Include="Helpers\AssemblyHelper.cs" />
@@ -112,17 +118,22 @@
     <Compile Include="Logging\AppenderFactory.cs" />
     <Compile Include="Logging\LoggingConstants.cs" />
     <Compile Include="Logging\PluginLogFactory.cs" />
-    <Compile Include="Model\IDesktopPlugin.cs" />
     <Compile Include="Model\Impl\BasePlugin.cs" />
     <Compile Include="Model\Impl\BaseWorkbookCreationPlugin.cs" />
     <Compile Include="Model\Impl\PluginRequest.cs" />
     <Compile Include="Model\Impl\PluginResponse.cs" />
-    <Compile Include="Model\IServerPlugin.cs" />
     <Compile Include="Model\IWorkbookCreationPlugin.cs" />
+    <Compile Include="Persistence\ConcurrentBatchPersisterFactory.cs" />
+    <Compile Include="Persistence\ConcurrentCustomPersisterFactory.cs" />
     <Compile Include="Persistence\Csv\CsvFileWriter.cs" />
     <Compile Include="Persistence\InsertionResult.cs" />
+    <Compile Include="Persistence\IPersisterFactory.cs" />
+    <Compile Include="Persistence\BasePersisterFactory.cs" />
     <Compile Include="Persistence\RestApi\RestApiFilePublisher.cs" />
     <Compile Include="PluginLibConstants.cs" />
+    <Compile Include="Processors\QueryDefinition.cs" />
+    <Compile Include="Processors\SimpleModelProcessor.cs" />
+    <Compile Include="Processors\SingleModelAggregationProcessor.cs" />
     <Compile Include="StatusWriter\BaseStatusWriter.cs" />
     <Compile Include="StatusWriter\IStatusWriter.cs" />
     <Compile Include="StatusWriter\TaskStatusWriter.cs" />
@@ -145,6 +156,10 @@
     <ProjectReference Include="..\Logshark.PluginModel\Logshark.PluginModel.csproj">
       <Project>{03d2b93a-3c04-4377-966c-051e102cd1bd}</Project>
       <Name>Logshark.PluginModel</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Tableau.RestApi\Tableau.RestApi.csproj">
+      <Project>{0AEFC6D8-33B4-444B-BD5F-66028B62AF73}</Project>
+      <Name>Tableau.RestApi</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

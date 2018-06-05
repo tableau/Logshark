@@ -94,7 +94,7 @@ namespace Logshark.ConnectionModel.Mongo
             // If we are using a connection to a sharded database, we need to explicitly enable sharding on the db.
             if (ConnectionType == MongoConnectionType.ShardedCluster)
             {
-                MongoAdminUtil.EnableShardingOnDatabaseIfNotEnabled(mongoClient, name);
+                MongoAdminHelper.EnableShardingOnDatabaseIfNotEnabled(mongoClient, name);
             }
 
             return database;
@@ -122,7 +122,7 @@ namespace Logshark.ConnectionModel.Mongo
             bool isCluster;
             try
             {
-                isCluster = MongoAdminUtil.IsMongoCluster(client);
+                isCluster = MongoAdminHelper.IsMongoCluster(client);
             }
             catch (MongoException ex)
             {

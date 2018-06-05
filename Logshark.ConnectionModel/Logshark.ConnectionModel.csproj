@@ -118,11 +118,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Exceptions\DatabaseInitializationException.cs" />
-    <Compile Include="Helpers\MongoAdminUtil.cs" />
+    <Compile Include="Helpers\MongoAdminHelper.cs" />
     <Compile Include="Helpers\MongoExceptionHelper.cs" />
     <Compile Include="Mongo\MongoConnectionInfo.cs" />
+    <Compile Include="Postgres\IPostgresUserInfo.cs" />
     <Compile Include="Postgres\PostgresConnectionInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TableauServer\ITableauServerConnectionInfo.cs" />
     <Compile Include="TableauServer\TableauServerConnectionInfo.cs" />
   </ItemGroup>
   <ItemGroup>

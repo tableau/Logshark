@@ -1,5 +1,6 @@
-﻿using Logshark.PluginLib.Extensions;
-using Logshark.PluginLib.Model;
+﻿using Logshark.ArtifactProcessors.TableauServerLogProcessor.Parsers;
+using Logshark.ArtifactProcessors.TableauServerLogProcessor.PluginInterfaces;
+using Logshark.PluginLib.Extensions;
 using Logshark.PluginLib.Model.Impl;
 using Logshark.PluginLib.Persistence;
 using Logshark.PluginModel.Model;
@@ -14,20 +15,13 @@ using System.Threading.Tasks;
 
 namespace Logshark.Plugins.Filestore
 {
-    public class Filestore : BaseWorkbookCreationPlugin, IServerPlugin
+    public class Filestore : BaseWorkbookCreationPlugin, IServerClassicPlugin, IServerTsmPlugin
     {
-        private readonly string collectionName = "filestore";
-
-        // The PluginResponse contains state about whether this plugin ran successfully, as well as any errors encountered.  Append any non-fatal errors to this.
         private PluginResponse pluginResponse;
 
         private Guid logsetHash;
 
         private IPersister<FilestoreEvent> filestorePersister;
-
-        // Two public properties exist on the BaseWorkbookCreationPlugin which can be leveraged in this class:
-        //     MongoDatabase - Open connection handle to MongoDB database containing a parsed logset.
-        //     OutputDatabaseConnectionFactory - Connection factory for the Postgres database where backing data should be stored.
 
         public override ISet<string> CollectionDependencies
         {
@@ -35,7 +29,7 @@ namespace Logshark.Plugins.Filestore
             {
                 return new HashSet<string>
                 {
-                    "filestore"
+                    ParserConstants.FilestoreCollectionName
                 };
             }
         }
@@ -57,7 +51,7 @@ namespace Logshark.Plugins.Filestore
             logsetHash = pluginRequest.LogsetHash;
 
             // Process Filestore events.
-            IMongoCollection<BsonDocument> filestoreCollection = MongoDatabase.GetCollection<BsonDocument>(collectionName);
+            IMongoCollection<BsonDocument> filestoreCollection = MongoDatabase.GetCollection<BsonDocument>(ParserConstants.FilestoreCollectionName);
 
             filestorePersister = GetConcurrentBatchPersister<FilestoreEvent>(pluginRequest);
             long totalFilestoreEvents = CountFilestoreEvents(filestoreCollection);

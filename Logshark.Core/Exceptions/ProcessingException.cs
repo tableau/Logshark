@@ -1,8 +1,10 @@
-﻿using System;
+﻿using Logshark.Common.Exceptions;
+using System;
 
 namespace Logshark.Core.Exceptions
 {
-    public class ProcessingException : Exception
+    [Serializable]
+    public class ProcessingException : BaseLogsharkException
     {
         public ProcessingException()
         {

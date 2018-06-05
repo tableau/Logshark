@@ -14,7 +14,7 @@ namespace Logshark.Plugins.Vizql.Models
         public string Site { get; private set; }
         public string Hostname { get; set; }
         public string File { get; private set; }
-        public int? Worker { get; private set; }
+        public string Worker { get; private set; }
 
         [Index]
         public DateTime? CreationTimestamp { get; set; }
@@ -32,7 +32,7 @@ namespace Logshark.Plugins.Vizql.Models
             CreationTimestamp = BsonDocumentHelper.GetDateTime("ts", firstEvent);
             DestructionTimestamp = BsonDocumentHelper.GetDateTime("ts", lastEvent);
             File = BsonDocumentHelper.GetString("file", firstEvent);
-            Worker = BsonDocumentHelper.GetInt("worker", firstEvent);
+            Worker = BsonDocumentHelper.GetString("worker", firstEvent);
             Workbook = workbookName;
             ProcessName = processName;
 

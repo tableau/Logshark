@@ -9,7 +9,7 @@ using System.Reflection;
 
 namespace Logshark.ConnectionModel.Postgres
 {
-    public class PostgresConnectionInfo
+    public class PostgresConnectionInfo : IPostgresUserInfo
     {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -119,10 +119,12 @@ namespace Logshark.ConnectionModel.Postgres
                 try
                 {
                     bool dbExists;
-                    var checkIfDbExistsText = String.Format("SELECT 1 FROM pg_database WHERE datname='{0}'", databaseName);
+
                     Log.DebugFormat("Querying if Postgres database '{0}' exists..", databaseName);
-                    using (var cmd = new NpgsqlCommand(checkIfDbExistsText, connection))
+                    var checkIfDbExistsQuery = "SELECT 1 FROM pg_database WHERE datname = @database_name";
+                    using (var cmd = new NpgsqlCommand(checkIfDbExistsQuery, connection))
                     {
+                        cmd.Parameters.AddWithValue("database_name", databaseName);
                         dbExists = cmd.ExecuteScalar() != null;
                     }
 
@@ -130,12 +132,11 @@ namespace Logshark.ConnectionModel.Postgres
                     if (!dbExists)
                     {
                         Log.DebugFormat("Postgres database '{0}' does not exist. Creating it..", databaseName);
-                        var createDbText = String.Format("CREATE DATABASE \"{0}\" " +
-                                                         "WITH OWNER = \"{1}\" " +
-                                                         "ENCODING = 'UTF8' " +
-                                                         "CONNECTION LIMIT = -1;", databaseName, Username);
 
-                        using (var cmd = new NpgsqlCommand(createDbText, connection))
+                        // Postgres does not allow parameterized DDL for creating DBs, so we have to build this one by hand.
+                        var createDbQuery = String.Format(@"CREATE DATABASE ""{0}"" OWNER ""{1}"" ENCODING 'UTF8' CONNECTION LIMIT -1", databaseName, Username);
+
+                        using (var cmd = new NpgsqlCommand(createDbQuery, connection))
                         {
                             cmd.ExecuteNonQuery();
                         }
@@ -146,10 +147,6 @@ namespace Logshark.ConnectionModel.Postgres
                 catch (NpgsqlException ex)
                 {
                     throw new DatabaseInitializationException(String.Format("Failed to create database '{0}': {1}", databaseName, ex.Message), ex);
-                }
-                finally
-                {
-                    connection.Close();
                 }
             }
         }

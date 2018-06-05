@@ -1,192 +1,187 @@
 ﻿using log4net;
-using Logshark.ArtifactProcessorModel;
 using Logshark.Common.Extensions;
+using Logshark.Common.Helpers;
 using Logshark.ConnectionModel.Helpers;
-using Logshark.Core.Controller;
-using Logshark.Core.Controller.Metadata.Logset.Mongo;
-using Logshark.Core.Controller.Metadata.Run;
+using Logshark.Core.Controller.Initialization;
+using Logshark.Core.Controller.Metadata;
 using Logshark.Core.Controller.Parsing;
-using Logshark.Core.Exceptions;
+using Logshark.Core.Controller.Parsing.Mongo;
+using Logshark.Core.Controller.Plugin;
+using Logshark.Core.Controller.Processing;
+using Logshark.Core.Controller.Workbook;
+using Logshark.Core.Helpers;
+using Logshark.Core.Helpers.Timers;
 using Logshark.Core.Mongo;
 using Logshark.RequestModel;
-using Logshark.RequestModel.RunContext;
+using Logshark.RequestModel.Config;
 using System;
+using System.IO;
+using System.Linq;
 using System.Reflection;
+using System.Text;
 
 namespace Logshark.Core
 {
     /// <summary>
-    /// Handles all the business logic around how to use the controller to process a LogsharkRequest from end to end.
+    /// Handles all the orchestration logic around how to process a logset from end to end.
     /// </summary>
-    public class LogsharkRequestProcessor
+    public sealed class LogsharkRequestProcessor
     {
-        protected readonly LogsharkRunMetadataWriter metadataWriter;
-
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-        public LogsharkRequestProcessor(LogsharkRunMetadataWriter metadataWriter)
-        {
-            this.metadataWriter = metadataWriter;
-        }
-
         #region Public Methods
+
+        /// <summary>
+        /// Processes a full logset from end-to-end.
+        /// </summary>
+        /// <param name="request">The user's processing request.</param>
+        /// <returns>Run context containing the run outcome and details of what happened during the run.</returns>
+        public LogsharkRunContext ProcessRequest(LogsharkRequest request)
+        {
+            // Clear any cached event timing data.
+            GlobalEventTimingData.Clear();
+
+            // Update log4net to contain the CustomId and RunId properties for any consumers which wish to log them.
+            LogicalThreadContext.Properties["CustomId"] = request.CustomId;
+            LogicalThreadContext.Properties["RunId"] = request.RunId;
+
+            try
+            {
+                using (new LocalMongoDatabaseManager(request))
+                {
+                    // Verify all external dependencies are up and available.
+                    var serviceDependencyValidator = new ServiceDependencyValidator(request.Configuration);
+                    serviceDependencyValidator.ValidateAllDependencies();
+
+                    var metadataWriter = new LogsharkRunMetadataPostgresWriter(request.Configuration.PostgresConnectionInfo);
+
+                    return ExecuteLogsharkRun(request, metadataWriter);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.FatalFormat("Logshark run failed: {0}", ex.Message);
+                if (!String.IsNullOrWhiteSpace(ex.StackTrace))
+                {
+                    Log.Debug(ex.StackTrace);
+                }
+
+                throw;
+            }
+        }
 
         /// <summary>
         /// Display a list of all available plugins to the user.
         /// </summary>
         public static void PrintAvailablePlugins()
         {
-            LogsharkController.PrintAvailablePlugins();
-        }
-
-        /// <summary>
-        /// Processes a full logset from end-to-end.
-        /// </summary>
-        public virtual void ProcessRequest(LogsharkRequest request)
-        {
-            var runTimer = request.RunContext.CreateTimer("Logshark Run", request.Target);
-
-            // Update log4net to contain the CustomId and RunId properties for any consumers which wish to log them.
-            LogicalThreadContext.Properties["CustomId"] = request.CustomId;
-            LogicalThreadContext.Properties["RunId"] = request.RunId;
-
-            LocalMongoProcessManager localMongoProcessManager = StartLocalMongoIfRequested(request);
-            request.RunContext.CurrentPhase = ProcessingPhase.Pending;
-
-            try
-            {
-                ExtractLogset(request);
-                IArtifactProcessor artifactProcessor = InitializeArtifactProcessor(request);
-                ProcessLogset(request, artifactProcessor);
-                ExecutePlugins(request);
-                SetRunSuccess(request);
-            }
-            catch (Exception ex)
-            {
-                SetRunFailed(request, ex);
-                throw;
-            }
-            finally
-            {
-                LogsharkController.TearDown(request);
-                StopLocalMongoIfRequested(request, localMongoProcessManager);
-
-                runTimer.Stop();
-                Log.InfoFormat("Logshark run complete! [{0}]", runTimer.Elapsed.Print());
-                LogsharkController.DisplayRunSummary(request);
-            }
+            PluginLoader.PrintAvailablePlugins();
         }
 
         #endregion Public Methods
 
-        /// <summary>
-        /// Spin up local MongoDB instance if the user requested it.
-        /// </summary>
-        protected LocalMongoProcessManager StartLocalMongoIfRequested(LogsharkRequest request)
-        {
-            LocalMongoProcessManager localMongoProcessManager = null;
-            if (request.StartLocalMongo)
-            {
-                localMongoProcessManager = LogsharkController.StartLocalMongoDbInstance(request);
-            }
+        #region Private Methods
 
-            return localMongoProcessManager;
+        /// <summary>
+        /// Orchestrates a Logshark run from end to end.
+        /// </summary>
+        /// <param name="request">The user's processing request.</param>
+        /// <param name="metadataWriter">The metadata writer responsible for writing information about the state of the run.</param>
+        /// <returns>Run context containing the run outcome and details of what happened during the run.</returns>
+        private LogsharkRunContext ExecuteLogsharkRun(LogsharkRequest request, ILogsharkRunMetadataWriter metadataWriter)
+        {
+            using (var runTimer = new LogsharkTimer("Logshark Run", request.Target, GlobalEventTimingData.Add))
+            {
+                var run = new LogsharkRunContext(request);
+                try
+                {
+                    Log.InfoFormat("Preparing logset target '{0}' for processing..", request.Target);
+
+                    StartPhase(ProcessingPhase.Initializing, run, metadataWriter);
+                    run.InitializationResult = InitializeRun(request);
+                    run.IsValidLogset = true;
+
+                    StartPhase(ProcessingPhase.Parsing, run, metadataWriter);
+                    run.ParsingResult = ProcessLogset(request, run.InitializationResult);
+
+                    StartPhase(ProcessingPhase.ExecutingPlugins, run, metadataWriter);
+                    run.PluginExecutionResult = ExecutePlugins(request, run.InitializationResult);
+
+                    run.SetRunSuccessful();
+                    return run;
+                }
+                catch (Exception ex)
+                {
+                    run.SetRunFailed(ex);
+                    throw;
+                }
+                finally
+                {
+                    StartPhase(ProcessingPhase.Complete, run, metadataWriter);
+                    TearDown(run);
+
+                    Log.InfoFormat("Logshark run complete! [{0}]", runTimer.Elapsed.Print());
+                    string runSummary = run.BuildRunSummary();
+                    if (!String.IsNullOrWhiteSpace(runSummary))
+                    {
+                        Log.Info(runSummary);
+                    }
+                }
+            }
         }
 
-        #region Protected Methods
-
-        protected IArtifactProcessor InitializeArtifactProcessor(LogsharkRequest request)
+        /// <summary>
+        /// Starts the next phase of the given Logshark run and writes any associated metadata.
+        /// </summary>
+        /// <param name="phaseToStart">The phase to start.</param>
+        /// <param name="context">The current Logshark run.</param>
+        /// <param name="metadataWriter">The metadata writer responsible for tracking the state of the run.</param>
+        private void StartPhase(ProcessingPhase phaseToStart, LogsharkRunContext context, ILogsharkRunMetadataWriter metadataWriter)
         {
-            StartPhase(request, ProcessingPhase.Initializing);
-            IArtifactProcessor artifactProcessor = LogsharkController.InitializeArtifactProcessor(request);
-            metadataWriter.WriteCustomMetadata(request);
-            return artifactProcessor;
+            context.CurrentPhase = phaseToStart;
+            metadataWriter.WriteMetadata(context);
+        }
+
+        /// <summary>
+        /// Handles any initialization tasks associated with the run, such as extracting any archives, loading the relevant artifact processor and plugins.
+        /// </summary>
+        private RunInitializationResult InitializeRun(LogsharkRequest request)
+        {
+            // Blow out the application temp directory so that we start with as much disk space as possible.
+            PurgeTempDirectory(request.Configuration);
+
+            IRunInitializer runInitializer = RunInitializerFactory.GetRunInitializer(request.Target, request.Configuration);
+            var initializationRequest = new RunInitializationRequest(request.Target, request.RunId, request.PluginsToExecute, request.ProcessFullLogset, request.Configuration.ArtifactProcessorOptions);
+
+            return runInitializer.Initialize(initializationRequest);
         }
 
         /// <summary>
         /// Takes action to process a logset based on the current status of the Logset.
         /// </summary>
-        protected void ProcessLogset(LogsharkRequest request, IArtifactProcessor artifactProcessor)
+        private LogsetParsingResult ProcessLogset(LogsharkRequest request, RunInitializationResult runInitializationResult)
         {
-            LogsetStatus existingProcessedLogsetStatus = LogsharkController.GetExistingLogsetStatus(request);
+            var statusChecker = new LogsetProcessingStatusChecker(request.Configuration.MongoConnectionInfo);
+            LogsetProcessingStatus existingProcessedLogsetStatus = statusChecker.GetStatus(runInitializationResult.LogsetHash, runInitializationResult.CollectionsRequested);
 
-            if (request.ForceParse && !request.Target.IsHashId)
-            {
-                // If we are forcing a reparsing of this logset, first drop any existing logset in our MongoCluster which matches this hash-id.
-                if (existingProcessedLogsetStatus != LogsetStatus.NonExistent)
-                {
-                    Log.InfoFormat("'Force Parse' request issued, dropping existing Mongo database '{0}'..", request.RunContext.MongoDatabaseName);
-                    MongoAdminUtil.DropDatabase(request.Configuration.MongoConnectionInfo.GetClient(), request.RunContext.MongoDatabaseName);
-                }
+            Func<LogsetParsingRequest, LogsetParsingResult> parseLogset = logsetParsingRequest => ParseLogset(logsetParsingRequest, request.Configuration);
+            Action<string> dropLogset = logsetHash => MongoAdminHelper.DropDatabase(request.Configuration.MongoConnectionInfo.GetClient(), logsetHash);
 
-                ParseLogset(request, artifactProcessor);
-                return;
-            }
+            var parsingRequest = new LogsetParsingRequest(runInitializationResult, request.ForceParse);
+            ILogsetProcessingStrategy processingStrategy = LogsetProcessingStrategyFactory.GetLogsetProcessingStrategy(request.Target, parseLogset, dropLogset, request.Configuration);
 
-            switch (existingProcessedLogsetStatus)
-            {
-                case LogsetStatus.NonExistent:
-                    if (request.Target.IsHashId)
-                    {
-                        request.RunContext.IsValidLogset = false;
-                        throw new InvalidTargetHashException(String.Format("No logset exists that matches logset hash '{0}'. Aborting..", request.RunContext.LogsetHash));
-                    }
-                    ParseLogset(request, artifactProcessor);
-                    break;
-
-                case LogsetStatus.Corrupt:
-                    if (request.Target.IsHashId)
-                    {
-                        request.RunContext.IsValidLogset = false;
-                        throw new InvalidTargetHashException(String.Format("Mongo database matching logset hash '{0}' exists but is corrupted. Aborting..", request.RunContext.LogsetHash));
-                    }
-                    Log.InfoFormat("Logset matching hash '{0}' exists but is corrupted. Dropping it and reprocessing..", request.RunContext.MongoDatabaseName);
-                    MongoAdminUtil.DropDatabase(request.Configuration.MongoConnectionInfo.GetClient(), request.RunContext.MongoDatabaseName);
-                    ParseLogset(request, artifactProcessor);
-                    break;
-
-                case LogsetStatus.InFlight:
-                    string collisionErrorMessage = String.Format("Logset matching hash '{0}' exists but is currently being processed by another user.  Aborting..", request.RunContext.MongoDatabaseName);
-                    Log.InfoFormat(collisionErrorMessage);
-                    throw new ProcessingUserCollisionException(collisionErrorMessage);
-
-                case LogsetStatus.Incomplete:
-                    if (request.Target.IsHashId)
-                    {
-                        throw new InvalidTargetHashException("Found existing logset matching hash, but it is a partial logset that does not contain all of the data required to run specified plugins. Aborting..");
-                    }
-                    MongoAdminUtil.DropDatabase(request.Configuration.MongoConnectionInfo.GetClient(), request.RunContext.MongoDatabaseName);
-                    Log.Info("Found existing logset matching hash, but it is a partial logset that does not contain all of the data required to run specified plugins. Dropping it and reprocessing..");
-                    ParseLogset(request, artifactProcessor);
-                    break;
-
-                case LogsetStatus.Indeterminable:
-                    throw new IndeterminableLogsetStatusException("Unable to determine status of logset. Aborting..");
-
-                case LogsetStatus.Valid:
-                    request.RunContext.UtilizedExistingProcessedLogset = true;
-                    request.RunContext.IsValidLogset = true;
-                    Log.Info("Found existing logset matching hash, skipping extraction and parsing.");
-                    LogsetMetadataReader.SetLogsetType(request);
-                    LogsetMetadataReader.SetLogsetSize(request);
-                    break;
-
-                default:
-                    throw new ArgumentOutOfRangeException(String.Format("'{0}' is not a valid LogsetStatus!", existingProcessedLogsetStatus));
-            }
-
-            LogsharkController.ValidateMongoDatabaseContainsData(request);
+            return processingStrategy.ProcessLogset(parsingRequest, existingProcessedLogsetStatus);
         }
 
         /// <summary>
         /// Encapsulates extracting and parsing logset.
         /// </summary>
-        protected void ParseLogset(LogsharkRequest request, IArtifactProcessor artifactProcessor)
+        private LogsetParsingResult ParseLogset(LogsetParsingRequest parsingRequest, LogsharkConfiguration config)
         {
-            StartPhase(request, ProcessingPhase.Parsing);
             try
             {
-                LogsharkController.ParseLogset(request, artifactProcessor.GetParserFactory(request.RunContext.RootLogDirectory));
+                var parser = new MongoLogsetParser(config.MongoConnectionInfo, config.TuningOptions);
+                return parser.ParseLogset(parsingRequest);
             }
             catch (Exception ex)
             {
@@ -200,75 +195,93 @@ namespace Logshark.Core
         }
 
         /// <summary>
-        /// Encapsulates extracting and parsing logset.
+        /// Execute plugins requested by the user against an initialized logset.
         /// </summary>
-        protected void ExtractLogset(LogsharkRequest request)
+        private PluginExecutionResult ExecutePlugins(LogsharkRequest request, RunInitializationResult initializationResult)
         {
-            StartPhase(request, ProcessingPhase.Extracting);
+            PublishingOptions publishingOptions = BuildPublishingOptions(request, initializationResult);
+            var pluginExecutionRequest = new PluginExecutionRequest(initializationResult, publishingOptions, request.PluginCustomArguments, request.RunId, request.PostgresDatabaseName);
+
+            var pluginExecutor = new PluginExecutor(request.Configuration);
+
+            return pluginExecutor.ExecutePlugins(pluginExecutionRequest);
+        }
+
+        /// <summary>
+        /// Builds a PublishingOptions object in accordance with the user's request.
+        /// </summary>
+        private PublishingOptions BuildPublishingOptions(LogsharkRequest request, RunInitializationResult initializationResult)
+        {
+            return new PublishingOptions(request.PublishWorkbooks, request.ProjectName, BuildProjectDescription(request, initializationResult), request.WorkbookTags);
+        }
+
+        /// <summary>
+        /// Builds the project description that will be used for any published workbooks.
+        /// </summary>
+        private string BuildProjectDescription(LogsharkRequest request, RunInitializationResult initializationResult)
+        {
+            if (!String.IsNullOrWhiteSpace(request.ProjectDescription))
+            {
+                return request.ProjectDescription;
+            }
+
+            var sb = new StringBuilder();
+            sb.AppendFormat("Generated from logset <b>'{0}'</b> on {1} by {2}.<br>", request.Target, DateTime.Now.ToString("M/d/yy"), Environment.UserName);
+            sb.Append("<br>");
+            sb.AppendFormat(" Logset Hash: <b>{0}</b><br>", initializationResult.LogsetHash);
+            sb.AppendFormat(" Postgres DB: <b>{0}</b><br>", request.PostgresDatabaseName);
+            sb.AppendFormat(" Plugins Run: <b>{0}</b>", String.Join(", ", initializationResult.PluginTypesToExecute.Select(pluginType => pluginType.Name)));
+
+            return sb.ToString();
+        }
+
+        /// <summary>
+        /// Performs any teardown tasks.
+        /// </summary>
+        private void TearDown(LogsharkRunContext context)
+        {
+            // Purge application temp directory to free up disk space for the user.
+            PurgeTempDirectory(context.Request.Configuration);
+
+            // Drop logset if user didn't want to retain it, assuming they didn't piggyback on an existing processed logset.
+            bool utilizedExistingLogset = context.ParsingResult != null && context.ParsingResult.UtilizedExistingProcessedLogset;
+            if (context.Request.DropMongoDBPostRun && utilizedExistingLogset)
+            {
+                Log.InfoFormat("Dropping Mongo database {0}..", context.InitializationResult);
+                try
+                {
+                    MongoAdminHelper.DropDatabase(context.Request.Configuration.MongoConnectionInfo.GetClient(), context.InitializationResult.LogsetHash);
+                }
+                catch (Exception ex)
+                {
+                    Log.ErrorFormat("Failed to clean up Mongo database '{0}': {1}", context.InitializationResult.LogsetHash, ex.Message);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Removes all contents of the root application temp directory.
+        /// </summary>
+        private bool PurgeTempDirectory(LogsharkConfiguration config)
+        {
+            string tempDirectoryPath = config.ApplicationTempDirectory;
+            if (String.IsNullOrWhiteSpace(tempDirectoryPath) || !Directory.Exists(tempDirectoryPath))
+            {
+                return false;
+            }
+
             try
             {
-                LogsharkController.ExtractLogFiles(request);
+                DirectoryHelper.DeleteDirectory(tempDirectoryPath);
+                return true;
             }
             catch (Exception ex)
             {
-                Log.FatalFormat("Encountered a fatal error while extracting logset: {0}", ex.Message);
-                if (ex.InnerException != null)
-                {
-                    Log.DebugFormat(ex.InnerException.StackTrace);
-                }
-                throw;
+                Log.ErrorFormat("Failed to gracefully clean up logsets left over from previous run(s): {0}", ex.Message);
+                return false;
             }
         }
 
-        protected void ExecutePlugins(LogsharkRequest request)
-        {
-            // Execute plugins.
-            StartPhase(request, ProcessingPhase.ExecutingPlugins);
-            LogsharkController.ExecutePlugins(request);
-            metadataWriter.WritePluginExecutionMetadata(request);
-        }
-
-        protected void SetRunSuccess(LogsharkRequest request)
-        {
-            request.RunContext.IsRunSuccessful = true;
-            StartPhase(request, ProcessingPhase.Complete);
-        }
-
-        protected void SetRunFailed(LogsharkRequest request, Exception ex)
-        {
-            request.RunContext.IsRunSuccessful = false;
-            request.RunContext.RunFailureExceptionType = ex.GetType().FullName;
-            request.RunContext.RunFailurePhase = request.RunContext.CurrentPhase;
-            request.RunContext.RunFailureReason = ex.Message;
-
-            if (ex is InvalidLogsetException || ex is InvalidTargetHashException)
-            {
-                request.RunContext.IsValidLogset = false;
-            }
-
-            Log.DebugFormat("Logshark run failed: {0}", ex.Message);
-            if (!String.IsNullOrWhiteSpace(ex.StackTrace))
-            {
-                Log.Debug(ex.StackTrace);
-            }
-
-            StartPhase(request, ProcessingPhase.Complete);
-        }
-
-        protected void StopLocalMongoIfRequested(LogsharkRequest request, LocalMongoProcessManager localMongoProcessManager)
-        {
-            if (request.StartLocalMongo)
-            {
-                LogsharkController.ShutDownLocalMongoDbInstance(localMongoProcessManager);
-            }
-        }
-
-        protected void StartPhase(LogsharkRequest request, ProcessingPhase phaseToStart)
-        {
-            request.RunContext.CurrentPhase = phaseToStart;
-            metadataWriter.UpdateMetadata(request);
-        }
-
-        #endregion Protected Methods
+        #endregion Private Methods
     }
 }

@@ -11,7 +11,7 @@ namespace Logshark.PluginLib.Persistence
     {
         public delegate InsertionResult InsertionMethod(IPluginRequest pluginRequest, IDbConnection connection, T item);
 
-        public ConcurrentCustomPersister(IPluginRequest pluginRequest, IDbConnectionFactory connectionFactory, InsertionMethod customInsertionMethod, IDictionary<Type, long> recordsPersisted = null)
+        public ConcurrentCustomPersister(IDbConnectionFactory connectionFactory, IPluginRequest pluginRequest, InsertionMethod customInsertionMethod, IDictionary<Type, long> recordsPersisted = null)
             : base(recordsPersisted)
         {
             int poolSize = GlobalPluginArgumentHelper.GetPersisterPoolSize(pluginRequest);

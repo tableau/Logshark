@@ -1,0 +1,16 @@
+2017-02-23 11:56:06.130 -0800 (,,,) qtp1418620248-25 : INFO  com.tableausoftware.tabadmin.service.server.CommandHandler - Start handling method : "getZiplogFileInfo"
+2017-02-23 11:56:06.161 -0800 (,,,) qtp1418620248-25 : INFO  com.tableausoftware.tabadmin.service.server.ZiplogsExecutor - File info to be returned is : 
+{"status":"0"}
+2017-02-23 11:56:06.177 -0800 (,,,) qtp1418620248-25 : INFO  com.tableausoftware.tabadmin.service.server.CommandHandler - Completed handling method  : "getZiplogFileInfo"
+2017-02-23 11:56:13.630 -0800 (,,,) qtp1418620248-27 : INFO  com.tableausoftware.tabadmin.service.server.CommandHandler - Start handling method : "ziplogs"
+2017-02-23 11:56:13.630 -0800 (,,,) qtp1418620248-27 : INFO  com.tableausoftware.tabadmin.service.server.ZiplogsExecutor - Starting zip logs command execution
+2017-02-23 11:56:13.645 -0800 (,,,) qtp1418620248-27 : INFO  com.tableausoftware.tabadmin.service.server.ZiplogsExecutor - Thread was launched to start ziplogs async, return to caller
+2017-02-23 11:56:13.645 -0800 (,,,) qtp1418620248-27 : INFO  com.tableausoftware.tabadmin.service.server.CommandHandler - Completed handling method  : "ziplogs"
+2017-02-23 11:56:13.645 -0800 (,,,) Thread-9 : INFO  com.tableausoftware.tabadmin.service.server.TabadminRubyAdapter - Running tabadmin in deployed version with jar in a separate jvm.
+2017-02-23 11:56:14.005 -0800 (,,,) qtp1418620248-25 : INFO  com.tableausoftware.tabadmin.service.server.CommandHandler - Start handling method : "getZiplogFileInfo"
+2017-02-23 11:56:14.005 -0800 (,,,) qtp1418620248-25 : INFO  com.tableausoftware.tabadmin.service.server.ZiplogsExecutor - File info to be returned is : 
+{"status":"50"}
+2017-02-23 11:56:14.005 -0800 (,,,) qtp1418620248-25 : INFO  com.tableausoftware.tabadmin.service.server.CommandHandler - Completed handling method  : "getZiplogFileInfo"
+2017-02-23 11:56:14.458 -0800 (,,,) qtp1418620248-27 : INFO  com.tableausoftware.tabadmin.service.server.CommandHandler - Start handling method : "getZiplogFileInfo"
+2017-02-23 11:56:14.458 -0800 (,,,) qtp1418620248-27 : INFO  com.tableausoftware.tabadmin.service.server.ZiplogsExecutor - File info to be returned is : 
+{"status":"50"}

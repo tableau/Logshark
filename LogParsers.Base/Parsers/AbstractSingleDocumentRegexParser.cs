@@ -1,7 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Newtonsoft.Json.Linq;
+using System.Collections.Generic;
 using System.IO;
-using LogParsers.Base.Helpers;
-using Newtonsoft.Json.Linq;
 
 namespace LogParsers.Base.Parsers
 {
@@ -26,8 +25,14 @@ namespace LogParsers.Base.Parsers
             }
         }
 
-        protected AbstractSingleDocumentRegexParser() { }
-        protected AbstractSingleDocumentRegexParser(LogFileContext fileContext) : base(fileContext) { }
+        protected AbstractSingleDocumentRegexParser()
+        {
+        }
+
+        protected AbstractSingleDocumentRegexParser(LogFileContext fileContext)
+            : base(fileContext)
+        {
+        }
 
         /// <summary>
         /// Parses all lines using regex and outputs a single Json document with nested documents for each line.

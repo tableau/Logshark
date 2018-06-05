@@ -12,10 +12,12 @@ namespace Logshark.PluginLib.StatusWriter
     ///     {ItemsPendingInsertion} - The number of items that are currently queued and awaiting insertion.
     ///     {ItemsRemaining} - The number of expected items that have not yet been persisted.
     ///     {PercentComplete} - The percentage of expected items that have been persisted.
+    ///     {PersistedType} - The name of the type being persisted.
     /// </summary>
     public class PersisterStatusWriter<T> : BaseStatusWriter where T : new()
     {
         protected readonly IPersister<T> persister;
+        protected readonly string persistedType = typeof(T).Name;
         protected long expectedTotalPersistedItems;
 
         /// <summary>
@@ -27,7 +29,11 @@ namespace Logshark.PluginLib.StatusWriter
         /// <param name="pollIntervalSeconds">The number of seconds to wait between heartbeats.</param>
         /// <param name="expectedTotalPersistedItems">The number of iitems expected to be persisted.  Optional.</param>
         /// <param name="options">Options about when to write status.</param>
-        public PersisterStatusWriter(IPersister<T> persister, ILog logger, string progressFormatMessage, int pollIntervalSeconds, long? expectedTotalPersistedItems = 0, StatusWriterOptions options = StatusWriterOptions.WriteOnStop)
+        public PersisterStatusWriter(IPersister<T> persister, ILog logger, 
+                                     string progressFormatMessage = PluginLibConstants.DEFAULT_PERSISTER_STATUS_WRITER_PROGRESS_MESSAGE,
+                                     int pollIntervalSeconds = PluginLibConstants.DEFAULT_PROGRESS_MONITOR_POLLING_INTERVAL_SECONDS,
+                                     long? expectedTotalPersistedItems = 0,
+                                     StatusWriterOptions options = StatusWriterOptions.WriteOnStop)
             : base(logger, progressFormatMessage, pollIntervalSeconds, options)
         {
             this.persister = persister;
@@ -35,6 +41,7 @@ namespace Logshark.PluginLib.StatusWriter
             {
                 this.expectedTotalPersistedItems = expectedTotalPersistedItems.Value;
             }
+
             Start();
         }
 
@@ -49,6 +56,11 @@ namespace Logshark.PluginLib.StatusWriter
             {
                 message = message.Replace("{ItemsPendingInsertion}", persister.ItemsPendingInsertion.ToString());
             }
+            if (message.Contains("{PersistedType}"))
+            {
+                message = message.Replace("{PersistedType}", persistedType);
+            }
+
             if (expectedTotalPersistedItems > 0)
             {
                 long itemsRemaining = expectedTotalPersistedItems - persister.ItemsPersisted;

@@ -1,8 +1,7 @@
-﻿using System.IO;
-using CsvHelper;
+﻿using CsvHelper;
 using CsvHelper.Configuration;
-using LogParsers.Base.Helpers;
 using Newtonsoft.Json.Linq;
+using System.IO;
 
 namespace LogParsers.Base.Parsers
 {
@@ -14,8 +13,14 @@ namespace LogParsers.Base.Parsers
 
         protected override bool UseLineNumbers { get { return true; } }
 
-        protected AbstractCsvParser() { }
-        protected AbstractCsvParser(LogFileContext fileContext) : base(fileContext) { }
+        protected AbstractCsvParser()
+        {
+        }
+
+        protected AbstractCsvParser(LogFileContext fileContext)
+            : base(fileContext)
+        {
+        }
 
         public override JObject ParseLogDocument(TextReader textReader)
         {

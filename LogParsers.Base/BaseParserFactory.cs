@@ -26,10 +26,7 @@ namespace LogParsers.Base
         /// <returns>Parser that can parse the log.</returns>
         public IParser GetParser(string fileName)
         {
-            var parserBuilder = GetParserBuilder(fileName);
-            var fileContext = new LogFileContext(fileName, rootLogLocation);
-
-            return parserBuilder.GetParser(fileContext);
+            return GetParser(new LogFileContext(fileName, rootLogLocation));
         }
 
         /// <summary>
@@ -61,31 +58,6 @@ namespace LogParsers.Base
             return GetParserBuilder(fileName).IsSupported(fileName);
         }
 
-        /// <summary>
-        /// Retrieve the correct parser builder for a given file.
-        /// </summary>
-        /// <param name="fileName">The absolute path to a log file.</param>
-        /// <returns>ParserBuilder object for the file.</returns>
-        protected IParserBuilder GetParserBuilder(string fileName)
-        {
-            // Get a list of all the subdirectories between this log file and the root of the extracted log zip,
-            // then recursively walk that list looking for matches to our DirectoryMap dictionary.
-            var parentDirs = ParserUtil.GetParentLogDirs(fileName, rootLogLocation);
-
-            foreach (var dir in parentDirs)
-            {
-                if (DirectoryMap.ContainsKey(dir))
-                {
-                    Type parserBuilderType = DirectoryMap[dir];
-                    var parserBuilder = Activator.CreateInstance(parserBuilderType) as IParserBuilder;
-                    return parserBuilder;
-                }
-            }
-
-            // If we didn't find a match for the directory this log lives in, try the root parser builder.
-            return GetRootParserBuilder();
-        }
-
         public ISet<IParser> GetAllParsers()
         {
             // Build up set of all known parser builders.
@@ -114,6 +86,31 @@ namespace LogParsers.Base
             }
 
             return parsers;
+        }
+
+        /// <summary>
+        /// Retrieve the correct parser builder for a given file.
+        /// </summary>
+        /// <param name="fileName">The absolute path to a log file.</param>
+        /// <returns>ParserBuilder object for the file.</returns>
+        protected IParserBuilder GetParserBuilder(string fileName)
+        {
+            // Get a list of all the subdirectories between this log file and the root of the extracted log zip,
+            // then recursively walk that list looking for matches to our DirectoryMap dictionary.
+            var parentDirs = ParserUtil.GetParentLogDirs(fileName, rootLogLocation);
+
+            foreach (var dir in parentDirs)
+            {
+                if (DirectoryMap.ContainsKey(dir))
+                {
+                    Type parserBuilderType = DirectoryMap[dir];
+                    var parserBuilder = Activator.CreateInstance(parserBuilderType) as IParserBuilder;
+                    return parserBuilder;
+                }
+            }
+
+            // If we didn't find a match for the directory this log lives in, try the root parser builder.
+            return GetRootParserBuilder();
         }
 
         /// <summary>

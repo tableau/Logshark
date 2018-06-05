@@ -1,6 +1,7 @@
-﻿using Logshark.PluginLib.Extensions;
+﻿using Logshark.ArtifactProcessors.TableauServerLogProcessor.Parsers;
+using Logshark.ArtifactProcessors.TableauServerLogProcessor.PluginInterfaces;
+using Logshark.PluginLib.Extensions;
 using Logshark.PluginLib.Helpers;
-using Logshark.PluginLib.Model;
 using Logshark.PluginLib.Model.Impl;
 using Logshark.PluginLib.Persistence;
 using Logshark.PluginModel.Model;
@@ -13,10 +14,10 @@ using System.Linq;
 namespace Logshark.Plugins.$safeprojectname$
 {
     /// <summary>
-    /// $safeprojectname Workbook Creation Plugin
+    /// $safeprojectname$ Workbook Creation Plugin
     /// TODO: Add this project as a build dependency to the Logshark.CLI project.
     /// </summary>
-    public class $safeprojectname$ : BaseWorkbookCreationPlugin, IServerPlugin  // TODO: Change the plugin interface to match the artifact type, if you're working with something other than Tableau Server logs.
+    public class $safeprojectname$ : BaseWorkbookCreationPlugin, IServerClassicPlugin, IServerTsmPlugin  // TODO: Change the plugin interface to match the artifact type and add a reference to the correct artifact processor project, if you're working with something other than Tableau Server logs.
     {
         // The PluginResponse contains state about whether this plugin ran successfully, as well as any errors encountered.  Append any non-fatal errors to this.
         private IPluginResponse pluginResponse;
@@ -40,7 +41,7 @@ namespace Logshark.Plugins.$safeprojectname$
             {
                 return new HashSet<string>
                 {
-                    // TODO: Enter all of your collection dependencies here.  I.E. "vizqlserver_cpp"
+                    // TODO: Enter all of your collection dependencies here.  I.E. "ParserConstants.VizqlServerCppCollectionName"
                 };
             }
         }

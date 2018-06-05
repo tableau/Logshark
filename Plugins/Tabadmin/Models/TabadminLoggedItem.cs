@@ -18,7 +18,7 @@ namespace Logshark.Plugins.Tabadmin.Models
         public DateTime Timestamp { get; set; }
 
         public DateTime TimestampGmt { get; set; }
-        public int? Worker { get; set; }
+        public string Worker { get; set; }
         public string Hostname { get; set; }
         public string File { get; set; }
         public string FilePath { get; set; }
@@ -34,7 +34,7 @@ namespace Logshark.Plugins.Tabadmin.Models
             Timestamp = BsonDocumentHelper.GetDateTime("ts", logLine);
             TimestampOffset = BsonDocumentHelper.GetString("ts_offset", logLine);
             TimestampGmt = (DateTime)DateTimeConversionHelper.ConvertDateTime(Timestamp, TimestampOffset);
-            Worker = BsonDocumentHelper.GetNullableInt("worker", logLine);
+            Worker = BsonDocumentHelper.GetString("worker", logLine);
             Hostname = BsonDocumentHelper.GetString("hostname", logLine);
             File = BsonDocumentHelper.GetString("file", logLine);
             FilePath = BsonDocumentHelper.GetString("file_path", logLine);

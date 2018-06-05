@@ -22,7 +22,7 @@ namespace Logshark.Common.Extensions
             }
             else if (ex.InnerException != null)
             {
-                sb.Append(String.Format(" ({0})", ex.InnerException.Message));
+                sb.AppendFormat(" ({0})", ex.InnerException.Message);
             }
 
             return sb.ToString();
