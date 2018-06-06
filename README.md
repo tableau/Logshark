@@ -13,7 +13,7 @@ Some common use cases for Logshark include:
 
 # How do I set up Logshark?
 
-[![Download Logshark](https://img.shields.io/badge/Download%20Logshark-Version%202.0-blue.svg)](https://github.com/tableau/Logshark/releases/download/v2.0/Setup_Logshark_v2.0.exe)
+[![Download Logshark](https://img.shields.io/badge/Download%20Logshark-Version%202.1-blue.svg)](https://github.com/tableau/Logshark/releases/download/v2.1/Setup_Logshark_v2.1.exe)
 
 [![Setup Logshark](https://img.shields.io/badge/Setup%20Logshark-Installation%20and%20User%20Guide-lightgrey.svg)](https://tableau.github.io/Logshark/)
 
