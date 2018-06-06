@@ -72,6 +72,7 @@ namespace Logshark.PluginLib.Persistence
         ~BaseConcurrentPersister()
         {
             CleanupThreadPool();
+            Dispose(false);
         }
 
         public void Enqueue(T item)
@@ -80,6 +81,7 @@ namespace Logshark.PluginLib.Persistence
             {
                 return;
             }
+
             IInsertionThread<T> insertionThread = GetNextInsertionThread();
             insertionThread.Enqueue(item);
         }
@@ -143,5 +145,26 @@ namespace Logshark.PluginLib.Persistence
                 }
             }
         }
+
+        #region IDisposable Implementation 
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (IsRunning)
+                {
+                    Shutdown();
+                }
+            }
+        }
+
+        #endregion IDisposable Implementation 
     }
 }

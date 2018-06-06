@@ -1,8 +1,10 @@
-﻿using System;
+﻿using Logshark.Common.Exceptions;
+using System;
 
 namespace Logshark.Core.Exceptions
 {
-    public class ExtractionException : Exception
+    [Serializable]
+    public class ExtractionException : BaseLogsharkException
     {
         public ExtractionException()
         {

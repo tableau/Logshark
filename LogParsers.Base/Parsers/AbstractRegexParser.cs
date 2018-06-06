@@ -1,10 +1,10 @@
-﻿using System;
+﻿using LogParsers.Base.Extensions;
+using LogParsers.Base.Helpers;
+using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
-using LogParsers.Base.Extensions;
-using LogParsers.Base.Helpers;
-using Newtonsoft.Json.Linq;
 
 namespace LogParsers.Base.Parsers
 {
@@ -26,8 +26,14 @@ namespace LogParsers.Base.Parsers
             get { return defaultBlacklistedValues; }
         }
 
-        protected AbstractRegexParser() { }
-        protected AbstractRegexParser(LogFileContext fileContext) : base(fileContext) { }
+        protected AbstractRegexParser()
+        {
+        }
+
+        protected AbstractRegexParser(LogFileContext fileContext)
+            : base(fileContext)
+        {
+        }
 
         /// <summary>
         /// Reads a line and parses it into a JSON document using a collection of possible regex matches.  Inserts line number/filename/workername properties and standardizes timestamp.

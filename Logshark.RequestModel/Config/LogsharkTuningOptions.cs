@@ -15,22 +15,18 @@ namespace Logshark.RequestModel.Config
         public LogsharkTuningOptions(TuningOptions configTuningOptions)
         {
             FilePartitionerConcurrencyLimit = configTuningOptions.FilePartitioner.ConcurrencyLimit;
-            FilePartitionerThresholdMb = configTuningOptions.FilePartitioner.MaxFileSizeMB;
-            FileProcessorConcurrencyLimitPerCore = configTuningOptions.FileProcessor.ConcurrencyLimitPerCore;
-
-            Validate();
-        }
-
-        public void Validate()
-        {
             if (FilePartitionerConcurrencyLimit < 1)
             {
                 throw new ArgumentException("Invalid tuning option: FilePartitionerConcurrencyLimit cannot be less than 1!");
             }
+
+            FilePartitionerThresholdMb = configTuningOptions.FilePartitioner.MaxFileSizeMB;
             if (FilePartitionerThresholdMb < 1)
             {
                 throw new ArgumentException("Invalid tuning option: FilePartitionerThresholdMb cannot be less than 1!");
             }
+
+            FileProcessorConcurrencyLimitPerCore = configTuningOptions.FileProcessor.ConcurrencyLimitPerCore;
             if (FileProcessorConcurrencyLimitPerCore < 1)
             {
                 throw new ArgumentException("Invalid tuning option: FileProcessorConcurrencyLimitPerCore cannot be less than 1!");

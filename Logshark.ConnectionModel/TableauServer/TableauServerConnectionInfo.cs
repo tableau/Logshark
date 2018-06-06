@@ -3,15 +3,16 @@ using System;
 
 namespace Logshark.ConnectionModel.TableauServer
 {
-    public class TableauServerConnectionInfo
+    public class TableauServerConnectionInfo : ITableauServerConnectionInfo
     {
-        public string Hostname { get; set; }
-        public int Port { get; set; }
+        public string Hostname { get; }
+        public int Port { get; }
         public string Site { get; set; }
-        public string Username { get; set; }
-        public string Password { get; set; }
-        public string Scheme { get; set; }
-        public int PublishingTimeoutSeconds { get; set; }
+        public string Username { get; }
+        public string Password { get; }
+        public int PublishingTimeoutSeconds { get; }
+        public string Scheme { get; }
+        public Uri Uri { get; }
 
         public TableauServerConnectionInfo(TableauServerConnection tableauConfig)
         {
@@ -22,11 +23,34 @@ namespace Logshark.ConnectionModel.TableauServer
             Username = tableauConfig.User.Username;
             Password = tableauConfig.User.Password;
             PublishingTimeoutSeconds = tableauConfig.PublishingTimeoutSeconds;
+            Uri = GetUri();
         }
 
-        public Uri ToUri()
+        public string BuildTableauProjectSearchLink(string searchParameter)
         {
-            var builder = new UriBuilder()
+            if (String.IsNullOrWhiteSpace(searchParameter))
+            {
+                throw new ArgumentException("Must supply a valid project search parameter!", nameof(searchParameter));
+            }
+
+            if (Site.Equals("default", StringComparison.OrdinalIgnoreCase))
+            {
+                return String.Format("{0}#/projects?search={1}", GetUri(), searchParameter);
+            }
+            else
+            {
+                return String.Format("{0}#/site/{1}/projects?search={2}", GetUri(), Site, searchParameter);
+            }
+        }
+
+        public override string ToString()
+        {
+            return String.Format(@"{0}@{1}:{2}\{3} [{4}]", Username, Hostname, Port, Site, Scheme);
+        }
+        
+        private Uri GetUri()
+        {
+            var builder = new UriBuilder
             {
                 Scheme = Scheme,
                 Host = Hostname,
@@ -34,11 +58,6 @@ namespace Logshark.ConnectionModel.TableauServer
             };
 
             return builder.Uri;
-        }
-
-        public override string ToString()
-        {
-            return String.Format(@"{0}@{1}:{2}\{3} [{4}]", Username, Hostname, Port, Site, Scheme);
         }
     }
 }

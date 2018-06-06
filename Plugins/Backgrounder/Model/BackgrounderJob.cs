@@ -31,7 +31,7 @@ namespace Logshark.Plugins.Backgrounder.Model
         public string Args { get; set; }
         public int? TotalTime { get; set; }
         public int? RunTime { get; set; }
-        public int WorkerId { get; set; }
+        public string WorkerId { get; set; }
         public int BackgrounderId { get; set; }
         public string ErrorMessage { get; set; }
         public DateTime StartTime { get; set; }
@@ -76,7 +76,7 @@ namespace Logshark.Plugins.Backgrounder.Model
         private void ParseStartEventElements(BsonDocument startEvent)
         {
             // Get Worker ID
-            WorkerId = BsonDocumentHelper.GetInt("worker", startEvent);
+            WorkerId = BsonDocumentHelper.GetString("worker", startEvent);
 
             // Get Backgrounder ID
             string fileName = BsonDocumentHelper.GetString("file", startEvent);
@@ -90,12 +90,15 @@ namespace Logshark.Plugins.Backgrounder.Model
             StartFile = String.Format(@"{0}\{1}", BsonDocumentHelper.GetString("file_path", startEvent), fileName);
             StartLine = BsonDocumentHelper.GetInt("line", startEvent);
 
+            // Get job type, if directly available
+            JobType = BsonDocumentHelper.GetString("job_type", startEvent);
+
             // Get elements off the message
             string message = BsonDocumentHelper.GetString("message", startEvent);
             IList<string> elements = message.Split(';');
             foreach (var item in elements)
             {
-                if (item.Contains("Running job of type"))
+                if (String.IsNullOrWhiteSpace(JobType) && item.Contains("Running job of type"))
                 {
                     string jobType = item.Split(':').Last().Trim();
                     if (String.IsNullOrWhiteSpace(jobType))

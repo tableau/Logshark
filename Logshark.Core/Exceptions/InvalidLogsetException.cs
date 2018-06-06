@@ -1,8 +1,10 @@
-﻿using System;
+﻿using Logshark.Common.Exceptions;
+using System;
 
 namespace Logshark.Core.Exceptions
 {
-    public class InvalidLogsetException : Exception
+    [Serializable]
+    public class InvalidLogsetException : BaseLogsharkException
     {
         public InvalidLogsetException()
         {

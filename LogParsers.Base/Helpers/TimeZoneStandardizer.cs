@@ -1,6 +1,6 @@
-﻿using System;
+﻿using LogParsers.Base.Extensions;
+using System;
 using System.Collections.Generic;
-using LogParsers.Base.Extensions;
 
 namespace LogParsers.Base.Helpers
 {

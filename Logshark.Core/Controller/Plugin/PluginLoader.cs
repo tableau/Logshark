@@ -1,9 +1,8 @@
 ﻿using log4net;
 using Logshark.ArtifactProcessorModel;
 using Logshark.Common.Extensions;
-using Logshark.Core.Controller.ArtifactProcessor;
+using Logshark.Core.Controller.Initialization.ArtifactProcessor;
 using Logshark.PluginModel.Model;
-using Logshark.RequestModel;
 using Logshark.RequestModel.Config;
 using System;
 using System.Collections.Generic;
@@ -27,18 +26,14 @@ namespace Logshark.Core.Controller.Plugin
             Named
         };
 
-        protected LogsharkRequest request;
-        protected ISet<string> requestedPluginsToExecute;
-        protected PluginLoadingOption pluginLoadingOption;
+        protected readonly LogsharkArtifactProcessorOptions artifactProcessorOptions;
 
-        protected static readonly string PluginDirectoryName = "Plugins";
+        protected const string PluginDirectoryName = "Plugins";
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-        public PluginLoader(LogsharkRequest request)
+        public PluginLoader(LogsharkArtifactProcessorOptions artifactProcessorOptions)
         {
-            this.request = request;
-            requestedPluginsToExecute = request.PluginsToExecute;
-            pluginLoadingOption = GetPluginLoadingOption();
+            this.artifactProcessorOptions = artifactProcessorOptions;
         }
 
         #region Public Methods
@@ -47,8 +42,10 @@ namespace Logshark.Core.Controller.Plugin
         /// Loads all requested plugins for a given artifact processor.
         /// </summary>
         /// <returns>Set of loaded plugins.</returns>
-        public ISet<Type> LoadPlugins(IArtifactProcessor artifactProcessor)
+        public ISet<Type> LoadPlugins(ISet<string> requestedPlugins, IArtifactProcessor artifactProcessor)
         {
+            var pluginLoadingOption = GetPluginLoadingOption(requestedPlugins);
+
             if (pluginLoadingOption == PluginLoadingOption.None)
             {
                 Log.Info("No plugins loaded due to user request.");
@@ -65,10 +62,11 @@ namespace Logshark.Core.Controller.Plugin
             }
             else if (pluginLoadingOption == PluginLoadingOption.Named)
             {
-                plugins = FilterPluginsByName(plugins, request.PluginsToExecute);
+                plugins = FilterPluginsByName(plugins, requestedPlugins);
             }
 
             DisplayPluginLoadingMessage(plugins);
+
             return plugins;
         }
 
@@ -77,11 +75,13 @@ namespace Logshark.Core.Controller.Plugin
         /// </summary>
         public static void PrintAvailablePlugins()
         {
-            ISet<IArtifactProcessor> allArtifactProcessors = ArtifactProcessorLoader.LoadAllArtifactProcessors();
+            var artifactProcessorLoader = new ArtifactProcessorLoader();
+            ISet<IArtifactProcessor> allArtifactProcessors = artifactProcessorLoader.LoadAllArtifactProcessors();
+
             foreach (IArtifactProcessor artifactProcessor in allArtifactProcessors)
             {
                 ISet<Type> allPlugins = LoadSupportedPlugins(artifactProcessor);
-                string pluginInfo = GetPluginInfoMessage(artifactProcessor.ArtifactType, allPlugins);
+                string pluginInfo = BuildPluginInfoMessage(artifactProcessor.ArtifactType, allPlugins);
                 Log.Info(pluginInfo);
             }
         }
@@ -91,7 +91,7 @@ namespace Logshark.Core.Controller.Plugin
         /// </summary>
         /// <param name="pluginTypes">The plugins to retrieve collection dependencies for.</param>
         /// <returns>All collection dependencies for the given plugins, filtered by product type if known.</returns>
-        public static ISet<string> GetCollectionDependencies(IEnumerable<Type> pluginTypes)
+        public ISet<string> GetCollectionDependencies(IEnumerable<Type> pluginTypes)
         {
             ISet<string> collectionDependencies = new SortedSet<string>();
 
@@ -105,9 +105,7 @@ namespace Logshark.Core.Controller.Plugin
 
                 foreach (var collectionDependency in plugin.CollectionDependencies)
                 {
-                    {
-                        collectionDependencies.Add(collectionDependency.ToLowerInvariant());
-                    }
+                    collectionDependencies.Add(collectionDependency.ToLowerInvariant());
                 }
             }
 
@@ -169,15 +167,7 @@ namespace Logshark.Core.Controller.Plugin
         /// </summary>
         protected static bool IsImplementationOfSupportedPluginInterface(Type pluginType, ISet<Type> supportedPluginInterfaces)
         {
-            foreach (Type supportedPluginInterface in supportedPluginInterfaces)
-            {
-                if (pluginType.Implements(supportedPluginInterface))
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            return supportedPluginInterfaces.Any(pluginType.Implements);
         }
 
         /// <summary>
@@ -190,7 +180,7 @@ namespace Logshark.Core.Controller.Plugin
         {
             try
             {
-                LogsharkArtifactProcessorConfiguration artifactProcessorConfiguration = request.Configuration.ArtifactProcessorOptions.LoadConfiguration(artifactProcessor.GetType());
+                LogsharkArtifactProcessorConfiguration artifactProcessorConfiguration = artifactProcessorOptions.LoadConfiguration(artifactProcessor.GetType());
                 return FilterPluginsByName(plugins, artifactProcessorConfiguration.DefaultPlugins);
             }
             catch (KeyNotFoundException)
@@ -258,15 +248,15 @@ namespace Logshark.Core.Controller.Plugin
         /// Determines the plugin loading option for this request.
         /// </summary>
         /// <returns>Plugin loading option for this request.</returns>
-        protected PluginLoadingOption GetPluginLoadingOption()
+        protected PluginLoadingOption GetPluginLoadingOption(ICollection<string> requestedPlugins)
         {
             // An empty set is considered the same as a request for "default".
-            if (requestedPluginsToExecute.Count == 0)
+            if (requestedPlugins.Count == 0)
             {
                 return PluginLoadingOption.Default;
             }
 
-            switch (requestedPluginsToExecute.First().ToLowerInvariant())
+            switch (requestedPlugins.First().ToLowerInvariant())
             {
                 case "default":
                     return PluginLoadingOption.Default;
@@ -291,7 +281,7 @@ namespace Logshark.Core.Controller.Plugin
         {
             try
             {
-                Assembly pluginAssembly = Assembly.LoadFile(assemblyPath);
+                Assembly pluginAssembly = Assembly.LoadFrom(assemblyPath);
                 return pluginAssembly.GetTypes().Where(type => !type.IsAbstract && (type.Implements(typeof(IPlugin)) || type.Implements(typeof(IPostExecutionPlugin))));
             }
             catch (Exception ex)
@@ -304,7 +294,7 @@ namespace Logshark.Core.Controller.Plugin
         /// <summary>
         /// Builds an informational message about a given set of plugins.
         /// </summary>
-        protected static string GetPluginInfoMessage(string artifactTypeName, IEnumerable<Type> plugins)
+        protected static string BuildPluginInfoMessage(string artifactTypeName, IEnumerable<Type> plugins)
         {
             StringBuilder pluginInfo = new StringBuilder();
 

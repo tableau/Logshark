@@ -46,9 +46,6 @@ namespace Logshark.CLI
         [Option("id", DefaultValue = "", HelpText = "Sets a custom ID for the run that will be stored alongside the run metadata and tagged on any published workbooks.")]
         public string Id { get; set; }
 
-        [Option("ignoredebuglogs", DefaultValue = false, HelpText = "Disables processing of DEBUG-level logs.")]
-        public bool IgnoreDebugLogs { get; set; }
-
         [Option('l', "listplugins", DefaultValue = false, HelpText = "Lists information about all available Logshark plugins.")]
         public bool ListPlugins { get; set; }
 

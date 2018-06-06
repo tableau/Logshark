@@ -6,36 +6,28 @@ using System.IO;
 
 namespace Logshark.RequestModel
 {
+    public enum LogsetTarget
+    {
+        Directory,
+        File,
+        Hash
+    };
+
     /// <summary>
     /// Helper class that is used to hold state and context about a log processing target.
     /// </summary>
     public class LogsharkRequestTarget
     {
         // The absolute path to a log processing target, or the MD5 hash value of an existing processed target.
-        public string Target { get; set; }
+        public string Target { get; protected set; }
 
-        // The "original" unmodified target.  We keep this around for tracking/metadata purposes.
-        public string OriginalTarget { get; protected set; }
+        // The type of target we're working with.
+        public LogsetTarget Type { get; protected set; }
 
-        // Indicates whether Target is a hash id of an existing processed logset.
-        public bool IsHashId { get; protected set; }
+        // The size of the target, in bytes.
+        public long? Size { get; protected set; }
 
-        // Indicates whether Target is a directory.
-        public bool IsDirectory { get; protected set; }
-
-        // Indicates whether Target is a file.
-        public bool IsFile { get; protected set; }
-
-        // The uncompressed size of the Target, in bytes.
-        public long UncompressedSize { get; set; }
-
-        // The compressed size of the Target, in bytes.
-        public long? CompressedSize { get; set; }
-
-        // The size of what was actually required to process in order to fulfill the request, in bytes.
-        public long? ProcessedSize { get; set; }
-
-        internal LogsharkRequestTarget(string requestedTarget)
+        public LogsharkRequestTarget(string requestedTarget)
         {
             if (String.IsNullOrWhiteSpace(requestedTarget))
             {
@@ -50,29 +42,26 @@ namespace Logshark.RequestModel
                 string absolutePath = PathHelper.GetAbsolutePath(requestedTarget);
                 if (PathHelper.IsDirectory(absolutePath))
                 {
-                    IsDirectory = true;
-                    UncompressedSize = DiskSpaceHelper.GetDirectorySize(absolutePath);
+                    Type = LogsetTarget.Directory;
+                    Size = DiskSpaceHelper.GetDirectorySize(absolutePath);
                 }
                 else
                 {
-                    IsFile = true;
-                    UncompressedSize = 0;
-                    CompressedSize = DiskSpaceHelper.GetFileSize(absolutePath);
+                    Type = LogsetTarget.File;
+                    Size = DiskSpaceHelper.GetFileSize(absolutePath);
                 }
                 Target = absolutePath.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
             }
             else if (requestedTarget.IsValidMD5())
             {
                 // Since this isn't a path to a file or directory and it looks like an MD5, we assume it is.
-                IsHashId = true;
+                Type = LogsetTarget.Hash;
                 Target = requestedTarget;
             }
             else
             {
                 throw new LogsharkRequestInitializationException("Target must be a valid file, directory or MD5 hash!");
             }
-
-            OriginalTarget = Target;
         }
 
         // Implicit conversion to allow LogsharkRequestTarget instances to be used like strings.

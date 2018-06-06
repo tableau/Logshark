@@ -7,6 +7,7 @@ namespace Logshark.PluginModel.Model
     {
         string OutputDirectory { get; }
         Guid LogsetHash { get; }
+        string RunId { get; }
 
         void SetRequestArgument(string key, object value);
 

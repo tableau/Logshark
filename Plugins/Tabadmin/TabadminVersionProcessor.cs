@@ -18,7 +18,7 @@ namespace Logshark.Plugins.Tabadmin
     public class TabadminVersionProcessor : TabadminEventBase
     {
         // Key: Worker ID. Value: TSVersion objects belonging to that worker.
-        private readonly ConcurrentDictionary<int, ConcurrentStack<TSVersion>> versionsByWorker;
+        private readonly ConcurrentDictionary<string, ConcurrentStack<TSVersion>> versionsByWorker;
 
         /// <summary>
         /// Execute the processing of version information and persist the results to the database.
@@ -39,7 +39,7 @@ namespace Logshark.Plugins.Tabadmin
         private TabadminVersionProcessor(IMongoCollection<BsonDocument> collection, IPersister<TabadminModelBase> persister, PluginResponse pluginResponse, Guid logsetHash)
             : base(collection, persister, pluginResponse, logsetHash)
         {
-            versionsByWorker = new ConcurrentDictionary<int, ConcurrentStack<TSVersion>>();
+            versionsByWorker = new ConcurrentDictionary<string, ConcurrentStack<TSVersion>>();
         }
 
         private static FilterDefinition<BsonDocument> QueryTabadminVersionMessages()
@@ -70,7 +70,7 @@ namespace Logshark.Plugins.Tabadmin
         private void AddVersionToStack(BsonDocument mongoDocument)
         {
             ConcurrentStack<TSVersion> workerVersionList;
-            int worker = BsonDocumentHelper.GetInt("worker", mongoDocument);
+            string worker = BsonDocumentHelper.GetString("worker", mongoDocument);
             // Get the ConcurrentStack for this worker id if it exists. Create it if it doesn't exist.
             if (!versionsByWorker.TryGetValue(worker, out workerVersionList))
             {
@@ -90,7 +90,7 @@ namespace Logshark.Plugins.Tabadmin
         {
             // Turn the ConcurrentStack of versions into a Dictionary of Lists, keyed by worker ID, so that the per-worker Lists can be sorted.
             // Once sorted by StartDateGmt, remove superfluous consecutive identical version numbers within each worker set.
-            Dictionary<int, List<TSVersion>> workerVersionLists = new Dictionary<int, List<TSVersion>>();
+            var workerVersionLists = new Dictionary<string, List<TSVersion>>();
             foreach (var workerList in versionsByWorker)
             {
                 workerVersionLists[workerList.Key] = new List<TSVersion>();
@@ -100,10 +100,10 @@ namespace Logshark.Plugins.Tabadmin
                 }
                 workerVersionLists[workerList.Key].Sort();  // Sort the TSVersion object list by the StartDateGmt field (ascending).
             }
-
+            
             // Loop through the sorted Lists by worker and remove entries with consecutive version numbers, producing a new reduced Dictionary in the process.
-            Dictionary<int, List<TSVersion>> reducerDict = new Dictionary<int, List<TSVersion>>();  // Stores one list per worker, consecutive version numbers removed.
-            List<TSVersion> reducedList = new List<TSVersion>();  // The final product: a combined list of version info for all workers.
+            var reducerDict = new Dictionary<string, List<TSVersion>>();  // Stores one list per worker, consecutive version numbers removed.
+            var reducedList = new List<TSVersion>();  // The final product: a combined list of version info for all workers.
             foreach (var workerVersions in workerVersionLists)
             {
                 reducerDict[workerVersions.Key] = new List<TSVersion>();

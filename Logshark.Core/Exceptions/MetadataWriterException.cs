@@ -1,8 +1,10 @@
-﻿using System;
+﻿using Logshark.Common.Exceptions;
+using System;
 
 namespace Logshark.Core.Exceptions
 {
-    public class MetadataWriterException : Exception
+    [Serializable]
+    public class MetadataWriterException : BaseLogsharkException
     {
         public MetadataWriterException()
         {

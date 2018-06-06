@@ -105,6 +105,12 @@
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Tableau.RestApi\Tableau.RestApi.csproj">
+      <Project>{0AEFC6D8-33B4-444B-BD5F-66028B62AF73}</Project>
+      <Name>Tableau.RestApi</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

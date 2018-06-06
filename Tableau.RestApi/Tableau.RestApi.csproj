@@ -78,6 +78,7 @@
     <Compile Include="Endpoints.cs" />
     <Compile Include="Extensions\tsResponseExtensions.cs" />
     <Compile Include="Helpers\PublishRequestBuilder.cs" />
+    <Compile Include="IRestApiRequestor.cs" />
     <Compile Include="Model\PublishWorkbookRequest.cs" />
     <Compile Include="Model\PublishedWorkbookResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

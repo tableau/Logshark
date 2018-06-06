@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Logshark.PluginLib.Persistence
 {
-    public interface IPersister<in T> where T : new()
+    public interface IPersister<in T> : IDisposable where T : new()
     {
         /// <summary>
         /// Indicates whether this persister is currently running.

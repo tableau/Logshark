@@ -6,34 +6,46 @@ namespace Logshark.Plugins.Netstat.Helpers
 {
     internal static class ProcessNameHelper
     {
-        private static readonly IList<string> KnownTableauServerProcesses = new List<string>
+        private static readonly ISet<string> KnownTableauServerProcesses = new HashSet<string>
         {
-            "backgrounder.exe",
-            "clustercontroller.exe",
-            "dataserver.exe",
-            "filestore.exe",
-            "FNPLicensingService.exe",
-            "FNPLicensingService64.exe",
-            "httpd.exe",
-            "lmgrd.exe",
-            "postgres.exe",
-            "redis-server.exe",
-            "searchserver.exe",
-            "tabadminservice.exe",
-            "tabadmwrk.exe",
-            "tableau.exe",
-            "tabprotosrv.exe",
-            "tabrepo.exe",
-            "tdeserver.exe",
-            "tdeserver64.exe",
-            "vizportal.exe",
-            "vizqlserver.exe",
-            "wgserver.exe",
-            "zookeeper.exe"
+            "backgrounder",
+            "clustercontroller",
+            "dataserver",
+            "filestore",
+            "FNPLicensingService",
+            "FNPLicensingService64",
+            "httpd",
+            "hyper",
+            "hyperd",
+            "lmgrd",
+            "postgres",
+            "redis-server",
+            "searchserver",
+            "tabadminagent",
+            "tabadmincontroller",
+            "tabadminservice",
+            "tabadmwrk",
+            "tabcmd",
+            "tableau",
+            "tabprotosrv",
+            "tabrepo",
+            "tdeserver",
+            "tdeserver64",
+            "vizportal",
+            "vizqlserver",
+            "wgserver",
+            "zookeeper"
         };
 
         public static bool IsKnownTableauServerProcess(string processName)
         {
+            int indexOfLastPeriod = processName.LastIndexOf(".", StringComparison.InvariantCulture);
+            if (indexOfLastPeriod > -1)
+            {
+                // Trim extension to normalize between Windows & Linux process names
+                processName = processName.Substring(0, indexOfLastPeriod);
+            }
+
             return KnownTableauServerProcesses.Contains(processName, StringComparer.InvariantCultureIgnoreCase);
         }
     }

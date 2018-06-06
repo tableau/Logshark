@@ -1,12 +1,12 @@
-﻿using System;
+﻿using LogParsers.Base.Extensions;
+using LogParsers.Base.Helpers;
+using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using LogParsers.Base.Extensions;
-using LogParsers.Base.Helpers;
-using Newtonsoft.Json.Linq;
 
 namespace LogParsers.Base.Parsers
 {
@@ -30,8 +30,14 @@ namespace LogParsers.Base.Parsers
             }
         }
 
-        protected AbstractMultiLineRegexParser() { }
-        protected AbstractMultiLineRegexParser(LogFileContext fileContext) : base(fileContext) { }
+        protected AbstractMultiLineRegexParser()
+        {
+        }
+
+        protected AbstractMultiLineRegexParser(LogFileContext fileContext)
+            : base(fileContext)
+        {
+        }
 
         /// <summary>
         /// The basic strategy of the multiline regex parser is to read & append lines until we hit a line that matches one of our LineDelimiterRegexes, then parse everything we've collected into a single document.  

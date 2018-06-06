@@ -31,7 +31,8 @@ namespace Logshark.Core.Mongo
 
         private static readonly string MongoDataDirectory = Path.Combine(MongoDirectory, "data");
         private static readonly string MongoExecutable = Path.Combine(MongoDirectory, "bin", "mongod.exe");
-        private static readonly string MongoLogDirectory = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Logs", "mongod.log");
+        private static readonly string MongoLogDirectory = Path.Combine(MongoDirectory, "logs");
+        private static readonly string MongoLogPath = Path.Combine(MongoLogDirectory, "mongod.log");
         private static readonly string MongoProcessName = "mongod";
 
         private readonly int port;
@@ -48,12 +49,17 @@ namespace Logshark.Core.Mongo
         /// <summary>
         /// Starts a local mongod process, if requested.
         /// </summary>
-        public Process StartMongoProcess()
+        public Process StartMongoProcess(bool purgeDataOnStartup = false)
         {
             if (IsMongoRunning())
             {
                 Log.InfoFormat("A MongoDB process is already running.  Attempting to shut it down..");
                 KillAllMongoProcesses();
+            }
+
+            if (purgeDataOnStartup)
+            {
+                PurgeData();
             }
 
             // Ensure data directory exists.
@@ -71,9 +77,25 @@ namespace Logshark.Core.Mongo
                 }
             }
 
+            // Ensure log directory exists
+            if (!Directory.Exists(MongoLogDirectory))
+            {
+                Log.DebugFormat("Creating MongoDB log directory at {0}", MongoLogDirectory);
+                try
+                {
+                    Directory.CreateDirectory(MongoLogDirectory);
+                }
+                catch (Exception ex)
+                {
+                    Log.ErrorFormat("Failed to create MongoDB log directory at '{0}':{1}", MongoLogDirectory, ex.Message);
+                    throw new MongoException(ex.Message, ex);
+                }
+            }
+
             // Start Mongo.
             Log.InfoFormat("Starting local MongoDB instance on port {0}..", port);
             ProcessStartInfo mongoProcessStartInfo = BuildMongoProcessStartInfo(port);
+            Log.DebugFormat("MongoDB Process start arguments: {0}", mongoProcessStartInfo.Arguments);
             try
             {
                 Process mongoProcess = Process.Start(mongoProcessStartInfo);
@@ -109,14 +131,14 @@ namespace Logshark.Core.Mongo
         /// <summary>
         /// Deletes the contents of the Mongo data directory.
         /// </summary>
-        public void PurgeData()
+        public bool PurgeData()
         {
             Log.Info("Purging existing MongoDB data..");
 
             // Bail out if data directory doesn't exist.
             if (!Directory.Exists(MongoDataDirectory))
             {
-                return;
+                return false;
             }
 
             // Delete all files and subfolders within the root extraction location.
@@ -128,11 +150,12 @@ namespace Logshark.Core.Mongo
                 }
 
                 DirectoryHelper.DeleteDirectory(MongoDataDirectory);
+                return true;
             }
             catch (Exception ex)
             {
-                // Log & swallow any exceptions -- purging old data is a nice-to-have feature and should not break execution..
                 Log.ErrorFormat("Failed to purge MongoDB data: {0}", ex.Message);
+                return false;
             }
         }
 
@@ -151,13 +174,10 @@ namespace Logshark.Core.Mongo
         public void KillAllMongoProcesses()
         {
             IEnumerable<Process> runningMongoProcesses = GetRunningMongoProcesses();
-            foreach (Process runningMongoProcess in runningMongoProcesses)
+            foreach (Process runningMongoProcess in runningMongoProcesses.Where(IsMongoProcessOwnedByThisApplication))
             {
-                if (IsMongoProcessOwnedByLogshark(runningMongoProcess))
-                {
-                    Log.Debug("Found a running MongoDB process owned by Logshark.  Attempting to terminate it..");
-                    KillMongoProcess(runningMongoProcess);
-                }
+                Log.Debug("Found a running MongoDB process owned by this application.  Attempting to terminate it..");
+                KillMongoProcess(runningMongoProcess);
             }
         }
 
@@ -177,7 +197,7 @@ namespace Logshark.Core.Mongo
                 UseShellExecute = true,
                 Verb = "runas",
                 Arguments = String.Format(@"--port {0} --dbpath ""{1}"" --logpath ""{2}"" --logappend",
-                                          port, MongoDataDirectory, MongoLogDirectory)
+                                          port, MongoDataDirectory, MongoLogPath)
             };
         }
 
@@ -212,11 +232,11 @@ namespace Logshark.Core.Mongo
         }
 
         /// <summary>
-        /// Indicates whether a given process was spawned by Logshark's copy of mongod.
+        /// Indicates whether a given process was spawned by a given process' copy of mongod.
         /// </summary>
         /// <param name="process"></param>
         /// <returns></returns>
-        private bool IsMongoProcessOwnedByLogshark(Process process)
+        private bool IsMongoProcessOwnedByThisApplication(Process process)
         {
             return process.MainModule.FileName.Equals(MongoExecutable, StringComparison.OrdinalIgnoreCase);
         }

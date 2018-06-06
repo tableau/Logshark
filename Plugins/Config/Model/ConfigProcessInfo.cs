@@ -27,14 +27,14 @@ namespace Logshark.Plugins.Config.Model
         [Index]
         public string Process { get; set; }
 
-        public int Worker { get; set; }
+        public string Worker { get; set; }
         public int Port { get; set; }
 
         public ConfigProcessInfo()
         {
         }
 
-        public ConfigProcessInfo(string logsetHash, DateTime? fileLastModifiedTimestamp, string hostname, string process, int worker, int port)
+        public ConfigProcessInfo(string logsetHash, DateTime? fileLastModifiedTimestamp, string hostname, string process, string worker, int port)
         {
             LogsetHash = Guid.Parse(logsetHash);
             FileLastModified = fileLastModifiedTimestamp;

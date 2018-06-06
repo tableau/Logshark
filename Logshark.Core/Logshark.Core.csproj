@@ -124,6 +124,18 @@
       <HintPath>..\packages\Npgsql.3.2.4.1\lib\net451\Npgsql.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Optional, Version=3.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Optional.3.2.0\lib\net451\Optional.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Optional.Collections, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Optional.Collections.1.1.0\lib\net451\Optional.Collections.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Optional.Utilities, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Optional.Utilities.1.1.0\lib\net451\Optional.Utilities.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="ServiceStack.Common">
       <HintPath>..\packages\ServiceStack.Common.3.9.71\lib\net35\ServiceStack.Common.dll</HintPath>
     </Reference>
@@ -148,25 +160,59 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controller\ArtifactProcessor\ArtifactProcessorLoader.cs" />
-    <Compile Include="Controller\Extraction\LogsetUnzipper.cs" />
-    <Compile Include="Controller\Metadata\Run\LogsharkCustomMetadata.cs" />
-    <Compile Include="Controller\Metadata\Run\LogsharkPluginExecutionMetadata.cs" />
-    <Compile Include="Controller\Metadata\Run\LogsharkPublishedWorkbookMetadata.cs" />
-    <Compile Include="Controller\Metadata\Run\LogsharkRunMetadata.cs" />
-    <Compile Include="Controller\Metadata\Run\LogsharkRunMetadataWriter.cs" />
-    <Compile Include="Controller\Parsing\LogsetProcessingStatusChecker.cs" />
-    <Compile Include="Controller\Metadata\Logset\Mongo\LogsetMetadata.cs" />
-    <Compile Include="Controller\Metadata\Logset\Mongo\LogsetMetadataReader.cs" />
-    <Compile Include="Controller\Metadata\Logset\Mongo\LogsetMetadataWriter.cs" />
-    <Compile Include="Controller\Parsing\Validation\LogsetValidator.cs" />
+    <Compile Include="Controller\Initialization\Archive\ArchiveRunInitializer.cs" />
+    <Compile Include="Controller\Initialization\ArtifactProcessor\ArchiveArtifactProcessorLoader.cs" />
+    <Compile Include="Controller\Initialization\ArtifactProcessor\ArtifactProcessorLoader.cs" />
+    <Compile Include="Controller\Initialization\ArtifactProcessor\HashArtifactProcessorLoader.cs" />
+    <Compile Include="Controller\Initialization\Hash\HashRunInitializer.cs" />
+    <Compile Include="Controller\Initialization\IRunInitializer.cs" />
+    <Compile Include="Controller\Initialization\Archive\Extraction\ExtractionResult.cs" />
+    <Compile Include="Controller\Initialization\Archive\Extraction\LogsetUnzipper.cs" />
+    <Compile Include="Controller\Initialization\Archive\LogsetCopier.cs" />
+    <Compile Include="Controller\Initialization\RunInitializationRequest.cs" />
+    <Compile Include="Controller\Initialization\RunInitializationResult.cs" />
+    <Compile Include="Controller\Initialization\RunInitializerFactory.cs" />
+    <Compile Include="Controller\Metadata\ILogsharkRunMetadataWriter.cs" />
+    <Compile Include="Controller\Metadata\LogsharkCustomMetadata.cs" />
+    <Compile Include="Controller\Metadata\LogsharkPluginExecutionMetadata.cs" />
+    <Compile Include="Controller\Metadata\LogsharkPublishedWorkbookMetadata.cs" />
+    <Compile Include="Controller\Metadata\LogsharkRunMetadata.cs" />
+    <Compile Include="Controller\Metadata\LogsharkRunMetadataPostgresWriter.cs" />
+    <Compile Include="Controller\Parsing\LogsetParsingRequest.cs" />
+    <Compile Include="Controller\Parsing\LogsetParsingResult.cs" />
+    <Compile Include="Controller\Parsing\IDocumentWriter.cs" />
+    <Compile Include="Controller\Parsing\IParsedLogsetValidator.cs" />
+    <Compile Include="Controller\Parsing\Mongo\MongoLogsetParser.cs" />
+    <Compile Include="Controller\Parsing\Mongo\MongoDocumentBufferedWriter.cs" />
+    <Compile Include="Controller\Parsing\DocumentWriteResult.cs" />
+    <Compile Include="Controller\Plugin\PluginExecutionRequest.cs" />
+    <Compile Include="Controller\Plugin\PluginExecutionResult.cs" />
+    <Compile Include="Controller\Processing\ArchiveTargetProcessingStrategy.cs" />
+    <Compile Include="Controller\Processing\HashTargetProcessingStrategy.cs" />
+    <Compile Include="Controller\Processing\ILogsetProcessingStrategy.cs" />
+    <Compile Include="Controller\Processing\LogsetProcessingStatus.cs" />
+    <Compile Include="Controller\Processing\LogsetProcessingStrategyFactory.cs" />
+    <Compile Include="Controller\Workbook\PublishingOptions.cs" />
+    <Compile Include="Exceptions\ServiceDependencyUnavailableException.cs" />
+    <Compile Include="Helpers\ServiceDependencyValidator.cs" />
+    <Compile Include="LogsharkRequestProcessor.cs" />
+    <Compile Include="LogsharkRunContext.cs" />
+    <Compile Include="Controller\Processing\LogsetProcessingStatusChecker.cs" />
+    <Compile Include="Controller\Parsing\Mongo\Metadata\LogProcessingMetadata.cs" />
+    <Compile Include="Controller\Parsing\Mongo\Metadata\MongoLogProcessingMetadataWriter.cs" />
+    <Compile Include="Controller\Parsing\LogsetParser.cs" />
+    <Compile Include="Controller\Processing\ProcessedLogsetState.cs" />
+    <Compile Include="Controller\Parsing\Mongo\MongoParsedLogsetValidator.cs" />
     <Compile Include="Controller\Workbook\WorkbookEditor.cs" />
     <Compile Include="Controller\Workbook\WorkbookPublisher.cs" />
     <Compile Include="Exceptions\ArtifactProcessorInitializationException.cs" />
+    <Compile Include="Exceptions\LogsetCopyException.cs" />
     <Compile Include="Exceptions\InsufficientDiskSpaceException.cs" />
     <Compile Include="Exceptions\PublishingException.cs" />
-    <Compile Include="Helpers\MongoJsonHelper.cs" />
-    <Compile Include="LogsharkRequestProcessor.cs" />
+    <Compile Include="Helpers\Timers\EventTimingData.cs" />
+    <Compile Include="Helpers\Timers\EventTimingDataCollection.cs" />
+    <Compile Include="Helpers\Timers\GlobalEventTimingData.cs" />
+    <Compile Include="Helpers\Timers\LogsharkTimer.cs" />
     <Compile Include="Exceptions\IndeterminableLogsetStatusException.cs" />
     <Compile Include="Exceptions\InvalidLogsetException.cs" />
     <Compile Include="Exceptions\InvalidTargetHashException.cs" />
@@ -174,27 +220,24 @@
     <Compile Include="Exceptions\ProcessingException.cs" />
     <Compile Include="Exceptions\PluginInitializationException.cs" />
     <Compile Include="Exceptions\ProcessingUserCollisionException.cs" />
-    <Compile Include="Helpers\LogsetDependencyHelper.cs" />
     <Compile Include="Helpers\StatusWriter\BaseStatusWriter.cs" />
     <Compile Include="Helpers\StatusWriter\IStatusWriter.cs" />
     <Compile Include="Helpers\StatusWriter\TaskStatusWriter.cs" />
+    <Compile Include="Mongo\LocalMongoDatabaseManager.cs" />
     <Compile Include="Mongo\LocalMongoProcessManager.cs" />
-    <Compile Include="Controller\Parsing\MongoCompatibleJsonConverter.cs" />
-    <Compile Include="Controller\Parsing\MongoProcessingHeartbeatTimer.cs" />
-    <Compile Include="Controller\Parsing\Partitioning\ConcurrentFilePartitioner.cs" />
+    <Compile Include="Controller\Parsing\Mongo\MongoCompatibleJsonConverter.cs" />
+    <Compile Include="Controller\Parsing\Mongo\MongoProcessingHeartbeatTimer.cs" />
+    <Compile Include="Controller\Parsing\Preprocessing\ConcurrentFilePartitioner.cs" />
     <Compile Include="Exceptions\ExtractionException.cs" />
-    <Compile Include="CoreConstants.cs" />
-    <Compile Include="Controller\LogsharkController.cs" />
-    <Compile Include="Controller\Parsing\LogsetPreprocessor.cs" />
-    <Compile Include="Controller\Parsing\Partitioning\FilePartitioner.cs" />
-    <Compile Include="Controller\Extraction\LogsetExtractor.cs" />
-    <Compile Include="Controller\Parsing\MongoBulkInsertionHelper.cs" />
-    <Compile Include="Controller\Parsing\MongoInsertionFileProcessor.cs" />
-    <Compile Include="Controller\Parsing\MongoWriter.cs" />
+    <Compile Include="Controller\Parsing\Preprocessing\LogsetPreprocessor.cs" />
+    <Compile Include="Controller\Parsing\Preprocessing\FilePartitioner.cs" />
+    <Compile Include="Controller\Initialization\Archive\Extraction\LogsetExtractor.cs" />
+    <Compile Include="Controller\Parsing\Mongo\MongoBulkInsertionTask.cs" />
+    <Compile Include="Controller\Parsing\LogFileParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Controller\Plugin\PluginExecutor.cs" />
     <Compile Include="Controller\Plugin\PluginLoader.cs" />
-    <Compile Include="Controller\Extraction\Unzipper.cs" />
+    <Compile Include="Controller\Initialization\Archive\Extraction\Unzipper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

@@ -56,7 +56,7 @@ namespace Logshark.Plugins.Apache.Model
         public Guid LogsetHash { get; set; }
 
         [Index]
-        public int? Worker { get; set; }
+        public string Worker { get; set; }
 
         #endregion Metadata Fields
 
@@ -82,7 +82,7 @@ namespace Logshark.Plugins.Apache.Model
             File = String.Format(@"{0}\{1}", BsonDocumentHelper.GetString("file_path", logLine), BsonDocumentHelper.GetString("file", logLine));
             LineNumber = BsonDocumentHelper.GetNullableInt("line", logLine);
             LogsetHash = logsetHash;
-            Worker = BsonDocumentHelper.GetNullableInt("worker", logLine);
+            Worker = BsonDocumentHelper.GetString("worker", logLine);
 
             // Generate unique event hash
             EventHash = HashHelper.GenerateHashGuid(RequestId, Timestamp, TimestampOffset, File);

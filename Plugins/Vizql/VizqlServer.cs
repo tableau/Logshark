@@ -1,6 +1,7 @@
-﻿using Logshark.PluginLib.Extensions;
+﻿using Logshark.ArtifactProcessors.TableauServerLogProcessor.Parsers;
+using Logshark.ArtifactProcessors.TableauServerLogProcessor.PluginInterfaces;
+using Logshark.PluginLib.Extensions;
 using Logshark.PluginLib.Helpers;
-using Logshark.PluginLib.Model;
 using Logshark.PluginLib.Model.Impl;
 using Logshark.PluginLib.Persistence;
 using Logshark.PluginModel.Model;
@@ -17,7 +18,7 @@ using System.Threading.Tasks;
 
 namespace Logshark.Plugins.Vizql
 {
-    public class VizqlServer : BaseWorkbookCreationPlugin, IServerPlugin
+    public class VizqlServer : BaseWorkbookCreationPlugin, IServerClassicPlugin, IServerTsmPlugin
     {
         protected IPluginRequest pluginRequest;
         protected Guid logsetHash;
@@ -40,7 +41,12 @@ namespace Logshark.Plugins.Vizql
             get { return collectionsToQuery.ToHashSet(); }
         }
 
-        protected readonly IList<string> collectionsToQuery = new List<string> { "vizqlserver_cpp", "backgrounder_cpp", "dataserver_cpp" };
+        protected readonly IList<string> collectionsToQuery = new List<string>
+        {
+            ParserConstants.VizqlServerCppCollectionName,
+            ParserConstants.BackgrounderCppCollectionName,
+            ParserConstants.DataserverCppCollectionName
+        };
 
         public override IPluginResponse Execute(IPluginRequest pluginRequest)
         {
@@ -138,24 +144,25 @@ namespace Logshark.Plugins.Vizql
 
         protected void SetHostname(VizqlServerSession session)
         {
-            if (!session.Worker.HasValue)
+            if (session.Worker == null)
             {
                 session.Hostname = "Unknown";
             }
             else
             {
-                session.Hostname = GetHostnameForWorkerId(session.Worker.Value);
+                session.Hostname = GetHostnameForWorkerId(session.Worker);
             }
         }
 
-        protected string GetHostnameForWorkerId(int workerId)
+        protected string GetHostnameForWorkerId(string workerId)
         {
-            if (!workerHostnameMap.ContainsKey(workerId))
+            int workerIndex;
+            if (Int32.TryParse(workerId, out workerIndex))
             {
-                return String.Format("Unknown (worker{0})", workerId);
+                return workerHostnameMap[workerIndex];
             }
 
-            return workerHostnameMap[workerId];
+            return String.Format("Unknown ({0})", workerId);
         }
     }
 }

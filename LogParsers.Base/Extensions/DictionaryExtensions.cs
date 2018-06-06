@@ -1,7 +1,7 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Newtonsoft.Json.Linq;
 
 namespace LogParsers.Base.Extensions
 {
@@ -32,6 +32,51 @@ namespace LogParsers.Base.Extensions
             }
 
             return hierarchy;
+        }
+
+        /// <summary>
+        /// Attempts to retrieve the string representation of the value for a given key.  Returns null if key lookup fails.
+        /// </summary>
+        public static string TryGetString(this IDictionary<string, object> dict, string key)
+        {
+            if (String.IsNullOrWhiteSpace(key))
+            {
+                throw new ArgumentException("Supplied key cannot be null or empty!", "key");
+            }
+
+            object value;
+            if (dict.TryGetValue(key, out value))
+            {
+                return value.ToString();
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Attempts to retrieve the integer representation of the value for a given key.  Returns null if key lookup or conversion fails.
+        /// </summary>
+        public static int? TryGetInt(this IDictionary<string, object> dict, string key)
+        {
+            if (String.IsNullOrWhiteSpace(key))
+            {
+                throw new ArgumentException("Supplied key cannot be null or empty!", "key");
+            }
+
+            object value;
+            if (dict.TryGetValue(key, out value))
+            {
+                try
+                {
+                    return Convert.ToInt32(value);
+                }
+                catch
+                {
+                    return null;
+                }
+            }
+
+            return null;
         }
 
         /// <summary>

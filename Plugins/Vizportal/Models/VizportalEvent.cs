@@ -22,7 +22,7 @@ namespace Logshark.Plugins.Vizportal.Models
         [Index]
         public DateTime Timestamp { get; set; }
 
-        public int? Worker { get; set; }
+        public string Worker { get; set; }
         public string User { get; set; }
 
         [Index]
@@ -45,7 +45,7 @@ namespace Logshark.Plugins.Vizportal.Models
             LogsetHash = logsetHash;
             RequestId = BsonDocumentHelper.GetString("req", logLine);
             Timestamp = BsonDocumentHelper.GetDateTime("ts", logLine);
-            Worker = BsonDocumentHelper.GetInt("worker", logLine);
+            Worker = BsonDocumentHelper.GetString("worker", logLine);
             User = BsonDocumentHelper.GetString("user", logLine);
             SessionId = BsonDocumentHelper.GetString("sess", logLine);
             Site = BsonDocumentHelper.GetString("site", logLine);

@@ -45,13 +45,16 @@ namespace Logshark.Plugins.Vizql.Helpers
                                                            {"end-sql-temp-table-tuples-create",typeof(VizqlEndSqlTempTableTuplesCreate)},
                                                            {"end-update-sheet",typeof(VizqlEndUpdateSheet)},
                                                            {"end-visual-interpreter",typeof(VizqlEndVisualInterpreter)},
+                                                           {"end-visual-model-producer",typeof(VizqlEndVisualInterpreter)},
                                                            {"eqc-load",typeof(VizqlEqcLoad)},
                                                            {"eqc-store",typeof(VizqlEqcStore)},
                                                            {"generate-axis-encodings",typeof(VizqlGenerateAxisEncodings)},
+                                                           {"get-cached-query",typeof(VizqlEqcLoad)},
                                                            {"msg",typeof(VizqlMessage)},
                                                            {"process_query", typeof(VizqlProcessQuery)},
                                                            {"qp-batch-summary",typeof(VizqlQpBatchSummary)},
                                                            {"qp-query-end",typeof(VizqlQpQueryEnd)},
+                                                           {"vmp-generate-axis-encodings",typeof(VizqlGenerateAxisEncodings)},
                                                            {"set-collation",typeof(VizqlSetCollation)}};
 
         private static readonly ISet<string> VizqlDesktopSupportedKeytypes = new HashSet<string> {
@@ -77,14 +80,17 @@ namespace Logshark.Plugins.Vizql.Helpers
                                                            "end-sql-temp-table-tuples-create",
                                                            "end-update-sheet",
                                                            "end-visual-interpreter",
+                                                           "end-visual-model-producer",
                                                            "eqc-load",
                                                            "eqc-store",
                                                            "etc",
                                                            "generate-axis-encodings",
+                                                           "get-cached-query",
                                                            "msg",
                                                            "process_query",
                                                            "qp-batch-summary",
                                                            "qp-query-end",
+                                                           "vmp-generate-axis-encodings",
                                                            "set-collation"};
 
         private static readonly ISet<string> VizqlServerSupportedKeytypes = new HashSet<string> {
@@ -107,11 +113,14 @@ namespace Logshark.Plugins.Vizql.Helpers
                                                            "end-sql-temp-table-tuples-create",
                                                            "end-update-sheet",
                                                            "end-visual-interpreter",
+                                                           "end-visual-model-producer",
                                                            "eqc-load",
                                                            "eqc-store",
                                                            "generate-axis-encodings",
+                                                           "get-cached-query",
                                                            "qp-batch-summary",
-                                                           "qp-query-end"};
+                                                           "qp-query-end",
+                                                           "vmp-generate-axis-encodings",};
 
         private static readonly FilterDefinitionBuilder<BsonDocument> Query = Builders<BsonDocument>.Filter;
         private static readonly ILog Log = PluginLogFactory.GetLogger(Assembly.GetExecutingAssembly(), MethodBase.GetCurrentMethod());

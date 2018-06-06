@@ -4,10 +4,11 @@
   To get a list of eligible plugin dependency names, invoke Logshark with the "listplugins" command line flag.
 -->
 <CustomWorkbooks>
-  <!-- EXAMPLE
-  <Workbook name="MyCustomWorkbook.twb">
+  <!-- Uncomment this element and update it to point to your custom workbook and the associated plugins.
+  <Workbook name="Sample.twb">
     <PluginDependency name="Apache" />
     <PluginDependency name="Backgrounder" />
+    <PluginDependency name="VizqlServer" />
   </Workbook>
   -->
 </CustomWorkbooks>

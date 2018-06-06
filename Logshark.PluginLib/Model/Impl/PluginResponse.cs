@@ -1,6 +1,7 @@
 ﻿using Logshark.PluginModel.Model;
 using System;
 using System.Collections.Generic;
+using Tableau.RestApi.Model;
 
 namespace Logshark.PluginLib.Model.Impl
 {
@@ -13,7 +14,8 @@ namespace Logshark.PluginLib.Model.Impl
         public bool SuccessfulExecution { get; protected set; }
         public string FailureReason { get; protected set; }
         public bool GeneratedNoData { get; set; }
-        public IList<string> WorkbooksOutput { get; protected set; }
+        public ICollection<string> WorkbooksOutput { get; private set; }
+        public ICollection<PublishedWorkbookResult> WorkbooksPublished { get; private set; }
         public TimeSpan PluginRunTime { get; set; }
 
         public PluginResponse(string pluginName)
@@ -23,6 +25,7 @@ namespace Logshark.PluginLib.Model.Impl
             PluginName = pluginName;
             SuccessfulExecution = true;
             WorkbooksOutput = new List<string>();
+            WorkbooksPublished = new List<PublishedWorkbookResult>();
         }
 
         public void SetExecutionOutcome(bool isSuccessful, string failureReason = null)

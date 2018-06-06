@@ -234,7 +234,7 @@
             <externalTypeMoniker name="/d0ed9acb-0435-4532-afdd-b5115bc4d562/String" />
           </type>
         </attributeProperty>
-        <attributeProperty name="PublishingTimeoutSeconds" isRequired="true" isKey="false" isDefaultCollection="false" xmlName="publishingTimeoutSeconds" isReadOnly="false" documentation="The number of seconds to wait for a response when publishing a workbook to Tableau Server." defaultValue="300">
+        <attributeProperty name="PublishingTimeoutSeconds" isRequired="true" isKey="false" isDefaultCollection="false" xmlName="publishingTimeoutSeconds" isReadOnly="false" documentation="The number of seconds to wait for a response when publishing a workbook to Tableau Server." defaultValue="600">
           <validator>
             <integerValidatorMoniker name="/d0ed9acb-0435-4532-afdd-b5115bc4d562/Positive Integer" />
           </validator>
