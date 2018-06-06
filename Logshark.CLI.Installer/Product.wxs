@@ -87,6 +87,9 @@
                 <File Id="MongoDBDriverCoreDll" Name="MongoDB.Driver.Core.dll" Vital="yes" Source="$(var.Bin)\MongoDB.Driver.Core.dll" />
                 <File Id="NewtonsoftJsonDll" Name="Newtonsoft.Json.dll" Vital="yes" Source="$(var.Bin)\Newtonsoft.Json.dll" />
                 <File Id="NpgsqlDll" Name="Npgsql.dll" Vital="yes" Source="$(var.Bin)\Npgsql.dll" />
+                <File Id="OptionalDll" Name="Optional.dll" Vital="yes" Source="$(var.Bin)\Optional.dll" />
+                <File Id="OptionalCollectionsDll" Name="Optional.Collections.dll" Vital="yes" Source="$(var.Bin)\Optional.Collections.dll" />
+                <File Id="OptionalUtilitiesDll" Name="Optional.Utilities.dll" Vital="yes" Source="$(var.Bin)\Optional.Utilities.dll" />
                 <File Id="ServiceStackCommonDll" Name="ServiceStack.Common.dll" Vital="yes" Source="$(var.Bin)\ServiceStack.Common.dll" />
                 <File Id="ServiceStackInterfacesDll" Name="ServiceStack.Interfaces.dll" Vital="yes" Source="$(var.Bin)\ServiceStack.Interfaces.dll" />
                 <File Id="ServiceStackOrmLiteDll" Name="ServiceStack.OrmLite.dll" Vital="yes" Source="$(var.Bin)\ServiceStack.OrmLite.dll" />

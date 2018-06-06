@@ -1,6 +1,7 @@
-﻿using Logshark.PluginLib.Extensions;
+﻿using Logshark.ArtifactProcessors.TableauServerLogProcessor.Parsers;
+using Logshark.ArtifactProcessors.TableauServerLogProcessor.PluginInterfaces;
+using Logshark.PluginLib.Extensions;
 using Logshark.PluginLib.Helpers;
-using Logshark.PluginLib.Model;
 using Logshark.PluginLib.Model.Impl;
 using Logshark.PluginLib.Persistence;
 using Logshark.PluginModel.Model;
@@ -15,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace Logshark.Plugins.Apache
 {
-    public class Apache : BaseWorkbookCreationPlugin, IServerPlugin
+    public class Apache : BaseWorkbookCreationPlugin, IServerClassicPlugin, IServerTsmPlugin
     {
         private PluginResponse pluginResponse;
         private Guid logsetHash;
@@ -30,7 +31,7 @@ namespace Logshark.Plugins.Apache
             {
                 return new HashSet<string>
                 {
-                    "httpd"
+                    ParserConstants.HttpdCollectionName
                 };
             }
         }

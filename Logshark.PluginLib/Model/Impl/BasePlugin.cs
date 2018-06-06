@@ -1,5 +1,4 @@
 ﻿using log4net;
-using Logshark.PluginLib.Helpers;
 using Logshark.PluginLib.Logging;
 using Logshark.PluginLib.Persistence;
 using Logshark.PluginLib.StatusWriter;
@@ -57,37 +56,36 @@ namespace Logshark.PluginLib.Model.Impl
             Log = PluginLogFactory.GetLogger(this.GetType());
         }
 
-        protected ConcurrentBatchPersister<T> GetConcurrentBatchPersister<T>(IPluginRequest request = null) where T : new()
+        protected IPersister<T> GetConcurrentBatchPersister<T>(IPluginRequest request) where T : new()
         {
-            if (request == null)
-            {
-                return new ConcurrentBatchPersister<T>(OutputDatabaseConnectionFactory, recordsPersisted: RecordsPersisted);
-            }
-            else
-            {
-                int poolSize = GlobalPluginArgumentHelper.GetPersisterPoolSize(request);
-                int batchSize = GlobalPluginArgumentHelper.GetPersisterBatchSize(request);
-                return new ConcurrentBatchPersister<T>(OutputDatabaseConnectionFactory, poolSize, batchSize, RecordsPersisted);
-            }
+            return GetConcurrentBatchPersisterFactory<T>(request).BuildPersister();
         }
 
-        protected ConcurrentCustomPersister<T> GetConcurrentCustomPersister<T>(IPluginRequest request, ConcurrentCustomPersister<T>.InsertionMethod insertionMethod) where T : new()
+        protected IPersisterFactory<T> GetConcurrentBatchPersisterFactory<T>(IPluginRequest request) where T : new()
         {
-            return new ConcurrentCustomPersister<T>(request, OutputDatabaseConnectionFactory, insertionMethod, recordsPersisted: RecordsPersisted);
+            return new ConcurrentBatchPersisterFactory<T>(OutputDatabaseConnectionFactory, request, RecordsPersisted);
+        }
+
+        protected IPersister<T> GetConcurrentCustomPersister<T>(IPluginRequest request, ConcurrentCustomPersister<T>.InsertionMethod insertionMethod) where T : new()
+        {
+            return GetConcurrentCustomPersisterFactory<T>(request, insertionMethod).BuildPersister();
+        }
+
+        protected IPersisterFactory<T> GetConcurrentCustomPersisterFactory<T>(IPluginRequest request, ConcurrentCustomPersister<T>.InsertionMethod insertionMethod) where T : new()
+        {
+            return new ConcurrentCustomPersisterFactory<T>(OutputDatabaseConnectionFactory, request, insertionMethod, RecordsPersisted);
         }
 
         protected PersisterStatusWriter<T> GetPersisterStatusWriter<T>(IPersister<T> persister, long? expectedTotalPersistedItems = null) where T : new()
         {
-            string persistedType = typeof(T).Name;
             string progressFormatMessage;
-
             if (expectedTotalPersistedItems.HasValue)
             {
-                progressFormatMessage = PluginLibConstants.DEFAULT_PERSISTER_STATUS_WRITER_PROGRESS_MESSAGE_WITH_TOTAL.Replace("{PersistedType}", persistedType);
+                progressFormatMessage = PluginLibConstants.DEFAULT_PERSISTER_STATUS_WRITER_PROGRESS_MESSAGE_WITH_TOTAL;
             }
             else
             {
-                progressFormatMessage = PluginLibConstants.DEFAULT_PERSISTER_STATUS_WRITER_PROGRESS_MESSAGE.Replace("{PersistedType}", persistedType);
+                progressFormatMessage = PluginLibConstants.DEFAULT_PERSISTER_STATUS_WRITER_PROGRESS_MESSAGE;
             }
 
             return new PersisterStatusWriter<T>(persister, Log, progressFormatMessage, PluginLibConstants.DEFAULT_PROGRESS_MONITOR_POLLING_INTERVAL_SECONDS, expectedTotalPersistedItems);

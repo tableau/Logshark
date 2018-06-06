@@ -1,0 +1,22 @@
+2016-04-06 00:00:02.333 GMT,,,10148,"10.10.10.10:59338",57045182.27a4,1,"",2016-04-06 00:00:02 GMT,,0,LOG,08P00,"incomplete startup packet",,,,,,,,,""
+2016-04-06 00:00:05.036 GMT,"rails","workgroup",12944,"10.10.10.10:45380",57044bfa.3290,1,"idle",2016-04-05 23:36:26 GMT,69/0,0,LOG,XX000,"could not receive data from client: No connection could be made because the target machine actively refused it.
+
+",,,,,,,,,""
+2016-04-06 00:00:05.036 GMT,"rails","workgroup",8884,"10.10.10.10:45593",57044c16.22b4,1,"idle",2016-04-05 23:36:54 GMT,154/0,0,LOG,XX000,"could not receive data from client: No connection could be made because the target machine actively refused it.
+
+",,,,,,,,,""
+2016-04-06 00:00:05.052 GMT,"rails","workgroup",16592,"10.10.10.10:48657",5704507a.40d0,1,"idle",2016-04-05 23:55:38 GMT,17/0,0,LOG,XX000,"could not receive data from client: No connection could be made because the target machine actively refused it.
+
+",,,,,,,,,""
+2016-04-06 00:00:07.252 GMT,,,8328,"10.10.10.10:3639",57045187.2088,1,"",2016-04-06 00:00:07 GMT,,0,LOG,08P00,"incomplete startup packet",,,,,,,,,""
+2016-04-06 00:00:12.234 GMT,,,15240,"10.10.10.10:58712",5704518c.3b88,1,"",2016-04-06 00:00:12 GMT,,0,LOG,08P00,"incomplete startup packet",,,,,,,,,""
+2016-04-06 00:00:17.251 GMT,,,16836,"10.10.10.10:59430",57045191.41c4,1,"",2016-04-06 00:00:17 GMT,,0,LOG,08P00,"incomplete startup packet",,,,,,,,,""
+2016-04-06 00:00:20.752 GMT,"rails","workgroup",25268,"10.10.10.10:51187",5703eea3.62b4,1,"INSERT",2016-04-05 16:58:11 GMT,73/37721,347640,LOG,00000,"duration: 2688.000 ms  execute <unnamed>: WITH      dups AS         (SELECT year_index, month_index, day_index,view_id,          SUM(view_count) AS view_count_sum          FROM view_metrics_aggregations          GROUP BY view_id, day_index, month_index, year_index          HAVING COUNT(id) > 1          ),     deleted AS         (DELETE FROM view_metrics_aggregations AS vma USING dups          WHERE             (vma.year_index, vma.month_index, vma.day_index, vma.view_id) IS NOT DISTINCT              FROM (dups.year_index, dups.month_index, dups.day_index, dups.view_id)          RETURNING id) INSERT INTO view_metrics_aggregations(year_index, month_index, day_index,view_id, view_count) SELECT * FROM dups",,,,,,,,,""
+2016-04-06 00:00:22.252 GMT,,,1220,"10.10.10.10:59458",57045196.4c4,1,"",2016-04-06 00:00:22 GMT,,0,LOG,08P00,"incomplete startup packet",,,,,,,,,""
+2016-04-06 00:04:59.361 GMT,"rails","workgroup",19772,"10.10.10.10:49400",570451a6.4d3c,1,"idle",2016-04-06 00:00:38 GMT,17/0,0,LOG,XX000,"could not receive data from client: No connection could be made because the target machine actively refused it.
+
+",,,,,,,,,""
+2016-04-06 00:41:20.713 GMT,"rails","workgroup",6128,"10.10.10.10:47903",570385aa.17f0,1,"SELECT",2016-04-05 09:30:18 GMT,172/118138,0,LOG,00000,"duration: 1000.000 ms  execute <unnamed>: SELECT * FROM effective_perms_with_pcp_users_views_capabilities(ARRAY[1401], ARRAY[84820, 84822, 84832, 84828, 84824, 84823, 84825, 84826, 84830, 84829, 84819, 84827, 84831, 84821], ARRAY[1])",,,,,,,,,""
+2016-04-06 00:41:20.775 GMT,"rails","workgroup",18880,"10.10.10.10:59507",57037e8e.49c0,1,"SELECT",2016-04-05 08:59:58 GMT,141/142226,0,LOG,00000,"duration: 1031.000 ms  execute <unnamed>: SELECT * FROM effective_perms_with_pcp_users_workbooks_capabilities(ARRAY[1401], ARRAY[9447], ARRAY[1])",,,,,,,,,""
+2016-04-06 00:41:20.791 GMT,"rails","workgroup",25252,"10.10.10.10:44219",57045b2e.62a4,1,"SELECT",2016-04-06 00:41:18 GMT,201/76,0,LOG,00000,"duration: 1032.000 ms  execute <unnamed>: SELECT * FROM effective_perms_with_pcp_users_views_capabilities(ARRAY[1401], ARRAY[84808, 84816, 84812, 84815, 84811, 84806, 84807, 84818, 84809, 84810, 84813, 84814, 84805, 84817], ARRAY[1])",,,,,,,,,""
+2016-04-06 00:41:20.822 GMT,"rails","workgroup",20836,"10.10.10.10:50857",57037e77.5164,1,"SELECT",2016-04-05 08:59:35 GMT,135/140532,0,LOG,00000,"duration: 1063.000 ms  execute <unnamed>: SELECT * FROM effective_perms_with_pcp_users_views_capabilities(ARRAY[1401], ARRAY[84808, 84816, 84812, 84815, 84811, 84806, 84807, 84818, 84809, 84810, 84813, 84814, 84805, 84817], ARRAY[1])",,,,,,,,,""

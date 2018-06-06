@@ -12,7 +12,6 @@ namespace Logshark.RequestModel
         ILogsharkRequestBuilder WithCustomId(string customId);
         ILogsharkRequestBuilder WithDropParsedLogset(bool keepParsedLogset);
         ILogsharkRequestBuilder WithForceParse(bool forceParse);
-        ILogsharkRequestBuilder WithIgnoreDebugLogs(bool ignoreDebugLogs);
         ILogsharkRequestBuilder WithLocalMongoPort(int localMongoPort);
         ILogsharkRequestBuilder WithMetadata(IDictionary<string, object> metadataDictionary);
         ILogsharkRequestBuilder WithPluginCustomArguments(IDictionary<string, object> customArgDictionary);
@@ -31,7 +30,14 @@ namespace Logshark.RequestModel
 
     public class LogsharkRequestBuilder : ILogsharkRequestBuilder
     {
-        private readonly LogsharkRequest request;
+        // List of all Postgres DB names that the user should not be allowed to use.
+        protected static readonly ISet<string> ProtectedPostgresDbNames = new HashSet<string>
+        {
+            "logshark_metadata",
+            "postgres"
+        };
+
+        protected readonly LogsharkRequest request;
 
         public LogsharkRequestBuilder(string target, LogsharkConfiguration configuration)
         {
@@ -66,12 +72,6 @@ namespace Logshark.RequestModel
         public ILogsharkRequestBuilder WithForceParse(bool forceParse)
         {
             request.ForceParse = forceParse;
-            return this;
-        }
-
-        public ILogsharkRequestBuilder WithIgnoreDebugLogs(bool ignoreDebugLogs)
-        {
-            request.IgnoreDebugLogs = ignoreDebugLogs;
             return this;
         }
 
@@ -119,7 +119,7 @@ namespace Logshark.RequestModel
 
         public ILogsharkRequestBuilder WithPostgresDatabaseName(string postgresDatabaseName)
         {
-            if (RequestConstants.PROTECTED_DATABASE_NAMES.Contains(postgresDatabaseName, StringComparer.InvariantCultureIgnoreCase))
+            if (ProtectedPostgresDbNames.Contains(postgresDatabaseName, StringComparer.OrdinalIgnoreCase))
             {
                 throw new ArgumentException(String.Format("{0} is a protected database name and cannot be used as a Logshark destination!", postgresDatabaseName));
             }

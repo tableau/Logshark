@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Tableau.RestApi.Model;
 
 namespace Logshark.PluginModel.Model
 {
@@ -9,7 +10,9 @@ namespace Logshark.PluginModel.Model
         bool SuccessfulExecution { get; }
         string FailureReason { get; }
         bool GeneratedNoData { get; set; }
-        IList<string> WorkbooksOutput { get; }
+        ICollection<string> WorkbooksOutput { get; }
+        ICollection<PublishedWorkbookResult> WorkbooksPublished { get; }
+
         TimeSpan PluginRunTime { get; set; }
 
         void SetExecutionOutcome(bool isSuccessful, string failureReason = null);

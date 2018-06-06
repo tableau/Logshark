@@ -7,7 +7,7 @@
     <ProjectGuid>{D6D4516C-0CC6-40B3-9002-B84F81E2C90B}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Tableau.DesktopLogProcessor</RootNamespace>
+    <RootNamespace>Logshark.ArtifactProcessors.TableauDesktopLogProcessor</RootNamespace>
     <AssemblyName>TableauDesktopLogProcessor</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -75,12 +75,15 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Parsing\ParserFactory.cs" />
-    <Compile Include="Parsing\ParserBuilders\DesktopParserBuilder.cs" />
-    <Compile Include="Parsing\ParserConstants.cs" />
-    <Compile Include="Parsing\Parsers\DesktopCppParser.cs" />
+    <Compile Include="ParserMapping\ParserFactory.cs" />
+    <Compile Include="ParserMapping\ParserBuilders\DesktopParserBuilder.cs" />
+    <Compile Include="Parsers\DataEngineParser.cs" />
+    <Compile Include="Parsers\ParserConstants.cs" />
+    <Compile Include="Parsers\DesktopCppParser.cs" />
+    <Compile Include="Parsers\ProtocolServerParser.cs" />
+    <Compile Include="PluginInterfaces\IDesktopPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TableauDesktopLogProcessor.cs" />
+    <Compile Include="DesktopLogProcessor.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\LogParsers.Base\LogParsers.Base.csproj">
@@ -96,12 +99,8 @@
       <Name>Logshark.Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Logshark.PluginLib\Logshark.PluginLib.csproj">
-      <Project>{c80ed597-1c60-465b-a18d-b249b7c2849f}</Project>
+      <Project>{C80ED597-1C60-465B-A18D-B249B7C2849F}</Project>
       <Name>Logshark.PluginLib</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Logshark.RequestModel\Logshark.RequestModel.csproj">
-      <Project>{c3f0fafa-1c38-42cf-a1ae-37ef00d0ead5}</Project>
-      <Name>Logshark.RequestModel</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

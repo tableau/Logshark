@@ -3,14 +3,9 @@ using Logshark.PluginLib.Persistence;
 using Logshark.PluginModel.Model;
 using Logshark.Plugins.Vizql.Helpers;
 using Logshark.Plugins.Vizql.Models;
-using Logshark.Plugins.Vizql.Models.Events;
-using Logshark.Plugins.Vizql.Models.Events.Caching;
-using Logshark.Plugins.Vizql.Models.Events.Compute;
-using Logshark.Plugins.Vizql.Models.Events.Connection;
 using Logshark.Plugins.Vizql.Models.Events.Error;
 using Logshark.Plugins.Vizql.Models.Events.Performance;
 using Logshark.Plugins.Vizql.Models.Events.Query;
-using Logshark.Plugins.Vizql.Models.Events.Render;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using System;
@@ -76,24 +71,6 @@ namespace Logshark.Plugins.Vizql
                 Task.WaitAll(tasks.ToArray());
                 sessionPersister.Shutdown();
             }
-
-            var dllVersionInfoPersister = GetConcurrentBatchPersister<VizqlDllVersionInfo>(this.pluginRequest);
-            using (GetPersisterStatusWriter(dllVersionInfoPersister))
-            {
-                var tasks = new List<Task>();
-
-                foreach (IMongoCollection<BsonDocument> collection in collections)
-                {
-                    var cursor = MongoQueryHelper.GetCursorForKey("dll-version-info", collection);
-                    foreach (var document in cursor.ToEnumerable())
-                    {
-                        tasks.Add(Task.Factory.StartNew(() => dllVersionInfoPersister.Enqueue(new VizqlDllVersionInfo(document))));
-                    }
-                }
-
-                Task.WaitAll(tasks.ToArray());
-                dllVersionInfoPersister.Shutdown();
-            }
         }
 
         protected override void CreateTables(IDbConnection database)
@@ -110,30 +87,6 @@ namespace Logshark.Plugins.Vizql
             // Query
             database.CreateOrMigrateTable<VizqlEndQuery>();
             database.CreateOrMigrateTable<VizqlQpQueryEnd>();
-            database.CreateOrMigrateTable<VizqlEndPrepareQuickFilterQueries>();
-            database.CreateOrMigrateTable<VizqlEndSqlTempTableTuplesCreate>();
-            database.CreateOrMigrateTable<VizqlQpBatchSummary>();
-            database.CreateOrMigrateTable<VizqlQpBatchSummaryJob>();
-
-            // Connections
-            database.CreateOrMigrateTable<VizqlConstructProtocol>();
-            database.CreateOrMigrateTable<VizqlConstructProtocolGroup>();
-
-            // Caching
-            database.CreateOrMigrateTable<VizqlEcDrop>();
-            database.CreateOrMigrateTable<VizqlEcLoad>();
-            database.CreateOrMigrateTable<VizqlEcStore>();
-            database.CreateOrMigrateTable<VizqlEqcLoad>();
-            database.CreateOrMigrateTable<VizqlEqcStore>();
-
-            // Compute
-            database.CreateOrMigrateTable<VizqlEndComputeQuickFilterState>();
-
-            // Render
-            database.CreateOrMigrateTable<VizqlEndUpdateSheet>();
-
-            // Dll
-            database.CreateOrMigrateTable<VizqlDllVersionInfo>();
         }
     }
 }

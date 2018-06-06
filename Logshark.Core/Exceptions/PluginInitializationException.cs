@@ -1,8 +1,10 @@
-﻿using System;
+﻿using Logshark.Common.Exceptions;
+using System;
 
 namespace Logshark.Core.Exceptions
 {
-    public class PluginInitializationException : Exception
+    [Serializable]
+    public class PluginInitializationException : BaseLogsharkException
     {
         public PluginInitializationException()
         {

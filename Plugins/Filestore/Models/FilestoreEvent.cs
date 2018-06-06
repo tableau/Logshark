@@ -30,7 +30,7 @@ namespace Logshark.Plugins.Filestore.Models
         public string Class { get; set; }
 
         [Index]
-        public int Worker { get; set; }
+        public string Worker { get; set; }
 
         public FilestoreEvent()
         {
@@ -44,7 +44,7 @@ namespace Logshark.Plugins.Filestore.Models
             Severity = BsonDocumentHelper.GetString("sev", logLine);
             Message = BsonDocumentHelper.GetString("message", logLine);
             Class = BsonDocumentHelper.GetString("class", logLine);
-            Worker = BsonDocumentHelper.GetInt("worker", logLine);
+            Worker = BsonDocumentHelper.GetString("worker", logLine);
             EventHash = GetEventHash(logLine);
         }
 

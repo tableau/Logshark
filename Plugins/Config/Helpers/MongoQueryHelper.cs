@@ -10,13 +10,13 @@ namespace Logshark.Plugins.Config.Helpers
         public static FilterDefinition<BsonDocument> GetConfig(IMongoCollection<BsonDocument> collection)
         {
             // Construct query filter.
-            return Query.Eq("worker", 0) & Query.Eq("file", "workgroup.yml");
+            return Query.Eq("file", "workgroup.yml");
         }
 
         public static FilterDefinition<BsonDocument> GetTabSvcYml(IMongoCollection<BsonDocument> collection)
         {
             // Construct query filter.
-            return Query.Eq("worker", 0) & Query.Eq("file", "tabsvc.yml");
+            return Query.Eq("file", "tabsvc.yml");
         }
 
         public static ProjectionDefinition<BsonDocument> GetHostsProjection()

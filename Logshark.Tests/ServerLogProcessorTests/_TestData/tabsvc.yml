@@ -1,0 +1,53 @@
+--- 
+clustercontroller.zookeeper.password: "****** <obfuscated>"
+config.version: 14
+filestore.zookeeper.password: "****** <obfuscated>"
+gateway.external_url: http://tableau-server
+install.component.samples: false
+jdbc.password: "****** <obfuscated>"
+pgsql.adminpassword: "****** <obfuscated>"
+pgsql.host: tableau-server
+pgsql.preferred_host: tableau-server
+pgsql.readonly.enabled: true
+pgsql.readonly_password: "****** <obfuscated>"
+pgsql.remote_password: "****** <obfuscated>"
+pgsql0.host: tableau-server
+pgsql1.host: 10.10.10.10
+redis.password: "****** <obfuscated>"
+servercrashupload.scheduled_time: 01:00:00 AM Pacific Daylight Time
+service.backup.pgonly: false
+service.jmx_enabled: true
+service.runas.username: domain\run_as_user
+svcmonitor.notification.smtp.canonical_url: ""
+tabadminservice.password: "****** <obfuscated>"
+wgserver.authenticate: activedirectory
+wgserver.domain.default: domain.com
+wgserver.domain.fqdn: domain.com
+wgserver.domain.nickname: domain
+wgserver.sign_in_logo.link: false
+wgserver.sspi.ntlm: true
+worker.hosts: tableau-server, 10.10.10.11, 10.10.10.12
+worker0.backgrounder.procs: 1
+worker0.cacheserver.procs: 1
+worker0.dataserver.procs: 0
+worker1.backgrounder.procs: 1
+worker1.cacheserver.procs: 1
+worker1.dataengine.procs: 0
+worker1.dataserver.procs: 0
+worker1.filestore.enabled: false
+worker1.gateway.enabled: true
+worker1.gateway.port: 80
+worker1.searchserver.enabled: true
+worker1.vizportal.procs: 1
+worker1.vizqlserver.procs: 4
+worker2.backgrounder.procs: 1
+worker2.cacheserver.procs: 1
+worker2.dataengine.procs: 0
+worker2.dataserver.procs: 0
+worker2.filestore.enabled: false
+worker2.gateway.enabled: true
+worker2.gateway.port: 80
+worker2.searchserver.enabled: true
+worker2.vizportal.procs: 1
+worker2.vizqlserver.procs: 4
+service.init.state: start

@@ -141,6 +141,14 @@
     <EmbeddedResource Include="VizqlServerPerformance.twb" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\ArtifactProcessors\TableauDesktopLogProcessor\TableauDesktopLogProcessor.csproj">
+      <Project>{D6D4516C-0CC6-40B3-9002-B84F81E2C90B}</Project>
+      <Name>TableauDesktopLogProcessor</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\ArtifactProcessors\TableauServerLogProcessor\TableauServerLogProcessor.csproj">
+      <Project>{D41508A6-3102-4453-BA41-5B408720505E}</Project>
+      <Name>TableauServerLogProcessor</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Logshark.PluginLib\Logshark.PluginLib.csproj">
       <Project>{c80ed597-1c60-465b-a18d-b249b7c2849f}</Project>
       <Name>Logshark.PluginLib</Name>

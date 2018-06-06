@@ -20,7 +20,7 @@ namespace Logshark.Plugins.ClusterController.Models
         public DateTime Timestamp { get; set; }
 
         [Index]
-        public int Worker { get; set; }
+        public string Worker { get; set; }
 
         public string Filename { get; set; }
         public int LineNumber { get; set; }
@@ -33,7 +33,7 @@ namespace Logshark.Plugins.ClusterController.Models
         {
             LogsetHash = logsetHash;
             Timestamp = BsonDocumentHelper.GetDateTime("ts", document);
-            Worker = BsonDocumentHelper.GetInt("worker", document);
+            Worker = BsonDocumentHelper.GetString("worker", document);
             Filename = String.Format(@"{0}\{1}", BsonDocumentHelper.GetString("file_path", document), BsonDocumentHelper.GetString("file", document));
             LineNumber = BsonDocumentHelper.GetInt("line", document);
         }

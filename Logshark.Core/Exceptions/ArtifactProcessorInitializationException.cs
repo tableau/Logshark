@@ -1,8 +1,10 @@
-﻿using System;
+﻿using Logshark.Common.Exceptions;
+using System;
 
 namespace Logshark.Core.Exceptions
 {
-    public class ArtifactProcessorInitializationException : Exception
+    [Serializable]
+    public class ArtifactProcessorInitializationException : BaseLogsharkException
     {
         public ArtifactProcessorInitializationException()
         {

@@ -1,7 +1,9 @@
-﻿using System;
-using System.IO;
-using LogParsers.Base.Helpers;
+﻿using LogParsers.Base.Helpers;
 using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
 namespace LogParsers.Base.Parsers
 {
@@ -12,6 +14,7 @@ namespace LogParsers.Base.Parsers
     {
         protected LineCounter LineCounter { get; private set; }
         protected LogFileContext FileContext { get; private set; }
+        protected IEnumerable<JProperty> FileMetadata { get; private set; }
 
         /// <summary>
         /// The CollectionSchema contains information about the collection name & indexes associated with this kind of parser.
@@ -50,12 +53,14 @@ namespace LogParsers.Base.Parsers
         {
             LineCounter = new LineCounter();
             FileContext = null;
+            FileMetadata = Enumerable.Empty<JProperty>();
         }
 
         protected BaseParser(LogFileContext fileContext)
         {
             LineCounter = new LineCounter(fileContext.LineOffset);
             FileContext = fileContext;
+            FileMetadata = fileContext.ArtifactSpecificFileMetadata.Select(item => new JProperty(item.Key, item.Value));
         }
 
         /// <summary>
@@ -111,7 +116,12 @@ namespace LogParsers.Base.Parsers
                 json.AddFirst(new JProperty("_id", id));
                 json.Add(new JProperty("file_path", FileContext.FileLocationRelativeToRoot));
                 json.Add(new JProperty("file", FileContext.LogicalFileName));
-                json.Add(new JProperty("worker", FileContext.WorkerIndex));
+            }
+
+            // Add any custom file metadata.
+            foreach (JProperty fileMetadatum in FileMetadata)
+            {
+                json.Add(fileMetadatum);
             }
 
             if (UseLineNumbers)

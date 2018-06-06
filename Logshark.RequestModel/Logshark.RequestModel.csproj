@@ -84,14 +84,10 @@
     <Compile Include="Config\LogsharkLocalMongoOptions.cs" />
     <Compile Include="Config\LogsharkTuningOptions.cs" />
     <Compile Include="Exceptions\LogsharkRequestInitializationException.cs" />
-    <Compile Include="RequestConstants.cs" />
     <Compile Include="LogsharkRequest.cs" />
     <Compile Include="LogsharkRequestBuilder.cs" />
     <Compile Include="LogsharkRequestTarget.cs" />
-    <Compile Include="RunContext\LogsharkRunContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Timers\LogsharkTimer.cs" />
-    <Compile Include="Timers\TimingData.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

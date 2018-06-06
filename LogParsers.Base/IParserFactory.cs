@@ -1,4 +1,3 @@
-using LogParsers.Base.Helpers;
 using LogParsers.Base.Parsers;
 using System.Collections.Generic;
 

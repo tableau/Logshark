@@ -7,7 +7,8 @@ namespace Logshark.Plugins.ResourceManager.Model
 {
     public class ResourceManagerMemoryInfo : ResourceManagerEvent
     {
-        private static readonly Regex CurrentAndTotalMemoryUtilRegex = new Regex(@".*\s(?<current_process_util>\d+?)\s.*;\s(?<tableau_total_util>\d+?)\s.*", RegexOptions.Compiled | RegexOptions.ExplicitCapture);
+        // Gets byte counts for current & total utilization by greedily capturing numeric sequences (composed of digits and comma separators) from between the ":" & "bytes" and ";" & "bytes" token pairs.
+        private static readonly Regex CurrentAndTotalMemoryUtilRegex = new Regex(@".*: (?<current_process_util>[\d,]+?) bytes.*; (?<tableau_total_util>[\d,]+?) bytes", RegexOptions.Compiled | RegexOptions.ExplicitCapture);
 
         public long ProcessMemoryUtil { get; set; }
         public long TotalMemoryUtil { get; set; }
@@ -30,8 +31,8 @@ namespace Logshark.Plugins.ResourceManager.Model
                 var currentAndTotalMatch = CurrentAndTotalMemoryUtilRegex.Match(utilString);
                 if (currentAndTotalMatch.Success)
                 {
-                    ProcessMemoryUtil = Int64.Parse(currentAndTotalMatch.Groups["current_process_util"].Value);
-                    TotalMemoryUtil = Int64.Parse(currentAndTotalMatch.Groups["tableau_total_util"].Value);
+                    ProcessMemoryUtil = Int64.Parse(currentAndTotalMatch.Groups["current_process_util"].Value.Replace(",", ""));
+                    TotalMemoryUtil = Int64.Parse(currentAndTotalMatch.Groups["tableau_total_util"].Value.Replace(",", ""));
                 }
                 else
                 {

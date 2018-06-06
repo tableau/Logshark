@@ -119,18 +119,20 @@
           </metadata-record>
           <metadata-record class='column'>
             <remote-name>worker_id</remote-name>
-            <remote-type>3</remote-type>
+            <remote-type>130</remote-type>
             <local-name>[worker_id]</local-name>
             <parent-name>[resource_manager_cpu_info]</parent-name>
             <remote-alias>worker_id</remote-alias>
             <ordinal>7</ordinal>
-            <local-type>integer</local-type>
-            <aggregation>Sum</aggregation>
-            <precision>10</precision>
-            <contains-null>false</contains-null>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <width>8190</width>
+            <contains-null>true</contains-null>
+            <cast-to-local-type>true</cast-to-local-type>
+            <collation flag='0' name='LEN_RUS' />
             <attributes>
-              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_INTEGER&quot;</attribute>
-              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_SLONG&quot;</attribute>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_WLONGVARCHAR&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_WCHAR&quot;</attribute>
             </attributes>
           </metadata-record>
           <metadata-record class='column'>
@@ -206,7 +208,7 @@
       <column caption='Process Name' datatype='string' name='[process_name]' role='dimension' type='nominal' />
       <column caption='Timestamp' datatype='datetime' name='[timestamp]' role='dimension' type='ordinal' />
       <column caption='Total Cpu Utilization %' datatype='real' datatype-customized='true' default-format='n0.0&quot;%&quot;;-0.0&quot;%&quot;' name='[total_cpu_util]' role='measure' type='quantitative' />
-      <column caption='Worker' datatype='integer' name='[worker_id]' role='dimension' type='ordinal' />
+      <column caption='Worker' datatype='string' name='[worker_id]' role='dimension' type='nominal' />
       <column-instance column='[process_cpu_util]' derivation='Attribute' name='[attr:process_cpu_util:qk]' pivot='key' type='quantitative' />
       <column-instance column='[total_cpu_util]' derivation='Attribute' name='[attr:total_cpu_util:qk]' pivot='key' type='quantitative' />
       <column-instance column='[process_cpu_util]' derivation='Avg' name='[avg:process_cpu_util:qk]' pivot='key' type='quantitative' />
@@ -219,7 +221,7 @@
       <column-instance column='[pid]' derivation='Sum' name='[sum:pid:qk]' pivot='key' type='quantitative' />
       <column-instance column='[process_cpu_util]' derivation='Sum' name='[sum:process_cpu_util:qk]' pivot='key' type='quantitative' />
       <column-instance column='[total_cpu_util]' derivation='Sum' name='[sum:total_cpu_util:qk]' pivot='key' type='quantitative' />
-      <layout dim-ordering='alphabetic' dim-percentage='0.63895' measure-ordering='alphabetic' measure-percentage='0.36105' show-structure='true' />
+      <layout dim-ordering='alphabetic' dim-percentage='0.550517' measure-ordering='alphabetic' measure-percentage='0.449483' show-structure='true' />
       <style>
         <style-rule element='mark'>
           <encoding attr='color' field='[none:Calculation_1678153842301644807:nk]' palette='tableau-20' type='palette'>
@@ -529,18 +531,20 @@
           </metadata-record>
           <metadata-record class='column'>
             <remote-name>worker_id</remote-name>
-            <remote-type>3</remote-type>
+            <remote-type>130</remote-type>
             <local-name>[worker_id]</local-name>
             <parent-name>[resource_manager_threshold]</parent-name>
             <remote-alias>worker_id</remote-alias>
             <ordinal>8</ordinal>
-            <local-type>integer</local-type>
-            <aggregation>Sum</aggregation>
-            <precision>10</precision>
-            <contains-null>false</contains-null>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <width>8190</width>
+            <contains-null>true</contains-null>
+            <cast-to-local-type>true</cast-to-local-type>
+            <collation flag='0' name='LEN_RUS' />
             <attributes>
-              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_INTEGER&quot;</attribute>
-              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_SLONG&quot;</attribute>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_WLONGVARCHAR&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_WCHAR&quot;</attribute>
             </attributes>
           </metadata-record>
           <metadata-record class='column'>
@@ -625,7 +629,7 @@
       <column caption='Process Name' datatype='string' name='[process_name]' role='dimension' type='nominal' />
       <column caption='Timestamp' datatype='datetime' name='[timestamp]' role='dimension' type='ordinal' />
       <column caption='Total Memory Limit' datatype='integer' name='[total_memory_limit]' role='measure' type='quantitative' />
-      <column caption='Worker Id' datatype='integer' name='[worker_id]' role='dimension' type='ordinal' />
+      <column caption='Worker Id' datatype='string' name='[worker_id]' role='dimension' type='nominal' />
       <column-instance column='[total_memory_limit]' derivation='Attribute' name='[attr:total_memory_limit:qk]' pivot='key' type='quantitative' />
       <column-instance column='[total_memory_limit]' derivation='Max' name='[max:total_memory_limit:qk]' pivot='key' type='quantitative' />
       <column-instance column='[total_memory_limit]' derivation='Sum' name='[sum:total_memory_limit:qk]' pivot='key' type='quantitative' />
@@ -906,18 +910,20 @@
           </metadata-record>
           <metadata-record class='column'>
             <remote-name>worker_id</remote-name>
-            <remote-type>3</remote-type>
+            <remote-type>130</remote-type>
             <local-name>[worker_id]</local-name>
             <parent-name>[resource_manager_action]</parent-name>
             <remote-alias>worker_id</remote-alias>
             <ordinal>13</ordinal>
-            <local-type>integer</local-type>
-            <aggregation>Sum</aggregation>
-            <precision>10</precision>
-            <contains-null>false</contains-null>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <width>8190</width>
+            <contains-null>true</contains-null>
+            <cast-to-local-type>true</cast-to-local-type>
+            <collation flag='0' name='LEN_RUS' />
             <attributes>
-              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_INTEGER&quot;</attribute>
-              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_SLONG&quot;</attribute>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_WLONGVARCHAR&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_WCHAR&quot;</attribute>
             </attributes>
           </metadata-record>
           <metadata-record class='column'>
@@ -1000,7 +1006,7 @@
       <column caption='Timestamp' datatype='datetime' name='[timestamp]' role='dimension' type='ordinal' />
       <column caption='Total Memory Utilization (Bytes)' datatype='integer' name='[total_memory_util]' role='measure' type='quantitative' />
       <column caption='Total Memory Util Termination' datatype='boolean' name='[total_memory_util_termination]' role='dimension' type='nominal' />
-      <column caption='Worker' datatype='integer' name='[worker_id]' role='dimension' type='ordinal' />
+      <column caption='Worker' datatype='string' name='[worker_id]' role='dimension' type='nominal' />
       <column-instance column='[total_memory_util]' derivation='Attribute' name='[attr:total_memory_util:qk]' pivot='key' type='quantitative' />
       <column-instance column='[Calculation_3019100628483035136]' derivation='None' name='[none:Calculation_3019100628483035136:nk]' pivot='key' type='nominal' />
       <column-instance column='[pid]' derivation='Sum' name='[sum:pid:qk]' pivot='key' type='quantitative' />
@@ -1163,18 +1169,20 @@
           </metadata-record>
           <metadata-record class='column'>
             <remote-name>worker_id</remote-name>
-            <remote-type>3</remote-type>
+            <remote-type>130</remote-type>
             <local-name>[worker_id]</local-name>
             <parent-name>[resource_manager_memory_info]</parent-name>
             <remote-alias>worker_id</remote-alias>
             <ordinal>7</ordinal>
-            <local-type>integer</local-type>
-            <aggregation>Sum</aggregation>
-            <precision>10</precision>
-            <contains-null>false</contains-null>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <width>8190</width>
+            <contains-null>true</contains-null>
+            <cast-to-local-type>true</cast-to-local-type>
+            <collation flag='0' name='LEN_RUS' />
             <attributes>
-              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_INTEGER&quot;</attribute>
-              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_SLONG&quot;</attribute>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_WLONGVARCHAR&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_WCHAR&quot;</attribute>
             </attributes>
           </metadata-record>
           <metadata-record class='column'>
@@ -1264,7 +1272,7 @@
       <column caption='Process Name' datatype='string' name='[process_name]' role='dimension' type='nominal' />
       <column caption='Timestamp' datatype='datetime' name='[timestamp]' role='dimension' type='ordinal' />
       <column caption='Total Memory Utilization (Bytes)' datatype='integer' default-format='n#,##0&quot; B&quot;;-#,##0&quot; B&quot;' name='[total_memory_util]' role='measure' type='quantitative' />
-      <column caption='Worker' datatype='integer' name='[worker_id]' role='dimension' type='ordinal' />
+      <column caption='Worker' datatype='string' name='[worker_id]' role='dimension' type='nominal' />
       <column-instance column='[Calculation_3019100628768976908]' derivation='Attribute' name='[attr:Calculation_3019100628768976908:qk]' pivot='key' type='quantitative' />
       <column-instance column='[total_memory_util]' derivation='Attribute' name='[attr:total_memory_util:qk]' pivot='key' type='quantitative' />
       <column-instance column='[Calculation_3019100628758446091]' derivation='Avg' name='[avg:Calculation_3019100628758446091:qk]' pivot='key' type='quantitative' />
@@ -1275,13 +1283,12 @@
       <column-instance column='[Calculation_3019100628768976908]' derivation='Max' name='[max:Calculation_3019100628768976908:qk]' pivot='key' type='quantitative' />
       <column-instance column='[Calculation_1678153842302287880]' derivation='None' name='[none:Calculation_1678153842302287880:nk]' pivot='key' type='nominal' />
       <column-instance column='[process_name]' derivation='None' name='[none:process_name:nk]' pivot='key' type='nominal' />
-      <column-instance column='[worker_id]' derivation='None' name='[none:worker_id:ok]' pivot='key' type='ordinal' />
       <column-instance column='[Calculation_3019100628758446091]' derivation='Sum' name='[sum:Calculation_3019100628758446091:qk]' pivot='key' type='quantitative' />
       <column-instance column='[Calculation_3019100628768976908]' derivation='Sum' name='[sum:Calculation_3019100628768976908:qk]' pivot='key' type='quantitative' />
       <column-instance column='[pid]' derivation='Sum' name='[sum:pid:qk]' pivot='key' type='quantitative' />
       <column-instance column='[process_memory_util]' derivation='Sum' name='[sum:process_memory_util:qk]' pivot='key' type='quantitative' />
       <column-instance column='[total_memory_util]' derivation='Sum' name='[sum:total_memory_util:qk]' pivot='key' type='quantitative' />
-      <layout dim-ordering='alphabetic' dim-percentage='0.568928' measure-ordering='alphabetic' measure-percentage='0.431072' show-structure='true' />
+      <layout dim-ordering='alphabetic' dim-percentage='0.525855' measure-ordering='alphabetic' measure-percentage='0.474145' show-structure='true' />
       <style>
         <style-rule element='mark'>
           <encoding attr='color' field='[none:Calculation_1678153842302287880:nk]' type='palette'>
@@ -1343,18 +1350,24 @@
               <bucket>&quot;vizportal\#0&quot;</bucket>
             </map>
           </encoding>
-          <encoding attr='color' field='[none:worker_id:ok]' type='palette'>
+          <encoding attr='color' field='[none:process_name:nk]' palette='tableau10_10_0' type='palette'>
             <map to='#4e79a7'>
-              <bucket>1</bucket>
+              <bucket>&quot;vizqlserver&quot;</bucket>
+            </map>
+            <map to='#59a14f'>
+              <bucket>&quot;dataserver&quot;</bucket>
             </map>
             <map to='#76b7b2'>
-              <bucket>4</bucket>
+              <bucket>&quot;vizportal&quot;</bucket>
             </map>
-            <map to='#e15759'>
-              <bucket>3</bucket>
+            <map to='#9467bd'>
+              <bucket>&quot;wgserver&quot;</bucket>
+            </map>
+            <map to='#edc948'>
+              <bucket>&quot;protocolserver&quot;</bucket>
             </map>
             <map to='#f28e2b'>
-              <bucket>2</bucket>
+              <bucket>&quot;backgrounder&quot;</bucket>
             </map>
           </encoding>
           <encoding attr='color' field='[:Measure Names]' palette='tableau-20' type='palette'>
@@ -1446,26 +1459,6 @@
               <bucket>&quot;[resource_manager_cpu_info (MRJOHNSON_160613_154800932787) (copy)].[sum:process_memory_util:qk]&quot;</bucket>
             </map>
           </encoding>
-          <encoding attr='color' field='[none:process_name:nk]' palette='tableau10_10_0' type='palette'>
-            <map to='#4e79a7'>
-              <bucket>&quot;vizqlserver&quot;</bucket>
-            </map>
-            <map to='#59a14f'>
-              <bucket>&quot;dataserver&quot;</bucket>
-            </map>
-            <map to='#76b7b2'>
-              <bucket>&quot;vizportal&quot;</bucket>
-            </map>
-            <map to='#9467bd'>
-              <bucket>&quot;wgserver&quot;</bucket>
-            </map>
-            <map to='#edc948'>
-              <bucket>&quot;protocolserver&quot;</bucket>
-            </map>
-            <map to='#f28e2b'>
-              <bucket>&quot;backgrounder&quot;</bucket>
-            </map>
-          </encoding>
         </style-rule>
       </style>
       <semantic-values>
@@ -1483,6 +1476,216 @@
       </datasource-dependencies>
     </datasource>
   </datasources>
+  <datasource-relationships>
+    <datasource-dependencies datasource='CPU Utilization (copy)'>
+      <column-instance column='[timestamp]' derivation='Day' name='[dy:timestamp:ok]' pivot='key' type='ordinal' />
+      <column caption='Event Hash' datatype='string' name='[event_hash]' role='dimension' type='nominal' />
+      <column-instance column='[timestamp]' derivation='Hour' name='[hr:timestamp:ok]' pivot='key' type='ordinal' />
+      <column caption='Logset Hash' datatype='string' name='[logset_hash]' role='dimension' type='nominal' />
+      <column-instance column='[timestamp]' derivation='MDY' name='[md:timestamp:ok]' pivot='key' type='ordinal' />
+      <column-instance column='[timestamp]' derivation='Minute' name='[mi:timestamp:ok]' pivot='key' type='ordinal' />
+      <column-instance column='[timestamp]' derivation='Month' name='[mn:timestamp:ok]' pivot='key' type='ordinal' />
+      <column-instance column='[timestamp]' derivation='MY' name='[my:timestamp:ok]' pivot='key' type='ordinal' />
+      <column-instance column='[event_hash]' derivation='None' name='[none:event_hash:nk]' pivot='key' type='nominal' />
+      <column-instance column='[logset_hash]' derivation='None' name='[none:logset_hash:nk]' pivot='key' type='nominal' />
+      <column-instance column='[process_name]' derivation='None' name='[none:process_name:nk]' pivot='key' type='nominal' />
+      <column-instance column='[timestamp]' derivation='None' name='[none:timestamp:ok]' pivot='key' type='ordinal' />
+      <column-instance column='[worker_id]' derivation='None' name='[none:worker_id:nk]' pivot='key' type='nominal' />
+      <column caption='Process Name' datatype='string' name='[process_name]' role='dimension' type='nominal' />
+      <column-instance column='[timestamp]' derivation='Quarter' name='[qr:timestamp:ok]' pivot='key' type='ordinal' />
+      <column-instance column='[timestamp]' derivation='Second' name='[sc:timestamp:ok]' pivot='key' type='ordinal' />
+      <column-instance column='[timestamp]' derivation='Day-Trunc' name='[tdy:timestamp:ok]' pivot='key' type='ordinal' />
+      <column-instance column='[timestamp]' derivation='Hour-Trunc' name='[thr:timestamp:ok]' pivot='key' type='ordinal' />
+      <column caption='Timestamp' datatype='datetime' name='[timestamp]' role='dimension' type='ordinal' />
+      <column-instance column='[timestamp]' derivation='Minute-Trunc' name='[tmi:timestamp:ok]' pivot='key' type='ordinal' />
+      <column-instance column='[timestamp]' derivation='Month-Trunc' name='[tmn:timestamp:ok]' pivot='key' type='ordinal' />
+      <column-instance column='[timestamp]' derivation='Quarter-Trunc' name='[tqr:timestamp:ok]' pivot='key' type='ordinal' />
+      <column-instance column='[timestamp]' derivation='Second-Trunc' name='[tsc:timestamp:ok]' pivot='key' type='ordinal' />
+      <column-instance column='[timestamp]' derivation='Week-Trunc' name='[twk:timestamp:ok]' pivot='key' type='ordinal' />
+      <column-instance column='[timestamp]' derivation='Year-Trunc' name='[tyr:timestamp:ok]' pivot='key' type='ordinal' />
+      <column-instance column='[timestamp]' derivation='Weekday' name='[wd:timestamp:ok]' pivot='key' type='ordinal' />
+      <column-instance column='[timestamp]' derivation='Week' name='[wk:timestamp:ok]' pivot='key' type='ordinal' />
+      <column caption='Worker Id' datatype='string' name='[worker_id]' role='dimension' type='nominal' />
+      <column-instance column='[timestamp]' derivation='Year' name='[yr:timestamp:ok]' pivot='key' type='ordinal' />
+    </datasource-dependencies>
+    <datasource-dependencies datasource='postgres.1xeuzbw1j6ee4y1ewhviq1pu0wt5'>
+      <column-instance column='[timestamp]' derivation='Day' name='[dy:timestamp:ok]' pivot='key' type='ordinal' />
+      <column caption='Event Hash' datatype='string' name='[event_hash]' role='dimension' type='nominal' />
+      <column-instance column='[timestamp]' derivation='Hour' name='[hr:timestamp:ok]' pivot='key' type='ordinal' />
+      <column caption='Logset Hash' datatype='string' name='[logset_hash]' role='dimension' type='nominal' />
+      <column-instance column='[timestamp]' derivation='MDY' name='[md:timestamp:ok]' pivot='key' type='ordinal' />
+      <column-instance column='[timestamp]' derivation='Minute' name='[mi:timestamp:ok]' pivot='key' type='ordinal' />
+      <column-instance column='[timestamp]' derivation='Month' name='[mn:timestamp:ok]' pivot='key' type='ordinal' />
+      <column-instance column='[timestamp]' derivation='MY' name='[my:timestamp:ok]' pivot='key' type='ordinal' />
+      <column-instance column='[event_hash]' derivation='None' name='[none:event_hash:nk]' pivot='key' type='nominal' />
+      <column-instance column='[logset_hash]' derivation='None' name='[none:logset_hash:nk]' pivot='key' type='nominal' />
+      <column-instance column='[process_name]' derivation='None' name='[none:process_name:nk]' pivot='key' type='nominal' />
+      <column-instance column='[timestamp]' derivation='None' name='[none:timestamp:ok]' pivot='key' type='ordinal' />
+      <column-instance column='[worker_id]' derivation='None' name='[none:worker_id:ok]' pivot='key' type='nominal' />
+      <column caption='Process Name' datatype='string' name='[process_name]' role='dimension' type='nominal' />
+      <column-instance column='[timestamp]' derivation='Quarter' name='[qr:timestamp:ok]' pivot='key' type='ordinal' />
+      <column-instance column='[timestamp]' derivation='Second' name='[sc:timestamp:ok]' pivot='key' type='ordinal' />
+      <column-instance column='[timestamp]' derivation='Day-Trunc' name='[tdy:timestamp:ok]' pivot='key' type='ordinal' />
+      <column-instance column='[timestamp]' derivation='Hour-Trunc' name='[thr:timestamp:ok]' pivot='key' type='ordinal' />
+      <column caption='Timestamp' datatype='datetime' name='[timestamp]' role='dimension' type='ordinal' />
+      <column-instance column='[timestamp]' derivation='Minute-Trunc' name='[tmi:timestamp:ok]' pivot='key' type='ordinal' />
+      <column-instance column='[timestamp]' derivation='Month-Trunc' name='[tmn:timestamp:ok]' pivot='key' type='ordinal' />
+      <column-instance column='[timestamp]' derivation='Quarter-Trunc' name='[tqr:timestamp:ok]' pivot='key' type='ordinal' />
+      <column-instance column='[timestamp]' derivation='Second-Trunc' name='[tsc:timestamp:ok]' pivot='key' type='ordinal' />
+      <column-instance column='[timestamp]' derivation='Week-Trunc' name='[twk:timestamp:ok]' pivot='key' type='ordinal' />
+      <column-instance column='[timestamp]' derivation='Year-Trunc' name='[tyr:timestamp:ok]' pivot='key' type='ordinal' />
+      <column-instance column='[timestamp]' derivation='Weekday' name='[wd:timestamp:ok]' pivot='key' type='ordinal' />
+      <column-instance column='[timestamp]' derivation='Week' name='[wk:timestamp:ok]' pivot='key' type='ordinal' />
+      <column caption='Worker' datatype='string' name='[worker_id]' role='dimension' type='nominal' />
+      <column-instance column='[timestamp]' derivation='Year' name='[yr:timestamp:ok]' pivot='key' type='ordinal' />
+    </datasource-dependencies>
+    <datasource-dependencies datasource='resource_manager_cpu_info (MRJOHNSON_160613_154800932787) (copy 2)'>
+      <column-instance column='[timestamp]' derivation='Day' name='[dy:timestamp:ok]' pivot='key' type='ordinal' />
+      <column caption='Event Hash' datatype='string' name='[event_hash]' role='dimension' type='nominal' />
+      <column-instance column='[timestamp]' derivation='Hour' name='[hr:timestamp:ok]' pivot='key' type='ordinal' />
+      <column caption='Logset Hash' datatype='string' name='[logset_hash]' role='dimension' type='nominal' />
+      <column-instance column='[timestamp]' derivation='MDY' name='[md:timestamp:ok]' pivot='key' type='ordinal' />
+      <column-instance column='[timestamp]' derivation='Minute' name='[mi:timestamp:ok]' pivot='key' type='ordinal' />
+      <column-instance column='[timestamp]' derivation='Month' name='[mn:timestamp:ok]' pivot='key' type='ordinal' />
+      <column-instance column='[timestamp]' derivation='MY' name='[my:timestamp:ok]' pivot='key' type='ordinal' />
+      <column-instance column='[event_hash]' derivation='None' name='[none:event_hash:nk]' pivot='key' type='nominal' />
+      <column-instance column='[logset_hash]' derivation='None' name='[none:logset_hash:nk]' pivot='key' type='nominal' />
+      <column-instance column='[process_name]' derivation='None' name='[none:process_name:nk]' pivot='key' type='nominal' />
+      <column-instance column='[timestamp]' derivation='None' name='[none:timestamp:ok]' pivot='key' type='ordinal' />
+      <column-instance column='[worker_id]' derivation='None' name='[none:worker_id:ok]' pivot='key' type='nominal' />
+      <column caption='Process Name' datatype='string' name='[process_name]' role='dimension' type='nominal' />
+      <column-instance column='[timestamp]' derivation='Quarter' name='[qr:timestamp:ok]' pivot='key' type='ordinal' />
+      <column-instance column='[timestamp]' derivation='Second' name='[sc:timestamp:ok]' pivot='key' type='ordinal' />
+      <column-instance column='[timestamp]' derivation='Day-Trunc' name='[tdy:timestamp:ok]' pivot='key' type='ordinal' />
+      <column-instance column='[timestamp]' derivation='Hour-Trunc' name='[thr:timestamp:ok]' pivot='key' type='ordinal' />
+      <column caption='Timestamp' datatype='datetime' name='[timestamp]' role='dimension' type='ordinal' />
+      <column-instance column='[timestamp]' derivation='Minute-Trunc' name='[tmi:timestamp:ok]' pivot='key' type='ordinal' />
+      <column-instance column='[timestamp]' derivation='Month-Trunc' name='[tmn:timestamp:ok]' pivot='key' type='ordinal' />
+      <column-instance column='[timestamp]' derivation='Quarter-Trunc' name='[tqr:timestamp:ok]' pivot='key' type='ordinal' />
+      <column-instance column='[timestamp]' derivation='Second-Trunc' name='[tsc:timestamp:ok]' pivot='key' type='ordinal' />
+      <column-instance column='[timestamp]' derivation='Week-Trunc' name='[twk:timestamp:ok]' pivot='key' type='ordinal' />
+      <column-instance column='[timestamp]' derivation='Year-Trunc' name='[tyr:timestamp:ok]' pivot='key' type='ordinal' />
+      <column-instance column='[timestamp]' derivation='Weekday' name='[wd:timestamp:ok]' pivot='key' type='ordinal' />
+      <column-instance column='[timestamp]' derivation='Week' name='[wk:timestamp:ok]' pivot='key' type='ordinal' />
+      <column caption='Worker' datatype='string' name='[worker_id]' role='dimension' type='nominal' />
+      <column-instance column='[timestamp]' derivation='Year' name='[yr:timestamp:ok]' pivot='key' type='ordinal' />
+    </datasource-dependencies>
+    <datasource-dependencies datasource='resource_manager_cpu_info (MRJOHNSON_160613_154800932787) (copy)'>
+      <column-instance column='[timestamp]' derivation='Day' name='[dy:timestamp:ok]' pivot='key' type='ordinal' />
+      <column caption='Event Hash' datatype='string' name='[event_hash]' role='dimension' type='nominal' />
+      <column-instance column='[timestamp]' derivation='Hour' name='[hr:timestamp:ok]' pivot='key' type='ordinal' />
+      <column caption='Logset Hash' datatype='string' name='[logset_hash]' role='dimension' type='nominal' />
+      <column-instance column='[timestamp]' derivation='MDY' name='[md:timestamp:ok]' pivot='key' type='ordinal' />
+      <column-instance column='[timestamp]' derivation='Minute' name='[mi:timestamp:ok]' pivot='key' type='ordinal' />
+      <column-instance column='[timestamp]' derivation='Month' name='[mn:timestamp:ok]' pivot='key' type='ordinal' />
+      <column-instance column='[timestamp]' derivation='MY' name='[my:timestamp:ok]' pivot='key' type='ordinal' />
+      <column-instance column='[event_hash]' derivation='None' name='[none:event_hash:nk]' pivot='key' type='nominal' />
+      <column-instance column='[logset_hash]' derivation='None' name='[none:logset_hash:nk]' pivot='key' type='nominal' />
+      <column-instance column='[process_name]' derivation='None' name='[none:process_name:nk]' pivot='key' type='nominal' />
+      <column-instance column='[timestamp]' derivation='None' name='[none:timestamp:ok]' pivot='key' type='ordinal' />
+      <column-instance column='[worker_id]' derivation='None' name='[none:worker_id:ok]' pivot='key' type='nominal' />
+      <column caption='Process Name' datatype='string' name='[process_name]' role='dimension' type='nominal' />
+      <column-instance column='[timestamp]' derivation='Quarter' name='[qr:timestamp:ok]' pivot='key' type='ordinal' />
+      <column-instance column='[timestamp]' derivation='Second' name='[sc:timestamp:ok]' pivot='key' type='ordinal' />
+      <column-instance column='[timestamp]' derivation='Day-Trunc' name='[tdy:timestamp:ok]' pivot='key' type='ordinal' />
+      <column-instance column='[timestamp]' derivation='Hour-Trunc' name='[thr:timestamp:ok]' pivot='key' type='ordinal' />
+      <column caption='Timestamp' datatype='datetime' name='[timestamp]' role='dimension' type='ordinal' />
+      <column-instance column='[timestamp]' derivation='Minute-Trunc' name='[tmi:timestamp:ok]' pivot='key' type='ordinal' />
+      <column-instance column='[timestamp]' derivation='Month-Trunc' name='[tmn:timestamp:ok]' pivot='key' type='ordinal' />
+      <column-instance column='[timestamp]' derivation='Quarter-Trunc' name='[tqr:timestamp:ok]' pivot='key' type='ordinal' />
+      <column-instance column='[timestamp]' derivation='Second-Trunc' name='[tsc:timestamp:ok]' pivot='key' type='ordinal' />
+      <column-instance column='[timestamp]' derivation='Week-Trunc' name='[twk:timestamp:ok]' pivot='key' type='ordinal' />
+      <column-instance column='[timestamp]' derivation='Year-Trunc' name='[tyr:timestamp:ok]' pivot='key' type='ordinal' />
+      <column-instance column='[timestamp]' derivation='Weekday' name='[wd:timestamp:ok]' pivot='key' type='ordinal' />
+      <column-instance column='[timestamp]' derivation='Week' name='[wk:timestamp:ok]' pivot='key' type='ordinal' />
+      <column caption='Worker' datatype='string' name='[worker_id]' role='dimension' type='nominal' />
+      <column-instance column='[timestamp]' derivation='Year' name='[yr:timestamp:ok]' pivot='key' type='ordinal' />
+    </datasource-dependencies>
+    <datasource-relationship source='postgres.1xeuzbw1j6ee4y1ewhviq1pu0wt5' target='CPU Utilization (copy)'>
+      <column-mapping>
+        <map key='[postgres.1xeuzbw1j6ee4y1ewhviq1pu0wt5].[dy:timestamp:ok]' value='[CPU Utilization (copy)].[dy:timestamp:ok]' />
+        <map key='[postgres.1xeuzbw1j6ee4y1ewhviq1pu0wt5].[hr:timestamp:ok]' value='[CPU Utilization (copy)].[hr:timestamp:ok]' />
+        <map key='[postgres.1xeuzbw1j6ee4y1ewhviq1pu0wt5].[md:timestamp:ok]' value='[CPU Utilization (copy)].[md:timestamp:ok]' />
+        <map key='[postgres.1xeuzbw1j6ee4y1ewhviq1pu0wt5].[mi:timestamp:ok]' value='[CPU Utilization (copy)].[mi:timestamp:ok]' />
+        <map key='[postgres.1xeuzbw1j6ee4y1ewhviq1pu0wt5].[mn:timestamp:ok]' value='[CPU Utilization (copy)].[mn:timestamp:ok]' />
+        <map key='[postgres.1xeuzbw1j6ee4y1ewhviq1pu0wt5].[my:timestamp:ok]' value='[CPU Utilization (copy)].[my:timestamp:ok]' />
+        <map key='[postgres.1xeuzbw1j6ee4y1ewhviq1pu0wt5].[none:event_hash:nk]' value='[CPU Utilization (copy)].[none:event_hash:nk]' />
+        <map key='[postgres.1xeuzbw1j6ee4y1ewhviq1pu0wt5].[none:logset_hash:nk]' value='[CPU Utilization (copy)].[none:logset_hash:nk]' />
+        <map key='[postgres.1xeuzbw1j6ee4y1ewhviq1pu0wt5].[none:process_name:nk]' value='[CPU Utilization (copy)].[none:process_name:nk]' />
+        <map key='[postgres.1xeuzbw1j6ee4y1ewhviq1pu0wt5].[none:timestamp:ok]' value='[CPU Utilization (copy)].[none:timestamp:ok]' />
+        <map key='[postgres.1xeuzbw1j6ee4y1ewhviq1pu0wt5].[none:worker_id:ok]' value='[CPU Utilization (copy)].[none:worker_id:nk]' />
+        <map key='[postgres.1xeuzbw1j6ee4y1ewhviq1pu0wt5].[qr:timestamp:ok]' value='[CPU Utilization (copy)].[qr:timestamp:ok]' />
+        <map key='[postgres.1xeuzbw1j6ee4y1ewhviq1pu0wt5].[sc:timestamp:ok]' value='[CPU Utilization (copy)].[sc:timestamp:ok]' />
+        <map key='[postgres.1xeuzbw1j6ee4y1ewhviq1pu0wt5].[tdy:timestamp:ok]' value='[CPU Utilization (copy)].[tdy:timestamp:ok]' />
+        <map key='[postgres.1xeuzbw1j6ee4y1ewhviq1pu0wt5].[thr:timestamp:ok]' value='[CPU Utilization (copy)].[thr:timestamp:ok]' />
+        <map key='[postgres.1xeuzbw1j6ee4y1ewhviq1pu0wt5].[tmi:timestamp:ok]' value='[CPU Utilization (copy)].[tmi:timestamp:ok]' />
+        <map key='[postgres.1xeuzbw1j6ee4y1ewhviq1pu0wt5].[tmn:timestamp:ok]' value='[CPU Utilization (copy)].[tmn:timestamp:ok]' />
+        <map key='[postgres.1xeuzbw1j6ee4y1ewhviq1pu0wt5].[tqr:timestamp:ok]' value='[CPU Utilization (copy)].[tqr:timestamp:ok]' />
+        <map key='[postgres.1xeuzbw1j6ee4y1ewhviq1pu0wt5].[tsc:timestamp:ok]' value='[CPU Utilization (copy)].[tsc:timestamp:ok]' />
+        <map key='[postgres.1xeuzbw1j6ee4y1ewhviq1pu0wt5].[twk:timestamp:ok]' value='[CPU Utilization (copy)].[twk:timestamp:ok]' />
+        <map key='[postgres.1xeuzbw1j6ee4y1ewhviq1pu0wt5].[tyr:timestamp:ok]' value='[CPU Utilization (copy)].[tyr:timestamp:ok]' />
+        <map key='[postgres.1xeuzbw1j6ee4y1ewhviq1pu0wt5].[wd:timestamp:ok]' value='[CPU Utilization (copy)].[wd:timestamp:ok]' />
+        <map key='[postgres.1xeuzbw1j6ee4y1ewhviq1pu0wt5].[wk:timestamp:ok]' value='[CPU Utilization (copy)].[wk:timestamp:ok]' />
+        <map key='[postgres.1xeuzbw1j6ee4y1ewhviq1pu0wt5].[yr:timestamp:ok]' value='[CPU Utilization (copy)].[yr:timestamp:ok]' />
+      </column-mapping>
+    </datasource-relationship>
+    <datasource-relationship source='resource_manager_cpu_info (MRJOHNSON_160613_154800932787) (copy 2)' target='CPU Utilization (copy)'>
+      <column-mapping>
+        <map key='[resource_manager_cpu_info (MRJOHNSON_160613_154800932787) (copy 2)].[dy:timestamp:ok]' value='[CPU Utilization (copy)].[dy:timestamp:ok]' />
+        <map key='[resource_manager_cpu_info (MRJOHNSON_160613_154800932787) (copy 2)].[hr:timestamp:ok]' value='[CPU Utilization (copy)].[hr:timestamp:ok]' />
+        <map key='[resource_manager_cpu_info (MRJOHNSON_160613_154800932787) (copy 2)].[md:timestamp:ok]' value='[CPU Utilization (copy)].[md:timestamp:ok]' />
+        <map key='[resource_manager_cpu_info (MRJOHNSON_160613_154800932787) (copy 2)].[mi:timestamp:ok]' value='[CPU Utilization (copy)].[mi:timestamp:ok]' />
+        <map key='[resource_manager_cpu_info (MRJOHNSON_160613_154800932787) (copy 2)].[mn:timestamp:ok]' value='[CPU Utilization (copy)].[mn:timestamp:ok]' />
+        <map key='[resource_manager_cpu_info (MRJOHNSON_160613_154800932787) (copy 2)].[my:timestamp:ok]' value='[CPU Utilization (copy)].[my:timestamp:ok]' />
+        <map key='[resource_manager_cpu_info (MRJOHNSON_160613_154800932787) (copy 2)].[none:event_hash:nk]' value='[CPU Utilization (copy)].[none:event_hash:nk]' />
+        <map key='[resource_manager_cpu_info (MRJOHNSON_160613_154800932787) (copy 2)].[none:logset_hash:nk]' value='[CPU Utilization (copy)].[none:logset_hash:nk]' />
+        <map key='[resource_manager_cpu_info (MRJOHNSON_160613_154800932787) (copy 2)].[none:process_name:nk]' value='[CPU Utilization (copy)].[none:process_name:nk]' />
+        <map key='[resource_manager_cpu_info (MRJOHNSON_160613_154800932787) (copy 2)].[none:timestamp:ok]' value='[CPU Utilization (copy)].[none:timestamp:ok]' />
+        <map key='[resource_manager_cpu_info (MRJOHNSON_160613_154800932787) (copy 2)].[none:worker_id:ok]' value='[CPU Utilization (copy)].[none:worker_id:nk]' />
+        <map key='[resource_manager_cpu_info (MRJOHNSON_160613_154800932787) (copy 2)].[qr:timestamp:ok]' value='[CPU Utilization (copy)].[qr:timestamp:ok]' />
+        <map key='[resource_manager_cpu_info (MRJOHNSON_160613_154800932787) (copy 2)].[sc:timestamp:ok]' value='[CPU Utilization (copy)].[sc:timestamp:ok]' />
+        <map key='[resource_manager_cpu_info (MRJOHNSON_160613_154800932787) (copy 2)].[tdy:timestamp:ok]' value='[CPU Utilization (copy)].[tdy:timestamp:ok]' />
+        <map key='[resource_manager_cpu_info (MRJOHNSON_160613_154800932787) (copy 2)].[thr:timestamp:ok]' value='[CPU Utilization (copy)].[thr:timestamp:ok]' />
+        <map key='[resource_manager_cpu_info (MRJOHNSON_160613_154800932787) (copy 2)].[tmi:timestamp:ok]' value='[CPU Utilization (copy)].[tmi:timestamp:ok]' />
+        <map key='[resource_manager_cpu_info (MRJOHNSON_160613_154800932787) (copy 2)].[tmn:timestamp:ok]' value='[CPU Utilization (copy)].[tmn:timestamp:ok]' />
+        <map key='[resource_manager_cpu_info (MRJOHNSON_160613_154800932787) (copy 2)].[tqr:timestamp:ok]' value='[CPU Utilization (copy)].[tqr:timestamp:ok]' />
+        <map key='[resource_manager_cpu_info (MRJOHNSON_160613_154800932787) (copy 2)].[tsc:timestamp:ok]' value='[CPU Utilization (copy)].[tsc:timestamp:ok]' />
+        <map key='[resource_manager_cpu_info (MRJOHNSON_160613_154800932787) (copy 2)].[twk:timestamp:ok]' value='[CPU Utilization (copy)].[twk:timestamp:ok]' />
+        <map key='[resource_manager_cpu_info (MRJOHNSON_160613_154800932787) (copy 2)].[tyr:timestamp:ok]' value='[CPU Utilization (copy)].[tyr:timestamp:ok]' />
+        <map key='[resource_manager_cpu_info (MRJOHNSON_160613_154800932787) (copy 2)].[wd:timestamp:ok]' value='[CPU Utilization (copy)].[wd:timestamp:ok]' />
+        <map key='[resource_manager_cpu_info (MRJOHNSON_160613_154800932787) (copy 2)].[wk:timestamp:ok]' value='[CPU Utilization (copy)].[wk:timestamp:ok]' />
+        <map key='[resource_manager_cpu_info (MRJOHNSON_160613_154800932787) (copy 2)].[yr:timestamp:ok]' value='[CPU Utilization (copy)].[yr:timestamp:ok]' />
+      </column-mapping>
+    </datasource-relationship>
+    <datasource-relationship source='resource_manager_cpu_info (MRJOHNSON_160613_154800932787) (copy)' target='CPU Utilization (copy)'>
+      <column-mapping>
+        <map key='[resource_manager_cpu_info (MRJOHNSON_160613_154800932787) (copy)].[dy:timestamp:ok]' value='[CPU Utilization (copy)].[dy:timestamp:ok]' />
+        <map key='[resource_manager_cpu_info (MRJOHNSON_160613_154800932787) (copy)].[hr:timestamp:ok]' value='[CPU Utilization (copy)].[hr:timestamp:ok]' />
+        <map key='[resource_manager_cpu_info (MRJOHNSON_160613_154800932787) (copy)].[md:timestamp:ok]' value='[CPU Utilization (copy)].[md:timestamp:ok]' />
+        <map key='[resource_manager_cpu_info (MRJOHNSON_160613_154800932787) (copy)].[mi:timestamp:ok]' value='[CPU Utilization (copy)].[mi:timestamp:ok]' />
+        <map key='[resource_manager_cpu_info (MRJOHNSON_160613_154800932787) (copy)].[mn:timestamp:ok]' value='[CPU Utilization (copy)].[mn:timestamp:ok]' />
+        <map key='[resource_manager_cpu_info (MRJOHNSON_160613_154800932787) (copy)].[my:timestamp:ok]' value='[CPU Utilization (copy)].[my:timestamp:ok]' />
+        <map key='[resource_manager_cpu_info (MRJOHNSON_160613_154800932787) (copy)].[none:event_hash:nk]' value='[CPU Utilization (copy)].[none:event_hash:nk]' />
+        <map key='[resource_manager_cpu_info (MRJOHNSON_160613_154800932787) (copy)].[none:logset_hash:nk]' value='[CPU Utilization (copy)].[none:logset_hash:nk]' />
+        <map key='[resource_manager_cpu_info (MRJOHNSON_160613_154800932787) (copy)].[none:process_name:nk]' value='[CPU Utilization (copy)].[none:process_name:nk]' />
+        <map key='[resource_manager_cpu_info (MRJOHNSON_160613_154800932787) (copy)].[none:timestamp:ok]' value='[CPU Utilization (copy)].[none:timestamp:ok]' />
+        <map key='[resource_manager_cpu_info (MRJOHNSON_160613_154800932787) (copy)].[none:worker_id:ok]' value='[CPU Utilization (copy)].[none:worker_id:nk]' />
+        <map key='[resource_manager_cpu_info (MRJOHNSON_160613_154800932787) (copy)].[qr:timestamp:ok]' value='[CPU Utilization (copy)].[qr:timestamp:ok]' />
+        <map key='[resource_manager_cpu_info (MRJOHNSON_160613_154800932787) (copy)].[sc:timestamp:ok]' value='[CPU Utilization (copy)].[sc:timestamp:ok]' />
+        <map key='[resource_manager_cpu_info (MRJOHNSON_160613_154800932787) (copy)].[tdy:timestamp:ok]' value='[CPU Utilization (copy)].[tdy:timestamp:ok]' />
+        <map key='[resource_manager_cpu_info (MRJOHNSON_160613_154800932787) (copy)].[thr:timestamp:ok]' value='[CPU Utilization (copy)].[thr:timestamp:ok]' />
+        <map key='[resource_manager_cpu_info (MRJOHNSON_160613_154800932787) (copy)].[tmi:timestamp:ok]' value='[CPU Utilization (copy)].[tmi:timestamp:ok]' />
+        <map key='[resource_manager_cpu_info (MRJOHNSON_160613_154800932787) (copy)].[tmn:timestamp:ok]' value='[CPU Utilization (copy)].[tmn:timestamp:ok]' />
+        <map key='[resource_manager_cpu_info (MRJOHNSON_160613_154800932787) (copy)].[tqr:timestamp:ok]' value='[CPU Utilization (copy)].[tqr:timestamp:ok]' />
+        <map key='[resource_manager_cpu_info (MRJOHNSON_160613_154800932787) (copy)].[tsc:timestamp:ok]' value='[CPU Utilization (copy)].[tsc:timestamp:ok]' />
+        <map key='[resource_manager_cpu_info (MRJOHNSON_160613_154800932787) (copy)].[twk:timestamp:ok]' value='[CPU Utilization (copy)].[twk:timestamp:ok]' />
+        <map key='[resource_manager_cpu_info (MRJOHNSON_160613_154800932787) (copy)].[tyr:timestamp:ok]' value='[CPU Utilization (copy)].[tyr:timestamp:ok]' />
+        <map key='[resource_manager_cpu_info (MRJOHNSON_160613_154800932787) (copy)].[wd:timestamp:ok]' value='[CPU Utilization (copy)].[wd:timestamp:ok]' />
+        <map key='[resource_manager_cpu_info (MRJOHNSON_160613_154800932787) (copy)].[wk:timestamp:ok]' value='[CPU Utilization (copy)].[wk:timestamp:ok]' />
+        <map key='[resource_manager_cpu_info (MRJOHNSON_160613_154800932787) (copy)].[yr:timestamp:ok]' value='[CPU Utilization (copy)].[yr:timestamp:ok]' />
+      </column-mapping>
+    </datasource-relationship>
+  </datasource-relationships>
   <worksheets>
     <worksheet name='CPU Utilization By Process'>
       <layout-options>
@@ -1515,13 +1718,13 @@
             <column-instance column='[process_id]' derivation='None' name='[none:process_id:ok]' pivot='key' type='ordinal' />
             <column-instance column='[process_name]' derivation='None' name='[none:process_name:nk]' pivot='key' type='nominal' />
             <column-instance column='[timestamp]' derivation='None' name='[none:timestamp:qk]' pivot='key' type='quantitative' />
-            <column-instance column='[worker_id]' derivation='None' name='[none:worker_id:ok]' pivot='key' type='ordinal' />
+            <column-instance column='[worker_id]' derivation='None' name='[none:worker_id:ok]' pivot='key' type='nominal' />
             <column caption='Process Cpu Utilization %' datatype='real' datatype-customized='true' default-format='n#,##0.0&quot;%&quot;;-#,##0.0&quot;%&quot;' name='[process_cpu_util]' role='measure' type='quantitative' />
             <column caption='Process Index' datatype='integer' name='[process_id]' role='dimension' type='ordinal' />
             <column caption='Process Name' datatype='string' name='[process_name]' role='dimension' type='nominal' />
             <column caption='Timestamp' datatype='datetime' name='[timestamp]' role='dimension' type='ordinal' />
             <column-instance column='[timestamp]' derivation='Minute-Trunc' name='[tmi:timestamp:qk]' pivot='key' type='quantitative' />
-            <column caption='Worker' datatype='integer' name='[worker_id]' role='dimension' type='ordinal' />
+            <column caption='Worker' datatype='string' name='[worker_id]' role='dimension' type='nominal' />
           </datasource-dependencies>
           <filter class='categorical' column='[resource_manager_cpu_info (MRJOHNSON_160613_154800932787) (copy 2)].[none:process_id:ok]'>
             <groupfilter function='level-members' level='[none:process_id:ok]' user:ui-enumeration='all' user:ui-marker='enumerate' />
@@ -1678,13 +1881,13 @@
             <column-instance column='[process_id]' derivation='None' name='[none:process_id:ok]' pivot='key' type='ordinal' />
             <column-instance column='[process_name]' derivation='None' name='[none:process_name:nk]' pivot='key' type='nominal' />
             <column-instance column='[timestamp]' derivation='None' name='[none:timestamp:qk]' pivot='key' type='quantitative' />
-            <column-instance column='[worker_id]' derivation='None' name='[none:worker_id:ok]' pivot='key' type='ordinal' />
+            <column-instance column='[worker_id]' derivation='None' name='[none:worker_id:ok]' pivot='key' type='nominal' />
             <column caption='Process Index' datatype='integer' name='[process_id]' role='dimension' type='ordinal' />
             <column caption='Process Memory Utilization (Bytes)' datatype='integer' default-format='n#,##0&quot; B&quot;;-#,##0&quot; B&quot;' name='[process_memory_util]' role='measure' type='quantitative' />
             <column caption='Process Name' datatype='string' name='[process_name]' role='dimension' type='nominal' />
             <column caption='Timestamp' datatype='datetime' name='[timestamp]' role='dimension' type='ordinal' />
             <column-instance column='[timestamp]' derivation='Minute-Trunc' name='[tmi:timestamp:qk]' pivot='key' type='quantitative' />
-            <column caption='Worker' datatype='integer' name='[worker_id]' role='dimension' type='ordinal' />
+            <column caption='Worker' datatype='string' name='[worker_id]' role='dimension' type='nominal' />
           </datasource-dependencies>
           <filter class='quantitative' column='[resource_manager_cpu_info (MRJOHNSON_160613_154800932787) (copy 2)].[none:timestamp:qk]' filter-group='4' included-values='all'>
             <target field='[resource_manager_cpu_info (MRJOHNSON_160613_154800932787) (copy)].[none:timestamp:qk]' />
@@ -1826,7 +2029,7 @@
             <column-instance column='[process_id]' derivation='None' name='[none:process_id:ok]' pivot='key' type='ordinal' />
             <column-instance column='[process_name]' derivation='None' name='[none:process_name:nk]' pivot='key' type='nominal' />
             <column-instance column='[timestamp]' derivation='None' name='[none:timestamp:qk]' pivot='key' type='quantitative' />
-            <column-instance column='[worker_id]' derivation='None' name='[none:worker_id:ok]' pivot='key' type='ordinal' />
+            <column-instance column='[worker_id]' derivation='None' name='[none:worker_id:ok]' pivot='key' type='nominal' />
             <column aggregation='Sum' caption='Pid' datatype='integer' default-format='n0;-0' name='[pid]' role='dimension' type='ordinal' />
             <column caption='Process Index' datatype='integer' name='[process_id]' role='dimension' type='ordinal' />
             <column caption='Process Memory Utilization (Bytes)' datatype='integer' name='[process_memory_util]' role='measure' type='quantitative' />
@@ -1835,7 +2038,7 @@
             <column caption='Timestamp' datatype='datetime' name='[timestamp]' role='dimension' type='ordinal' />
             <column caption='Total Memory Utilization (Bytes)' datatype='integer' name='[total_memory_util]' role='measure' type='quantitative' />
             <column caption='Total Memory Util Termination' datatype='boolean' name='[total_memory_util_termination]' role='dimension' type='nominal' />
-            <column caption='Worker' datatype='integer' name='[worker_id]' role='dimension' type='ordinal' />
+            <column caption='Worker' datatype='string' name='[worker_id]' role='dimension' type='nominal' />
           </datasource-dependencies>
           <datasource-dependencies datasource='resource_manager_cpu_info (MRJOHNSON_160613_154800932787) (copy 2)'>
             <column-instance column='[timestamp]' derivation='None' name='[none:timestamp:qk]' pivot='key' type='quantitative' />
@@ -1959,11 +2162,11 @@
             <column-instance column='[total_cpu_util]' derivation='Avg' name='[avg:total_cpu_util:qk]' pivot='key' type='quantitative' />
             <column-instance column='[total_cpu_util]' derivation='Max' name='[max:total_cpu_util:qk]' pivot='key' type='quantitative' />
             <column-instance column='[timestamp]' derivation='None' name='[none:timestamp:qk]' pivot='key' type='quantitative' />
-            <column-instance column='[worker_id]' derivation='None' name='[none:worker_id:ok]' pivot='key' type='ordinal' />
+            <column-instance column='[worker_id]' derivation='None' name='[none:worker_id:ok]' pivot='key' type='nominal' />
             <column caption='Timestamp' datatype='datetime' name='[timestamp]' role='dimension' type='ordinal' />
             <column-instance column='[timestamp]' derivation='Minute-Trunc' name='[tmi:timestamp:qk]' pivot='key' type='quantitative' />
             <column caption='Total Cpu Utilization %' datatype='real' datatype-customized='true' default-format='n0.0&quot;%&quot;;-0.0&quot;%&quot;' name='[total_cpu_util]' role='measure' type='quantitative' />
-            <column caption='Worker' datatype='integer' name='[worker_id]' role='dimension' type='ordinal' />
+            <column caption='Worker' datatype='string' name='[worker_id]' role='dimension' type='nominal' />
           </datasource-dependencies>
           <filter class='categorical' column='[resource_manager_cpu_info (MRJOHNSON_160613_154800932787) (copy 2)].[:Measure Names]'>
             <groupfilter function='union' user:op='manual'>
@@ -2185,11 +2388,11 @@
             <column-instance column='[Calculation_3019100628768976908]' derivation='Avg' name='[avg:Calculation_3019100628768976908:qk]' pivot='key' type='quantitative' />
             <column-instance column='[Calculation_3019100628768976908]' derivation='Max' name='[max:Calculation_3019100628768976908:qk]' pivot='key' type='quantitative' />
             <column-instance column='[timestamp]' derivation='None' name='[none:timestamp:qk]' pivot='key' type='quantitative' />
-            <column-instance column='[worker_id]' derivation='None' name='[none:worker_id:ok]' pivot='key' type='ordinal' />
+            <column-instance column='[worker_id]' derivation='None' name='[none:worker_id:ok]' pivot='key' type='nominal' />
             <column caption='Timestamp' datatype='datetime' name='[timestamp]' role='dimension' type='ordinal' />
             <column-instance column='[timestamp]' derivation='Minute-Trunc' name='[tmi:timestamp:qk]' pivot='key' type='quantitative' />
             <column caption='Total Memory Utilization (Bytes)' datatype='integer' default-format='n#,##0&quot; B&quot;;-#,##0&quot; B&quot;' name='[total_memory_util]' role='measure' type='quantitative' />
-            <column caption='Worker' datatype='integer' name='[worker_id]' role='dimension' type='ordinal' />
+            <column caption='Worker' datatype='string' name='[worker_id]' role='dimension' type='nominal' />
           </datasource-dependencies>
           <filter class='quantitative' column='[resource_manager_cpu_info (MRJOHNSON_160613_154800932787) (copy 2)].[none:timestamp:qk]' filter-group='3' included-values='all'>
             <target field='[resource_manager_cpu_info (MRJOHNSON_160613_154800932787) (copy)].[none:timestamp:qk]' />
@@ -2225,6 +2428,7 @@
             <format attr='display' class='0' field='[CPU Utilization (copy)].[max:Calculation_1678153842280796161:qk]' scope='rows' value='false' />
             <format attr='width' field='[CPU Utilization (copy)].[max:Calculation_1678153842280796161:qk]' value='48' />
             <format attr='render-fold-reversed' value='true' />
+            <encoding attr='space' class='0' field='[resource_manager_cpu_info (MRJOHNSON_160613_154800932787) (copy)].[Multiple Values]' field-type='quantitative' range-type='independent' scope='rows' type='space' />
           </style-rule>
           <style-rule element='header'>
             <format attr='width' field='[resource_manager_cpu_info (MRJOHNSON_160613_154800932787) (copy)].[none:worker_id:ok]' value='68' />
@@ -2469,6 +2673,7 @@
           </formatted-text>
         </title>
       </layout-options>
+      <repository-location id='SRMUtilizationByProcess' path='/workbooks/ResourceManager_2033' revision='' />
       <style>
         <style-rule element='dash-title'>
           <format attr='text-align' value='center' />
@@ -2532,7 +2737,7 @@
           </highlight>
         </viewpoint>
       </viewpoints>
-      <active id='20' />
+      <active id='-1' />
     </window>
     <window class='dashboard' name='SRM Utilization By Process'>
       <viewpoints>

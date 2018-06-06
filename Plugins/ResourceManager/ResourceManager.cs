@@ -1,5 +1,6 @@
-﻿using Logshark.PluginLib.Extensions;
-using Logshark.PluginLib.Model;
+﻿using Logshark.ArtifactProcessors.TableauServerLogProcessor.Parsers;
+using Logshark.ArtifactProcessors.TableauServerLogProcessor.PluginInterfaces;
+using Logshark.PluginLib.Extensions;
 using Logshark.PluginLib.Model.Impl;
 using Logshark.PluginLib.Persistence;
 using Logshark.PluginModel.Model;
@@ -13,7 +14,7 @@ using System.Data;
 
 namespace Logshark.Plugins.ResourceManager
 {
-    public class ResourceManager : BaseWorkbookCreationPlugin, IServerPlugin
+    public class ResourceManager : BaseWorkbookCreationPlugin, IServerClassicPlugin, IServerTsmPlugin
     {
         private PluginResponse pluginResponse;
 
@@ -27,12 +28,12 @@ namespace Logshark.Plugins.ResourceManager
             {
                 return new HashSet<string>
                 {
-                    "backgrounder_cpp",
-                    "dataserver_cpp",
-                    "protocolserver",
-                    "vizportal_cpp",
-                    "vizqlserver_cpp",
-                    "wgserver_cpp"
+                    ParserConstants.BackgrounderCppCollectionName,
+                    ParserConstants.DataserverCppCollectionName,
+                    ParserConstants.ProtocolServerCollectionName,
+                    ParserConstants.VizportalCppCollectionName,
+                    ParserConstants.VizqlServerCppCollectionName,
+                    ParserConstants.WgServerCppCollectionName,
                 };
             }
         }
@@ -91,16 +92,16 @@ namespace Logshark.Plugins.ResourceManager
 
                 var collection = MongoDatabase.GetCollection<BsonDocument>(collectionName);
 
-                var distinctWorkers = MongoQueryHelper.GetDistinctWorkerIndexes(collection);
-                foreach (int workerIndex in distinctWorkers)
+                var distinctWorkers = MongoQueryHelper.GetDistinctWorkers(collection);
+                foreach (string workerId in distinctWorkers)
                 {
-                    PersistThresholds(workerIndex, collection);
-                    PersistEvents(workerIndex, collection);
+                    PersistThresholds(workerId, collection);
+                    PersistEvents(workerId, collection);
                 }
             }
         }
 
-        private void PersistThresholds(int workerId, IMongoCollection<BsonDocument> collection)
+        private void PersistThresholds(string workerId, IMongoCollection<BsonDocument> collection)
         {
             IList<BsonDocument> startEvents = MongoQueryHelper.GetSrmStartEventsForWorker(workerId, collection);
             foreach (var srmStartEvent in startEvents)
@@ -111,7 +112,7 @@ namespace Logshark.Plugins.ResourceManager
             }
         }
 
-        private void PersistEvents(int workerId, IMongoCollection<BsonDocument> collection)
+        private void PersistEvents(string workerId, IMongoCollection<BsonDocument> collection)
         {
             foreach (var pid in MongoQueryHelper.GetAllUniquePidsByWorker(workerId, collection))
             {

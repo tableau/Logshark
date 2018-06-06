@@ -1,10 +1,9 @@
-﻿using System;
+﻿using LogParsers.Base.Parsers;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using LogParsers.Base.Helpers;
-using LogParsers.Base.Parsers;
 
 namespace LogParsers.Base.ParserBuilders
 {

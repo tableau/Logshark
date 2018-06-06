@@ -22,18 +22,24 @@ namespace Logshark.ConfigSection
         /// <summary>
         /// The XML name of the LogsharkConfig Configuration Section.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         internal const string LogsharkConfigSectionName = "Config";
+        
+        /// <summary>
+        /// The XML path of the LogsharkConfig Configuration Section.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
+        internal const string LogsharkConfigSectionPath = "Config";
         
         /// <summary>
         /// Gets the LogsharkConfig instance.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         public static global::Logshark.ConfigSection.LogsharkConfig Instance
         {
             get
             {
-                return ((global::Logshark.ConfigSection.LogsharkConfig)(global::System.Configuration.ConfigurationManager.GetSection(global::Logshark.ConfigSection.LogsharkConfig.LogsharkConfigSectionName)));
+                return ((global::Logshark.ConfigSection.LogsharkConfig)(global::System.Configuration.ConfigurationManager.GetSection(global::Logshark.ConfigSection.LogsharkConfig.LogsharkConfigSectionPath)));
             }
         }
         #endregion
@@ -42,7 +48,7 @@ namespace Logshark.ConfigSection
         /// <summary>
         /// The XML name of the <see cref="Xmlns"/> property.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         internal const string XmlnsPropertyName = "xmlns";
         
         /// <summary>
@@ -52,7 +58,7 @@ namespace Logshark.ConfigSection
         /// This property makes sure that if the configuration file contains the XML namespace,
         /// the parser doesn't throw an exception because it encounters the unknown "xmlns" attribute.
         /// </remarks>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         [global::System.Configuration.ConfigurationPropertyAttribute(global::Logshark.ConfigSection.LogsharkConfig.XmlnsPropertyName, IsRequired=false, IsKey=false, IsDefaultCollection=false)]
         public string Xmlns
         {
@@ -67,7 +73,7 @@ namespace Logshark.ConfigSection
         /// <summary>
         /// Gets a value indicating whether the element is read-only.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         public override bool IsReadOnly()
         {
             return false;
@@ -78,13 +84,13 @@ namespace Logshark.ConfigSection
         /// <summary>
         /// The XML name of the <see cref="PostgresConnection"/> property.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         internal const string PostgresConnectionPropertyName = "PostgresConnection";
         
         /// <summary>
         /// Gets or sets settings pertaining to the Postgres database.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         [global::System.ComponentModel.DescriptionAttribute("Settings pertaining to the Postgres database.")]
         [global::System.Configuration.ConfigurationPropertyAttribute(global::Logshark.ConfigSection.LogsharkConfig.PostgresConnectionPropertyName, IsRequired=true, IsKey=false, IsDefaultCollection=false)]
         public virtual global::Logshark.Config.PostgresConnection PostgresConnection
@@ -104,13 +110,13 @@ namespace Logshark.ConfigSection
         /// <summary>
         /// The XML name of the <see cref="MongoConnection"/> property.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         internal const string MongoConnectionPropertyName = "MongoConnection";
         
         /// <summary>
         /// Gets or sets settings pertaining to the MongoDB database.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         [global::System.ComponentModel.DescriptionAttribute("Settings pertaining to the MongoDB database.")]
         [global::System.Configuration.ConfigurationPropertyAttribute(global::Logshark.ConfigSection.LogsharkConfig.MongoConnectionPropertyName, IsRequired=true, IsKey=false, IsDefaultCollection=false)]
         public virtual global::Logshark.Config.MongoConnection MongoConnection
@@ -130,13 +136,13 @@ namespace Logshark.ConfigSection
         /// <summary>
         /// The XML name of the <see cref="RunOptions"/> property.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         internal const string RunOptionsPropertyName = "RunOptions";
         
         /// <summary>
         /// Gets or sets settings pertaining to LogShark runtime options
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         [global::System.ComponentModel.DescriptionAttribute("Settings pertaining to LogShark runtime options")]
         [global::System.Configuration.ConfigurationPropertyAttribute(global::Logshark.ConfigSection.LogsharkConfig.RunOptionsPropertyName, IsRequired=true, IsKey=false, IsDefaultCollection=false)]
         public virtual global::Logshark.Config.RunOptions RunOptions
@@ -156,13 +162,13 @@ namespace Logshark.ConfigSection
         /// <summary>
         /// The XML name of the <see cref="TableauConnection"/> property.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         internal const string TableauConnectionPropertyName = "TableauConnection";
         
         /// <summary>
         /// Gets or sets settings pertaining to the Tableau Server connection.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         [global::System.ComponentModel.DescriptionAttribute("Settings pertaining to the Tableau Server connection.")]
         [global::System.Configuration.ConfigurationPropertyAttribute(global::Logshark.ConfigSection.LogsharkConfig.TableauConnectionPropertyName, IsRequired=false, IsKey=false, IsDefaultCollection=false)]
         public virtual global::Logshark.Config.TableauServerConnection TableauConnection
@@ -182,13 +188,13 @@ namespace Logshark.ConfigSection
         /// <summary>
         /// The XML name of the <see cref="ArtifactProcessorOptions"/> property.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         internal const string ArtifactProcessorOptionsPropertyName = "ArtifactProcessorOptions";
         
         /// <summary>
         /// Gets or sets options related to artifact processors.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         [global::System.ComponentModel.DescriptionAttribute("Options related to artifact processors.")]
         [global::System.Configuration.ConfigurationPropertyAttribute(global::Logshark.ConfigSection.LogsharkConfig.ArtifactProcessorOptionsPropertyName, IsRequired=true, IsKey=false, IsDefaultCollection=false)]
         public virtual global::Logshark.Config.ArtifactProcessorOptions ArtifactProcessorOptions
@@ -219,7 +225,7 @@ namespace Logshark.Config
         /// <summary>
         /// Gets a value indicating whether the element is read-only.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         public override bool IsReadOnly()
         {
             return false;
@@ -230,13 +236,13 @@ namespace Logshark.Config
         /// <summary>
         /// The XML name of the <see cref="PoolSize"/> property.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         internal const string PoolSizePropertyName = "poolSize";
         
         /// <summary>
         /// Gets or sets the MongoDB max connection pool size.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         [global::System.ComponentModel.DescriptionAttribute("The MongoDB max connection pool size.")]
         [global::System.Configuration.ConfigurationPropertyAttribute(global::Logshark.Config.MongoConnection.PoolSizePropertyName, IsRequired=true, IsKey=false, IsDefaultCollection=false)]
         public virtual int PoolSize
@@ -256,13 +262,13 @@ namespace Logshark.Config
         /// <summary>
         /// The XML name of the <see cref="Timeout"/> property.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         internal const string TimeoutPropertyName = "timeout";
         
         /// <summary>
         /// Gets or sets the MongoDB connection timeout, in seconds.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         [global::System.ComponentModel.DescriptionAttribute("The MongoDB connection timeout, in seconds.")]
         [global::System.Configuration.ConfigurationPropertyAttribute(global::Logshark.Config.MongoConnection.TimeoutPropertyName, IsRequired=true, IsKey=false, IsDefaultCollection=false)]
         public virtual int Timeout
@@ -282,13 +288,13 @@ namespace Logshark.Config
         /// <summary>
         /// The XML name of the <see cref="InsertionRetries"/> property.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         internal const string InsertionRetriesPropertyName = "insertionRetries";
         
         /// <summary>
         /// Gets or sets the number of times a failed insert should be retried.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         [global::System.ComponentModel.DescriptionAttribute("The number of times a failed insert should be retried.")]
         [global::System.Configuration.ConfigurationPropertyAttribute(global::Logshark.Config.MongoConnection.InsertionRetriesPropertyName, IsRequired=true, IsKey=false, IsDefaultCollection=false, DefaultValue=3)]
         public virtual int InsertionRetries
@@ -308,13 +314,13 @@ namespace Logshark.Config
         /// <summary>
         /// The XML name of the <see cref="Servers"/> property.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         internal const string ServersPropertyName = "Servers";
         
         /// <summary>
         /// Gets or sets configuration information about the MongoDB server endpoints.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         [global::System.ComponentModel.DescriptionAttribute("Configuration information about the MongoDB server endpoints.")]
         [global::System.Configuration.ConfigurationPropertyAttribute(global::Logshark.Config.MongoConnection.ServersPropertyName, IsRequired=true, IsKey=false, IsDefaultCollection=false)]
         public virtual global::Logshark.Config.MongoServers Servers
@@ -334,13 +340,13 @@ namespace Logshark.Config
         /// <summary>
         /// The XML name of the <see cref="User"/> property.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         internal const string UserPropertyName = "User";
         
         /// <summary>
         /// Gets or sets settings related to the Mongo user.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         [global::System.ComponentModel.DescriptionAttribute("Settings related to the Mongo user.")]
         [global::System.Configuration.ConfigurationPropertyAttribute(global::Logshark.Config.MongoConnection.UserPropertyName, IsRequired=true, IsKey=false, IsDefaultCollection=false)]
         public virtual global::Logshark.Config.MongoUser User
@@ -371,7 +377,7 @@ namespace Logshark.Config
         /// <summary>
         /// Gets a value indicating whether the element is read-only.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         public override bool IsReadOnly()
         {
             return false;
@@ -382,13 +388,13 @@ namespace Logshark.Config
         /// <summary>
         /// The XML name of the <see cref="CommandTimeout"/> property.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         internal const string CommandTimeoutPropertyName = "commandTimeout";
         
         /// <summary>
         /// Gets or sets the Postgres command timeout, in seconds
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         [global::System.ComponentModel.DescriptionAttribute("The Postgres command timeout, in seconds")]
         [global::System.Configuration.IntegerValidatorAttribute(ExcludeRange=false, MaxValue=2147483647, MinValue=0)]
         [global::System.Configuration.ConfigurationPropertyAttribute(global::Logshark.Config.PostgresConnection.CommandTimeoutPropertyName, IsRequired=false, IsKey=false, IsDefaultCollection=false, DefaultValue=120)]
@@ -409,13 +415,13 @@ namespace Logshark.Config
         /// <summary>
         /// The XML name of the <see cref="TcpKeepalive"/> property.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         internal const string TcpKeepalivePropertyName = "tcpKeepalive";
         
         /// <summary>
         /// Gets or sets the number of seconds of connection inactivity before a TCP keepalive query is sent. 
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         [global::System.ComponentModel.DescriptionAttribute("The number of seconds of connection inactivity before a TCP keepalive query is se" +
             "nt. ")]
         [global::System.Configuration.IntegerValidatorAttribute(ExcludeRange=false, MaxValue=2147483647, MinValue=0)]
@@ -437,13 +443,13 @@ namespace Logshark.Config
         /// <summary>
         /// The XML name of the <see cref="WriteBufferSize"/> property.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         internal const string WriteBufferSizePropertyName = "writeBufferSize";
         
         /// <summary>
         /// Gets or sets the size of the Postgres write buffer, in bytes.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         [global::System.ComponentModel.DescriptionAttribute("The size of the Postgres write buffer, in bytes.")]
         [global::System.Configuration.IntegerValidatorAttribute(ExcludeRange=false, MaxValue=2147483647, MinValue=0)]
         [global::System.Configuration.ConfigurationPropertyAttribute(global::Logshark.Config.PostgresConnection.WriteBufferSizePropertyName, IsRequired=false, IsKey=false, IsDefaultCollection=false, DefaultValue=16384)]
@@ -464,13 +470,13 @@ namespace Logshark.Config
         /// <summary>
         /// The XML name of the <see cref="Server"/> property.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         internal const string ServerPropertyName = "Server";
         
         /// <summary>
         /// Gets or sets information about the Postgres server.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         [global::System.ComponentModel.DescriptionAttribute("Information about the Postgres server.")]
         [global::System.Configuration.ConfigurationPropertyAttribute(global::Logshark.Config.PostgresConnection.ServerPropertyName, IsRequired=true, IsKey=false, IsDefaultCollection=false)]
         public virtual global::Logshark.Config.PostgresServer Server
@@ -490,13 +496,13 @@ namespace Logshark.Config
         /// <summary>
         /// The XML name of the <see cref="User"/> property.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         internal const string UserPropertyName = "User";
         
         /// <summary>
         /// Gets or sets settings related to the Postgres user.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         [global::System.ComponentModel.DescriptionAttribute("Settings related to the Postgres user.")]
         [global::System.Configuration.ConfigurationPropertyAttribute(global::Logshark.Config.PostgresConnection.UserPropertyName, IsRequired=true, IsKey=false, IsDefaultCollection=false)]
         public virtual global::Logshark.Config.PostgresUser User
@@ -516,13 +522,13 @@ namespace Logshark.Config
         /// <summary>
         /// The XML name of the <see cref="Database"/> property.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         internal const string DatabasePropertyName = "Database";
         
         /// <summary>
         /// Gets or sets information about the Postgres database instance.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         [global::System.ComponentModel.DescriptionAttribute("Information about the Postgres database instance.")]
         [global::System.Configuration.ConfigurationPropertyAttribute(global::Logshark.Config.PostgresConnection.DatabasePropertyName, IsRequired=false, IsKey=false, IsDefaultCollection=false)]
         public virtual global::Logshark.Config.PostgresDatabase Database
@@ -546,6 +552,7 @@ namespace Logshark.Config
     /// <summary>
     /// Information about a single MongoDB server endpoint.
     /// </summary>
+    [global::System.ComponentModel.DescriptionAttribute("Information about a single MongoDB server endpoint.")]
     public partial class MongoServer : global::System.Configuration.ConfigurationElement
     {
         
@@ -553,7 +560,7 @@ namespace Logshark.Config
         /// <summary>
         /// Gets a value indicating whether the element is read-only.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         public override bool IsReadOnly()
         {
             return false;
@@ -564,13 +571,13 @@ namespace Logshark.Config
         /// <summary>
         /// The XML name of the <see cref="Server"/> property.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         internal const string ServerPropertyName = "address";
         
         /// <summary>
         /// Gets or sets the hostname or IP address of the MongoDB server.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         [global::System.ComponentModel.DescriptionAttribute("The hostname or IP address of the MongoDB server.")]
         [global::System.Configuration.StringValidatorAttribute(InvalidCharacters="", MaxLength=2147483647, MinLength=1)]
         [global::System.Configuration.ConfigurationPropertyAttribute(global::Logshark.Config.MongoServer.ServerPropertyName, IsRequired=true, IsKey=true, IsDefaultCollection=false, DefaultValue="localhost")]
@@ -591,13 +598,13 @@ namespace Logshark.Config
         /// <summary>
         /// The XML name of the <see cref="Port"/> property.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         internal const string PortPropertyName = "port";
         
         /// <summary>
         /// Gets or sets the port of the MongoDB server.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         [global::System.ComponentModel.DescriptionAttribute("The port of the MongoDB server.")]
         [global::System.Configuration.ConfigurationPropertyAttribute(global::Logshark.Config.MongoServer.PortPropertyName, IsRequired=true, IsKey=false, IsDefaultCollection=false)]
         public virtual int Port
@@ -628,7 +635,7 @@ namespace Logshark.Config
         /// <summary>
         /// Gets a value indicating whether the element is read-only.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         public override bool IsReadOnly()
         {
             return false;
@@ -639,13 +646,13 @@ namespace Logshark.Config
         /// <summary>
         /// The XML name of the <see cref="Server"/> property.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         internal const string ServerPropertyName = "address";
         
         /// <summary>
         /// Gets or sets the hostname or IP address of the Postgres server.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         [global::System.ComponentModel.DescriptionAttribute("The hostname or IP address of the Postgres server.")]
         [global::System.Configuration.StringValidatorAttribute(InvalidCharacters="", MaxLength=2147483647, MinLength=1)]
         [global::System.Configuration.ConfigurationPropertyAttribute(global::Logshark.Config.PostgresServer.ServerPropertyName, IsRequired=true, IsKey=false, IsDefaultCollection=false, DefaultValue="localhost")]
@@ -666,13 +673,13 @@ namespace Logshark.Config
         /// <summary>
         /// The XML name of the <see cref="Port"/> property.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         internal const string PortPropertyName = "port";
         
         /// <summary>
         /// Gets or sets the port of the Postgres server.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         [global::System.ComponentModel.DescriptionAttribute("The port of the Postgres server.")]
         [global::System.Configuration.ConfigurationPropertyAttribute(global::Logshark.Config.PostgresServer.PortPropertyName, IsRequired=true, IsKey=false, IsDefaultCollection=false, DefaultValue=5432)]
         public virtual int Port
@@ -703,7 +710,7 @@ namespace Logshark.Config
         /// <summary>
         /// Gets a value indicating whether the element is read-only.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         public override bool IsReadOnly()
         {
             return false;
@@ -714,13 +721,13 @@ namespace Logshark.Config
         /// <summary>
         /// The XML name of the <see cref="FilePartitioner"/> property.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         internal const string FilePartitionerPropertyName = "FilePartitioner";
         
         /// <summary>
         /// Gets or sets the FilePartitioner.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         [global::System.ComponentModel.DescriptionAttribute("The FilePartitioner.")]
         [global::System.Configuration.ConfigurationPropertyAttribute(global::Logshark.Config.TuningOptions.FilePartitionerPropertyName, IsRequired=true, IsKey=false, IsDefaultCollection=false)]
         public virtual global::Logshark.Config.FilePartitioner FilePartitioner
@@ -740,13 +747,13 @@ namespace Logshark.Config
         /// <summary>
         /// The XML name of the <see cref="FileProcessor"/> property.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         internal const string FileProcessorPropertyName = "FileProcessor";
         
         /// <summary>
         /// Gets or sets the FileProcessor.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         [global::System.ComponentModel.DescriptionAttribute("The FileProcessor.")]
         [global::System.Configuration.ConfigurationPropertyAttribute(global::Logshark.Config.TuningOptions.FileProcessorPropertyName, IsRequired=true, IsKey=false, IsDefaultCollection=false)]
         public virtual global::Logshark.Config.FileProcessor FileProcessor
@@ -777,7 +784,7 @@ namespace Logshark.Config
         /// <summary>
         /// Gets a value indicating whether the element is read-only.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         public override bool IsReadOnly()
         {
             return false;
@@ -788,13 +795,13 @@ namespace Logshark.Config
         /// <summary>
         /// The XML name of the <see cref="MaxFileSizeMB"/> property.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         internal const string MaxFileSizeMBPropertyName = "maxFileSizeMb";
         
         /// <summary>
         /// Gets or sets the maximum size a file can be without being partitioned, in megabytes.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         [global::System.ComponentModel.DescriptionAttribute("The maximum size a file can be without being partitioned, in megabytes.")]
         [global::System.Configuration.IntegerValidatorAttribute(ExcludeRange=false, MaxValue=2147483647, MinValue=1)]
         [global::System.Configuration.ConfigurationPropertyAttribute(global::Logshark.Config.FilePartitioner.MaxFileSizeMBPropertyName, IsRequired=true, IsKey=false, IsDefaultCollection=false, DefaultValue=250)]
@@ -815,13 +822,13 @@ namespace Logshark.Config
         /// <summary>
         /// The XML name of the <see cref="ConcurrencyLimit"/> property.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         internal const string ConcurrencyLimitPropertyName = "concurrencyLimit";
         
         /// <summary>
         /// Gets or sets the maximum number of files that can be partitioned concurrently.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         [global::System.ComponentModel.DescriptionAttribute("The maximum number of files that can be partitioned concurrently.")]
         [global::System.Configuration.IntegerValidatorAttribute(ExcludeRange=false, MaxValue=2147483647, MinValue=1)]
         [global::System.Configuration.ConfigurationPropertyAttribute(global::Logshark.Config.FilePartitioner.ConcurrencyLimitPropertyName, IsRequired=true, IsKey=false, IsDefaultCollection=false, DefaultValue=4)]
@@ -853,7 +860,7 @@ namespace Logshark.Config
         /// <summary>
         /// Gets a value indicating whether the element is read-only.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         public override bool IsReadOnly()
         {
             return false;
@@ -864,13 +871,13 @@ namespace Logshark.Config
         /// <summary>
         /// The XML name of the <see cref="Username"/> property.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         internal const string UsernamePropertyName = "username";
         
         /// <summary>
         /// Gets or sets the username of the Postgres user.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         [global::System.ComponentModel.DescriptionAttribute("The username of the Postgres user.")]
         [global::System.Configuration.ConfigurationPropertyAttribute(global::Logshark.Config.PostgresUser.UsernamePropertyName, IsRequired=true, IsKey=false, IsDefaultCollection=false)]
         public virtual string Username
@@ -890,13 +897,13 @@ namespace Logshark.Config
         /// <summary>
         /// The XML name of the <see cref="Password"/> property.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         internal const string PasswordPropertyName = "password";
         
         /// <summary>
         /// Gets or sets the password for the Postgres user.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         [global::System.ComponentModel.DescriptionAttribute("The password for the Postgres user.")]
         [global::System.Configuration.ConfigurationPropertyAttribute(global::Logshark.Config.PostgresUser.PasswordPropertyName, IsRequired=true, IsKey=false, IsDefaultCollection=false)]
         public virtual string Password
@@ -927,7 +934,7 @@ namespace Logshark.Config
         /// <summary>
         /// Gets a value indicating whether the element is read-only.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         public override bool IsReadOnly()
         {
             return false;
@@ -938,13 +945,13 @@ namespace Logshark.Config
         /// <summary>
         /// The XML name of the <see cref="Username"/> property.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         internal const string UsernamePropertyName = "username";
         
         /// <summary>
         /// Gets or sets the username of the Mongo user.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         [global::System.ComponentModel.DescriptionAttribute("The username of the Mongo user.")]
         [global::System.Configuration.ConfigurationPropertyAttribute(global::Logshark.Config.MongoUser.UsernamePropertyName, IsRequired=true, IsKey=false, IsDefaultCollection=false)]
         public virtual string Username
@@ -964,13 +971,13 @@ namespace Logshark.Config
         /// <summary>
         /// The XML name of the <see cref="Password"/> property.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         internal const string PasswordPropertyName = "password";
         
         /// <summary>
         /// Gets or sets the password for the Mongo user.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         [global::System.ComponentModel.DescriptionAttribute("The password for the Mongo user.")]
         [global::System.Configuration.ConfigurationPropertyAttribute(global::Logshark.Config.MongoUser.PasswordPropertyName, IsRequired=true, IsKey=false, IsDefaultCollection=false)]
         public virtual string Password
@@ -1001,7 +1008,7 @@ namespace Logshark.Config
         /// <summary>
         /// Gets a value indicating whether the element is read-only.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         public override bool IsReadOnly()
         {
             return false;
@@ -1012,13 +1019,13 @@ namespace Logshark.Config
         /// <summary>
         /// The XML name of the <see cref="Name"/> property.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         internal const string NamePropertyName = "name";
         
         /// <summary>
         /// Gets or sets the name of the Postgres database instance.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         [global::System.ComponentModel.DescriptionAttribute("The name of the Postgres database instance.")]
         [global::System.Configuration.StringValidatorAttribute(InvalidCharacters="", MaxLength=2147483647, MinLength=1)]
         [global::System.Configuration.ConfigurationPropertyAttribute(global::Logshark.Config.PostgresDatabase.NamePropertyName, IsRequired=true, IsKey=false, IsDefaultCollection=false, DefaultValue="postgres")]
@@ -1043,6 +1050,7 @@ namespace Logshark.Config
     /// <summary>
     /// Information about the Tableau Server instance where results will be published.
     /// </summary>
+    [global::System.ComponentModel.DescriptionAttribute("Information about the Tableau Server instance where results will be published.")]
     public partial class TableauServerConnection : global::System.Configuration.ConfigurationElement
     {
         
@@ -1050,7 +1058,7 @@ namespace Logshark.Config
         /// <summary>
         /// Gets a value indicating whether the element is read-only.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         public override bool IsReadOnly()
         {
             return false;
@@ -1061,13 +1069,13 @@ namespace Logshark.Config
         /// <summary>
         /// The XML name of the <see cref="Protocol"/> property.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         internal const string ProtocolPropertyName = "protocol";
         
         /// <summary>
         /// Gets or sets the communication protocol to use, i.e. "http" or "https".
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         [global::System.ComponentModel.DescriptionAttribute("The communication protocol to use, i.e. \"http\" or \"https\".")]
         [global::System.Configuration.StringValidatorAttribute(InvalidCharacters="", MaxLength=5, MinLength=4)]
         [global::System.Configuration.ConfigurationPropertyAttribute(global::Logshark.Config.TableauServerConnection.ProtocolPropertyName, IsRequired=false, IsKey=false, IsDefaultCollection=false, DefaultValue="http")]
@@ -1088,17 +1096,17 @@ namespace Logshark.Config
         /// <summary>
         /// The XML name of the <see cref="PublishingTimeoutSeconds"/> property.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         internal const string PublishingTimeoutSecondsPropertyName = "publishingTimeoutSeconds";
         
         /// <summary>
         /// Gets or sets the number of seconds to wait for a response when publishing a workbook to Tableau Server.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         [global::System.ComponentModel.DescriptionAttribute("The number of seconds to wait for a response when publishing a workbook to Tablea" +
             "u Server.")]
         [global::System.Configuration.IntegerValidatorAttribute(ExcludeRange=false, MaxValue=2147483647, MinValue=1)]
-        [global::System.Configuration.ConfigurationPropertyAttribute(global::Logshark.Config.TableauServerConnection.PublishingTimeoutSecondsPropertyName, IsRequired=true, IsKey=false, IsDefaultCollection=false, DefaultValue=300)]
+        [global::System.Configuration.ConfigurationPropertyAttribute(global::Logshark.Config.TableauServerConnection.PublishingTimeoutSecondsPropertyName, IsRequired=true, IsKey=false, IsDefaultCollection=false, DefaultValue=600)]
         public virtual int PublishingTimeoutSeconds
         {
             get
@@ -1116,13 +1124,13 @@ namespace Logshark.Config
         /// <summary>
         /// The XML name of the <see cref="Server"/> property.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         internal const string ServerPropertyName = "Server";
         
         /// <summary>
         /// Gets or sets the Server.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         [global::System.ComponentModel.DescriptionAttribute("The Server.")]
         [global::System.Configuration.ConfigurationPropertyAttribute(global::Logshark.Config.TableauServerConnection.ServerPropertyName, IsRequired=true, IsKey=false, IsDefaultCollection=false)]
         public virtual global::Logshark.Config.TableauServer Server
@@ -1142,13 +1150,13 @@ namespace Logshark.Config
         /// <summary>
         /// The XML name of the <see cref="User"/> property.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         internal const string UserPropertyName = "User";
         
         /// <summary>
         /// Gets or sets settings for the Tableau Server user used to publish results.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         [global::System.ComponentModel.DescriptionAttribute("Settings for the Tableau Server user used to publish results.")]
         [global::System.Configuration.ConfigurationPropertyAttribute(global::Logshark.Config.TableauServerConnection.UserPropertyName, IsRequired=true, IsKey=false, IsDefaultCollection=false)]
         public virtual global::Logshark.Config.TableauUser User
@@ -1172,6 +1180,7 @@ namespace Logshark.Config
     /// <summary>
     /// Information about the Tableau Server endpoint.
     /// </summary>
+    [global::System.ComponentModel.DescriptionAttribute("Information about the Tableau Server endpoint.")]
     public partial class TableauServer : global::System.Configuration.ConfigurationElement
     {
         
@@ -1179,7 +1188,7 @@ namespace Logshark.Config
         /// <summary>
         /// Gets a value indicating whether the element is read-only.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         public override bool IsReadOnly()
         {
             return false;
@@ -1190,13 +1199,13 @@ namespace Logshark.Config
         /// <summary>
         /// The XML name of the <see cref="Server"/> property.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         internal const string ServerPropertyName = "address";
         
         /// <summary>
         /// Gets or sets the hostname or IP address of Tableau Server.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         [global::System.ComponentModel.DescriptionAttribute("The hostname or IP address of Tableau Server.")]
         [global::System.Configuration.StringValidatorAttribute(InvalidCharacters="", MaxLength=2147483647, MinLength=1)]
         [global::System.Configuration.ConfigurationPropertyAttribute(global::Logshark.Config.TableauServer.ServerPropertyName, IsRequired=true, IsKey=false, IsDefaultCollection=false, DefaultValue="localhost")]
@@ -1217,13 +1226,13 @@ namespace Logshark.Config
         /// <summary>
         /// The XML name of the <see cref="Port"/> property.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         internal const string PortPropertyName = "port";
         
         /// <summary>
         /// Gets or sets the port that Tableau Server is running on.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         [global::System.ComponentModel.DescriptionAttribute("The port that Tableau Server is running on.")]
         [global::System.Configuration.IntegerValidatorAttribute(ExcludeRange=false, MaxValue=65535, MinValue=0)]
         [global::System.Configuration.ConfigurationPropertyAttribute(global::Logshark.Config.TableauServer.PortPropertyName, IsRequired=true, IsKey=false, IsDefaultCollection=false, DefaultValue=80)]
@@ -1244,13 +1253,13 @@ namespace Logshark.Config
         /// <summary>
         /// The XML name of the <see cref="Site"/> property.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         internal const string SitePropertyName = "site";
         
         /// <summary>
         /// Gets or sets the name of the site to publish to.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         [global::System.ComponentModel.DescriptionAttribute("The name of the site to publish to.")]
         [global::System.Configuration.ConfigurationPropertyAttribute(global::Logshark.Config.TableauServer.SitePropertyName, IsRequired=true, IsKey=false, IsDefaultCollection=false, DefaultValue="Default")]
         public virtual string Site
@@ -1274,6 +1283,7 @@ namespace Logshark.Config
     /// <summary>
     /// Information about the Tableau Server user account to publish as.
     /// </summary>
+    [global::System.ComponentModel.DescriptionAttribute("Information about the Tableau Server user account to publish as.")]
     public partial class TableauUser : global::System.Configuration.ConfigurationElement
     {
         
@@ -1281,7 +1291,7 @@ namespace Logshark.Config
         /// <summary>
         /// Gets a value indicating whether the element is read-only.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         public override bool IsReadOnly()
         {
             return false;
@@ -1292,13 +1302,13 @@ namespace Logshark.Config
         /// <summary>
         /// The XML name of the <see cref="Username"/> property.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         internal const string UsernamePropertyName = "username";
         
         /// <summary>
         /// Gets or sets the username of the user to publish as.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         [global::System.ComponentModel.DescriptionAttribute("The username of the user to publish as.")]
         [global::System.Configuration.StringValidatorAttribute(InvalidCharacters="", MaxLength=2147483647, MinLength=1)]
         [global::System.Configuration.ConfigurationPropertyAttribute(global::Logshark.Config.TableauUser.UsernamePropertyName, IsRequired=true, IsKey=false, IsDefaultCollection=false, DefaultValue="admin")]
@@ -1319,13 +1329,13 @@ namespace Logshark.Config
         /// <summary>
         /// The XML name of the <see cref="Password"/> property.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         internal const string PasswordPropertyName = "password";
         
         /// <summary>
         /// Gets or sets the password of this user account.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         [global::System.ComponentModel.DescriptionAttribute("The password of this user account.")]
         [global::System.Configuration.StringValidatorAttribute(InvalidCharacters="", MaxLength=2147483647, MinLength=1)]
         [global::System.Configuration.ConfigurationPropertyAttribute(global::Logshark.Config.TableauUser.PasswordPropertyName, IsRequired=true, IsKey=false, IsDefaultCollection=false, DefaultValue="password")]
@@ -1350,6 +1360,7 @@ namespace Logshark.Config
     /// <summary>
     /// Options related to running an artifact processor.
     /// </summary>
+    [global::System.ComponentModel.DescriptionAttribute("Options related to running an artifact processor.")]
     public partial class ArtifactProcessorConfigNode : global::System.Configuration.ConfigurationElement
     {
         
@@ -1357,7 +1368,7 @@ namespace Logshark.Config
         /// <summary>
         /// Gets a value indicating whether the element is read-only.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         public override bool IsReadOnly()
         {
             return false;
@@ -1368,13 +1379,13 @@ namespace Logshark.Config
         /// <summary>
         /// The XML name of the <see cref="Name"/> property.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         internal const string NamePropertyName = "name";
         
         /// <summary>
         /// Gets or sets the type name of the artifact processor.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         [global::System.ComponentModel.DescriptionAttribute("The type name of the artifact processor.")]
         [global::System.Configuration.StringValidatorAttribute(InvalidCharacters="", MaxLength=2147483647, MinLength=1)]
         [global::System.Configuration.ConfigurationPropertyAttribute(global::Logshark.Config.ArtifactProcessorConfigNode.NamePropertyName, IsRequired=true, IsKey=true, IsDefaultCollection=false, DefaultValue="Default")]
@@ -1395,13 +1406,13 @@ namespace Logshark.Config
         /// <summary>
         /// The XML name of the <see cref="DefaultPlugins"/> property.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         internal const string DefaultPluginsPropertyName = "DefaultPlugins";
         
         /// <summary>
         /// Gets or sets the default set of plugins to run on every Logshark execution using the parent artifact processor.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         [global::System.ComponentModel.DescriptionAttribute("The default set of plugins to run on every Logshark execution using the parent ar" +
             "tifact processor.")]
         [global::System.Configuration.ConfigurationPropertyAttribute(global::Logshark.Config.ArtifactProcessorConfigNode.DefaultPluginsPropertyName, IsRequired=true, IsKey=false, IsDefaultCollection=false)]
@@ -1426,6 +1437,8 @@ namespace Logshark.Config
     /// <summary>
     /// The default set of plugins to run on every Logshark execution which uses the parent artifact processor.
     /// </summary>
+    [global::System.ComponentModel.DescriptionAttribute("The default set of plugins to run on every Logshark execution which uses the pare" +
+        "nt artifact processor.")]
     [global::System.Configuration.ConfigurationCollectionAttribute(typeof(global::Logshark.Config.Plugin), CollectionType=global::System.Configuration.ConfigurationElementCollectionType.BasicMapAlternate, AddItemName=global::Logshark.Config.DefaultPlugins.PluginPropertyName)]
     public partial class DefaultPlugins : global::System.Configuration.ConfigurationElementCollection
     {
@@ -1434,7 +1447,7 @@ namespace Logshark.Config
         /// <summary>
         /// The XML name of the individual <see cref="global::Logshark.Config.Plugin"/> instances in this collection.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         internal const string PluginPropertyName = "Plugin";
         #endregion
         
@@ -1443,7 +1456,7 @@ namespace Logshark.Config
         /// Gets the type of the <see cref="global::System.Configuration.ConfigurationElementCollection"/>.
         /// </summary>
         /// <returns>The <see cref="global::System.Configuration.ConfigurationElementCollectionType"/> of this collection.</returns>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         public override global::System.Configuration.ConfigurationElementCollectionType CollectionType
         {
             get
@@ -1455,7 +1468,7 @@ namespace Logshark.Config
         /// <summary>
         /// Gets the name used to identify this collection of elements
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         protected override string ElementName
         {
             get
@@ -1471,7 +1484,7 @@ namespace Logshark.Config
         /// <returns>
         /// <see langword="true"/> if the element exists in the collection; otherwise, <see langword="false"/>.
         /// </returns>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         protected override bool IsElementName(string elementName)
         {
             return (elementName == global::Logshark.Config.DefaultPlugins.PluginPropertyName);
@@ -1484,7 +1497,7 @@ namespace Logshark.Config
         /// <returns>
         /// An <see cref="object"/> that acts as the key for the specified <see cref="global::System.Configuration.ConfigurationElement"/>.
         /// </returns>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         protected override object GetElementKey(global::System.Configuration.ConfigurationElement element)
         {
             return ((global::Logshark.Config.Plugin)(element)).Name;
@@ -1496,7 +1509,7 @@ namespace Logshark.Config
         /// <returns>
         /// A new <see cref="global::Logshark.Config.Plugin"/>.
         /// </returns>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         protected override global::System.Configuration.ConfigurationElement CreateNewElement()
         {
             return new global::Logshark.Config.Plugin();
@@ -1508,7 +1521,7 @@ namespace Logshark.Config
         /// Gets the <see cref="global::Logshark.Config.Plugin"/> at the specified index.
         /// </summary>
         /// <param name="index">The index of the <see cref="global::Logshark.Config.Plugin"/> to retrieve.</param>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         public global::Logshark.Config.Plugin this[int index]
         {
             get
@@ -1521,7 +1534,7 @@ namespace Logshark.Config
         /// Gets the <see cref="global::Logshark.Config.Plugin"/> with the specified key.
         /// </summary>
         /// <param name="name">The key of the <see cref="global::Logshark.Config.Plugin"/> to retrieve.</param>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         public global::Logshark.Config.Plugin this[object name]
         {
             get
@@ -1536,7 +1549,7 @@ namespace Logshark.Config
         /// Adds the specified <see cref="global::Logshark.Config.Plugin"/> to the <see cref="global::System.Configuration.ConfigurationElementCollection"/>.
         /// </summary>
         /// <param name="Plugin">The <see cref="global::Logshark.Config.Plugin"/> to add.</param>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         public void Add(global::Logshark.Config.Plugin Plugin)
         {
             base.BaseAdd(Plugin);
@@ -1548,7 +1561,7 @@ namespace Logshark.Config
         /// Removes the specified <see cref="global::Logshark.Config.Plugin"/> from the <see cref="global::System.Configuration.ConfigurationElementCollection"/>.
         /// </summary>
         /// <param name="Plugin">The <see cref="global::Logshark.Config.Plugin"/> to remove.</param>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         public void Remove(global::Logshark.Config.Plugin Plugin)
         {
             base.BaseRemove(this.GetElementKey(Plugin));
@@ -1560,7 +1573,7 @@ namespace Logshark.Config
         /// Gets the <see cref="global::Logshark.Config.Plugin"/> at the specified index.
         /// </summary>
         /// <param name="index">The index of the <see cref="global::Logshark.Config.Plugin"/> to retrieve.</param>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         public global::Logshark.Config.Plugin GetItemAt(int index)
         {
             return ((global::Logshark.Config.Plugin)(base.BaseGet(index)));
@@ -1570,7 +1583,7 @@ namespace Logshark.Config
         /// Gets the <see cref="global::Logshark.Config.Plugin"/> with the specified key.
         /// </summary>
         /// <param name="name">The key of the <see cref="global::Logshark.Config.Plugin"/> to retrieve.</param>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         public global::Logshark.Config.Plugin GetItemByKey(string name)
         {
             return ((global::Logshark.Config.Plugin)(base.BaseGet(((object)(name)))));
@@ -1581,7 +1594,7 @@ namespace Logshark.Config
         /// <summary>
         /// Gets a value indicating whether the element is read-only.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         public override bool IsReadOnly()
         {
             return false;
@@ -1596,6 +1609,7 @@ namespace Logshark.Config
     /// <summary>
     /// Information about a Logshark plugin.
     /// </summary>
+    [global::System.ComponentModel.DescriptionAttribute("Information about a Logshark plugin.")]
     public partial class Plugin : global::System.Configuration.ConfigurationElement
     {
         
@@ -1603,7 +1617,7 @@ namespace Logshark.Config
         /// <summary>
         /// Gets a value indicating whether the element is read-only.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         public override bool IsReadOnly()
         {
             return false;
@@ -1614,13 +1628,13 @@ namespace Logshark.Config
         /// <summary>
         /// The XML name of the <see cref="Name"/> property.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         internal const string NamePropertyName = "name";
         
         /// <summary>
         /// Gets or sets the name of the plugin.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         [global::System.ComponentModel.DescriptionAttribute("The name of the plugin.")]
         [global::System.Configuration.ConfigurationPropertyAttribute(global::Logshark.Config.Plugin.NamePropertyName, IsRequired=true, IsKey=true, IsDefaultCollection=false)]
         public virtual string Name
@@ -1652,7 +1666,7 @@ namespace Logshark.Config
         /// <summary>
         /// The XML name of the individual <see cref="global::Logshark.Config.MongoServer"/> instances in this collection.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         internal const string MongoServerPropertyName = "Server";
         #endregion
         
@@ -1661,7 +1675,7 @@ namespace Logshark.Config
         /// Gets the type of the <see cref="global::System.Configuration.ConfigurationElementCollection"/>.
         /// </summary>
         /// <returns>The <see cref="global::System.Configuration.ConfigurationElementCollectionType"/> of this collection.</returns>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         public override global::System.Configuration.ConfigurationElementCollectionType CollectionType
         {
             get
@@ -1673,7 +1687,7 @@ namespace Logshark.Config
         /// <summary>
         /// Gets the name used to identify this collection of elements
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         protected override string ElementName
         {
             get
@@ -1689,7 +1703,7 @@ namespace Logshark.Config
         /// <returns>
         /// <see langword="true"/> if the element exists in the collection; otherwise, <see langword="false"/>.
         /// </returns>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         protected override bool IsElementName(string elementName)
         {
             return (elementName == global::Logshark.Config.MongoServers.MongoServerPropertyName);
@@ -1702,7 +1716,7 @@ namespace Logshark.Config
         /// <returns>
         /// An <see cref="object"/> that acts as the key for the specified <see cref="global::System.Configuration.ConfigurationElement"/>.
         /// </returns>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         protected override object GetElementKey(global::System.Configuration.ConfigurationElement element)
         {
             return ((global::Logshark.Config.MongoServer)(element)).Server;
@@ -1714,7 +1728,7 @@ namespace Logshark.Config
         /// <returns>
         /// A new <see cref="global::Logshark.Config.MongoServer"/>.
         /// </returns>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         protected override global::System.Configuration.ConfigurationElement CreateNewElement()
         {
             return new global::Logshark.Config.MongoServer();
@@ -1726,7 +1740,7 @@ namespace Logshark.Config
         /// Gets the <see cref="global::Logshark.Config.MongoServer"/> at the specified index.
         /// </summary>
         /// <param name="index">The index of the <see cref="global::Logshark.Config.MongoServer"/> to retrieve.</param>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         public global::Logshark.Config.MongoServer this[int index]
         {
             get
@@ -1739,7 +1753,7 @@ namespace Logshark.Config
         /// Gets the <see cref="global::Logshark.Config.MongoServer"/> with the specified key.
         /// </summary>
         /// <param name="address">The key of the <see cref="global::Logshark.Config.MongoServer"/> to retrieve.</param>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         public global::Logshark.Config.MongoServer this[object address]
         {
             get
@@ -1754,7 +1768,7 @@ namespace Logshark.Config
         /// Adds the specified <see cref="global::Logshark.Config.MongoServer"/> to the <see cref="global::System.Configuration.ConfigurationElementCollection"/>.
         /// </summary>
         /// <param name="Server">The <see cref="global::Logshark.Config.MongoServer"/> to add.</param>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         public void Add(global::Logshark.Config.MongoServer Server)
         {
             base.BaseAdd(Server);
@@ -1766,7 +1780,7 @@ namespace Logshark.Config
         /// Removes the specified <see cref="global::Logshark.Config.MongoServer"/> from the <see cref="global::System.Configuration.ConfigurationElementCollection"/>.
         /// </summary>
         /// <param name="Server">The <see cref="global::Logshark.Config.MongoServer"/> to remove.</param>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         public void Remove(global::Logshark.Config.MongoServer Server)
         {
             base.BaseRemove(this.GetElementKey(Server));
@@ -1778,7 +1792,7 @@ namespace Logshark.Config
         /// Gets the <see cref="global::Logshark.Config.MongoServer"/> at the specified index.
         /// </summary>
         /// <param name="index">The index of the <see cref="global::Logshark.Config.MongoServer"/> to retrieve.</param>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         public global::Logshark.Config.MongoServer GetItemAt(int index)
         {
             return ((global::Logshark.Config.MongoServer)(base.BaseGet(index)));
@@ -1788,7 +1802,7 @@ namespace Logshark.Config
         /// Gets the <see cref="global::Logshark.Config.MongoServer"/> with the specified key.
         /// </summary>
         /// <param name="address">The key of the <see cref="global::Logshark.Config.MongoServer"/> to retrieve.</param>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         public global::Logshark.Config.MongoServer GetItemByKey(string address)
         {
             return ((global::Logshark.Config.MongoServer)(base.BaseGet(((object)(address)))));
@@ -1799,7 +1813,7 @@ namespace Logshark.Config
         /// <summary>
         /// Gets a value indicating whether the element is read-only.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         public override bool IsReadOnly()
         {
             return false;
@@ -1821,7 +1835,7 @@ namespace Logshark.Config
         /// <summary>
         /// Gets a value indicating whether the element is read-only.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         public override bool IsReadOnly()
         {
             return false;
@@ -1832,13 +1846,13 @@ namespace Logshark.Config
         /// <summary>
         /// The XML name of the <see cref="ConcurrencyLimitPerCore"/> property.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         internal const string ConcurrencyLimitPerCorePropertyName = "concurrencyLimitPerCore";
         
         /// <summary>
         /// Gets or sets determines the degree of concurrency for file processing.  This number is multiplied by the number of logical processors on the system.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         [global::System.ComponentModel.DescriptionAttribute("Determines the degree of concurrency for file processing.  This number is multipl" +
             "ied by the number of logical processors on the system.")]
         [global::System.Configuration.IntegerValidatorAttribute(ExcludeRange=false, MaxValue=2147483647, MinValue=1)]
@@ -1871,7 +1885,7 @@ namespace Logshark.Config
         /// <summary>
         /// Gets a value indicating whether the element is read-only.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         public override bool IsReadOnly()
         {
             return false;
@@ -1882,13 +1896,13 @@ namespace Logshark.Config
         /// <summary>
         /// The XML name of the <see cref="UseAlways"/> property.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         internal const string UseAlwaysPropertyName = "useAlways";
         
         /// <summary>
         /// Gets or sets indicates whether a local MongoDB instance should be used for each run.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         [global::System.ComponentModel.DescriptionAttribute("Indicates whether a local MongoDB instance should be used for each run.")]
         [global::System.Configuration.ConfigurationPropertyAttribute(global::Logshark.Config.LocalMongoOptions.UseAlwaysPropertyName, IsRequired=true, IsKey=false, IsDefaultCollection=false, DefaultValue=false)]
         public virtual bool UseAlways
@@ -1908,13 +1922,13 @@ namespace Logshark.Config
         /// <summary>
         /// The XML name of the <see cref="PurgeOnStartup"/> property.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         internal const string PurgeOnStartupPropertyName = "purgeOnStartup";
         
         /// <summary>
         /// Gets or sets indicates whether the local Mongo DB should be purged whenever it is started.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         [global::System.ComponentModel.DescriptionAttribute("Indicates whether the local Mongo DB should be purged whenever it is started.")]
         [global::System.Configuration.ConfigurationPropertyAttribute(global::Logshark.Config.LocalMongoOptions.PurgeOnStartupPropertyName, IsRequired=true, IsKey=false, IsDefaultCollection=false, DefaultValue=true)]
         public virtual bool PurgeOnStartup
@@ -1938,6 +1952,7 @@ namespace Logshark.Config
     /// <summary>
     /// Encapsulates various runtime application options.
     /// </summary>
+    [global::System.ComponentModel.DescriptionAttribute("Encapsulates various runtime application options.")]
     public partial class RunOptions : global::System.Configuration.ConfigurationElement
     {
         
@@ -1945,7 +1960,7 @@ namespace Logshark.Config
         /// <summary>
         /// Gets a value indicating whether the element is read-only.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         public override bool IsReadOnly()
         {
             return false;
@@ -1956,13 +1971,13 @@ namespace Logshark.Config
         /// <summary>
         /// The XML name of the <see cref="Tuning"/> property.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         internal const string TuningPropertyName = "Tuning";
         
         /// <summary>
         /// Gets or sets settings pertaining to performance tuning.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         [global::System.ComponentModel.DescriptionAttribute("Settings pertaining to performance tuning.")]
         [global::System.Configuration.ConfigurationPropertyAttribute(global::Logshark.Config.RunOptions.TuningPropertyName, IsRequired=true, IsKey=false, IsDefaultCollection=false)]
         public virtual global::Logshark.Config.TuningOptions Tuning
@@ -1982,13 +1997,13 @@ namespace Logshark.Config
         /// <summary>
         /// The XML name of the <see cref="LocalMongo"/> property.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         internal const string LocalMongoPropertyName = "LocalMongo";
         
         /// <summary>
         /// Gets or sets settings pertaining to using a local MongoDB instance.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         [global::System.ComponentModel.DescriptionAttribute("Settings pertaining to using a local MongoDB instance.")]
         [global::System.Configuration.ConfigurationPropertyAttribute(global::Logshark.Config.RunOptions.LocalMongoPropertyName, IsRequired=true, IsKey=false, IsDefaultCollection=false)]
         public virtual global::Logshark.Config.LocalMongoOptions LocalMongo
@@ -2012,6 +2027,7 @@ namespace Logshark.Config
     /// <summary>
     /// Options pertaining to artifact processors.
     /// </summary>
+    [global::System.ComponentModel.DescriptionAttribute("Options pertaining to artifact processors.")]
     [global::System.Configuration.ConfigurationCollectionAttribute(typeof(global::Logshark.Config.ArtifactProcessorConfigNode), CollectionType=global::System.Configuration.ConfigurationElementCollectionType.BasicMapAlternate, AddItemName=global::Logshark.Config.ArtifactProcessorOptions.ArtifactProcessorConfigNodePropertyName)]
     public partial class ArtifactProcessorOptions : global::System.Configuration.ConfigurationElementCollection
     {
@@ -2020,7 +2036,7 @@ namespace Logshark.Config
         /// <summary>
         /// The XML name of the individual <see cref="global::Logshark.Config.ArtifactProcessorConfigNode"/> instances in this collection.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         internal const string ArtifactProcessorConfigNodePropertyName = "ArtifactProcessor";
         #endregion
         
@@ -2029,7 +2045,7 @@ namespace Logshark.Config
         /// Gets the type of the <see cref="global::System.Configuration.ConfigurationElementCollection"/>.
         /// </summary>
         /// <returns>The <see cref="global::System.Configuration.ConfigurationElementCollectionType"/> of this collection.</returns>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         public override global::System.Configuration.ConfigurationElementCollectionType CollectionType
         {
             get
@@ -2041,7 +2057,7 @@ namespace Logshark.Config
         /// <summary>
         /// Gets the name used to identify this collection of elements
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         protected override string ElementName
         {
             get
@@ -2057,7 +2073,7 @@ namespace Logshark.Config
         /// <returns>
         /// <see langword="true"/> if the element exists in the collection; otherwise, <see langword="false"/>.
         /// </returns>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         protected override bool IsElementName(string elementName)
         {
             return (elementName == global::Logshark.Config.ArtifactProcessorOptions.ArtifactProcessorConfigNodePropertyName);
@@ -2070,7 +2086,7 @@ namespace Logshark.Config
         /// <returns>
         /// An <see cref="object"/> that acts as the key for the specified <see cref="global::System.Configuration.ConfigurationElement"/>.
         /// </returns>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         protected override object GetElementKey(global::System.Configuration.ConfigurationElement element)
         {
             return ((global::Logshark.Config.ArtifactProcessorConfigNode)(element)).Name;
@@ -2082,7 +2098,7 @@ namespace Logshark.Config
         /// <returns>
         /// A new <see cref="global::Logshark.Config.ArtifactProcessorConfigNode"/>.
         /// </returns>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         protected override global::System.Configuration.ConfigurationElement CreateNewElement()
         {
             return new global::Logshark.Config.ArtifactProcessorConfigNode();
@@ -2094,7 +2110,7 @@ namespace Logshark.Config
         /// Gets the <see cref="global::Logshark.Config.ArtifactProcessorConfigNode"/> at the specified index.
         /// </summary>
         /// <param name="index">The index of the <see cref="global::Logshark.Config.ArtifactProcessorConfigNode"/> to retrieve.</param>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         public global::Logshark.Config.ArtifactProcessorConfigNode this[int index]
         {
             get
@@ -2107,7 +2123,7 @@ namespace Logshark.Config
         /// Gets the <see cref="global::Logshark.Config.ArtifactProcessorConfigNode"/> with the specified key.
         /// </summary>
         /// <param name="name">The key of the <see cref="global::Logshark.Config.ArtifactProcessorConfigNode"/> to retrieve.</param>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         public global::Logshark.Config.ArtifactProcessorConfigNode this[object name]
         {
             get
@@ -2122,7 +2138,7 @@ namespace Logshark.Config
         /// Adds the specified <see cref="global::Logshark.Config.ArtifactProcessorConfigNode"/> to the <see cref="global::System.Configuration.ConfigurationElementCollection"/>.
         /// </summary>
         /// <param name="ArtifactProcessor">The <see cref="global::Logshark.Config.ArtifactProcessorConfigNode"/> to add.</param>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         public void Add(global::Logshark.Config.ArtifactProcessorConfigNode ArtifactProcessor)
         {
             base.BaseAdd(ArtifactProcessor);
@@ -2134,7 +2150,7 @@ namespace Logshark.Config
         /// Removes the specified <see cref="global::Logshark.Config.ArtifactProcessorConfigNode"/> from the <see cref="global::System.Configuration.ConfigurationElementCollection"/>.
         /// </summary>
         /// <param name="ArtifactProcessor">The <see cref="global::Logshark.Config.ArtifactProcessorConfigNode"/> to remove.</param>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         public void Remove(global::Logshark.Config.ArtifactProcessorConfigNode ArtifactProcessor)
         {
             base.BaseRemove(this.GetElementKey(ArtifactProcessor));
@@ -2146,7 +2162,7 @@ namespace Logshark.Config
         /// Gets the <see cref="global::Logshark.Config.ArtifactProcessorConfigNode"/> at the specified index.
         /// </summary>
         /// <param name="index">The index of the <see cref="global::Logshark.Config.ArtifactProcessorConfigNode"/> to retrieve.</param>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         public global::Logshark.Config.ArtifactProcessorConfigNode GetItemAt(int index)
         {
             return ((global::Logshark.Config.ArtifactProcessorConfigNode)(base.BaseGet(index)));
@@ -2156,7 +2172,7 @@ namespace Logshark.Config
         /// Gets the <see cref="global::Logshark.Config.ArtifactProcessorConfigNode"/> with the specified key.
         /// </summary>
         /// <param name="name">The key of the <see cref="global::Logshark.Config.ArtifactProcessorConfigNode"/> to retrieve.</param>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         public global::Logshark.Config.ArtifactProcessorConfigNode GetItemByKey(string name)
         {
             return ((global::Logshark.Config.ArtifactProcessorConfigNode)(base.BaseGet(((object)(name)))));
@@ -2167,7 +2183,7 @@ namespace Logshark.Config
         /// <summary>
         /// Gets a value indicating whether the element is read-only.
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.1.801")]
         public override bool IsReadOnly()
         {
             return false;

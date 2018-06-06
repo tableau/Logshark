@@ -10,7 +10,7 @@ namespace Logshark.PluginLib.Persistence
         protected Thread insertionThread;
 
         public IDbConnection DbConnection { get; protected set; }
-        public bool IsRunning { get; protected set; }
+        public bool IsRunning { get; private set; }
         public long ItemsPersisted { get; protected set; }
 
         public virtual int ItemsPendingInsertion

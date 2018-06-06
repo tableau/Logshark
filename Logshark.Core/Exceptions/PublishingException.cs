@@ -1,8 +1,10 @@
-﻿using System;
+﻿using Logshark.Common.Exceptions;
+using System;
 
 namespace Logshark.Core.Exceptions
 {
-    public class PublishingException : Exception
+    [Serializable]
+    public class PublishingException : BaseLogsharkException
     {
         public PublishingException()
         {

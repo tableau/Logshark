@@ -2,6 +2,7 @@
 
 namespace Logshark.ConnectionModel.Exceptions
 {
+    [Serializable]
     public class DatabaseInitializationException : Exception
     {
         public DatabaseInitializationException()

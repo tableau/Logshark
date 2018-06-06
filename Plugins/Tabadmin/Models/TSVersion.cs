@@ -25,7 +25,7 @@ namespace Logshark.Plugins.Tabadmin.Models
         public DateTime? EndDate { get; set; }  // Date next version was first detected (not necessarily actual end date of this version.)
         public DateTime StartDateGmt { get; set; }
         public DateTime? EndDateGmt { get; set; }
-        public int? Worker { get; set; }
+        public string Worker { get; set; }
         public string File { get; set; }
         public string FilePath { get; set; }
         public int Line { get; set; }
@@ -45,7 +45,7 @@ namespace Logshark.Plugins.Tabadmin.Models
             TimestampOffset = BsonDocumentHelper.GetString("ts_offset", logLine);
             StartDateGmt = (DateTime)DateTimeConversionHelper.ConvertDateTime(StartDate, TimestampOffset);
             EndDateGmt = DateTimeConversionHelper.ConvertDateTime(EndDate, TimestampOffset);
-            Worker = BsonDocumentHelper.GetNullableInt("worker", logLine);
+            Worker = BsonDocumentHelper.GetString("worker", logLine);
             File = BsonDocumentHelper.GetString("file", logLine);
             FilePath = BsonDocumentHelper.GetString("file_path", logLine);
             Line = BsonDocumentHelper.GetInt("line", logLine);

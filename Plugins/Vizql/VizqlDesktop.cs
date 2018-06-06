@@ -1,5 +1,6 @@
-﻿using Logshark.PluginLib.Extensions;
-using Logshark.PluginLib.Model;
+﻿using Logshark.ArtifactProcessors.TableauDesktopLogProcessor.Parsers;
+using Logshark.ArtifactProcessors.TableauDesktopLogProcessor.PluginInterfaces;
+using Logshark.PluginLib.Extensions;
 using Logshark.PluginLib.Model.Impl;
 using Logshark.PluginLib.Persistence;
 using Logshark.PluginModel.Model;
@@ -36,7 +37,7 @@ namespace Logshark.Plugins.Vizql
             {
                 return new HashSet<string>
                 {
-                    "desktop_cpp"
+                    ParserConstants.DesktopCollectionName
                 };
             }
         }

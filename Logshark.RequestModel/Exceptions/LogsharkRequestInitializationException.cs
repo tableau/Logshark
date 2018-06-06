@@ -1,8 +1,10 @@
-﻿using System;
+﻿using Logshark.Common.Exceptions;
+using System;
 
 namespace Logshark.RequestModel.Exceptions
 {
-    public class LogsharkRequestInitializationException : Exception
+    [Serializable]
+    public class LogsharkRequestInitializationException : BaseLogsharkException
     {
         public LogsharkRequestInitializationException()
         {

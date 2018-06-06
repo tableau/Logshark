@@ -84,6 +84,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseParserFactory.cs" />
+    <Compile Include="Exceptions\ParsingException.cs" />
     <Compile Include="Extensions\DictionaryExtensions.cs" />
     <Compile Include="Extensions\JsonExtensions.cs" />
     <Compile Include="Extensions\ListExtensions.cs" />
@@ -91,8 +92,7 @@
     <Compile Include="Extensions\TimespanExtensions.cs" />
     <Compile Include="Helpers\CollectionSchema.cs" />
     <Compile Include="Helpers\LineCounter.cs" />
-    <Compile Include="Helpers\LogFileContext.cs" />
-    <Compile Include="Helpers\ParserTestHelpers.cs" />
+    <Compile Include="LogFileContext.cs" />
     <Compile Include="Helpers\ParserUtil.cs" />
     <Compile Include="Helpers\TimestampStandardizer.cs" />
     <Compile Include="Helpers\TimeZoneStandardizer.cs" />
@@ -107,15 +107,18 @@
     <Compile Include="Parsers\AbstractYamlParser.cs" />
     <Compile Include="Parsers\BaseParser.cs" />
     <Compile Include="Parsers\IParser.cs" />
-    <Compile Include="Parsers\Shared\ProtocolServerParser.cs" />
-    <Compile Include="Parsers\Shared\SharedParserConstants.cs" />
-    <Compile Include="Parsers\Shared\DataEngineParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Logshark.Common\Logshark.Common.csproj">
+      <Project>{0F89755A-EA3C-49BF-AE10-C5EE09E99916}</Project>
+      <Name>Logshark.Common</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

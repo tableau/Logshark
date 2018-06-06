@@ -1,8 +1,10 @@
-﻿using System;
+﻿using Logshark.Common.Exceptions;
+using System;
 
 namespace Logshark.Core.Exceptions
 {
-    public class InsufficientDiskSpaceException : Exception
+    [Serializable]
+    public class InsufficientDiskSpaceException : BaseLogsharkException
     {
         public InsufficientDiskSpaceException()
         {

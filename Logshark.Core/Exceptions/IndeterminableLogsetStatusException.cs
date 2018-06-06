@@ -2,6 +2,7 @@
 
 namespace Logshark.Core.Exceptions
 {
+    [Serializable]
     public class IndeterminableLogsetStatusException : ProcessingException
     {
         public IndeterminableLogsetStatusException()

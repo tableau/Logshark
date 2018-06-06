@@ -1,4 +1,5 @@
-﻿using Logshark.PluginLib.Model;
+﻿using Logshark.ArtifactProcessors.TableauDesktopLogProcessor.PluginInterfaces;
+using Logshark.ArtifactProcessors.TableauServerLogProcessor.PluginInterfaces;
 using Logshark.PluginLib.Model.Impl;
 using Logshark.PluginModel.Model;
 using Logshark.Plugins.CustomWorkbooks.Dependencies;
@@ -11,7 +12,7 @@ using System.Xml;
 
 namespace Logshark.Plugins.CustomWorkbooks
 {
-    public class CustomWorkbooks : BaseWorkbookCreationPlugin, IPostExecutionPlugin, IDesktopPlugin, IServerPlugin
+    public class CustomWorkbooks : BaseWorkbookCreationPlugin, IPostExecutionPlugin, IDesktopPlugin, IServerClassicPlugin, IServerTsmPlugin
     {
         private IPluginResponse pluginResponse;
         private ICollection<string> workbookNames;

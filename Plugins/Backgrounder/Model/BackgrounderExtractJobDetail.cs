@@ -60,10 +60,7 @@ namespace Logshark.Plugins.Backgrounder.Model
 
                 if (message.StartsWith("Created session id:"))
                 {
-                    string sessionPrefix = message.Split(':')[1];
-                    string sessionSuffix = GetSessionSuffix(vqlSessionServiceEvent);
-
-                    VizqlSessionId = sessionPrefix + "-" + sessionSuffix;
+                    VizqlSessionId = message.Split(':')[1];
                 }
                 else if (message.StartsWith("Storing"))
                 {
@@ -95,15 +92,6 @@ namespace Logshark.Plugins.Backgrounder.Model
                     }
                 }
             }
-        }
-
-        private string GetSessionSuffix(BsonDocument vqlSessionServiceEvent)
-        {
-            int worker = BsonDocumentHelper.GetInt("worker", vqlSessionServiceEvent);
-            string fileName = BsonDocumentHelper.GetString("file", vqlSessionServiceEvent);
-            string process = fileName.Split('-')[1].Split('.')[0];
-
-            return worker + ":" + process;
         }
 
         private void ParseBackgroundJobArgs(string jobArgs)

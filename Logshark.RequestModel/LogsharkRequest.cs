@@ -1,6 +1,5 @@
 ﻿using Logshark.Common.Extensions;
 using Logshark.RequestModel.Config;
-using Logshark.RequestModel.RunContext;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -12,6 +11,9 @@ namespace Logshark.RequestModel
     /// </summary>
     public class LogsharkRequest
     {
+        // The default port that MongoDB runs on if run locally.
+        protected const int MongoLocalPortDefault = 27017;
+
         protected LogsharkRequestTarget target;
         protected string runId;
         protected string customId;
@@ -50,13 +52,6 @@ namespace Logshark.RequestModel
         {
             get { return forceParse; }
             set { forceParse = value; }
-        }
-
-        // Skips processing of debug level logs
-        public bool IgnoreDebugLogs
-        {
-            get { return ignoreDebugLogs; }
-            set { ignoreDebugLogs = value; }
         }
 
         // The port that Mongo will run on, if run locally.
@@ -137,9 +132,6 @@ namespace Logshark.RequestModel
         // Timestamp of when this request was created.
         public DateTime RequestCreationDate { get; protected set; }
 
-        // Information about the current state of processing this request.
-        public LogsharkRunContext RunContext { get; protected set; }
-
         // Unique identifier that represents this run.
         public string RunId
         {
@@ -179,42 +171,34 @@ namespace Logshark.RequestModel
             Configuration = configuration;
             RequestCreationDate = DateTime.UtcNow;
             RunId = GenerateRunId(Target, RequestCreationDate);
+            Source = "Unspecified";
 
-            LocalMongoPort = RequestConstants.MONGO_LOCAL_PORT_DEFAULT;
+            LocalMongoPort = MongoLocalPortDefault;
             Metadata = new Dictionary<string, object>();
             PluginsToExecute = new HashSet<string>();
             PluginCustomArguments = new Dictionary<string, object>();
             StartLocalMongo = configuration.LocalMongoOptions.AlwaysUseLocalMongo;
             WorkbookTags = new HashSet<string> { "Logshark", Environment.UserName };
-
-            RunContext = new LogsharkRunContext();
         }
 
         protected string GenerateRunId(LogsharkRequestTarget requestTarget, DateTime requestCreationTime)
         {
             string hostnamePrefix = Environment.MachineName;
             string timeStamp = requestCreationTime.ToString("yyMMddHHmmssff");
-            string targetSuffix = "";
 
-            if (requestTarget.IsHashId)
+            string targetSuffix;
+            if (requestTarget.Type == LogsetTarget.Hash)
             {
                 targetSuffix = requestTarget.Target;
             }
-            else if (requestTarget.IsFile || requestTarget.IsDirectory)
+            else
             {
                 targetSuffix = Path.GetFileName(requestTarget).RemoveSpecialCharacters();
             }
 
-            string generatedRunId = String.Format("{0}_{1}_{2}", hostnamePrefix, timeStamp, targetSuffix).ToLowerInvariant();
-
-            if (generatedRunId.Length > 60)
-            {
-                return generatedRunId.Substring(0, 60);
-            }
-            else
-            {
-                return generatedRunId;
-            }
+            return String.Format("{0}_{1}_{2}", hostnamePrefix, timeStamp, targetSuffix)
+                         .ToLowerInvariant()
+                         .Left(60);
         }
     }
 }

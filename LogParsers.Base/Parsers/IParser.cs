@@ -1,6 +1,6 @@
-﻿using System.IO;
-using LogParsers.Base.Helpers;
+﻿using LogParsers.Base.Helpers;
 using Newtonsoft.Json.Linq;
+using System.IO;
 
 namespace LogParsers.Base.Parsers
 {

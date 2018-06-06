@@ -1,4 +1,6 @@
 ﻿using log4net;
+using Logshark.ArtifactProcessors.TableauServerLogProcessor.Parsers;
+using Logshark.Common.Extensions;
 using Logshark.PluginLib.Helpers;
 using Logshark.PluginLib.Logging;
 using Logshark.PluginLib.Persistence;
@@ -27,7 +29,7 @@ namespace Logshark.Plugins.Backgrounder
 
         public BackgrounderJobProcessor(IMongoDatabase mongoDatabase, IPersister<BackgrounderJob> backgrounderPersister, Guid logsetHash)
         {
-            backgrounderJavaCollection = mongoDatabase.GetCollection<BsonDocument>(BackgrounderConstants.BackgrounderJavaCollectionName);
+            backgrounderJavaCollection = mongoDatabase.GetCollection<BsonDocument>(ParserConstants.BackgrounderJavaCollectionName);
             this.backgrounderPersister = backgrounderPersister;
             this.logsetHash = logsetHash;
         }
@@ -36,11 +38,13 @@ namespace Logshark.Plugins.Backgrounder
 
         public void ProcessJobs()
         {
-            foreach (int workerId in GetDistinctWorkerIndices())
+            ISet<string> backgrounderJobTypes = GetBackgrounderJobTypes();
+
+            foreach (string workerId in GetDistinctWorkerIds())
             {
                 foreach (int backgrounderId in GetDistinctBackgrounderIds(workerId))
                 {
-                    foreach (var jobType in BackgrounderConstants.BackgrounderJobTypes)
+                    foreach (var jobType in backgrounderJobTypes)
                     {
                         try
                         {
@@ -55,12 +59,25 @@ namespace Logshark.Plugins.Backgrounder
             }
         }
 
-        public IEnumerable<int> GetDistinctWorkerIndices()
+        public ISet<string> GetBackgrounderJobTypes()
         {
-            return MongoQueryHelper.GetDistinctWorkerIndices(backgrounderJavaCollection);
+            var backgrounderJobTypesInMongo = MongoQueryHelper.GetDistinctBackgrounderJobTypes(backgrounderJavaCollection).ToHashSet();
+
+            if (!backgrounderJobTypesInMongo.Any())
+            {
+                // This could be a legacy logset; defer to the set of known job types.
+                return BackgrounderConstants.KnownBackgrounderJobTypes;
+            }
+
+            return backgrounderJobTypesInMongo;
         }
 
-        public IEnumerable<int> GetDistinctBackgrounderIds(int workerId)
+        public IEnumerable<string> GetDistinctWorkerIds()
+        {
+            return MongoQueryHelper.GetDistinctWorkerIds(backgrounderJavaCollection);
+        }
+
+        public IEnumerable<int> GetDistinctBackgrounderIds(string workerId)
         {
             return MongoQueryHelper.GetDistinctBackgrounderIdsForWorker(backgrounderJavaCollection, workerId);
         }
@@ -84,7 +101,7 @@ namespace Logshark.Plugins.Backgrounder
 
         #region Private Methods
 
-        private void ProcessJobsForBackgrounderId(int workerId, int backgrounderId, string jobType)
+        private void ProcessJobsForBackgrounderId(string workerId, int backgrounderId, string jobType)
         {
             Queue<BsonDocument> recordQueue = new Queue<BsonDocument>(MongoQueryHelper.GetJobEventsForProcessByType(workerId, backgrounderId, jobType, backgrounderJavaCollection));
 
@@ -190,16 +207,15 @@ namespace Logshark.Plugins.Backgrounder
 
         private bool ErrorDocumentMatchesJobType(string jobType, BsonDocument errorDocument)
         {
-            string errorMessage = BsonDocumentHelper.GetString("message", errorDocument);
-
-            //If this is a fatal job error, lets make sure the message matches the job type
-            if (errorMessage.StartsWith("Error executing backgroundjob:"))
+            if (errorDocument.Contains("job_type")) // 10.5+
             {
-                return errorMessage.Contains(jobType);
+                return BsonDocumentHelper.GetString("job_type", errorDocument).Equals(jobType);
             }
-            else
+            else // 9.0 - 10.4
             {
-                return true;
+                // If this is a fatal job error, lets make sure the message matches the job type
+                string errorMessage = BsonDocumentHelper.GetString("message", errorDocument);
+                return !errorMessage.StartsWith("Error executing backgroundjob:") || errorMessage.Contains(jobType);
             }
         }
 
@@ -210,29 +226,37 @@ namespace Logshark.Plugins.Backgrounder
                 return false;
             }
 
-            return BsonDocumentHelper.GetString("message", jobStartEvent).StartsWith(String.Format("Running job of type :{0}", jobType));
+            string message = BsonDocumentHelper.GetString("message", jobStartEvent);
+            bool messageHasJobStartText = message.StartsWith("Running job of type");
+
+            if (jobStartEvent.Contains("job_type")) // 10.5+
+            {
+                return messageHasJobStartText && BsonDocumentHelper.GetString("job_type", jobStartEvent).Equals(jobType);
+            }
+            else // 9.0 - 10.4
+            {
+                return messageHasJobStartText && message.Contains(String.Concat(" :", jobType));
+            }
         }
 
         private static bool IsValidJobFinishEvent(BsonDocument jobFinishEvent, string jobType)
         {
-            if (!jobFinishEvent.Contains("message") || !jobFinishEvent.Contains("sev"))
+            if (!jobFinishEvent.Contains("message"))
             {
                 return false;
             }
 
-            string severity = BsonDocumentHelper.GetString("sev", jobFinishEvent);
+            string message = BsonDocumentHelper.GetString("message", jobFinishEvent);
+            bool messageHasJobFinishedText = message.StartsWith("Job finished:") || message.StartsWith("Error executing backgroundjob:");
 
-            if (severity.Equals("INFO", StringComparison.OrdinalIgnoreCase))
+            if (jobFinishEvent.Contains("job_type")) // 10.5+
             {
-                string message = BsonDocumentHelper.GetString("message", jobFinishEvent);
-                return message.StartsWith("Job finished") && message.Contains(String.Format("type :{0}", jobType));
+                return messageHasJobFinishedText && BsonDocumentHelper.GetString("job_type", jobFinishEvent).Equals(jobType);
             }
-            else if (severity.Equals("ERROR", StringComparison.OrdinalIgnoreCase))
+            else // 9.0 - 10.4
             {
-                return BsonDocumentHelper.GetString("message", jobFinishEvent).StartsWith(String.Format("Error executing backgroundjob: :{0}", jobType));
+                return messageHasJobFinishedText && message.Contains(String.Concat(" :", jobType));
             }
-
-            return false;
         }
 
         private static bool IsErrorEvent(BsonDocument eventDocument)

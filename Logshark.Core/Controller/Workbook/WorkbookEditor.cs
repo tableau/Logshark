@@ -86,9 +86,6 @@ namespace Logshark.Core.Controller.Workbook
         /// <summary>
         /// Updates a single workbook connection element in the XML to point to a different Postgres database.
         /// </summary>
-        /// <param name="connectionElement"></param>
-        /// <param name="postgresConnection"></param>
-        /// <param name="databaseName"></param>
         private void ReplaceSinglePostgresConnection(XmlNode connectionElement, PostgresConnectionInfo postgresConnection, string databaseName)
         {
             if (!IsValidPostgresConnectionElement(connectionElement))

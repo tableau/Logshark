@@ -26,6 +26,7 @@ namespace Logshark.RequestModel.Config
                 var logsharkSection = appConfig.Sections["LogsharkConfig"];
                 var config = (LogsharkConfig)logsharkSection;
 
+                Log.Debug("Loaded user configuration!");
                 return new LogsharkConfiguration(config);
             }
             catch (ConfigurationErrorsException ex)

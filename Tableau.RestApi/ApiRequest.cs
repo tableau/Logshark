@@ -48,11 +48,11 @@ namespace Tableau.RestApi
             TimeoutSeconds = timeoutSeconds;
         }
 
-        public tsResponse TryIssueRequest(string requestFailureMessage, int maxAttempts = Constants.DefaultMaxRequestAttempts)
+        public tsResponse IssueRequest(string requestFailureMessage, int maxAttempts = Constants.DefaultMaxRequestAttempts)
         {
             try
             {
-                return IssueRequest(maxAttempts);
+                return GetResponse(maxAttempts);
             }
             catch (HttpRequestException ex)
             {
@@ -60,7 +60,7 @@ namespace Tableau.RestApi
             }
         }
 
-        public tsResponse IssueRequest(int maxAttempts = Constants.DefaultMaxRequestAttempts)
+        private tsResponse GetResponse(int maxAttempts = Constants.DefaultMaxRequestAttempts)
         {
             int attempt = 1;
             while (attempt <= maxAttempts)
@@ -118,10 +118,7 @@ namespace Tableau.RestApi
                 webRequest.ContentLength = Body.Length;
                 using (Stream requestWriter = webRequest.GetRequestStream())
                 {
-                    foreach (var byteData in Body)
-                    {
-                        requestWriter.WriteByte(byteData);
-                    }
+                    requestWriter.Write(Body, 0, Body.Length);
                 }
             }
 

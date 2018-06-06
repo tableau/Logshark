@@ -1,5 +1,6 @@
-﻿using Logshark.PluginLib.Extensions;
-using Logshark.PluginLib.Model;
+﻿using Logshark.ArtifactProcessors.TableauServerLogProcessor.Parsers;
+using Logshark.ArtifactProcessors.TableauServerLogProcessor.PluginInterfaces;
+using Logshark.PluginLib.Extensions;
 using Logshark.PluginLib.Model.Impl;
 using Logshark.PluginModel.Model;
 using Logshark.Plugins.Config.Helpers;
@@ -9,11 +10,9 @@ using System.Collections.Generic;
 
 namespace Logshark.Plugins.Config
 {
-    public class Config : BaseWorkbookCreationPlugin, IServerPlugin
+    public class Config : BaseWorkbookCreationPlugin, IServerClassicPlugin, IServerTsmPlugin
     {
         private PluginResponse pluginResponse;
-
-        public static readonly string ConfigCollectionName = "config";
 
         public override ISet<string> CollectionDependencies
         {
@@ -21,7 +20,7 @@ namespace Logshark.Plugins.Config
             {
                 return new HashSet<string>
                 {
-                    ConfigCollectionName
+                    ParserConstants.ConfigCollectionName
                 };
             }
         }
