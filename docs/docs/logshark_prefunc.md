@@ -2,9 +2,7 @@
 title: Get your Computer Set Up for Logshark
 ---
 
-Before you install and run Logshark on your computer, you'll need to make sure your system meets the necessary requirements. This section will walk you through the system, database, and log requirements.
-
-In this section:
+Before you install and run Logshark on your computer, you'll need to make sure your system meets the necessary requirements. This section will walk you through:
 
 * TOC
 {:toc}
