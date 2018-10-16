@@ -2,10 +2,7 @@
 title: Get your Computer Set Up for Logshark
 ---
 
-Before you install and run Logshark on your computer, review the following [System Requirements](#system-requirements), [Database Requirements](#database-requirements) and [Tableau Archive Log Requirements](#tableau-archive-log-requirements).
-
-To get your computer ready to run Logshark, you need to install PostgreSQL, and possibly MongoDB if you will be working with large log files (greater than 2 GB).   
-
+Before you install and run Logshark on your computer, you'll need to make sure your system meets the necessary requirements. This section will walk you through the system, database, and log requirements.
 
 In this section:
 
@@ -35,7 +32,7 @@ Database Requirements
 
 -   MongoDB - a standalone instance is included with the Logshark installation. Logshark uses MongoDB when it is extracting data from the log files. In most cases, you can specify a command option to tell Logshark to utilize the local instance of MongoDB for processing.
 
-    -   However, if you have large log files (greater than 2 GB) the recommendation is that you use a MongoDB instance located on another computer to minimize contention.
+    -   **NOTE:** However, if you have large log files (**greater than 2 GB**) the recommendation is that you use a MongoDB instance located on another computer to minimize contention.
 
     -   You can Download MongoDB Community Server at: [https://www.mongodb.com/download-center#community](https://www.mongodb.com/download-center#community){:target="_blank"}. To configure it, see [Use your own MongoDB instance.](logshark_mongo)
 
