@@ -43,7 +43,7 @@ Tableau Archive Log Requirements
 
 The archive log files must be from Tableau Server or Tableau Desktop version 9.0 or later. Logshark requires that the Tableau Server log files that you process are compressed (zipped) files, also known as *archive* files or *snapshots*.
 
-You can create these archive files using the `tabadmin ziplogs` command on the Tableau Server, or by creating a snapshot from the Status or Maintenance menu within Tableau Server. For more information about gathering Tableau Server log files, see [Archive Log Files](http://onlinehelp.tableau.com/current/server/en-us/logs_create.htm){:target="_blank"}.
+You can create these archive files using the `tabadmin ziplogs` command on the Tableau Server, or by creating a snapshot from the Status or Maintenance menu within Tableau Server. For more information about gathering Tableau Server log files, see [Archive Log Files](http://onlinehelp.tableau.com/v2018.1/server/en-us/logs_create.htm){:target="_blank"}.
 
 For Tableau Desktop, the log files are located in the `My Tableau Repository` directory. The default location is <code>\Users\<i>username</i>\Documents\My Tableau Repository\Logs</code>. You can also find the location using Tableau. Start Tableau Desktop and click **File &gt; Repository** **Location**.
 
