@@ -5,7 +5,7 @@ title: Logshark Installation and User Guide
 
 Logshark is a tool you can use to analyze and troubleshoot Tableau performance and activity. Logshark extracts data from Tableau Server and Tableau Desktop log files and builds workbooks that can help you identify and understand error conditions, performance bottlenecks, and background activity. Logshark works by running a set of targeted plugins that pull specific data out of the log files. Logshark builds a data source and provides Tableau workbooks which you can then use to analyze the log files in Tableau.
 
-This installation and user guide will walk you through the steps to get started, using Logshark, and command options. 
+This installation and user guide will walk you through the steps to get started, how to run logshark and view results, and a command dictionary. 
 
 <!--
 [Second page]({{ site.baseurl }}/second-page).
