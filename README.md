@@ -19,7 +19,7 @@ The current development requirements are:
 
 It is recommended that you install the Logshark Project Templates extension by running the "Logshark Artifact Processor Project Template.vsix" and "Logshark Workbook Creation Plugin Project Template.vsix" files found in the root directory.  These add "Logshark Artifact Processor" and "Logshark Workbook Creation Plugin" project types to Visual Studio which you can use to easily get up and running developing a new artifact processor or plugin.
 
-**To build the solution**, you'll want to set the Solution Platform to x64.
+Logshark is deployed via a custom installer, which you can download from the [releases page](https://github.com/tableau/Logshark/releases/latest).  The installer manages dependencies and also bundles MongoDB for ease of setup for new users. To get up and running, download the installer and then follow the instructions in the [installation guide](https://tableau.github.io/Logshark/) to configure it.
 
 **To run the unit tests**, you must:
 1. Be running Visual Studio as an Administrator.
