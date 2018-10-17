@@ -14,7 +14,7 @@ namespace Logshark.ArtifactProcessors.TableauServerLogProcessor.ParserMapping.Ts
             new Dictionary<string, Type>
             {
                 { @"^access.*log", typeof(HttpdParser) },
-                { @"^control-gateway-.*log.*", typeof(ServiceControlParser) },
+                { @"^control.gateway.*log.*", typeof(ServiceControlParser) },
                 { @"^gateway.*log.*", typeof(HttpdConfigurationParser) },
                 { @"^error.*log", typeof(HttpdErrorParser) }
             };

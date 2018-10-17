@@ -22,8 +22,12 @@ namespace Logshark.Core.Helpers
         {
             Log.Debug("Validating all configured service dependencies are available..");
 
-            ValidatePostgresIsAvailable();
             ValidateMongoIsAvailable();
+
+            if (configuration.PostgresConnectionInfo.HasValue)
+            {
+                ValidatePostgresIsAvailable();
+            }
         }
 
         public void ValidatePostgresIsAvailable()
@@ -32,11 +36,14 @@ namespace Logshark.Core.Helpers
 
             try
             {
-                IDbConnectionFactory connectionFactory = configuration.PostgresConnectionInfo.GetConnectionFactory(configuration.PostgresConnectionInfo.DefaultDatabase);
-                using (connectionFactory.OpenDbConnection())
+                configuration.PostgresConnectionInfo.MatchSome(connection =>
                 {
-                    Log.DebugFormat("Successfully opened a connection to PostgreSQL database '{0}'!", configuration.PostgresConnectionInfo);
-                }
+                    IDbConnectionFactory connectionFactory = connection.GetConnectionFactory(connection.DefaultDatabase);
+                    using (connectionFactory.OpenDbConnection())
+                    {
+                        Log.DebugFormat("Successfully opened a connection to PostgreSQL database '{0}'!", configuration.PostgresConnectionInfo);
+                    }
+                });
             }
             catch (Exception ex)
             {

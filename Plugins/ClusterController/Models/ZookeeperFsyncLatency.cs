@@ -1,13 +1,13 @@
-﻿using Logshark.PluginLib.Helpers;
+﻿using Logshark.PluginLib.Extensions;
 using MongoDB.Bson;
 using System;
 using System.Text.RegularExpressions;
 
 namespace Logshark.Plugins.ClusterController.Models
 {
-    public class ZookeeperFsyncLatency : ClusterControllerEvent
+    public sealed class ZookeeperFsyncLatency : BaseClusterControllerEvent
     {
-        public static Regex FsyncLatencyRegex = new Regex(@"fsync-ing the write ahead log in .* took (?<fsync_latency>\d+?)ms.*", RegexOptions.Compiled | RegexOptions.ExplicitCapture);
+        private static readonly Regex FsyncLatencyRegex = new Regex(@"fsync-ing the write ahead log in .* took (?<fsync_latency>\d+?)ms.*", RegexOptions.Compiled | RegexOptions.ExplicitCapture);
 
         public int FsyncLatencyMs { get; set; }
 
@@ -15,18 +15,16 @@ namespace Logshark.Plugins.ClusterController.Models
         {
         }
 
-        public ZookeeperFsyncLatency(BsonDocument document, Guid logsetHash)
-            : base(document, logsetHash)
+        public ZookeeperFsyncLatency(BsonDocument document) : base(document)
         {
             FsyncLatencyMs = GetFsyncLatency(document);
-            EventHash = GetEventHash();
         }
 
-        protected int GetFsyncLatency(BsonDocument document)
+        private int GetFsyncLatency(BsonDocument document)
         {
             try
             {
-                string fsyncString = BsonDocumentHelper.GetString("message", document);
+                string fsyncString = document.GetString("message");
                 var match = FsyncLatencyRegex.Match(fsyncString);
                 if (match.Success)
                 {
@@ -41,11 +39,6 @@ namespace Logshark.Plugins.ClusterController.Models
             {
                 throw new Exception("Could not gather fsync information from logline: " + document, ex);
             }
-        }
-
-        protected Guid GetEventHash()
-        {
-            return HashHelper.GenerateHashGuid(Timestamp, Worker, FsyncLatencyMs, Filename, LineNumber);
         }
     }
 }

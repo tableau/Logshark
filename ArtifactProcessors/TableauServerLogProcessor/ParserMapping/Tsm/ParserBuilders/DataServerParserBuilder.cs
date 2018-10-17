@@ -13,8 +13,8 @@ namespace Logshark.ArtifactProcessors.TableauServerLogProcessor.ParserMapping.Ts
         private static readonly IDictionary<string, Type> fileMap =
             new Dictionary<string, Type>
             {
-                { @"^control-dataserver-.*log.*", typeof(ServiceControlParser) },
-                { @"^dataserver-.*log.*", typeof(DataServerJavaParser) },
+                { @"^control.dataserver.*log.*", typeof(ServiceControlParser) },
+                { @"^dataserver.*log.*", typeof(DataServerJavaParser) },
                 { @"^nativeapi_dataserver_.*txt.*", typeof(DataServerCppParser) },
                 { @"^tabprotosrv_dataserver_.*txt.*", typeof(ProtocolServerParser) }
             };

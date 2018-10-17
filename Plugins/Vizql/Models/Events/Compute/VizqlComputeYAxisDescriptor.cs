@@ -11,7 +11,6 @@ namespace Logshark.Plugins.Vizql.Models.Events.Compute
 
         public VizqlComputeYAxisDescriptor(BsonDocument document)
         {
-            ValidateArguments("compute-y-axis-descriptor", document);
             SetEventMetadata(document);
             Elapsed = BsonDocumentHelper.GetDouble("elapsed", BsonDocumentHelper.GetValuesStruct(document));
         }

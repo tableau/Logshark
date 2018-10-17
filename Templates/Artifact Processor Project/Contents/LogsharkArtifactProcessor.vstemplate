@@ -29,6 +29,9 @@
           <ProjectItem ReplaceParameters="true" TargetFileName="SampleJsonParser.cs">SampleJsonParser.cs</ProjectItem>
         </Folder>
       </Folder>
+      <Folder Name="PluginInterfaces" TargetFolderName="PluginInterfaces">
+        <ProjectItem ReplaceParameters="true" TargetFileName="ISamplePluginInterface.cs">ISamplePluginInterface.cs</ProjectItem>
+      </Folder>
     </Project>
   </TemplateContent>
 </VSTemplate>

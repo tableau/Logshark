@@ -5,14 +5,14 @@ namespace Logshark.ConnectionModel.TableauServer
 {
     public class TableauServerConnectionInfo : ITableauServerConnectionInfo
     {
-        public string Hostname { get; }
-        public int Port { get; }
+        public string Hostname { get; private set; }
+        public int Port { get; private set; }
         public string Site { get; set; }
-        public string Username { get; }
-        public string Password { get; }
-        public int PublishingTimeoutSeconds { get; }
-        public string Scheme { get; }
-        public Uri Uri { get; }
+        public string Username { get; private set; }
+        public string Password { get; private set; }
+        public int PublishingTimeoutSeconds { get; private set; }
+        public string Scheme { get; private set; }
+        public Uri Uri { get; private set; }
 
         public TableauServerConnectionInfo(TableauServerConnection tableauConfig)
         {
@@ -30,7 +30,7 @@ namespace Logshark.ConnectionModel.TableauServer
         {
             if (String.IsNullOrWhiteSpace(searchParameter))
             {
-                throw new ArgumentException("Must supply a valid project search parameter!", nameof(searchParameter));
+                throw new ArgumentException("Must supply a valid project search parameter!", "searchParameter");
             }
 
             if (Site.Equals("default", StringComparison.OrdinalIgnoreCase))

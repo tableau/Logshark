@@ -1,7 +1,6 @@
 ﻿using Logshark.PluginLib.Extensions;
 using Logshark.PluginLib.Helpers;
 using MongoDB.Bson;
-using ServiceStack.DataAnnotations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,15 +21,7 @@ namespace Logshark.Plugins.Backgrounder.Model
             =\s(?<total_size>\d+?)$",
             RegexOptions.ExplicitCapture | RegexOptions.IgnorePatternWhitespace | RegexOptions.Compiled);
 
-        [AutoIncrement]
-        [PrimaryKey]
-        public int Id { get; set; }
-
-        [Index]
         public long BackgrounderJobId { get; set; }
-
-        [Index]
-        public Guid BackgrounderJobEventHash { get; set; }
 
         public string ExtractUrl { get; set; }
         public string ExtractId { get; set; }
@@ -39,10 +30,7 @@ namespace Logshark.Plugins.Backgrounder.Model
         public long ExtractSize { get; set; }
         public long TotalSize { get; set; }
         public string ExtractGuid { get; set; }
-
-        [Index]
         public string VizqlSessionId { get; set; }
-
         public string ResourceType { get; set; }
 
         public BackgrounderExtractJobDetail()
@@ -52,7 +40,6 @@ namespace Logshark.Plugins.Backgrounder.Model
         public BackgrounderExtractJobDetail(BackgrounderJob backgrounderJob, IEnumerable<BsonDocument> vqlSessionServiceEvents)
         {
             BackgrounderJobId = backgrounderJob.JobId;
-            BackgrounderJobEventHash = backgrounderJob.EventHash;
             ParseBackgroundJobArgs(backgrounderJob.Args);
             foreach (var vqlSessionServiceEvent in vqlSessionServiceEvents)
             {

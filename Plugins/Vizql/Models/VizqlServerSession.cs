@@ -1,6 +1,5 @@
-﻿using Logshark.PluginLib.Helpers;
+﻿using Logshark.PluginLib.Extensions;
 using MongoDB.Bson;
-using ServiceStack.DataAnnotations;
 using System;
 
 namespace Logshark.Plugins.Vizql.Models
@@ -16,30 +15,25 @@ namespace Logshark.Plugins.Vizql.Models
         public string File { get; private set; }
         public string Worker { get; private set; }
 
-        [Index]
         public DateTime? CreationTimestamp { get; set; }
-
-        [Index]
         public DateTime? DestructionTimestamp { get; set; }
 
-        public VizqlServerSession(BsonDocument firstEvent, BsonDocument lastEvent, string workbookName, string processName, string bootstrapRequestId, Guid logsetHash)
+        public VizqlServerSession() { }
+        
+        public VizqlServerSession(BsonDocument firstEvent, BsonDocument lastEvent, string workbookName, string processName, string bootstrapRequestId)
         {
-            VizqlSessionId = BsonDocumentHelper.GetString("sess", firstEvent);
-            LogsetHash = logsetHash;
+            VizqlSessionId = firstEvent.GetString("sess");
             BootstrapApacheRequestId = bootstrapRequestId;
-            Username = BsonDocumentHelper.GetString("user", firstEvent);
-            Site = BsonDocumentHelper.GetString("site", firstEvent);
-            CreationTimestamp = BsonDocumentHelper.GetDateTime("ts", firstEvent);
-            DestructionTimestamp = BsonDocumentHelper.GetDateTime("ts", lastEvent);
-            File = BsonDocumentHelper.GetString("file", firstEvent);
-            Worker = BsonDocumentHelper.GetString("worker", firstEvent);
+            Username = firstEvent.GetString("user");
+            Site = firstEvent.GetString("site");
+            CreationTimestamp = firstEvent.GetDateTime("ts");
+            DestructionTimestamp = lastEvent.GetDateTime("ts");
+            File = firstEvent.GetString("file");
+            Worker = firstEvent.GetString("worker");
             Workbook = workbookName;
             ProcessName = processName;
 
             CreateEventCollections();
         }
-
-        //Required for ORMLite.
-        public VizqlServerSession() { }
     }
 }

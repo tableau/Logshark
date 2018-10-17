@@ -14,7 +14,7 @@ namespace Logshark.ArtifactProcessors.TableauServerLogProcessor.ParserMapping.Ts
             new Dictionary<string, Type>
             {
                 { @"^clustercontroller.*log.*", typeof(ClusterControllerParser) },
-                { @"^control-clustercontroller-.*log.*", typeof(ServiceControlParser) },
+                { @"^control.clustercontroller.*log.*", typeof(ServiceControlParser) },
                 { @"^tabcrashreporter.*txt.*", typeof(TabCrashReporterParser) }
             };
 

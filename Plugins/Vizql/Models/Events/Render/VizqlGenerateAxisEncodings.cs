@@ -11,7 +11,6 @@ namespace Logshark.Plugins.Vizql.Models.Events.Render
 
         public VizqlGenerateAxisEncodings(BsonDocument document)
         {
-            ValidateArguments("generate-axis-encodings", document);
             SetEventMetadata(document);
             Elapsed = BsonDocumentHelper.GetDouble("elapsed", BsonDocumentHelper.GetValuesStruct(document));
         }

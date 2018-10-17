@@ -19,42 +19,27 @@ namespace Logshark.ArtifactProcessors.TableauServerLogProcessor
     /// </summary>
     public sealed class ServerClassicLogProcessor : IArtifactProcessor
     {
-        private static readonly ISet<string> requiredCollections = new HashSet<string>
+        private static readonly ISet<string> RequiredCollectionsStatic = new HashSet<string>
         {
             ParserConstants.ConfigCollectionName
         };
 
-        private static readonly ISet<Regex> supportedFilePatterns = new HashSet<Regex>
+        private static readonly ISet<Regex> SupportedFilePatternsStatic = new HashSet<Regex>
         {
             new Regex(@"^.*\.(log|txt|yml|csv|properties|conf|zip).*$", RegexOptions.Compiled)
         };
 
-        private static readonly ISet<Type> supportedPluginInterfaces = new HashSet<Type>
+        private static readonly ISet<Type> SupportedPluginInterfacesStatic = new HashSet<Type>
         {
             typeof(IServerClassicPlugin)
         };
 
         #region IArtifactProcessor Implementation
 
-        public string ArtifactType
-        {
-            get { return "Server"; }
-        }
-
-        public ISet<string> RequiredCollections
-        {
-            get { return requiredCollections; }
-        }
-
-        public ISet<Regex> SupportedFilePatterns
-        {
-            get { return supportedFilePatterns; }
-        }
-
-        public ISet<Type> SupportedPluginInterfaces
-        {
-            get { return supportedPluginInterfaces; }
-        }
+        public string ArtifactType => "Server (pre-TSM)";
+        public ISet<string> RequiredCollections => RequiredCollectionsStatic;
+        public ISet<Regex> SupportedFilePatterns => SupportedFilePatternsStatic;
+        public ISet<Type> SupportedPluginInterfaces => SupportedPluginInterfacesStatic;
 
         public bool CanProcess(string rootLogLocation)
         {
@@ -85,9 +70,9 @@ namespace Logshark.ArtifactProcessors.TableauServerLogProcessor
         /// Given a log file path, attempt to glean a worker index from it.
         /// </summary>
         /// <returns>Id of worker node.</returns>
-        private string GetWorkerId(LogFileContext fileContext)
+        private static string GetWorkerId(LogFileContext fileContext)
         {
-            string workerIndex = ParserUtil.GetParentLogDirs(fileContext.FilePath, fileContext.RootLogDirectory)
+            var workerIndex = ParserUtil.GetParentLogDirs(fileContext.FilePath, fileContext.RootLogDirectory)
                                            .Where(parent => parent.StartsWith("worker"))
                                            .Select(name => name.Replace("worker", ""))
                                            .DefaultIfEmpty("0")

@@ -13,7 +13,7 @@ namespace Logshark.ArtifactProcessors.TableauServerLogProcessor.ParserMapping.Ts
         private static readonly IDictionary<string, Type> fileMap =
             new Dictionary<string, Type>
             {
-                { @"^control-hyper-.*log.*", typeof(ServiceControlParser) },
+                { @"^control.hyper.*log.*", typeof(ServiceControlParser) },
                 { @"^hyper_.*log", typeof(HyperParser) }
             };
 

@@ -4,6 +4,7 @@ using Logshark.ConnectionModel.Postgres;
 using Logshark.ConnectionModel.TableauServer;
 using Logshark.Core.Exceptions;
 using Logshark.PluginModel.Model;
+using Optional;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -39,7 +40,7 @@ namespace Logshark.Core.Controller.Workbook
         protected const int WorkbookPublishingRetryDelaySec = 5;
 
         protected readonly ITableauServerConnectionInfo tableauConnectionInfo;
-        protected readonly IPostgresUserInfo postgresUserInfo;
+        protected readonly Option<PostgresConnectionInfo> postgresConnectionInfo;
         protected readonly PublishingOptions publishingOptions;
         protected readonly IRestApiRequestor restApiRequestor;
 
@@ -53,12 +54,12 @@ namespace Logshark.Core.Controller.Workbook
 
         public WorkbookPublisher(
             ITableauServerConnectionInfo tableauConnectionInfo,
-            IPostgresUserInfo postgresUserInfo,
+            Option<PostgresConnectionInfo> postgresConnectionInfo,
             PublishingOptions publishingOptions,
             IRestApiRequestor restApiRequestor)
         {
             this.tableauConnectionInfo = tableauConnectionInfo;
-            this.postgresUserInfo = postgresUserInfo;
+            this.postgresConnectionInfo = postgresConnectionInfo;
             this.publishingOptions = publishingOptions;
             this.restApiRequestor = restApiRequestor;
         }
@@ -188,14 +189,18 @@ namespace Logshark.Core.Controller.Workbook
                 SiteName = tableauConnectionInfo.Site,
                 ProjectId = projectId,
                 ProjectName = publishingOptions.ProjectName,
-                DatasourceUserName = postgresUserInfo.Username,
-                DatasourcePassword = postgresUserInfo.Password,
                 // Tag the workbook with the name of the plugin that generated it.
                 Tags = new HashSet<string>(publishingOptions.Tags) { pluginName },
                 OverwriteExistingWorkbook = publishingOptions.OverwriteExistingWorkbooks,
                 ShowSheetsAsTabs = true,
                 PublishingTimeoutSeconds = tableauConnectionInfo.PublishingTimeoutSeconds
             };
+
+            postgresConnectionInfo.MatchSome(user =>
+            {
+                publishWorkbookRequest.DatasourceUserName = user.Username;
+                publishWorkbookRequest.DatasourcePassword = user.Password;
+            });
 
             PublishedWorkbookResult result = requestor.PublishWorkbookWithEmbeddedCredentials(publishWorkbookRequest);
             int attemptsMade = 1;

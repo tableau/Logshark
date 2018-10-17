@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Xml;
+using System.IO;
 
 namespace Logshark.PluginLib.Model
 {
@@ -7,6 +7,6 @@ namespace Logshark.PluginLib.Model
     {
         ICollection<string> WorkbookNames { get; }
 
-        XmlDocument GetWorkbookXml(string workbookName);
+        Stream GetWorkbook(string workbookName);
     }
 }

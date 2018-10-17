@@ -13,7 +13,7 @@ namespace Logshark.ArtifactProcessors.TableauServerLogProcessor.ParserMapping.Ts
         private static readonly IDictionary<string, Type> fileMap =
             new Dictionary<string, Type>
             {
-                { @"^control-pgsql-.*log.*", typeof(ServiceControlParser) },
+                { @"^control.pgsql.*log.*", typeof(ServiceControlParser) },
                 { @"^postgresql-.*csv", typeof(PostgresParser) },
                 { @"^postgresql-.*log", typeof(PostgresLegacyParser) }
             };

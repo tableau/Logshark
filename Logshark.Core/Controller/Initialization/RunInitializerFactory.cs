@@ -20,7 +20,7 @@ namespace Logshark.Core.Controller.Initialization
                     return new HashRunInitializer(config.MongoConnectionInfo);
 
                 default:
-                    throw new ArgumentException(String.Format("Cannot get run initializer for unknown target type '{0}'", target.Type), "target");
+                    throw new ArgumentException($"Cannot get run initializer for unknown target type '{target.Type}'", nameof(target));
             }
         }
     }

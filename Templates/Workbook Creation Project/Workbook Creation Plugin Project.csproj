@@ -67,9 +67,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <None Include="Contents\Npgsql.3.2.4.1\Npgsql.3.2.4.1.nupkg" />
     <None Include="Contents\Properties\AssemblyInfo.cs" />
     <None Include="Contents\SamplePlugin.cs" />
+    <None Include="Contents\Model\Widget.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -94,37 +94,12 @@
     <Content Include="Contents\MongoDB.Driver.2.3.0\lib\net45\MongoDB.Driver.dll" />
     <Content Include="Contents\MongoDB.Driver.2.3.0\lib\net45\MongoDB.Driver.XML" />
     <Content Include="Contents\MongoDB.Driver.Core.2.3.0\lib\net45\MongoDB.Driver.Core.dll" />
-    <None Include="Contents\LogsharkPlugin.vstemplate" />
+    <None Include="Contents\LogsharkPlugin.vstemplate">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Contents\SamplePlugin.csproj" />
-    <Content Include="Contents\Npgsql.3.2.4.1\lib\net451\Npgsql.dll" />
-    <Content Include="Contents\Npgsql.3.2.4.1\lib\net451\Npgsql.xml" />
-    <Content Include="Contents\Npgsql.3.2.4.1\lib\net45\Npgsql.dll" />
-    <Content Include="Contents\Npgsql.3.2.4.1\lib\net45\Npgsql.xml" />
-    <Content Include="Contents\Npgsql.3.2.4.1\lib\netstandard1.3\Npgsql.dll" />
-    <Content Include="Contents\Npgsql.3.2.4.1\lib\netstandard1.3\Npgsql.xml" />
-    <Content Include="Contents\Npgsql.3.2.4.1\lib\netstandard2.0\Npgsql.dll" />
-    <Content Include="Contents\Npgsql.3.2.4.1\lib\netstandard2.0\Npgsql.xml" />
-    <Content Include="Contents\ServiceStack.Common.3.9.71\lib\net35\ServiceStack.Common.dll" />
-    <Content Include="Contents\ServiceStack.Common.3.9.71\lib\net35\ServiceStack.Common.XML" />
-    <Content Include="Contents\ServiceStack.Common.3.9.71\lib\net35\ServiceStack.Interfaces.dll" />
-    <Content Include="Contents\ServiceStack.Common.3.9.71\lib\net35\ServiceStack.Interfaces.xml" />
-    <Content Include="Contents\ServiceStack.Common.3.9.71\lib\sl4\README.txt" />
-    <Content Include="Contents\ServiceStack.Common.3.9.71\lib\sl5\README.txt" />
-    <Content Include="Contents\ServiceStack.Common.3.9.71\lib\sl5\ServiceStack.Common.dll" />
-    <Content Include="Contents\ServiceStack.Common.3.9.71\lib\sl5\ServiceStack.Common.xml" />
-    <Content Include="Contents\ServiceStack.Common.3.9.71\lib\sl5\ServiceStack.Interfaces.dll" />
-    <Content Include="Contents\ServiceStack.Common.3.9.71\lib\sl5\ServiceStack.Interfaces.xml" />
-    <Content Include="Contents\ServiceStack.OrmLite.PostgreSQL.3.9.71\lib\net35\ServiceStack.OrmLite.dll" />
-    <Content Include="Contents\ServiceStack.OrmLite.PostgreSQL.3.9.71\lib\net35\ServiceStack.OrmLite.PostgreSQL.dll" />
-    <Content Include="Contents\ServiceStack.Text.3.9.71\lib\net35\ServiceStack.Text.dll" />
-    <Content Include="Contents\ServiceStack.Text.3.9.71\lib\net35\ServiceStack.Text.XML" />
-    <Content Include="Contents\ServiceStack.Text.3.9.71\lib\sl4-windowsphone71\ServiceStack.Text.WP.dll" />
-    <Content Include="Contents\ServiceStack.Text.3.9.71\lib\sl4-windowsphone71\ServiceStack.Text.WP.XML" />
-    <Content Include="Contents\ServiceStack.Text.3.9.71\lib\sl4\ServiceStack.Text.dll" />
-    <Content Include="Contents\ServiceStack.Text.3.9.71\lib\sl4\ServiceStack.Text.xml" />
-    <Content Include="Contents\ServiceStack.Text.3.9.71\lib\sl5\ServiceStack.Text.dll" />
-    <Content Include="Contents\ServiceStack.Text.3.9.71\lib\sl5\ServiceStack.Text.XML" />
     <None Include="Contents\__TemplateIcon.ico" />
+    <Content Include="Contents\Sample.twbx" />
     <Content Include="lib\7z\7za.exe" />
     <Content Include="License.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -145,10 +120,6 @@
     <None Include="Contents\MongoDB.Driver.2.3.0\MongoDB.Driver.2.3.0.nupkg" />
     <None Include="Contents\MongoDB.Driver.Core.2.3.0\License.rtf" />
     <None Include="Contents\MongoDB.Driver.Core.2.3.0\MongoDB.Driver.Core.2.3.0.nupkg" />
-    <None Include="Contents\Sample.twb" />
-    <None Include="Contents\ServiceStack.Common.3.9.71\ServiceStack.Common.3.9.71.nupkg" />
-    <None Include="Contents\ServiceStack.OrmLite.PostgreSQL.3.9.71\ServiceStack.OrmLite.PostgreSQL.3.9.71.nupkg" />
-    <None Include="Contents\ServiceStack.Text.3.9.71\ServiceStack.Text.3.9.71.nupkg" />
     <None Include="packages.config" />
     <None Include="source.extension.vsixmanifest">
       <SubType>Designer</SubType>
@@ -176,6 +147,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />

@@ -87,8 +87,11 @@ namespace Logshark.Core
                 int pluginSuccesses = PluginExecutionResult.PluginResponses.Count(pluginResponse => pluginResponse.SuccessfulExecution);
                 if (pluginSuccesses > 0)
                 {
-                    summary.AppendLine();
-                    summary.AppendFormat("Plugin backing data was written to Postgres database '{0}\\{1}'.", Request.Configuration.PostgresConnectionInfo, Request.PostgresDatabaseName);
+                    Request.Configuration.PostgresConnectionInfo.MatchSome(connectionInfo =>
+                    {
+                        summary.AppendLine();
+                        summary.AppendFormat("Plugin backing data was written to Postgres database '{0}\\{1}'.", connectionInfo, Request.PostgresDatabaseName);
+                    });
                 }
 
                 // A plugin may run successfully, yet not output a workbook.  We only want to display the workbook output location if at least one workbook was output.
@@ -96,7 +99,7 @@ namespace Logshark.Core
                 if (workbooksOutput > 0)
                 {
                     summary.AppendLine();
-                    summary.AppendFormat("Plugin workbook output was saved to '{0}'.", PluginExecutor.GetOutputLocation(Request.RunId));
+                    summary.AppendFormat("Plugin workbook output was saved to '{0}'.", PluginExecutor.GetRunOutputDirectory(Request.Configuration.ApplicationOutputDirectory, Request.RunId));
                 }
 
                 // Display information about any published workbooks, if relevant.

@@ -1,17 +1,11 @@
-﻿using Logshark.PluginLib.Extensions;
-using Logshark.PluginLib.Persistence;
+﻿using Logshark.PluginLib.Helpers;
 using Logshark.PluginModel.Model;
 using Logshark.Plugins.Vizql.Helpers;
 using Logshark.Plugins.Vizql.Models;
-using Logshark.Plugins.Vizql.Models.Events.Error;
-using Logshark.Plugins.Vizql.Models.Events.Performance;
-using Logshark.Plugins.Vizql.Models.Events.Query;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Threading.Tasks;
 
 namespace Logshark.Plugins.Vizql
 {
@@ -23,70 +17,49 @@ namespace Logshark.Plugins.Vizql
             {
                 return new List<string>
                 {
-                    "VizqlServerPerformance.twb"
+                    "VizqlServerPerformance.twbx"
                 };
             }
         }
 
-        protected override IPersister<VizqlServerSession> GetPersister(IPluginRequest pluginRequest)
+        public VizqlServerPerformance()
         {
-            return GetConcurrentCustomPersister<VizqlServerSession>(pluginRequest, ServerSessionPerformancePersistenceHelper.PersistSession);
         }
 
-        protected override VizqlServerSession ProcessSession(string sessionId, IMongoCollection<BsonDocument> collection)
+        public VizqlServerPerformance(IPluginRequest request) : base(request)
+        {
+        }
+
+        protected override bool ProcessCollections(IList<IMongoCollection<BsonDocument>> collections)
+        {
+            var workerHostnameMap = ConfigDataHelper.GetWorkerHostnameMap(MongoDatabase);
+            var totalVizqlSessions = Queries.GetUniqueSessionIdCount(collections);
+
+            using (var persister = new ServerSessionPerformancePersister(pluginRequest, ExtractFactory))
+            using (GetPersisterStatusWriter(persister, totalVizqlSessions))
+            {
+                foreach (var collection in collections)
+                {
+                    ProcessCollection(collection, persister, workerHostnameMap);
+                }
+
+                return persister.ItemsPersisted > 0;
+            }
+        }
+
+        protected override VizqlServerSession ProcessSession(string sessionId, IMongoCollection<BsonDocument> collection, IDictionary<int, string> workerHostnameMap)
         {
             try
             {
-                VizqlServerSession session = MongoQueryHelper.GetServerSession(sessionId, collection, logsetHash);
-                session = MongoQueryHelper.AppendAllSessionEvents(session, collection) as VizqlServerSession;
-                SetHostname(session);
-                return session;
+                VizqlServerSession session = Queries.GetServerSession(sessionId, collection);
+                session = Queries.AppendAllSessionEvents(session, collection) as VizqlServerSession;
+                return SetHostname(session, workerHostnameMap);
             }
             catch (Exception ex)
             {
-                string errorMessage = String.Format("Failed to process session {0} in {1}: {2}", sessionId, collection.CollectionNamespace.CollectionName, ex.Message);
-                Log.Error(errorMessage);
-                pluginResponse.AppendError(errorMessage);
+                Log.ErrorFormat("Failed to process session {0} in {1}: {2}", sessionId, collection.CollectionNamespace.CollectionName, ex.Message);
                 return null;
             }
-        }
-
-        protected override void ProcessCollections(IEnumerable<IMongoCollection<BsonDocument>> collections)
-        {
-            var totalVizqlSessions = MongoQueryHelper.GetUniqueSessionIdCount(collections);
-
-            var sessionPersister = GetPersister(this.pluginRequest);
-            using (GetPersisterStatusWriter(sessionPersister, totalVizqlSessions))
-            {
-                var tasks = new List<Task>();
-                foreach (IMongoCollection<BsonDocument> collection in collections)
-                {
-                    var sessionIds = MongoQueryHelper.GetAllUniqueServerSessionIds(collection);
-                    foreach (var sessionId in sessionIds)
-                    {
-                        tasks.Add(Task.Factory.StartNew(() => sessionPersister.Enqueue(ProcessSession(sessionId, collection))));
-                    }
-                }
-
-                Task.WaitAll(tasks.ToArray());
-                sessionPersister.Shutdown();
-            }
-        }
-
-        protected override void CreateTables(IDbConnection database)
-        {
-            // Session
-            database.CreateOrMigrateTable<VizqlServerSession>();
-
-            // Errors
-            database.CreateOrMigrateTable<VizqlErrorEvent>();
-
-            // Performance
-            database.CreateOrMigrateTable<VizqlPerformanceEvent>();
-
-            // Query
-            database.CreateOrMigrateTable<VizqlEndQuery>();
-            database.CreateOrMigrateTable<VizqlQpQueryEnd>();
         }
     }
 }

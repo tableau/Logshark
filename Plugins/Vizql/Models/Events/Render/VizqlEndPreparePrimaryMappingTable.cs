@@ -11,7 +11,6 @@ namespace Logshark.Plugins.Vizql.Models.Events.Render
 
         public VizqlEndPreparePrimaryMappingTable(BsonDocument document)
         {
-            ValidateArguments("end-prepare-primary-mapping-table", document);
             SetEventMetadata(document);
             Elapsed = BsonDocumentHelper.GetDouble("elapsed", BsonDocumentHelper.GetValuesStruct(document));
         }

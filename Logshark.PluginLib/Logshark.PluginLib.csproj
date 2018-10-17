@@ -49,28 +49,32 @@
       <HintPath>..\packages\CsvHelper.2.16.3.0\lib\net45\CsvHelper.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="DnsClient, Version=1.0.7.0, Culture=neutral, PublicKeyToken=4574bb5573c51424">
+      <HintPath>..\packages\DnsClient.1.0.7\lib\net45\DnsClient.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="log4net, Version=1.2.15.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\log4net.2.0.5\lib\net45-full\log4net.dll</HintPath>
     </Reference>
-    <Reference Include="MongoDB.Bson, Version=2.3.0.157, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\MongoDB.Bson.2.3.0\lib\net45\MongoDB.Bson.dll</HintPath>
+    <Reference Include="MongoDB.Bson, Version=2.7.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\MongoDB.Bson.2.7.0\lib\net45\MongoDB.Bson.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="MongoDB.Driver, Version=2.3.0.157, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\MongoDB.Driver.2.3.0\lib\net45\MongoDB.Driver.dll</HintPath>
+    <Reference Include="MongoDB.Driver, Version=2.7.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\MongoDB.Driver.2.7.0\lib\net45\MongoDB.Driver.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="MongoDB.Driver.Core, Version=2.3.0.157, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\MongoDB.Driver.Core.2.3.0\lib\net45\MongoDB.Driver.Core.dll</HintPath>
+    <Reference Include="MongoDB.Driver.Core, Version=2.7.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\MongoDB.Driver.Core.2.7.0\lib\net45\MongoDB.Driver.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Npgsql, Version=3.2.4.1, Culture=neutral, PublicKeyToken=5d8b90d52f46fda7, processorArchitecture=MSIL">
       <HintPath>..\packages\Npgsql.3.2.4.1\lib\net451\Npgsql.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Optional, Version=3.2.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Optional.3.2.0\lib\net451\Optional.dll</HintPath>
+    <Reference Include="Optional, Version=4.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Optional.4.0.0\lib\net45\Optional.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="RestSharp, Version=105.2.3.0, Culture=neutral, processorArchitecture=MSIL">
@@ -93,7 +97,15 @@
     <Reference Include="ServiceStack.Text, Version=3.9.71.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ServiceStack.Text.3.9.71\lib\net35\ServiceStack.Text.dll</HintPath>
     </Reference>
+    <Reference Include="System.Buffers, Version=4.0.1.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51">
+      <HintPath>..\packages\System.Buffers.4.3.0\lib\netstandard1.1\System.Buffers.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Data" />
+    <Reference Include="System.Runtime.InteropServices.RuntimeInformation, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <HintPath>..\packages\System.Runtime.InteropServices.RuntimeInformation.4.0.0\lib\net45\System.Runtime.InteropServices.RuntimeInformation.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Threading.Tasks.Extensions, Version=4.1.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Threading.Tasks.Extensions.4.3.0\lib\portable-net45+win8+wp8+wpa81\System.Threading.Tasks.Extensions.dll</HintPath>
       <Private>True</Private>
@@ -108,7 +120,6 @@
     <Compile Include="Helpers\AssemblyHelper.cs" />
     <Compile Include="Helpers\BsonDocumentHelper.cs" />
     <Compile Include="Helpers\ConfigDataHelper.cs" />
-    <Compile Include="Helpers\GlobalPluginArgumentHelper.cs" />
     <Compile Include="Helpers\HashHelper.cs" />
     <Compile Include="Helpers\LogFileHelper.cs" />
     <Compile Include="Helpers\LogPatternHelper.cs" />
@@ -123,13 +134,9 @@
     <Compile Include="Model\Impl\PluginRequest.cs" />
     <Compile Include="Model\Impl\PluginResponse.cs" />
     <Compile Include="Model\IWorkbookCreationPlugin.cs" />
-    <Compile Include="Persistence\ConcurrentBatchPersisterFactory.cs" />
-    <Compile Include="Persistence\ConcurrentCustomPersisterFactory.cs" />
-    <Compile Include="Persistence\Csv\CsvFileWriter.cs" />
-    <Compile Include="Persistence\InsertionResult.cs" />
-    <Compile Include="Persistence\IPersisterFactory.cs" />
-    <Compile Include="Persistence\BasePersisterFactory.cs" />
-    <Compile Include="Persistence\RestApi\RestApiFilePublisher.cs" />
+    <Compile Include="Persistence\Extract\ExtractPersister.cs" />
+    <Compile Include="Persistence\Database\InsertionResult.cs" />
+    <Compile Include="Persistence\Extract\ExtractPersisterFactory.cs" />
     <Compile Include="PluginLibConstants.cs" />
     <Compile Include="Processors\QueryDefinition.cs" />
     <Compile Include="Processors\SimpleModelProcessor.cs" />
@@ -137,15 +144,14 @@
     <Compile Include="StatusWriter\BaseStatusWriter.cs" />
     <Compile Include="StatusWriter\IStatusWriter.cs" />
     <Compile Include="StatusWriter\TaskStatusWriter.cs" />
-    <Compile Include="Persistence\BaseConcurrentPersister.cs" />
-    <Compile Include="Persistence\BaseInsertionThread.cs" />
-    <Compile Include="Persistence\BatchInsertionThread.cs" />
-    <Compile Include="Persistence\ConcurrentCustomPersister.cs" />
-    <Compile Include="Persistence\ConcurrentBatchPersister.cs" />
-    <Compile Include="Persistence\CustomInsertionThread.cs" />
+    <Compile Include="Persistence\Database\BaseConcurrentDbPersister.cs" />
+    <Compile Include="Persistence\Database\BaseDbInsertionThread.cs" />
+    <Compile Include="Persistence\Database\BatchDbInsertionThread.cs" />
+    <Compile Include="Persistence\Database\ConcurrentCustomDbPersister.cs" />
+    <Compile Include="Persistence\Database\ConcurrentBatchDbPersister.cs" />
+    <Compile Include="Persistence\Database\CustomDbInsertionThread.cs" />
     <Compile Include="StatusWriter\PersisterStatusWriter.cs" />
-    <Compile Include="Persistence\IInsertionThread.cs" />
-    <Compile Include="Persistence\IPersister.cs" />
+    <Compile Include="Persistence\Database\IInsertionThread.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -153,9 +159,17 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Logshark.Common\Logshark.Common.csproj">
+      <Project>{0F89755A-EA3C-49BF-AE10-C5EE09E99916}</Project>
+      <Name>Logshark.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Logshark.PluginModel\Logshark.PluginModel.csproj">
       <Project>{03d2b93a-3c04-4377-966c-051e102cd1bd}</Project>
       <Name>Logshark.PluginModel</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Tableau.ExtractApi\Tableau.ExtractApi.csproj">
+      <Project>{b548f23e-5935-4b50-9b67-380365a85002}</Project>
+      <Name>Tableau.ExtractApi</Name>
     </ProjectReference>
     <ProjectReference Include="..\Tableau.RestApi\Tableau.RestApi.csproj">
       <Project>{0AEFC6D8-33B4-444B-BD5F-66028B62AF73}</Project>

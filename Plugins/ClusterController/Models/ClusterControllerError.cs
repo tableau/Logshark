@@ -1,36 +1,25 @@
-﻿using Logshark.PluginLib.Helpers;
+﻿using Logshark.PluginLib.Extensions;
 using MongoDB.Bson;
-using ServiceStack.DataAnnotations;
-using System;
 
 namespace Logshark.Plugins.ClusterController.Models
 {
-    public class ClusterControllerError : ClusterControllerEvent
+    public sealed class ClusterControllerError : BaseClusterControllerEvent
     {
-        [Index]
         public string Severity { get; set; }
 
         public string Message { get; set; }
 
-        [Index]
         public string Class { get; set; }
 
         public ClusterControllerError()
         {
         }
 
-        public ClusterControllerError(BsonDocument document, Guid logsetHash)
-            : base(document, logsetHash)
+        public ClusterControllerError(BsonDocument document) : base(document)
         {
-            Severity = BsonDocumentHelper.GetString("sev", document);
-            Message = BsonDocumentHelper.GetString("message", document);
-            Class = BsonDocumentHelper.GetString("class", document);
-            EventHash = GetEventHash();
-        }
-
-        protected Guid GetEventHash()
-        {
-            return HashHelper.GenerateHashGuid(Timestamp, Message, Worker, Filename, LineNumber);
+            Severity = document.GetString("sev");
+            Message = document.GetString("message");
+            Class = document.GetString("class");
         }
     }
 }

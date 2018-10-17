@@ -1,0 +1,9 @@
+﻿This project contains an unofficial & unsupported .NET version of the Tableau Extract SDK.  This was transpiled from the Java release using IKVM.
+
+To regenerate the TableauExtractApiDotNot DLL:
+
+* Download IKVM (https://www.ikvm.net/)
+* Download the Hyper Extract API C/C++/Java bundle (https://onlinehelp.tableau.com/v10.5/api/extract_api/en-us/Extract/extract_api_installing.htm#downloading)
+* Extract both to local directories (e.g. C:\IKVM and C:\ExtractApi)
+* Open an Administrator command prompt inside the IKVM "bin" directory (e.g. C:\IKVM\bin) and run the following command:
+  > ikvmc -target:library -out:TableauExtractApiDotNet.dll C:\ExtractAPI\Java\tableaucommon.jar C:\ExtractAPI\Java\tableauhyperextract.jar C:\ExtractAPI\Java\jna.jar

@@ -21,8 +21,6 @@ namespace Logshark.Plugins.ResourceManager.Model
         public long? ProcessMemoryUtil { get; set; }
         public bool TotalMemoryUtilTermination { get; set; }
         public long? TotalMemoryUtil { get; set; }
-        public string FileName { get; set; }
-        public int LineNumber { get; set; }
 
         public ResourceManagerAction()
         {
@@ -61,9 +59,6 @@ namespace Logshark.Plugins.ResourceManager.Model
                 {
                     throw new Exception("Match not found!");
                 }
-
-                LineNumber = BsonDocumentHelper.GetInt("line", actionEvent);
-                FileName = BsonDocumentHelper.GetString("file", actionEvent);
             }
             catch (Exception ex)
             {

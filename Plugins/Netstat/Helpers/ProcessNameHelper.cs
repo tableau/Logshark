@@ -39,6 +39,11 @@ namespace Logshark.Plugins.Netstat.Helpers
 
         public static bool IsKnownTableauServerProcess(string processName)
         {
+            if (String.IsNullOrWhiteSpace(processName))
+            {
+                return false;
+            }
+
             int indexOfLastPeriod = processName.LastIndexOf(".", StringComparison.InvariantCulture);
             if (indexOfLastPeriod > -1)
             {

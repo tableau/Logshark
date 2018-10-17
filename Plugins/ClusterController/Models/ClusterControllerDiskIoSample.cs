@@ -1,16 +1,14 @@
-﻿using Logshark.Plugins.ClusterController.Helpers;
-using Logshark.PluginLib.Helpers;
+﻿using Logshark.PluginLib.Extensions;
+using Logshark.Plugins.ClusterController.Helpers;
 using MongoDB.Bson;
-using ServiceStack.DataAnnotations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Logshark.Plugins.ClusterController.Models
 {
-    public class ClusterControllerDiskIoSample : ClusterControllerEvent
+    public sealed class ClusterControllerDiskIoSample : BaseClusterControllerEvent
     {
-        [Index]
         public string Device { get; set; }
 
         public double? ReadsPerSec { get; set; }
@@ -27,10 +25,9 @@ namespace Logshark.Plugins.ClusterController.Models
         {
         }
 
-        public ClusterControllerDiskIoSample(BsonDocument document, Guid logsetHash)
-            : base(document, logsetHash)
+        public ClusterControllerDiskIoSample(BsonDocument document) : base(document)
         {
-            string message = BsonDocumentHelper.GetString("message", document);
+            string message = document.GetString("message");
             IDictionary<string, string> fieldsInMessage = GetFieldsFromMessage(message);
 
             Device = GetFieldAsString(fieldsInMessage, "device");
@@ -39,10 +36,9 @@ namespace Logshark.Plugins.ClusterController.Models
             WritesPerSec = GetFieldAsDouble(fieldsInMessage, "writes");
             WriteBytesPerSec = GetFieldAsDouble(fieldsInMessage, "writeBytes");
             QueueLength = GetFieldAsDouble(fieldsInMessage, "queue");
-            EventHash = GetEventHash();
         }
 
-        protected IDictionary<string, string> GetFieldsFromMessage(string message)
+        private IDictionary<string, string> GetFieldsFromMessage(string message)
         {
             IDictionary<string, string> fieldsInMessage = new Dictionary<string, string>();
 
@@ -69,9 +65,9 @@ namespace Logshark.Plugins.ClusterController.Models
             return fieldsInMessage;
         }
 
-        protected string GetFieldAsString(IDictionary<string, string> fieldDictionary, string fieldName)
+        private string GetFieldAsString(IDictionary<string, string> fieldDictionary, string fieldName)
         {
-            if (fieldDictionary.ContainsKey(fieldName))
+            if (!fieldDictionary.ContainsKey(fieldName))
             {
                 return fieldDictionary[fieldName];
             }
@@ -79,7 +75,7 @@ namespace Logshark.Plugins.ClusterController.Models
             return null;
         }
 
-        protected double? GetFieldAsDouble(IDictionary<string, string> fieldDictionary, string fieldName)
+        private double? GetFieldAsDouble(IDictionary<string, string> fieldDictionary, string fieldName)
         {
             if (fieldDictionary.ContainsKey(fieldName))
             {
@@ -91,11 +87,6 @@ namespace Logshark.Plugins.ClusterController.Models
             }
 
             return null;
-        }
-
-        protected Guid GetEventHash()
-        {
-            return HashHelper.GenerateHashGuid(Timestamp, Worker, Filename, LineNumber, Device);
         }
     }
 }

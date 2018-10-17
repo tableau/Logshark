@@ -51,9 +51,10 @@
   <ItemGroup>
     <Compile Include="$safeprojectname$.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Model\Widget.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="$safeprojectname$.twb" />
+    <EmbeddedResource Include="$safeprojectname$.twbx" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\ArtifactProcessors\TableauServerLogProcessor\TableauServerLogProcessor.csproj">

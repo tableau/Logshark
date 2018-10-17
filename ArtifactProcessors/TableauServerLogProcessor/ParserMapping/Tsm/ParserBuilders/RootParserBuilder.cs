@@ -10,16 +10,12 @@ namespace Logshark.ArtifactProcessors.TableauServerLogProcessor.ParserMapping.Ts
     /// </summary>
     internal sealed class RootParserBuilder : BaseParserBuilder, IParserBuilder
     {
-        private static readonly IDictionary<string, Type> fileMap =
+        private static readonly IDictionary<string, Type> FileMapStatic =
             new Dictionary<string, Type>
             {
-                { @"^manifest.json", typeof(ServiceManifestParser) },
-                { @"^netstat-info.txt", typeof(NetstatLinuxParser) }
+                { @"^manifest.json", typeof(ServiceManifestParser) }
             };
 
-        protected override IDictionary<string, Type> FileMap
-        {
-            get { return fileMap; }
-        }
+        protected override IDictionary<string, Type> FileMap => FileMapStatic;
     }
 }

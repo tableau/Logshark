@@ -1,6 +1,4 @@
-﻿using Logshark.PluginLib.Helpers;
-using ServiceStack.DataAnnotations;
-using System;
+﻿using System;
 
 namespace Logshark.Plugins.Config.Model
 {
@@ -9,40 +7,23 @@ namespace Logshark.Plugins.Config.Model
     /// </summary>
     public class ConfigProcessInfo
     {
-        [PrimaryKey]
-        [AutoIncrement]
-        public int Id { get; set; }
-
-        public Guid LogsetHash { get; set; }
-
-        [Index(Unique = true)]
-        public Guid ConfigInfoHash { get; set; }
-
-        [Index]
-        public DateTime? FileLastModified { get; set; }
-
-        [Index]
         public string Hostname { get; set; }
-
-        [Index]
         public string Process { get; set; }
-
         public string Worker { get; set; }
         public int Port { get; set; }
+        public DateTime? FileLastModified { get; set; }
 
         public ConfigProcessInfo()
         {
         }
 
-        public ConfigProcessInfo(string logsetHash, DateTime? fileLastModifiedTimestamp, string hostname, string process, string worker, int port)
+        public ConfigProcessInfo(string hostname, string process, string worker, int port, DateTime? fileLastModifiedTimestamp)
         {
-            LogsetHash = Guid.Parse(logsetHash);
-            FileLastModified = fileLastModifiedTimestamp;
-            ConfigInfoHash = HashHelper.GenerateHashGuid(logsetHash, process, worker, port);
             Hostname = hostname;
             Process = process;
             Worker = worker;
             Port = port;
+            FileLastModified = fileLastModifiedTimestamp;
         }
 
         public override string ToString()

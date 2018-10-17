@@ -19,7 +19,6 @@ namespace Logshark.Plugins.Vizql.Models.Events.Connection
 
         public VizqlDsConnect(BsonDocument document)
         {
-            ValidateArguments("ds-connect", document);
             SetEventMetadata(document);
             BsonDocument values = BsonDocumentHelper.GetValuesStruct(document);
             Name = BsonDocumentHelper.GetString("name", values);

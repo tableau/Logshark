@@ -1,17 +1,11 @@
-﻿using System;
-using Logshark.PluginLib.Helpers;
+﻿using Logshark.PluginLib.Extensions;
 using MongoDB.Bson;
-using ServiceStack.DataAnnotations;
+using System;
 
 namespace Logshark.Plugins.Vizql.Models.Events.Query
 {
     public class VizqlQpBatchSummaryJob
     {
-        [AutoIncrement]
-        [PrimaryKey]
-        public int Id { get; set; }
-
-        [Index]
         public string QpBatchSummaryEventGuid { get; set; }
 
         public string VizqlSessionId { get; set; }
@@ -36,17 +30,17 @@ namespace Logshark.Plugins.Vizql.Models.Events.Query
             QpBatchSummaryEventGuid = qpBatchSummaryEventGuid;
             VizqlSessionId = vizqlSessionId;
 
-            QueryId = BsonDocumentHelper.GetInt("query-id", document);
-            ProtocolId = BsonDocumentHelper.GetNullableInt("protocol-id", document);
-            Elapsed = BsonDocumentHelper.GetNullableDouble("elapsed", document);
-            OwnerComponent = BsonDocumentHelper.GetString("owner-component", document);
-            OwnerDashboard = BsonDocumentHelper.GetString("owner-dashboard", document);
-            OwnerWorksheet = BsonDocumentHelper.GetString("owner-worksheet", document);
-            QueryAbstract = BsonDocumentHelper.GetString("query-abstract", document);
-            QueryCompiled = BsonDocumentHelper.GetString("query-compiled", document);
-            CacheHit = BsonDocumentHelper.GetString("cache-hit", document);
-            FusionParent = BsonDocumentHelper.GetNullableInt("fusion-parent", document);
-            Exception = BsonDocumentHelper.GetString("exception", document);
+            QueryId = document.GetInt("query-id");
+            ProtocolId = document.GetNullableInt("protocol-id");
+            Elapsed = document.GetNullableDouble("elapsed");
+            OwnerComponent = document.GetString("owner-component");
+            OwnerDashboard = document.GetString("owner-dashboard");
+            OwnerWorksheet = document.GetString("owner-worksheet");
+            QueryAbstract = document.GetString("query-abstract");
+            QueryCompiled = document.GetString("query-compiled");
+            CacheHit = document.GetString("cache-hit");
+            FusionParent = document.GetNullableInt("fusion-parent");
+            Exception = document.GetString("exception");
         }
 
         /// <summary>

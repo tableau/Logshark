@@ -71,6 +71,10 @@
       <HintPath>..\packages\log4net.2.0.5\lib\net45-full\log4net.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Optional, Version=4.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Optional.4.0.0\lib\net45\Optional.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
@@ -81,6 +85,7 @@
     <Compile Include="Config\LogsharkArtifactProcessorConfiguration.cs" />
     <Compile Include="Config\LogsharkConfigReader.cs" />
     <Compile Include="Config\LogsharkConfiguration.cs" />
+    <Compile Include="Config\LogsharkDataRetentionOptions.cs" />
     <Compile Include="Config\LogsharkLocalMongoOptions.cs" />
     <Compile Include="Config\LogsharkTuningOptions.cs" />
     <Compile Include="Exceptions\LogsharkRequestInitializationException.cs" />

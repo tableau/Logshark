@@ -15,46 +15,31 @@ namespace Logshark.ArtifactProcessors.TableauServerLogProcessor
 {
     /// <summary>
     /// Tableau Server TSM Artifact Processor
-    /// Processes the Tableau Server 10.5+ Linux-style log format
+    /// Processes the Tableau Server 10.5+ TSM-generated log format
     /// </summary>
     public sealed class ServerTsmLogProcessor : IArtifactProcessor
     {
-        private static readonly ISet<string> requiredCollections = new HashSet<string>
+        private static readonly ISet<string> RequiredCollectionsStatic = new HashSet<string>
         {
             ParserConstants.ConfigCollectionName
         };
 
-        private static readonly ISet<Regex> supportedFilePatterns = new HashSet<Regex>
+        private static readonly ISet<Regex> SupportedFilePatternsStatic = new HashSet<Regex>
         {
             new Regex(@"^.*\.(log|txt|yml|csv|properties|conf|zip).*$", RegexOptions.Compiled)
         };
 
-        private static readonly ISet<Type> supportedPluginInterfaces = new HashSet<Type>
+        private static readonly ISet<Type> SupportedPluginInterfacesStatic = new HashSet<Type>
         {
             typeof(IServerTsmPlugin)
         };
 
         #region IArtifactProcessor Implementation
 
-        public string ArtifactType
-        {
-            get { return "Server"; }
-        }
-
-        public ISet<string> RequiredCollections
-        {
-            get { return requiredCollections; }
-        }
-
-        public ISet<Regex> SupportedFilePatterns
-        {
-            get { return supportedFilePatterns; }
-        }
-
-        public ISet<Type> SupportedPluginInterfaces
-        {
-            get { return supportedPluginInterfaces; }
-        }
+        public string ArtifactType => "Server TSM";
+        public ISet<string> RequiredCollections => RequiredCollectionsStatic;
+        public ISet<Regex> SupportedFilePatterns => SupportedFilePatternsStatic;
+        public ISet<Type> SupportedPluginInterfaces => SupportedPluginInterfacesStatic;
 
         public bool CanProcess(string rootLogLocation)
         {
@@ -77,14 +62,17 @@ namespace Logshark.ArtifactProcessors.TableauServerLogProcessor
         {
             return new Dictionary<string, object>
             {
-                // Store the hostname in the "worker" field to maintain compatability with Server "classic" logsets.
+                // Store the hostname in the "worker" field to maintain compatibility with Server "classic" logsets.
                 { "worker", GetHostname(fileContext) }
             };
         }
 
         public IParserFactory GetParserFactory(string rootLogLocation)
         {
-            return new ServerTsmParserFactory(rootLogLocation);
+            return IsNewFormat(rootLogLocation)
+                ? (IParserFactory) new ServerTsmParserFactory(rootLogLocation)
+                : new ServerTsmLegacyParserFactory(rootLogLocation);
+            
         }
 
         #endregion IArtifactProcessor Implementation
@@ -94,7 +82,7 @@ namespace Logshark.ArtifactProcessors.TableauServerLogProcessor
         /// </summary>
         /// <param name="directory">An absolute path to a directory.</param>
         /// <returns>True if directory contains a tabadminagent log subfolder.</returns>
-        private bool HasTabadminAgentLogs(string directory)
+        private static bool HasTabadminAgentLogs(string directory)
         {
             try
             {
@@ -111,9 +99,16 @@ namespace Logshark.ArtifactProcessors.TableauServerLogProcessor
         /// This is leveraging the fact that in TSM logsets, the top-level folder for each node is named after the node's hostname.
         /// </summary>
         /// <returns>Hostname of worker node.</returns>
-        private string GetHostname(LogFileContext fileContext)
+        private static string GetHostname(LogFileContext fileContext)
         {
             return ParserUtil.GetParentLogDirs(fileContext.FilePath, fileContext.RootLogDirectory).FirstOrDefault();
+        }
+
+        private static bool IsNewFormat(string baseDir)
+        {
+            return Directory
+                .GetDirectories(baseDir)
+                .Any(machineDir => machineDir.ToLower().EndsWith("node1"));
         }
     }
 }
