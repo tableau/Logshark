@@ -22,8 +22,7 @@ In this section:
 **Ready to get set up?**
 
 - [Get your Computer Set Up for Logshark](docs/logshark_prefunc)
-- [Install PostgreSQL](docs/logshark_postgres)
-- [Install Logshark](docs/logshark_install)
+-- [Install Logshark](docs/logshark_install)
 
 **Ready to roll?**
 
