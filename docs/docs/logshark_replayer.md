@@ -31,7 +31,7 @@ For more information on running Replayer, see "Using Replayer".  For information
 ![Replayer Screeenshot](/docs/assets/replay_overview.jpg)
 
 ----
-### Replayer key features ###
+#### Replayer key features ####
 
 **Using Replayer, you can:**
 - Playback specific Tableau Server sessions, and filter the session based upon start time or RequestID.
@@ -50,11 +50,11 @@ For more information on running Replayer, see "Using Replayer".  For information
 **Replayer supports viz rendering scenarios only:**
 - **NOTE:** It does not replay other tasks like publishing, creating  a viz, background tasks, etc.
 - Replay viz viewing and authoring scenarios along with interactions.
-- Replay specific slices of the logs based on:
--- Session ID
--- Time segment
--- User
--- Request ID
+- Replay specific slices of the logs based on: 
+  - Session ID
+  - Time segment
+  - User
+  - Request ID
 - Altering traffic by multiplying load for performance and capacity planning.
 
 ----
@@ -63,6 +63,12 @@ When you run Replayer, it writes information about each session it executes. The
 - For user acceptance testing to understand page load and interaction issues in A-B comparison, use the Replayer-Results viz.
 - Use the Logshark viz generated from the Tableau Server log files, after a Replayer run to analyze results.
 
-More details on looking at Replayer results can be found hereViewing results from Replayer test run .
+More details on looking at Replayer results can be found here Viewing results from Replayer test run.
+
+----
+### Using Replayer ###
+
+
+
 
 
