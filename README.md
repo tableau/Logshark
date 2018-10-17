@@ -1,60 +1,53 @@
-## Logshark-CLI ##
+# Logshark
+[![Community Supported](https://img.shields.io/badge/Support%20Level-Community%20Supported-457387.svg)](https://www.tableau.com/support-levels-it-and-developer-tools)
 
-### Usage Instructions ###
-See the [Logshark user guide](https://tableau.github.io/Logshark/) for instructions on how to install & use Logshark CLI.
+Logshark is a command line utility that you can run against Tableau Server logs to generate a set of workbooks that provide insights into system performance, content usage, and error conditions.
 
-### Developer Setup ###
+Some common use cases for Logshark include: 
+  * Troubleshooting issue(s) that are recorded in the logs. 
+  * Analyzing system metrics from log data. 
+  * Self-solving problems in Tableau without the fear of exposing sensitive corporate information. 
+  * Regularly validating Tableau Server application behavior against historical data when taking a new build or making a system change.
+  
+![Sample Apache Workbook Screenshot](/Logshark.CLI/Resources/SampleScreenshot.png)
 
-The current development requirements are:
+# How do I set up Logshark?
 
-1. Windows operating system.
-2. Visual Studio 2015 or later.
-3. WiX Toolset Visual Studio Extension v3.10.1 or later - Required if you wish to to modify the installer projects.
-  * Available at http://www.wixtoolset.org
-4. ConfigurationSectionDesigner Visual Studio Extension - Required if you wish to modify & regenerate the "LogsharkConfigSection" custom config section class.
-  * Go to `Tools > Extensions and Updates`.
-  * Select the `Online` section.
-  * Search for "ConfigurationSectionDesigner" (*no spaces*) and install it.
-5. NUnit Test Adapter 3 Extension - Required if you wish to run the unit tests.
+[![Download Logshark](https://img.shields.io/badge/Download%20Logshark-Version%202.1-blue.svg)](https://github.com/tableau/Logshark/releases/download/v2.1/Setup_Logshark_v2.1.exe)
 
-It is recommended that you install the Logshark Project Templates extension by running the "Logshark Artifact Processor Project Template.vsix" and "Logshark Workbook Creation Plugin Project Template.vsix" files found in the root directory.  These add "Logshark Artifact Processor" and "Logshark Workbook Creation Plugin" project types to Visual Studio which you can use to easily get up and running developing a new artifact processor or plugin.
+[![Setup Logshark](https://img.shields.io/badge/Setup%20Logshark-Installation%20and%20User%20Guide-lightgrey.svg)](https://tableau.github.io/Logshark/)
 
 Logshark is deployed via a custom installer, which you can download from the [releases page](https://github.com/tableau/Logshark/releases/latest).  The installer manages dependencies and also bundles MongoDB for ease of setup for new users. To get up and running, download the installer and then follow the instructions in the [installation guide](https://tableau.github.io/Logshark/) to configure it.
 
-**To run the unit tests**, you must:
-1. Be running Visual Studio as an Administrator.
-2. Set the Test Settings File: `Test > Test Settings > Select Test Settings File > Test.runsettings`
+Logshark requires a 64-bit version of Windows in order to run, and must be run as an account with administrator privileges.
 
-If you encounter a build error related to MongoDB when you try to run the tests, you may need open Task Manager and manually kill the `mongod` process.
+NOTE: If you are upgrading from a previous version of Logshark, the installer will handle most of the upgrade work for you, but during the upgrade your Logshark.config file will be overwritten.  If there are settings from this config you wish to preserve, please make a backup.
 
-**To build the installer**, you will need to switch the build configuration to "Installer".
+# How do I analyze results from Logshark?
 
-**To regenerate LogsharkConfigSection.cs**, you will need to explicitly build the `Logshark.ConfigSectionGenerator` project.  It is omitted from the build configurations in order to avoid the time cost of re-running code generation on every build.
+The best way to analyze results is to run Logshark on your own logset and explore the generated workbooks via Tableau! Beyond what is included, you can configure Logshark to output your own custom workbooks. See the [installation guide](https://tableau.github.io/Logshark/) for more details on how to do this.
 
-### Branch Conventions ###
+For the truly adventurous, Logshark features a plugin framework, so you can even build your own analysis plugin to leverage Logshark’s log parsing engine!
 
-Development and master are protected branches.  No commits should take place directly against them; any changes should happen through merge requests.
+# What do I need to build Logshark from source?
 
-* **master** : Head branch, reserved for releases.
-   + **development** : Main development branch.
-      - **feature/branchname** : Reserved for new features or changes to core Logshark code.
-      - **artifactprocessordevelopment/branchname** : Use this for developing new artifact processors.
-      - **plugindevelopment/branchname** : Use this for developing new plugins.
-      - **viz/branchname**: Use this for developing new workbooks, or updating existing workbooks.
+The current development requirements are:
 
-### Plugin Development Conventions ###
+1. Windows operating system. (64-bit)
+2. Visual Studio 2015 or later.
+3. WiX Toolset Visual Studio Extension v3.10.1 or later - Required if you wish to to modify the installer projects.
+  * Available at http://www.wixtoolset.org
+4. Configuration Section Designer Visual Studio Extension - Required if you wish to modify & regenerate the "LogsharkConfigSection" custom config section class.
+  * Available at http://csd.codeplex.com
 
-To be accepted into the development & master branches, plugins must adhere to to the following conventions:
+It is recommended that you install the Logshark Workbook Creation Plugin Project Template extension by running the "Logshark Workbook Creation Plugin Project Template.vsix" file found in the root directory.  This adds a "Logshark Workbook Creation Plugin" project type to Visual Studio which you can use to easily get up and running developing a new plugin.
 
-+ All plugins should be nested under the Plugins subdirectory, e.g. `<Solution Root>\Plugins\YourPluginName\`.
-+ The namespace for each plugin should be `Logshark.Plugins.YourPluginName`.
-+ Plugin must not reference any Nuget packages or References that it does not actually use.
-+ Helper functions or data object models which may benefit the Plugin development community as a whole may be submitted to the Logshark.PluginLib project.
+Note that you do not need to build Logshark from source to use it; a pre-built installer is available on the [releases page](https://github.com/tableau/Logshark/releases/latest).
 
-### Viz Development Conventions ###
+# Is Logshark supported?
 
-These instructions are for people planning to only make viz changes. If you are changing code and a viz, please follow the plugin development process.
+Logshark is Community Supported. This is intended to be a self-service tool and includes a user guide. Any bugs discovered should be filed in the Logshark [Git issue tracker](https://github.com/tableau/Logshark/issues).
 
-+ All workbooks should be located under their respective plugin directory. For example, the viz for ClusterController is under "Plugins\ClusterController".
-+ Create a branch off of the development branch and use the following naming convention: `viz/<Workbook Name>`
-+ When you are done working the viz, check it in and ask a member of the Customer Data Platform team for a review.
+# How can I contribute to Logshark?
+
+Code contributions & improvements by the community are welcomed and encouraged! See the [LICENSE file](https://github.com/tableau/Logshark/blob/master/LICENSE) for current open-source licensing & use information.  Before we can accept pull requests from contributors, we do require a Contributor License Agreement.  See http://tableau.github.io/ for more details.
