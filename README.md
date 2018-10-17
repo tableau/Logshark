@@ -40,7 +40,7 @@ The current development requirements are:
 3. WiX Toolset Visual Studio Extension v3.10.1 or later - Required if you wish to to modify the installer projects.
    * Available at http://www.wixtoolset.org
 4. Configuration Section Designer Visual Studio Extension - Required if you wish to modify & regenerate the "LogsharkConfigSection" custom config section class.
-   * Available at http://csd.codeplex.com
+    * Available at http://csd.codeplex.com
 5. Download [hyperd.exe](https://github.com/tableau/Logshark/releases/download/v3.0/hyperd.exe) and [hyperd_sse2.exe](https://github.com/tableau/Logshark/releases/download/v3.0/hyperd_sse2.exe) and place them in .\Tableau.ExtractApi\lib\SDK\hyper\
 
 It is recommended that you install the Logshark Workbook Creation Plugin Project Template extension by running the "Logshark Workbook Creation Plugin Project Template.vsix" file found in the root directory.  This adds a "Logshark Workbook Creation Plugin" project type to Visual Studio which you can use to easily get up and running developing a new plugin.
