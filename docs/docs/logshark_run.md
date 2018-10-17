@@ -3,7 +3,7 @@ title: Run Logshark and View the Results
 ---
 
 
-After you set up PostgreSQL database (and MongoDB, if necessary) and have installed and configured Logshark, the rest is easy. You just point Logshark to the log files and view the results in Tableau workbooks.
+After you have installed and configured Logshark (and set up MongoDB, if necessary), the rest is easy. You just point Logshark to the log files and view the results in Tableau workbooks.
 
 In this section:
 
