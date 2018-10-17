@@ -21,7 +21,7 @@ Uninstall Logshark
 
 -   You can also go to the Control Panel, open the Uninstall or change a program dialog box, and then right-click Logshark and choose **Uninstall**.
 
-Remove PostgreSQL files (leftover from previous Logshark versions)
+Remove PostgreSQL files (if leftover from previous Logshark versions)
 ------------------------
 
 -   If you want to remove PostgreSQL from your computer, go to the Control Panel, open the Uninstall or change a program dialog box, and then right-click your PostgreSQL program and choose **Uninstall**.
