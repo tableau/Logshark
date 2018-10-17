@@ -1,97 +1,65 @@
 ﻿using Logshark.ArtifactProcessors.TableauServerLogProcessor.Parsers;
 using Logshark.ArtifactProcessors.TableauServerLogProcessor.PluginInterfaces;
-using Logshark.PluginLib.Extensions;
-using Logshark.PluginLib.Helpers;
 using Logshark.PluginLib.Model.Impl;
-using Logshark.PluginLib.Persistence;
 using Logshark.PluginModel.Model;
 using Logshark.Plugins.Netstat.Helpers;
 using Logshark.Plugins.Netstat.Model;
-using MongoDB.Bson;
 using MongoDB.Driver;
-using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Logshark.Plugins.Netstat
 {
-    public class Netstat : BaseWorkbookCreationPlugin, IServerClassicPlugin, IServerTsmPlugin
+    public sealed class Netstat : BaseWorkbookCreationPlugin, IServerClassicPlugin, IServerTsmPlugin
     {
-        private static readonly ISet<string> collectionDependencies = new HashSet<string> { ParserConstants.NetstatCollectionName };
-        private static readonly ICollection<string> workbookNames = new List<string> { "Netstat.twb" };
+        private static readonly ISet<string> CollectionDependenciesStatic = new HashSet<string> { ParserConstants.NetstatCollectionName };
+        private static readonly ICollection<string> WorkbookNamesStatic = new List<string> { "Netstat.twbx" };
 
-        private Guid logsetHash;
+        public override ISet<string> CollectionDependencies => CollectionDependenciesStatic;
+        public override ICollection<string> WorkbookNames => WorkbookNamesStatic;
 
-        public override ISet<string> CollectionDependencies
+        public Netstat() { }
+        public Netstat(IPluginRequest request) : base(request) { }
+
+        public override IPluginResponse Execute()
         {
-            get { return collectionDependencies; }
-        }
+            IPluginResponse pluginResponse = CreatePluginResponse();
 
-        public override ICollection<string> WorkbookNames
-        {
-            get { return workbookNames; }
-        }
+            var collection = MongoDatabase.GetCollection<NetstatDocument>(ParserConstants.NetstatCollectionName);
 
-        public override IPluginResponse Execute(IPluginRequest pluginRequest)
-        {
-            IPluginResponse response = CreatePluginResponse();
-            logsetHash = pluginRequest.LogsetHash;
-
-            InitializeDatabaseTables();
-            IPersister<NetstatActiveConnection> activeConnectionsPersister = GetConcurrentBatchPersister<NetstatActiveConnection>(pluginRequest);
-
-            // Process netstat entries for all available workers.
-            var netstatCollection = MongoDatabase.GetCollection<BsonDocument>(ParserConstants.NetstatCollectionName);
-            foreach (string workerId in MongoQueryHelper.GetDistinctWorkers(netstatCollection))
+            using (var persister = ExtractFactory.CreateExtract<NetstatActiveConnection>("NetstatEntries.hyper"))
+            using (GetPersisterStatusWriter(persister))
             {
-                Log.InfoFormat("Retrieving netstat information for worker '{0}'..", workerId);
-                IEnumerable<NetstatActiveConnection> activeConnectionsForWorker = GetActiveConnectionEntriesForWorker(workerId, netstatCollection);
-                activeConnectionsPersister.Enqueue(activeConnectionsForWorker);
-            }
+                foreach (var worker in NetstatQueries.GetDistinctWorkers(collection))
+                {
+                    var activeConnectionsForWorker = GetActiveConnectionsForWorker(worker, collection);
+                    persister.Enqueue(activeConnectionsForWorker);
+                }
 
-            // Shutdown persister and wait for data to flush.
-            activeConnectionsPersister.Shutdown();
-            Log.Info("Finished processing netstat data!");
+                if (persister.ItemsPersisted <= 0)
+                {
+                    Log.Warn("Failed to persist any Netstat data!");
+                    pluginResponse.GeneratedNoData = true;
+                }
 
-            // Check if we persisted any data.
-            if (!PersistedData())
-            {
-                Log.Info("Failed to persist any netstat data!");
-                response.GeneratedNoData = true;
-            }
-
-            return response;
-        }
-
-        private void InitializeDatabaseTables()
-        {
-            using (var dbConnection = GetOutputDatabaseConnection())
-            {
-                dbConnection.CreateOrMigrateTable<NetstatActiveConnection>();
+                return pluginResponse;
             }
         }
 
-        private IEnumerable<NetstatActiveConnection> GetActiveConnectionEntriesForWorker(string worker, IMongoCollection<BsonDocument> netstatCollection)
+        private IEnumerable<NetstatActiveConnection> GetActiveConnectionsForWorker(string worker, IMongoCollection<NetstatDocument> collection)
         {
-            var activeConnectionEntries = new List<NetstatActiveConnection>();
+            Log.InfoFormat($"Retrieving netstat information for worker '{worker}'..");
 
-            var netstatQuery = MongoQueryHelper.GetNetstatForWorker(netstatCollection, worker);
-            BsonDocument netstatDocument = netstatCollection.Find(netstatQuery).FirstOrDefault();
+            var netstatQuery = NetstatQueries.GetNetstatForWorker(worker);
 
-            if (netstatDocument == null)
+            var netstatForWorker = collection.Find(netstatQuery).FirstOrDefault();
+            if (netstatForWorker?.ActiveConnections == null)
             {
-                Log.InfoFormat("No netstat data available for worker '{0}'.", worker);
-                return activeConnectionEntries;
+                Log.WarnFormat($"No netstat data found for worker '{worker}'");
+                return Enumerable.Empty<NetstatActiveConnection>();
             }
 
-            DateTime? fileLastModified = BsonDocumentHelper.GetNullableDateTime("last_modified_at", netstatDocument);
-
-            BsonArray activeConnectionsEntries = netstatDocument["active_connections"].AsBsonArray;
-            foreach (BsonValue activeConnectionsEntry in activeConnectionsEntries)
-            {
-                activeConnectionEntries.Add(new NetstatActiveConnection(logsetHash, worker, activeConnectionsEntry.AsBsonDocument, fileLastModified));
-            }
-
-            return activeConnectionEntries;
+            return netstatForWorker.ActiveConnections.Select(entry => new NetstatActiveConnection(entry, netstatForWorker.Worker, netstatForWorker.FileLastModified));
         }
     }
 }

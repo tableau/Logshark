@@ -11,7 +11,6 @@ namespace Logshark.Plugins.Vizql.Models.Events.Compute
 
         public VizqlComputeXSetInterp(BsonDocument document)
         {
-            ValidateArguments("compute-x-set-interp", document);
             SetEventMetadata(document);
             Elapsed = BsonDocumentHelper.GetDouble("elapsed", BsonDocumentHelper.GetValuesStruct(document));
         }

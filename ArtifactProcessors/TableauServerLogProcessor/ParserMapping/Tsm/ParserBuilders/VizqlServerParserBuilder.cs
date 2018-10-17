@@ -13,10 +13,10 @@ namespace Logshark.ArtifactProcessors.TableauServerLogProcessor.ParserMapping.Ts
         private static readonly IDictionary<string, Type> fileMap =
             new Dictionary<string, Type>
             {
-                { @"^control-vizqlserver-.*log.*", typeof(ServiceControlParser) },
+                { @"^control.vizqlserver.*log.*", typeof(ServiceControlParser) },
                 { @"^nativeapi_vizqlserver_.*txt.*", typeof(VizqlServerCppParser) },
                 { @"^tabprotosrv_vizqlserver_.*txt.*", typeof(ProtocolServerParser) },
-                { @"^vizqlserver-.*log.*", typeof(VizqlServerJavaParser) }
+                { @"^vizqlserver.*log.*", typeof(VizqlServerJavaParser) }
             };
 
         protected override IDictionary<string, Type> FileMap

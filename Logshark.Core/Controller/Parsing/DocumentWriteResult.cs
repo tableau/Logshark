@@ -2,13 +2,13 @@
 {
     internal class DocumentWriteResult
     {
-        public bool IsSuccessful { get; protected set; }
+        public DocumentWriteResultType Result { get; }
 
-        public string ErrorMessage { get; protected set; }
+        public string ErrorMessage { get; }
 
-        public DocumentWriteResult(bool isSuccessful, string errorMessage = "")
+        public DocumentWriteResult(DocumentWriteResultType isSuccessful, string errorMessage = "")
         {
-            IsSuccessful = isSuccessful;
+            Result = isSuccessful;
             ErrorMessage = errorMessage;
         }
     }

@@ -68,10 +68,57 @@
                 <!-- Core Executable & Library Files -->
                 <File Id="LogsharkExe" Name="Logshark.exe" Vital="yes" KeyPath="yes" Source="$(var.Bin)\Logshark.exe" Checksum="yes" />
                 <File Id="AppConfig" Name="Logshark.exe.config" Vital="yes" Source="$(var.Bin)\Logshark.exe.config" />
+                <File Id="BoostChronoDll" Name="boost_chrono-vc140-mt-1_60.dll" Vital="yes" Source="$(var.Bin)\boost_chrono-vc140-mt-1_60.dll" />
+                <File Id="BoostDateTimeDll" Name="boost_date_time-vc140-mt-1_60.dll" Vital="yes" Source="$(var.Bin)\boost_date_time-vc140-mt-1_60.dll" />
+                <File Id="BoostFilesystemDll" Name="boost_filesystem-vc140-mt-1_60.dll" Vital="yes" Source="$(var.Bin)\boost_filesystem-vc140-mt-1_60.dll" />
+                <File Id="BoostSystemDll" Name="boost_system-vc140-mt-1_60.dll" Vital="yes" Source="$(var.Bin)\boost_system-vc140-mt-1_60.dll" />
+                <File Id="BoostThreadDll" Name="boost_thread-vc140-mt-1_60.dll" Vital="yes" Source="$(var.Bin)\boost_thread-vc140-mt-1_60.dll" />
                 <File Id="BouncyCastleCryptoDll" Name="BouncyCastle.Crypto.dll" Vital="yes" Source="$(var.Bin)\BouncyCastle.Crypto.dll" />
                 <File Id="CommandLineDll" Name="CommandLine.dll" Vital="yes" Source="$(var.Bin)\CommandLine.dll" />
+                <File Id="ConcrtDll" Name="concrt140.dll" Vital="yes" Source="$(var.Bin)\concrt140.dll" />
                 <File Id="CsvHelperDll" Name="CsvHelper.dll" Vital="yes" Source="$(var.Bin)\CsvHelper.dll" />
+                <File Id="DnsClientDll" Name="DnsClient.dll" Vital="yes" Source="$(var.Bin)\DnsClient.dll" />
+                <File Id="HyperdExe" Name="hyperd.exe" Vital="yes" Source="$(var.Bin)\hyperd.exe" />
+                <File Id="HyperdSse2Exe" Name="hyperd_sse2.exe" Vital="yes" Source="$(var.Bin)\hyperd_sse2.exe" />
+                <File Id="HyperdStarterExe" Name="hyperdstarter.exe" Vital="yes" Source="$(var.Bin)\hyperdstarter.exe" />
                 <File Id="ICSharpZipLibDll" Name="ICSharpCode.SharpZipLib.dll" Vital="yes" Source="$(var.Bin)\ICSharpCode.SharpZipLib.dll" />
+                <File Id="Icudt44Dll" Name="icudt44.dll" Vital="yes" Source="$(var.Bin)\icudt44.dll" />
+                <File Id="Icuin44Dll" Name="icuin44.dll" Vital="yes" Source="$(var.Bin)\icuin44.dll" />
+                <File Id="Icuio44Dll" Name="icuio44.dll" Vital="yes" Source="$(var.Bin)\icuio44.dll" />
+                <File Id="Icuuc44Dll" Name="icuuc44.dll" Vital="yes" Source="$(var.Bin)\icuuc44.dll" />
+                <File Id="IkvmAwtWinFormsDll" Name="IKVM.AWT.WinForms.dll" Vital="yes" Source="$(var.Bin)\IKVM.AWT.WinForms.dll" />
+                <File Id="IkvmNativeWin32X64Dll" Name="ikvm-native-win32-x64.dll" Vital="yes" Source="$(var.Bin)\ikvm-native-win32-x64.dll" />
+                <File Id="IkvmNativeWin32X86Dll" Name="ikvm-native-win32-x86.dll" Vital="yes" Source="$(var.Bin)\ikvm-native-win32-x86.dll" />
+                <File Id="IkvmOpenJdkBeansDll" Name="IKVM.OpenJDK.Beans.dll" Vital="yes" Source="$(var.Bin)\IKVM.OpenJDK.Beans.dll" />
+                <File Id="IkvmOpenJdkCharsetsDll" Name="IKVM.OpenJDK.Charsets.dll" Vital="yes" Source="$(var.Bin)\IKVM.OpenJDK.Charsets.dll" />
+                <File Id="IkvmOpenJdkCldrdataDll" Name="IKVM.OpenJDK.Cldrdata.dll" Vital="yes" Source="$(var.Bin)\IKVM.OpenJDK.Cldrdata.dll" />
+                <File Id="IkvmOpenJdkCorbaDll" Name="IKVM.OpenJDK.Corba.dll" Vital="yes" Source="$(var.Bin)\IKVM.OpenJDK.Corba.dll" />
+                <File Id="IkvmOpenJdkCoreDll" Name="IKVM.OpenJDK.Core.dll" Vital="yes" Source="$(var.Bin)\IKVM.OpenJDK.Core.dll" />
+                <File Id="IkvmOpenJdkJdbcDll" Name="IKVM.OpenJDK.Jdbc.dll" Vital="yes" Source="$(var.Bin)\IKVM.OpenJDK.Jdbc.dll" />
+                <File Id="IkvmOpenJdkLocaleDataDll" Name="IKVM.OpenJDK.Localedata.dll" Vital="yes" Source="$(var.Bin)\IKVM.OpenJDK.Localedata.dll" />
+                <File Id="IkvmOpenJdkManagementDll" Name="IKVM.OpenJDK.Management.dll" Vital="yes" Source="$(var.Bin)\IKVM.OpenJDK.Management.dll" />
+                <File Id="IkvmOpenJdkMediaDll" Name="IKVM.OpenJDK.Media.dll" Vital="yes" Source="$(var.Bin)\IKVM.OpenJDK.Media.dll" />
+                <File Id="IkvmOpenJdkMiscDll" Name="IKVM.OpenJDK.Misc.dll" Vital="yes" Source="$(var.Bin)\IKVM.OpenJDK.Misc.dll" />
+                <File Id="IkvmOpenJdkNamingDll" Name="IKVM.OpenJDK.Naming.dll" Vital="yes" Source="$(var.Bin)\IKVM.OpenJDK.Naming.dll" />
+                <File Id="IkvmOpenJdkNashornDll" Name="IKVM.OpenJDK.Nashorn.dll" Vital="yes" Source="$(var.Bin)\IKVM.OpenJDK.Nashorn.dll" />
+                <File Id="IkvmOpenJdkRemotingDll" Name="IKVM.OpenJDK.Remoting.dll" Vital="yes" Source="$(var.Bin)\IKVM.OpenJDK.Remoting.dll" />
+                <File Id="IkvmOpenJdkSecurityDll" Name="IKVM.OpenJDK.Security.dll" Vital="yes" Source="$(var.Bin)\IKVM.OpenJDK.Security.dll" />
+                <File Id="IkvmOpenJdkSwingAWTDll" Name="IKVM.OpenJDK.SwingAWT.dll" Vital="yes" Source="$(var.Bin)\IKVM.OpenJDK.SwingAWT.dll" />
+                <File Id="IkvmOpenJdkTextDll" Name="IKVM.OpenJDK.Text.dll" Vital="yes" Source="$(var.Bin)\IKVM.OpenJDK.Text.dll" />
+                <File Id="IkvmOpenJdkToolsDll" Name="IKVM.OpenJDK.Tools.dll" Vital="yes" Source="$(var.Bin)\IKVM.OpenJDK.Tools.dll" />
+                <File Id="IkvmOpenJdkUtilDll" Name="IKVM.OpenJDK.Util.dll" Vital="yes" Source="$(var.Bin)\IKVM.OpenJDK.Util.dll" />
+                <File Id="IkvmOpenJdkXmlApiDll" Name="IKVM.OpenJDK.XML.API.dll" Vital="yes" Source="$(var.Bin)\IKVM.OpenJDK.XML.API.dll" />
+                <File Id="IkvmOpenJdkXmlBindDll" Name="IKVM.OpenJDK.XML.Bind.dll" Vital="yes" Source="$(var.Bin)\IKVM.OpenJDK.XML.Bind.dll" />
+                <File Id="IkvmOpenJdkXmlCryptoDll" Name="IKVM.OpenJDK.XML.Crypto.dll" Vital="yes" Source="$(var.Bin)\IKVM.OpenJDK.XML.Crypto.dll" />
+                <File Id="IkvmOpenJdkXmlParseDll" Name="IKVM.OpenJDK.XML.Parse.dll" Vital="yes" Source="$(var.Bin)\IKVM.OpenJDK.XML.Parse.dll" />
+                <File Id="IkvmOpenJdkXmlTransformDll" Name="IKVM.OpenJDK.XML.Transform.dll" Vital="yes" Source="$(var.Bin)\IKVM.OpenJDK.XML.Transform.dll" />
+                <File Id="IkvmOpenJdkXmlWebServicesDll" Name="IKVM.OpenJDK.XML.WebServices.dll" Vital="yes" Source="$(var.Bin)\IKVM.OpenJDK.XML.WebServices.dll" />
+                <File Id="IkvmOpenJdkXmlXPathDll" Name="IKVM.OpenJDK.XML.XPath.dll" Vital="yes" Source="$(var.Bin)\IKVM.OpenJDK.XML.XPath.dll" />
+                <File Id="IkvmReflectionDll" Name="IKVM.Reflection.dll" Vital="yes" Source="$(var.Bin)\IKVM.Reflection.dll" />
+                <File Id="IkvmRuntimeDll" Name="IKVM.Runtime.dll" Vital="yes" Source="$(var.Bin)\IKVM.Runtime.dll" />
+                <File Id="IkvmRuntimeJniDll" Name="IKVM.Runtime.JNI.dll" Vital="yes" Source="$(var.Bin)\IKVM.Runtime.JNI.dll" />
+                <File Id="JeMallocDll" Name="jemalloc.dll" Vital="yes" Source="$(var.Bin)\jemalloc.dll" />
+                <File Id="LibPqDll" Name="libpq.dll" Vital="yes" Source="$(var.Bin)\libpq.dll" />
                 <File Id="Log4NetDll" Name="log4net.dll" Vital="yes" Source="$(var.Bin)\log4net.dll" />
                 <File Id="LogParsersBaseDll" Name="LogParsers.Base.dll" Vital="yes" Source="$(var.Bin)\LogParsers.Base.dll" />
                 <File Id="LogsharkArtifactProcessorModelDll" Name="Logshark.ArtifactProcessorModel.dll" Vital="yes" Source="$(var.Bin)\Logshark.ArtifactProcessorModel.dll" />
@@ -82,22 +129,38 @@
                 <File Id="LogsharkPluginLibDll" Name="Logshark.PluginLib.dll" Vital="yes" Source="$(var.Bin)\Logshark.PluginLib.dll" />
                 <File Id="LogsharkPluginModelDll" Name="Logshark.PluginModel.dll" Vital="yes" Source="$(var.Bin)\Logshark.PluginModel.dll" />
                 <File Id="LogsharkRequestModelDll" Name="Logshark.RequestModel.dll" Vital="yes" Source="$(var.Bin)\Logshark.RequestModel.dll" />
+                <File Id="Metrics2Dll" Name="metrics2.dll" Vital="yes" Source="$(var.Bin)\metrics2.dll" />
                 <File Id="MongoDBBsonDll" Name="MongoDB.Bson.dll" Vital="yes" Source="$(var.Bin)\MongoDB.Bson.dll" />
                 <File Id="MongoDBDriverDll" Name="MongoDB.Driver.dll" Vital="yes" Source="$(var.Bin)\MongoDB.Driver.dll" />
                 <File Id="MongoDBDriverCoreDll" Name="MongoDB.Driver.Core.dll" Vital="yes" Source="$(var.Bin)\MongoDB.Driver.Core.dll" />
+                <File Id="MsVcp140Dll" Name="msvcp140.dll" Vital="yes" Source="$(var.Bin)\msvcp140.dll" />
                 <File Id="NewtonsoftJsonDll" Name="Newtonsoft.Json.dll" Vital="yes" Source="$(var.Bin)\Newtonsoft.Json.dll" />
                 <File Id="NpgsqlDll" Name="Npgsql.dll" Vital="yes" Source="$(var.Bin)\Npgsql.dll" />
                 <File Id="OptionalDll" Name="Optional.dll" Vital="yes" Source="$(var.Bin)\Optional.dll" />
-                <File Id="OptionalCollectionsDll" Name="Optional.Collections.dll" Vital="yes" Source="$(var.Bin)\Optional.Collections.dll" />
                 <File Id="OptionalUtilitiesDll" Name="Optional.Utilities.dll" Vital="yes" Source="$(var.Bin)\Optional.Utilities.dll" />
                 <File Id="ServiceStackCommonDll" Name="ServiceStack.Common.dll" Vital="yes" Source="$(var.Bin)\ServiceStack.Common.dll" />
                 <File Id="ServiceStackInterfacesDll" Name="ServiceStack.Interfaces.dll" Vital="yes" Source="$(var.Bin)\ServiceStack.Interfaces.dll" />
                 <File Id="ServiceStackOrmLiteDll" Name="ServiceStack.OrmLite.dll" Vital="yes" Source="$(var.Bin)\ServiceStack.OrmLite.dll" />
                 <File Id="ServiceStackOrmLitePostgreSQLDll" Name="ServiceStack.OrmLite.PostgreSQL.dll" Vital="yes" Source="$(var.Bin)\ServiceStack.OrmLite.PostgreSQL.dll" />
                 <File Id="ServiceStackTextDll" Name="ServiceStack.Text.dll" Vital="yes" Source="$(var.Bin)\ServiceStack.Text.dll" />
+                <File Id="SystemBuffersDll" Name="System.Buffers.dll" Vital="yes" Source="$(var.Bin)\System.Buffers.dll" />
+                <File Id="SystemRuntimeInteropServicesRuntimeInformationDll" Name="System.Runtime.InteropServices.RuntimeInformation.dll" Vital="yes" Source="$(var.Bin)\System.Runtime.InteropServices.RuntimeInformation.dll" />
                 <File Id="SystemThreadingTasksExtensionsDll" Name="System.Threading.Tasks.Extensions.dll" Vital="yes" Source="$(var.Bin)\System.Threading.Tasks.Extensions.dll" />
+                <File Id="TableauExtractApiDll" Name="Tableau.ExtractApi.dll" Vital="yes" Source="$(var.Bin)\Tableau.ExtractApi.dll" />
                 <File Id="TableauRestApiDll" Name="Tableau.RestApi.dll" Vital="yes" Source="$(var.Bin)\Tableau.RestApi.dll" />
+                <File Id="TableauCommonDll" Name="TableauCommon.dll" Vital="yes" Source="$(var.Bin)\TableauCommon.dll" />
+                <File Id="TableauExtractApiDotNetDll" Name="TableauExtractApiDotNet.dll" Vital="yes" Source="$(var.Bin)\TableauExtractApiDotNet.dll" />
+                <File Id="TableauHyperExtractDll" Name="TableauHyperExtract.dll" Vital="yes" Source="$(var.Bin)\TableauHyperExtract.dll" />
+                <File Id="TabLibEay32Dll" Name="tablibeay32.dll" Vital="yes" Source="$(var.Bin)\tablibeay32.dll" />
+                <File Id="TabSslEay32Dll" Name="tabssleay32.dll" Vital="yes" Source="$(var.Bin)\tabssleay32.dll" />
+                <File Id="TabSysDll" Name="tabsys.dll" Vital="yes" Source="$(var.Bin)\tabsys.dll" />
+                <File Id="TabzDll" Name="tabz.dll" Vital="yes" Source="$(var.Bin)\tabz.dll" />
+                <File Id="TbbDll" Name="tbb.dll" Vital="yes" Source="$(var.Bin)\tbb.dll" />
+                <File Id="UcrtBaseDll" Name="ucrtbase.dll" Vital="yes" Source="$(var.Bin)\ucrtbase.dll" />
+                <File Id="VcCorLib140Dll" Name="vccorlib140.dll" Vital="yes" Source="$(var.Bin)\vccorlib140.dll" />
+                <File Id="VcRuntime40Dll" Name="vcruntime140.dll" Vital="yes" Source="$(var.Bin)\vcruntime140.dll" />
                 <File Id="YamlDotNetDll" Name="YamlDotNet.dll" Vital="yes" Source="$(var.Bin)\YamlDotNet.dll" />
+                <File Id="ZStdDll" Name="zstd.dll" Vital="yes" Source="$(var.Bin)\zstd.dll" />
             </Component>
             <!-- Registry Keys -->
             <Component Id="LogsharkRegistryKeys" Guid="423aba43-1c94-4689-8d16-7007e83696b8" Win64="$(var.Win64)">

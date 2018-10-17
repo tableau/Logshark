@@ -1,7 +1,8 @@
-﻿using System;
+﻿using Logshark.PluginModel.Model;
+using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Xml;
+using System.Linq;
 
 namespace Logshark.PluginLib.Model.Impl
 {
@@ -15,30 +16,28 @@ namespace Logshark.PluginLib.Model.Impl
         /// </summary>
         public abstract ICollection<string> WorkbookNames { get; }
 
+        protected BaseWorkbookCreationPlugin() { }
+        protected BaseWorkbookCreationPlugin(IPluginRequest pluginRequest) : base(pluginRequest) { }
+
         /// <summary>
-        /// Loads the workbook associated with WorkBookName into an XmlDocument. The workbook must be set as Embedded Resource.
+        /// Loads the workbook associated with WorkbookName into a stream. The workbook must be set as Embedded Resource.
         /// </summary>
-        /// <returns>XmlDocument containing the full body of the workbook.</returns>
-        public virtual XmlDocument GetWorkbookXml(string workbookName)
+        public virtual Stream GetWorkbook(string workbookName)
         {
-            string fullyQualifiedResourceName = null;
-            foreach (var resource in GetType().Assembly.GetManifestResourceNames())
-            {
-                if (resource.EndsWith("." + workbookName, StringComparison.InvariantCultureIgnoreCase))
-                {
-                    fullyQualifiedResourceName = resource;
-                }
-            }
+            string fullyQualifiedResourceName = GetManifestResourceName(workbookName);
 
             if (String.IsNullOrWhiteSpace(fullyQualifiedResourceName))
             {
-                throw new ArgumentNullException(String.Format("Resource for {0} not found!", workbookName));
+                throw new ArgumentException(String.Format("Resource for {0} not found!", workbookName), workbookName);
             }
 
-            XmlDocument doc = new XmlDocument();
-            Stream filestream = GetType().Assembly.GetManifestResourceStream(fullyQualifiedResourceName);
-            doc.Load(filestream);
-            return doc;
+            return GetType().Assembly.GetManifestResourceStream(fullyQualifiedResourceName);
+        }
+
+        private string GetManifestResourceName(string resourceName)
+        {
+            return GetType().Assembly.GetManifestResourceNames()
+                            .FirstOrDefault(resource => resource.EndsWith("." + resourceName, StringComparison.InvariantCultureIgnoreCase));
         }
     }
 }

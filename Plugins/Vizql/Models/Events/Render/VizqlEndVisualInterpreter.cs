@@ -11,7 +11,6 @@ namespace Logshark.Plugins.Vizql.Models.Events.Render
 
         public VizqlEndVisualInterpreter(BsonDocument document)
         {
-            ValidateArguments("end-visual-interpreter", document);
             SetEventMetadata(document);
             Elapsed = BsonDocumentHelper.GetDouble("elapsed", BsonDocumentHelper.GetValuesStruct(document));
         }

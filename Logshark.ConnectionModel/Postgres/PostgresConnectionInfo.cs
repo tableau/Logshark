@@ -9,7 +9,7 @@ using System.Reflection;
 
 namespace Logshark.ConnectionModel.Postgres
 {
-    public class PostgresConnectionInfo : IPostgresUserInfo
+    public class PostgresConnectionInfo
     {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 

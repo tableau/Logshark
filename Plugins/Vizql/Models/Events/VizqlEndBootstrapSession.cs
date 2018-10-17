@@ -1,5 +1,5 @@
-﻿using MongoDB.Bson;
-using Logshark.PluginLib.Helpers;
+﻿using Logshark.PluginLib.Helpers;
+using MongoDB.Bson;
 
 namespace Logshark.Plugins.Vizql.Models.Events
 {
@@ -11,7 +11,6 @@ namespace Logshark.Plugins.Vizql.Models.Events
 
         public VizqlEndBootstrapSession(BsonDocument document)
         {
-            ValidateArguments("end-bootstrap-session", document);
             SetEventMetadata(document);
             Elapsed = BsonDocumentHelper.GetDouble("elapsed", BsonDocumentHelper.GetValuesStruct(document));
         }

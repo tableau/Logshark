@@ -1,35 +1,29 @@
 ﻿using log4net;
-using Logshark.PluginLib.Extensions;
-using Logshark.PluginLib.Logging;
-using Logshark.PluginLib.Persistence;
 using Logshark.PluginLib.StatusWriter;
 using Logshark.PluginModel.Model;
 using MongoDB.Driver;
 using Optional;
-using ServiceStack.OrmLite;
 using System;
-using System.Reflection;
 
 namespace Logshark.PluginLib.Processors
 {
-    public abstract class SingleModelAggregationProcessor<TDocument, TModel> where TModel : new()
+    public abstract class SingleModelAggregationProcessor<TDocument, TModel> : IDisposable where TModel : new()
     {
         protected readonly IPluginRequest pluginRequest;
         protected readonly IMongoDatabase mongoDatabase;
-        protected readonly IDbConnectionFactory outputConnectionFactory;
-        protected readonly IPersisterFactory<TModel> persisterFactory;
+        protected readonly IPersister<TModel> persister;
 
-        private static readonly ILog Log = PluginLogFactory.GetLogger(Assembly.GetExecutingAssembly(), MethodBase.GetCurrentMethod());
+        protected readonly ILog Log;
 
         protected SingleModelAggregationProcessor(IPluginRequest pluginRequest,
                                                   IMongoDatabase mongoDatabase,
-                                                  IDbConnectionFactory outputConnectionFactory,
-                                                  IPersisterFactory<TModel> persisterFactory)
+                                                  IPersister<TModel> persister,
+                                                  ILog log)
         {
             this.pluginRequest = pluginRequest;
             this.mongoDatabase = mongoDatabase;
-            this.outputConnectionFactory = outputConnectionFactory;
-            this.persisterFactory = persisterFactory;
+            this.persister = persister;
+            Log = log;
         }
 
         public abstract Option<TModel> Process(FilterDefinition<TDocument> filter);
@@ -38,16 +32,9 @@ namespace Logshark.PluginLib.Processors
         {
             try
             {
-                using (var connection = outputConnectionFactory.OpenDbConnection())
-                {
-                    connection.CreateOrMigrateTable<TModel>();
-                }
-
-                using (IPersister<TModel> persister = persisterFactory.BuildPersister())
                 using (new PersisterStatusWriter<TModel>(persister, Log))
                 {
                     persister.Enqueue(model);
-                    persister.Shutdown();
                 }
 
                 return model.Some();
@@ -58,5 +45,26 @@ namespace Logshark.PluginLib.Processors
                 return Option.None<TModel>();
             }
         }
+
+        #region IDisposable Implementation
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (persister != null)
+                {
+                    persister.Dispose();
+                }
+            }
+        }
+
+        #endregion IDisposable Implementation
     }
 }

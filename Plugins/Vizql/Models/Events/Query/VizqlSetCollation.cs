@@ -1,4 +1,5 @@
-﻿using Logshark.PluginLib.Helpers;
+﻿using Logshark.PluginLib.Extensions;
+using Logshark.PluginLib.Helpers;
 using MongoDB.Bson;
 
 namespace Logshark.Plugins.Vizql.Models.Events.Query
@@ -8,18 +9,15 @@ namespace Logshark.Plugins.Vizql.Models.Events.Query
         public string Column { get; set; }
         public string Collation { get; set; }
 
-        public VizqlSetCollation()
-        {
-        }
+        public VizqlSetCollation() { }
 
         public VizqlSetCollation(BsonDocument document)
         {
-            ValidateArguments("set-collation", document);
             SetEventMetadata(document);
             BsonDocument values = BsonDocumentHelper.GetValuesStruct(document);
 
-            Column = BsonDocumentHelper.GetString("column", values);
-            Collation = BsonDocumentHelper.GetString("collation", values);
+            Column = values.GetString("column");
+            Collation = values.GetString("collation");
         }
     }
 }

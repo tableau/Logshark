@@ -13,7 +13,7 @@
   <configurationElements>
     <configurationSection name="LogsharkConfig" namespace="Logshark.ConfigSection" codeGenOptions="Singleton, XmlnsProperty" xmlSectionName="Config">
       <elementProperties>
-        <elementProperty name="PostgresConnection" isRequired="true" isKey="false" isDefaultCollection="false" xmlName="PostgresConnection" isReadOnly="false" documentation="Settings pertaining to the Postgres database.">
+        <elementProperty name="PostgresConnection" isRequired="false" isKey="false" isDefaultCollection="false" xmlName="PostgresConnection" isReadOnly="false" documentation="Settings pertaining to the Postgres database.">
           <type>
             <configurationElementMoniker name="/d0ed9acb-0435-4532-afdd-b5115bc4d562/PostgresConnection" />
           </type>
@@ -135,7 +135,7 @@
     </configurationElement>
     <configurationElement name="PostgresServer" namespace="Logshark.Config">
       <attributeProperties>
-        <attributeProperty name="Server" isRequired="true" isKey="false" isDefaultCollection="false" xmlName="address" isReadOnly="false" documentation="The hostname or IP address of the Postgres server." defaultValue="&quot;localhost&quot;">
+        <attributeProperty name="Server" isRequired="true" isKey="false" isDefaultCollection="false" xmlName="address" isReadOnly="false" documentation="The hostname or IP address of the Postgres server." defaultValue="&quot;unspecified&quot;">
           <validator>
             <stringValidatorMoniker name="/d0ed9acb-0435-4532-afdd-b5115bc4d562/Non-empty String" />
           </validator>
@@ -377,6 +377,16 @@
             <configurationElementMoniker name="/d0ed9acb-0435-4532-afdd-b5115bc4d562/LocalMongoOptions" />
           </type>
         </elementProperty>
+        <elementProperty name="DataRetention" isRequired="true" isKey="false" isDefaultCollection="false" xmlName="DataRetention" isReadOnly="false" documentation="Settings pertaining to output data retention.">
+          <type>
+            <configurationElementMoniker name="/d0ed9acb-0435-4532-afdd-b5115bc4d562/DataRetentionOptions" />
+          </type>
+        </elementProperty>
+        <elementProperty name="TempFolder" isRequired="false" isKey="false" isDefaultCollection="false" xmlName="TempFolder" isReadOnly="false" documentation="Temp folder to use while extracting data from log set">
+          <type>
+            <configurationElementMoniker name="/d0ed9acb-0435-4532-afdd-b5115bc4d562/TempFolderOptions" />
+          </type>
+        </elementProperty>
       </elementProperties>
     </configurationElement>
     <configurationElementCollection name="ArtifactProcessorOptions" namespace="Logshark.Config" documentation="Options pertaining to artifact processors." xmlItemName="ArtifactProcessor" codeGenOptions="Indexer, AddMethod, RemoveMethod, GetItemMethods">
@@ -384,6 +394,27 @@
         <configurationElementMoniker name="/d0ed9acb-0435-4532-afdd-b5115bc4d562/ArtifactProcessorConfigNode" />
       </itemType>
     </configurationElementCollection>
+    <configurationElement name="DataRetentionOptions" namespace="Logshark.Config">
+      <attributeProperties>
+        <attributeProperty name="MaxRuns" isRequired="true" isKey="false" isDefaultCollection="false" xmlName="maxRuns" isReadOnly="false" documentation="The maximum number of runs that will be retained." defaultValue="10">
+          <validator>
+            <integerValidatorMoniker name="/d0ed9acb-0435-4532-afdd-b5115bc4d562/Positive Integer" />
+          </validator>
+          <type>
+            <externalTypeMoniker name="/d0ed9acb-0435-4532-afdd-b5115bc4d562/Int32" />
+          </type>
+        </attributeProperty>
+      </attributeProperties>
+    </configurationElement>
+    <configurationElement name="TempFolderOptions" namespace="Logshark.Config">
+      <attributeProperties>
+        <attributeProperty name="Path" isRequired="true" isKey="false" isDefaultCollection="false" xmlName="path" isReadOnly="false" documentation="Full path to the temp folder">
+          <type>
+            <externalTypeMoniker name="/d0ed9acb-0435-4532-afdd-b5115bc4d562/String" />
+          </type>
+        </attributeProperty>
+      </attributeProperties>
+    </configurationElement>
   </configurationElements>
   <propertyValidators>
     <validators>

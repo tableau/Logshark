@@ -1,6 +1,5 @@
 ﻿using Logshark.ArtifactProcessors.TableauServerLogProcessor.Parsers;
 using Logshark.ArtifactProcessors.TableauServerLogProcessor.PluginInterfaces;
-using Logshark.PluginLib.Extensions;
 using Logshark.PluginLib.Model.Impl;
 using Logshark.PluginModel.Model;
 using Logshark.Plugins.Config.Helpers;
@@ -12,33 +11,15 @@ namespace Logshark.Plugins.Config
 {
     public class Config : BaseWorkbookCreationPlugin, IServerClassicPlugin, IServerTsmPlugin
     {
-        private PluginResponse pluginResponse;
+        public override ISet<string> CollectionDependencies => new HashSet<string> { ParserConstants.ConfigCollectionName };
+        public override ICollection<string> WorkbookNames => new HashSet<string>  { "Config.twbx" };
 
-        public override ISet<string> CollectionDependencies
-        {
-            get
-            {
-                return new HashSet<string>
-                {
-                    ParserConstants.ConfigCollectionName
-                };
-            }
-        }
+        public Config() { }
+        public Config(IPluginRequest request) : base(request) { }
 
-        public override ICollection<string> WorkbookNames
+        public override IPluginResponse Execute()
         {
-            get
-            {
-                return new List<string>
-                {
-                    "Config.twb"
-                };
-            }
-        }
-
-        public override IPluginResponse Execute(IPluginRequest request)
-        {
-            pluginResponse = CreatePluginResponse();
+            var pluginResponse = CreatePluginResponse();
 
             ICollection<ConfigEntry> configEntries = null;
             ICollection<ConfigProcessInfo> configProcessInfo = null;
@@ -47,73 +28,62 @@ namespace Logshark.Plugins.Config
             try
             {
                 // Load config into memory.
-                var configReader = new ConfigReader(MongoDatabase, request.LogsetHash);
+                var configReader = new ConfigReader(MongoDatabase);
 
                 configEntries = configReader.GetConfigEntries();
                 configProcessInfo = configReader.GetConfigProcessInfo();
             }
             catch (Exception ex)
             {
-                Log.ErrorFormat("Failed to load configuration information from MongoDB: {0}", ex.Message);
+                var errorMessage = $"Failed to load configuration information from MongoDB: {ex.Message}";
+                Log.ErrorFormat(errorMessage);
+                pluginResponse.SetExecutionOutcome(isSuccessful: false, failureReason: errorMessage);
+
+                return pluginResponse;
             }
 
             // Persist config data.
             try
             {
-                PersistConfigEntryData(configEntries, request);
-                PersistConfigProcessInfoData(configProcessInfo, request);
+                var persistedData = PersistConfigData(configEntries, configProcessInfo);
+
+                if (!persistedData)
+                {
+                    Log.Info("Failed to persist any data from Config logs!");
+                    pluginResponse.GeneratedNoData = true;
+                }
             }
             catch (Exception ex)
             {
-                string errorMessage = String.Format("Failed to persist configuration information to database: {0}", ex.Message);
-                Log.Error(errorMessage);
+                var errorMessage = $"Failed to persist configuration information: {ex.Message}";
+                Log.ErrorFormat(errorMessage);
                 pluginResponse.SetExecutionOutcome(isSuccessful: false, failureReason: errorMessage);
-            }
-
-            // Check if we persisted any data.
-            if (!PersistedData())
-            {
-                Log.Info("Failed to persist any data from Config logs!");
-                pluginResponse.GeneratedNoData = true;
             }
 
             return pluginResponse;
         }
 
-        protected void PersistConfigEntryData(ICollection<ConfigEntry> configEntries, IPluginRequest pluginRequest)
+        protected bool PersistConfigData(ICollection<ConfigEntry> configEntries, ICollection<ConfigProcessInfo> workerDetails)
         {
-            if (configEntries == null)
+            Log.InfoFormat($"Persisting configuration data for {configEntries.Count} config key entries and {workerDetails.Count} worker processes..");
+
+            var persistedData = false;
+
+            using (var extract = ExtractFactory.CreateExtract<ConfigEntry>("ConfigEntries.hyper"))
+            using (GetPersisterStatusWriter(extract, configEntries.Count))
             {
-                return;
+                extract.Enqueue(configEntries);
+                persistedData = persistedData || extract.ItemsPersisted > 0;
             }
 
-            Log.InfoFormat("Persisting configuration entry data for {0} keys to database..", configEntries.Count);
-            GetOutputDatabaseConnection().CreateOrMigrateTable<ConfigEntry>();
-
-            var configEntryPersister = GetConcurrentBatchPersister<ConfigEntry>(pluginRequest);
-            using (GetPersisterStatusWriter(configEntryPersister, configEntries.Count))
+            using (var extract = ExtractFactory.CreateExtract<ConfigProcessInfo>("ProcessTopology.hyper"))
+            using (GetPersisterStatusWriter(extract, workerDetails.Count))
             {
-                configEntryPersister.Enqueue(configEntries);
-                configEntryPersister.Shutdown();
-            }
-        }
-
-        protected void PersistConfigProcessInfoData(ICollection<ConfigProcessInfo> workerDetails, IPluginRequest pluginRequest)
-        {
-            if (workerDetails == null)
-            {
-                return;
+                extract.Enqueue(workerDetails);
+                persistedData = persistedData || extract.ItemsPersisted > 0;
             }
 
-            Log.InfoFormat("Persisting configuration topology data for {0} processes to database..", workerDetails.Count);
-            GetOutputDatabaseConnection().CreateOrMigrateTable<ConfigProcessInfo>();
-
-            var configProcessInfoPersister = GetConcurrentBatchPersister<ConfigProcessInfo>(pluginRequest);
-            using (GetPersisterStatusWriter(configProcessInfoPersister, workerDetails.Count))
-            {
-                configProcessInfoPersister.Enqueue(workerDetails);
-                configProcessInfoPersister.Shutdown();
-            }
+            return persistedData;
         }
     }
 }

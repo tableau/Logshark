@@ -11,7 +11,7 @@
 	<xs:element name="Config" type="tns:Logshark.ConfigSection.LogsharkConfigCT" />
 	<xs:complexType name="Logshark.ConfigSection.LogsharkConfigCT">
 		<xs:choice minOccurs="0" maxOccurs="unbounded">
-			<xs:element minOccurs="1" name="PostgresConnection" type="tns:Logshark.Config.PostgresConnectionCT">
+			<xs:element minOccurs="0" name="PostgresConnection" type="tns:Logshark.Config.PostgresConnectionCT">
 				<xs:annotation>
 					<xs:documentation>Settings pertaining to the Postgres database.</xs:documentation>
 				</xs:annotation>
@@ -258,6 +258,9 @@
 			</xs:element>
 		</xs:choice>
 	</xs:complexType>
+	<xs:complexType name="Logshark.Config.DefaultPluginsRemoveCT">
+		</xs:complexType>
+	<xs:complexType name="Logshark.Config.DefaultPluginsClearCT" />
 	<xs:complexType name="Logshark.Config.PluginCT">
 		<xs:attribute name="name" use="required" type="xs:string">
 			<xs:annotation>
@@ -274,6 +277,9 @@
 			</xs:element>
 		</xs:choice>
 	</xs:complexType>
+	<xs:complexType name="Logshark.Config.MongoServersRemoveCT">
+		</xs:complexType>
+	<xs:complexType name="Logshark.Config.MongoServersClearCT" />
 	<xs:complexType name="Logshark.Config.FileProcessorCT">
 		<xs:attribute name="concurrencyLimitPerCore" use="required" type="xs:int">
 			<xs:annotation>
@@ -305,6 +311,16 @@
 					<xs:documentation>Settings pertaining to using a local MongoDB instance.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
+			<xs:element minOccurs="1" name="DataRetention" type="tns:Logshark.Config.DataRetentionOptionsCT">
+				<xs:annotation>
+					<xs:documentation>Settings pertaining to output data retention.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element minOccurs="0" name="TempFolder" type="tns:Logshark.Config.TempFolderOptionsCT">
+				<xs:annotation>
+					<xs:documentation>Temp folder to use while extracting data from log set</xs:documentation>
+				</xs:annotation>
+			</xs:element>
 		</xs:choice>
 	</xs:complexType>
 	<xs:complexType name="Logshark.Config.ArtifactProcessorOptionsCT">
@@ -315,5 +331,22 @@
 				</xs:annotation>
 			</xs:element>
 		</xs:choice>
+	</xs:complexType>
+	<xs:complexType name="Logshark.Config.ArtifactProcessorOptionsRemoveCT">
+		</xs:complexType>
+	<xs:complexType name="Logshark.Config.ArtifactProcessorOptionsClearCT" />
+	<xs:complexType name="Logshark.Config.DataRetentionOptionsCT">
+		<xs:attribute name="maxRuns" use="required" type="xs:int">
+			<xs:annotation>
+				<xs:documentation>The maximum number of runs that will be retained.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="Logshark.Config.TempFolderOptionsCT">
+		<xs:attribute name="path" use="required" type="xs:string">
+			<xs:annotation>
+				<xs:documentation>Full path to the temp folder</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
 	</xs:complexType>
 </xs:schema>

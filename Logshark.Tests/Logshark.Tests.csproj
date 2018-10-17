@@ -81,6 +81,10 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="dotMemory.Unit, Version=111.0.0.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
+      <HintPath>..\packages\JetBrains.dotMemoryUnit.3.0.20171219.105559\lib\net35\dotMemory.Unit.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="FluentAssertions, Version=4.16.0.0, Culture=neutral, PublicKeyToken=33f2691a05b67b6a, processorArchitecture=MSIL">
       <HintPath>..\packages\FluentAssertions.4.16.0\lib\net45\FluentAssertions.dll</HintPath>
       <Private>True</Private>
@@ -89,15 +93,31 @@
       <HintPath>..\packages\FluentAssertions.4.16.0\lib\net45\FluentAssertions.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="IKVM.OpenJDK.Core, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Tableau.ExtractApi\lib\IKVM\IKVM.OpenJDK.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.Runtime, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Tableau.ExtractApi\lib\IKVM\IKVM.Runtime.dll</HintPath>
+    </Reference>
     <Reference Include="log4net">
       <HintPath>..\packages\log4net.2.0.5\lib\net45-full\log4net.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed">
-      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed">
+      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="nunit.framework, Version=3.5.0.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
       <HintPath>..\packages\NUnit.3.5.0\lib\net45\nunit.framework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Optional, Version=4.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Optional.4.0.0\lib\net45\Optional.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Optional.Utilities, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Optional.Utilities.1.1.0\lib\net451\Optional.Utilities.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="ServiceStack.Common, Version=3.9.71.0, Culture=neutral, processorArchitecture=MSIL">
@@ -115,6 +135,10 @@
     <Reference Include="System" />
     <Reference Include="System.XML" />
     <Reference Include="System.Xml.Linq" />
+    <Reference Include="TableauExtractApiDotNet, Version=0.0.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Tableau.ExtractApi\lib\TableauExtractApiDotNet.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <Choose>
     <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
@@ -125,6 +149,7 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="ExtractTests.cs" />
     <Compile Include="FilePartitionerTest.cs" />
     <Compile Include="Helpers\ControllerEntityHelper.cs" />
     <Compile Include="InitializationTests.cs" />
@@ -182,6 +207,10 @@
       <Project>{c3f0fafa-1c38-42cf-a1ae-37ef00d0ead5}</Project>
       <Name>Logshark.RequestModel</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Tableau.ExtractApi\Tableau.ExtractApi.csproj">
+      <Project>{b548f23e-5935-4b50-9b67-380365a85002}</Project>
+      <Name>Tableau.ExtractApi</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Tableau.RestApi\Tableau.RestApi.csproj">
       <Project>{0aefc6d8-33b4-444b-bd5f-66028b62af73}</Project>
       <Name>Tableau.RestApi</Name>
@@ -212,9 +241,6 @@
     </Content>
     <None Include="packages.config" />
     <Content Include="_TestData\EmptyLog.zip">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="_TestData\EmptyWorkbook.twb">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="_TestData\EmptyPackagedWorkbook.twbx">
@@ -307,13 +333,16 @@
   </PropertyGroup>
   <PropertyGroup>
     <PostBuildEvent>if not exist "$(TargetDir)ArtifactProcessors" mkdir "$(TargetDir)ArtifactProcessors"
-xcopy "$(SolutionDir)Logshark.Core\$(OutDir)ArtifactProcessors\*" "$(TargetDir)ArtifactProcessors"/Y /I /E
+xcopy "$(SolutionDir)Logshark.Core\$(OutDir)ArtifactProcessors\*" "$(TargetDir)ArtifactProcessors" /Y /I /E
 
 if not exist "$(TargetDir)MongoDB" mkdir "$(TargetDir)MongoDB"
-xcopy "$(SolutionDir)Logshark.Core\$(OutDir)MongoDB\*" "$(TargetDir)MongoDB"/Y /I /E
+xcopy "$(SolutionDir)Logshark.Core\$(OutDir)MongoDB\*" "$(TargetDir)MongoDB" /Y /I /E
 
 if not exist "$(TargetDir)Plugins" mkdir "$(TargetDir)Plugins"
-xcopy "$(SolutionDir)Logshark.Core\$(OutDir)Plugins\*" "$(TargetDir)Plugins"/Y /I /E</PostBuildEvent>
+xcopy "$(SolutionDir)Logshark.Core\$(OutDir)Plugins\*" "$(TargetDir)Plugins" /Y /I /E
+
+xcopy "$(SolutionDir)Tableau.ExtractApi\$(OutDir)*.dll" "$(TargetDir)" /Y /I /E
+xcopy "$(SolutionDir)Tableau.ExtractApi\$(OutDir)*.exe" "$(TargetDir)" /Y /I /E</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

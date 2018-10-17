@@ -22,20 +22,9 @@ namespace Logshark.ArtifactProcessors.TableauServerLogProcessor.Parsers
         private static readonly IList<string> indexNames = new List<string> { "worker" };
         private static readonly CollectionSchema collectionSchema = ParserUtil.CreateCollectionSchema(collectionName, indexNames);
 
-        public override CollectionSchema CollectionSchema
-        {
-            get { return collectionSchema; }
-        }
-
-        public override bool IsMultiLineLogType
-        {
-            get { return true; }
-        }
-
-        protected override bool UseLineNumbers
-        {
-            get { return false; }
-        }
+        public override CollectionSchema CollectionSchema => collectionSchema;
+        public override bool IsMultiLineLogType => true;
+        protected override bool UseLineNumbers => false;
 
         public NetstatWindowsParser()
         {

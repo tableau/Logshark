@@ -3,11 +3,11 @@ using System;
 
 namespace Logshark.PluginLib.Helpers
 {
-    //This class shouldn't have to exist, but unfortunately MongoDB will store certain things as ints or longs depending on the value
-    //and we end up with a casting exception if we try to apply them to a mismatched type, by toStringing everything and then using
-    //the class function to parse we guarantee we will be able to parse it up no matter what it comes in as.
+    // This class shouldn't have to exist, but unfortunately MongoDB will store certain things as ints or longs depending on the value
+    // and we end up with a casting exception if we try to apply them to a mismatched type, by toStringing everything and then using
+    // the class function to parse we guarantee we will be able to parse it up no matter what it comes in as.
     //
-    //Since we already have it, I'm tossing some extra helper functions in here as well.
+    // Since we already have it, I'm tossing some extra helper functions in here as well.
     public static class BsonDocumentHelper
     {
         public static String GetKeyType(BsonDocument document)

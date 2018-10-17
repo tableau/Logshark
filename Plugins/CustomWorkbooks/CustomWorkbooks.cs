@@ -8,13 +8,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Xml;
 
 namespace Logshark.Plugins.CustomWorkbooks
 {
     public class CustomWorkbooks : BaseWorkbookCreationPlugin, IPostExecutionPlugin, IDesktopPlugin, IServerClassicPlugin, IServerTsmPlugin
     {
-        private IPluginResponse pluginResponse;
         private ICollection<string> workbookNames;
 
         private static readonly string WorkbookDirectory = "CustomWorkbooks";
@@ -29,9 +27,12 @@ namespace Logshark.Plugins.CustomWorkbooks
             get { return new HashSet<string>(); }
         }
 
-        public override IPluginResponse Execute(IPluginRequest pluginRequest)
+        public CustomWorkbooks() { }
+        public CustomWorkbooks(IPluginRequest request) : base(request) { }
+
+        public override IPluginResponse Execute()
         {
-            pluginResponse = CreatePluginResponse();
+            var pluginResponse = CreatePluginResponse();
 
             if (PluginResponses.All(response => response.GeneratedNoData))
             {
@@ -57,21 +58,18 @@ namespace Logshark.Plugins.CustomWorkbooks
         }
 
         /// <summary>
-        /// Loads the workbook associated with WorkBookName into an XmlDocument.
+        /// Loads the workbook associated with the given workbook name into a stream.
         /// </summary>
-        /// <returns>XmlDocument containing the full body of the workbook.</returns>
-        public override XmlDocument GetWorkbookXml(string workbookName)
+        /// <returns>Stream containing the full body of the workbook.</returns>
+        public override Stream GetWorkbook(string workbookName)
         {
-            XmlDocument doc = new XmlDocument();
             string workbookPath = Path.Combine(GetApplicationRootDirectory(), WorkbookDirectory, workbookName);
-            doc.Load(workbookPath);
-            return doc;
+            return File.OpenRead(workbookPath);
         }
 
         /// <summary>
         /// Returns the absolute path to the root Logshark directory.
         /// </summary>
-        /// <returns></returns>
         private static string GetApplicationRootDirectory()
         {
             var pluginDirectory = new DirectoryInfo(Assembly.GetAssembly(typeof(CustomWorkbooks)).Location);

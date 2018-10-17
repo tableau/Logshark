@@ -1,151 +1,191 @@
-﻿using log4net;
+﻿using ICSharpCode.SharpZipLib.Zip;
+using log4net;
 using Logshark.ConnectionModel.Postgres;
+using Optional;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Net;
+using System.Linq;
 using System.Reflection;
 using System.Xml;
 
 namespace Logshark.Core.Controller.Workbook
 {
     /// <summary>
-    /// Handles editing of workbook XML.
+    /// Handles manipulation of workbook files.
     /// </summary>
     public sealed class WorkbookEditor
     {
-        private const string ConnectionElementXpath = ".//.//connection";
-        private const string ThumbnailsElementXpath = ".//thumbnails";
+        private readonly string outputDirectory;
+        private readonly Option<PostgresConnectionInfo> postgresConnectionInfo;
+        private readonly string databaseName;
 
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-        public string WorkbookName { get; private set; }
-        public XmlDocument WorkbookXml { get; private set; }
-
-        public WorkbookEditor(string workbookName, XmlDocument workbookXml)
+        public WorkbookEditor(string outputDirectory, Option<PostgresConnectionInfo> postgresConnectionInfo, string databaseName)
         {
-            WorkbookName = workbookName;
-            WorkbookXml = workbookXml;
+            this.outputDirectory = outputDirectory;
+            this.postgresConnectionInfo = postgresConnectionInfo;
+            this.databaseName = databaseName;
         }
 
-        /// <summary>
-        /// Update all the Postgres connection XML nodes to point to a different backing database.
-        /// </summary>
-        /// <param name="postgresConnection">The connection information about the Postgres server.</param>
-        /// <param name="databaseName">The database name to link up to.</param>
-        public void ReplacePostgresConnections(PostgresConnectionInfo postgresConnection, string databaseName)
+        public FileInfo Process(Stream workbook, string workbookName)
         {
-            XmlNode root = WorkbookXml.DocumentElement;
-            if (root == null)
+            var workbookExtension = Path.GetExtension(workbookName);
+            if (String.IsNullOrEmpty(workbookExtension))
             {
-                return;
+                throw new ArgumentException(String.Format("Invalid workbook name provided: workbook '{0} must have a valid file extension", workbookName), "workbookName");
             }
 
-            XmlNodeList connectionElements = root.SelectNodes(ConnectionElementXpath);
-            if (connectionElements == null)
+            string processedWorkbookFilePath;
+            if (workbookExtension.Equals(".twbx", StringComparison.OrdinalIgnoreCase))
             {
-                // No connections to edit; nothing to do.
-                return;
+                processedWorkbookFilePath = ProcessPackagedWorkbook(workbook, workbookName);
             }
-            foreach (XmlNode connectionElement in connectionElements)
+            else if (workbookExtension.Equals(".twb", StringComparison.OrdinalIgnoreCase))
             {
-                ReplaceSinglePostgresConnection(connectionElement, postgresConnection, databaseName);
+                processedWorkbookFilePath = ProcessWorkbook(workbook, workbookName);
+            }
+            else
+            {
+                throw new ArgumentException(String.Format("Workbook '{0}' is not a supported Tableau workbook file type!", workbookName));
+            }
+
+            return new FileInfo(processedWorkbookFilePath);
+        }
+
+        private string ProcessPackagedWorkbook(Stream workbook, string workbookName)
+        {
+            using (var packagedWorkbook = new MemoryStream())
+            {
+                // Create an in-memory copy of the zip and configure it to be updatable (also in-memory)
+                workbook.CopyTo(packagedWorkbook);
+                var zipFile = new ZipFile(packagedWorkbook) { IsStreamOwner = false };
+                zipFile.BeginUpdate();
+
+                UpdatePackagedWorkbook(zipFile, workbookName);
+                ReplacePackagedExtracts(zipFile, workbookName);
+                PurgeCachedExtractContent(zipFile);
+
+                zipFile.CommitUpdate();
+                zipFile.Close();
+
+                // Flush updated archive stream to disk
+                string workbookFilePath = Path.Combine(outputDirectory, workbookName);
+                using (var output = File.OpenWrite(workbookFilePath))
+                {
+                    packagedWorkbook.Position = 0;
+                    packagedWorkbook.CopyTo(output);
+                }
+
+                return workbookFilePath;
             }
         }
 
-        /// <summary>
-        /// Remove all cached thumbnail images from the workbook.
-        /// </summary>
-        public void RemoveThumbnails()
+        private string ProcessWorkbook(Stream workbook, string workbookName)
         {
-            XmlNode root = WorkbookXml.DocumentElement;
-            if (root == null)
-            {
-                return;
-            }
+            var workbookXml = UpdateWorkbookXml(workbook);
 
-            XmlNode thumbnailsRootElement = root.SelectSingleNode(ThumbnailsElementXpath);
-            if (thumbnailsRootElement != null)
-            {
-                thumbnailsRootElement.RemoveAll();
-            }
-        }
+            string workbookFilePath = Path.Combine(outputDirectory, workbookName);
 
-        /// <summary>
-        /// Saves the workbook XML to a specified directory.
-        /// </summary>
-        /// <param name="directoryPath">The directory to save the workbook to.</param>
-        /// <returns>Path to outputted workbook.</returns>
-        public string Save(string directoryPath)
-        {
-            string workbookFilePath = Path.Combine(directoryPath, WorkbookName);
-            WorkbookXml.Save(workbookFilePath);
+            workbookXml.Save(workbookFilePath);
+
             return workbookFilePath;
         }
 
-        /// <summary>
-        /// Updates a single workbook connection element in the XML to point to a different Postgres database.
-        /// </summary>
-        private void ReplaceSinglePostgresConnection(XmlNode connectionElement, PostgresConnectionInfo postgresConnection, string databaseName)
+        private void UpdatePackagedWorkbook(ZipFile zipFile, string workbookName)
         {
-            if (!IsValidPostgresConnectionElement(connectionElement))
+            // Locate the TWB.  There should only ever be one in a valid packaged workbook
+            var workbookArchiveEntry = FindPackagedWorkbooks(zipFile).FirstOrDefault();
+            if (workbookArchiveEntry == default(ZipEntry))
             {
-                return;
+                throw new ArgumentException(String.Format("Packaged workbook '{0}' contains no inner workbook!", workbookName));
             }
 
-            // Construct dictionary of attributes that we need to update.
-            var connectionInfoDictionary = new Dictionary<string, string>
+            using (var workbookStream = zipFile.GetInputStream(workbookArchiveEntry))
             {
-                { "dbname", databaseName },
-                { "port", postgresConnection.Port.ToString() },
-                { "server", postgresConnection.Hostname },
-                { "username", postgresConnection.Username },
-                { "password", postgresConnection.Password }
-            };
-
-            // Workbooks cannot be published to Tableau Server if their datasource is pointing to an explicitly local resource, so we make a good-faith effort to update their connections to a resolved hostname.
-            if (postgresConnection.Hostname.Equals("localhost", StringComparison.OrdinalIgnoreCase) ||
-                postgresConnection.Hostname.Equals("127.0.0.1"))
-            {
-                try
-                {
-                    IPHostEntry hostEntry = Dns.GetHostEntry(postgresConnection.Hostname);
-                    if (!String.IsNullOrWhiteSpace(hostEntry.HostName))
-                    {
-                        connectionInfoDictionary["server"] = hostEntry.HostName;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Log.WarnFormat("Unable to resolve configured self-referential Postgres hostname '{0}' to an externally-resolvable hostname: {1}.  Resulting workbook cannot be published to Tableau Server.", postgresConnection.Hostname, ex.Message);
-                }
-            }
-
-            // Update the element to reflect the new connection information.
-            foreach (var key in connectionInfoDictionary.Keys)
-            {
-                if (connectionElement.Attributes[key] != null)
-                {
-                    // Substitute the old value with the new one.
-                    connectionElement.Attributes[key].Value = connectionInfoDictionary[key];
-                }
-                else
-                {
-                    // Attribute does not already exist -- create it and append it.
-                    var attribute = WorkbookXml.CreateAttribute(key);
-                    attribute.Value = connectionInfoDictionary[key];
-                    connectionElement.Attributes.Append(attribute);
-                }
+                XmlDocument workbookXml = UpdateWorkbookXml(workbookStream);
+                zipFile.Add(new XmlDataSource(workbookXml), workbookArchiveEntry.Name);
             }
         }
 
-        private bool IsValidPostgresConnectionElement(XmlNode connectionElement)
+        private XmlDocument UpdateWorkbookXml(Stream workbookStream)
         {
-            if (connectionElement.Attributes == null || connectionElement.Attributes["class"].Value != "postgres")
+            XmlDocument workbookXml = new XmlDocument();
+            workbookXml.Load(workbookStream);
+
+            var editor = new WorkbookXmlEditor(workbookXml);
+
+            postgresConnectionInfo.MatchSome(postgresConnection => editor.UpdatePostgresConnections(postgresConnection, databaseName));            
+            editor.RemoveThumbnails();
+
+            return editor.WorkbookXml;
+        }
+
+        private ZipFile ReplacePackagedExtracts(ZipFile zipFile, string workbookName)
+        {
+            var packagedExtracts = FindPackagedExtracts(zipFile);
+            var generatedExtracts = FindAvailableExtracts(outputDirectory).ToDictionary(Path.GetFileName, path => path);
+
+            foreach (ZipEntry packagedExtract in packagedExtracts)
             {
-                return false;
+                string extractName = Path.GetFileName(packagedExtract.Name);
+                if (!String.IsNullOrEmpty(extractName) && generatedExtracts.ContainsKey(extractName))
+                {
+                    zipFile.Add(generatedExtracts[extractName], packagedExtract.Name);
+                    Log.DebugFormat("Replaced extract '{0}' in workbook '{1}'", extractName, workbookName);
+                }
             }
-            return true;
+
+            return zipFile;
+        }
+
+        private static IEnumerable<ZipEntry> FindPackagedWorkbooks(ZipFile packagedWorkbook)
+        {
+            return packagedWorkbook.Cast<ZipEntry>().Where(archiveEntry => archiveEntry.IsFile && archiveEntry.Name.EndsWith(".twb"));
+        }
+
+        private static IEnumerable<ZipEntry> FindPackagedExtracts(ZipFile packagedWorkbook)
+        {
+            return packagedWorkbook.Cast<ZipEntry>().Where(archiveEntry => archiveEntry.IsFile && archiveEntry.Name.EndsWith(".hyper", StringComparison.OrdinalIgnoreCase));
+        }
+
+        private static IEnumerable<string> FindAvailableExtracts(string directoryPath)
+        {
+            return Directory.GetFiles(directoryPath, "*.hyper", SearchOption.AllDirectories);
+        }
+
+        private static ZipFile PurgeCachedExtractContent(ZipFile zipFile)
+        {
+            foreach (ZipEntry cachedExtractContentEntry in zipFile.Cast<ZipEntry>().Where(entry => entry.Name.StartsWith("TwbxExternalCache")))
+            {
+                zipFile.Delete(cachedExtractContentEntry);
+            }
+
+            return zipFile;
+        }
+
+        /// <summary>
+        /// Utility class used by SharpZipLib
+        /// </summary>
+        private sealed class XmlDataSource : IStaticDataSource
+        {
+            private readonly XmlDocument xml;
+
+            public XmlDataSource(XmlDocument xml)
+            {
+                this.xml = xml;
+            }
+            
+            public Stream GetSource()
+            {
+                var stream = new MemoryStream();
+
+                xml.Save(stream);
+                stream.Position = 0;
+
+                return stream;
+            }
         }
     }
 }

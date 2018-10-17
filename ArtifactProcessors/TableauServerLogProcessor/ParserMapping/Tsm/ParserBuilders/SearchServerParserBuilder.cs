@@ -13,9 +13,9 @@ namespace Logshark.ArtifactProcessors.TableauServerLogProcessor.ParserMapping.Ts
         private static readonly IDictionary<string, Type> fileMap =
             new Dictionary<string, Type>
             {
-                { @"^control-searchserver-.*log.*", typeof(ServiceControlParser) },
+                { @"^control.searchserver.*log.*", typeof(ServiceControlParser) },
                 { @"^localhost.*log.*txt", typeof(SearchServerLocalhostParser) },
-                { @"^searchserver-.*log.*", typeof(SearchServerParser) }
+                { @"^searchserver.*log.*", typeof(SearchServerParser) }
             };
 
         protected override IDictionary<string, Type> FileMap

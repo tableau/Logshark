@@ -53,20 +53,17 @@ namespace LogParsers.Base.ParserBuilders
         /// <returns>True if file is a supported parsable file.</returns>
         public bool IsSupported(string file)
         {
-            // Sanity check.
-            if (String.IsNullOrWhiteSpace(file))
+            if (string.IsNullOrWhiteSpace(file))
             {
                 throw new ArgumentException("File path cannot be null or empty!");
             }
 
-            // Get name of file.
             string fileName = Path.GetFileName(file);
             if (fileName == null)
             {
                 throw new ArgumentException("File does not exist!");
             }
 
-            // Check the filemap for a parser that matches.
             foreach (string fileMapping in FileMap.Keys)
             {
                 var filePattern = new Regex(fileMapping);

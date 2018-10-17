@@ -1,9 +1,8 @@
 ﻿using LogParsers.Base;
 using Logshark.ArtifactProcessorModel;
 using Logshark.ArtifactProcessors.$safeprojectname$.Parsing;
+using Logshark.ArtifactProcessors.$safeprojectname$.PluginInterfaces;
 using Logshark.Common.Helpers;
-using Logshark.PluginLib.Model;
-using Logshark.RequestModel;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -25,8 +24,8 @@ namespace Logshark.ArtifactProcessors.$safeprojectname$
 
         private static readonly ISet<Type> supportedPluginInterfaces = new HashSet<Type>
         {
-            // TODO: Update this type name to a type defined in Logshark.PluginLib.Model.
-            typeof(IServerPlugin)
+            // TODO: Update this interface name to an appropriate name for the kind of artifact being processed.
+            typeof(ISamplePluginInterface)
         };
 
         #region IArtifactProcessor Implementation
@@ -63,7 +62,7 @@ namespace Logshark.ArtifactProcessors.$safeprojectname$
         }
 
         // Indicates whether this artifact processor can service the given request.
-        public bool CanProcess(LogsharkRequest request)
+        public bool CanProcess(string rootLogLocation)
         {
             // TODO: Your logic goes here.   This logic should be as specific as possible, as only one artifact processor may match a given artifact.
             // You can inspect the archive contents at the following path: request.RunContext.RootLogDirectory
@@ -71,10 +70,16 @@ namespace Logshark.ArtifactProcessors.$safeprojectname$
         }
 
         // Custom hashing function for this artifact type.  Typically this returns an MD5-style hash value.
-        public string ComputeArtifactHash(LogsharkRequest request)
+        public string ComputeArtifactHash(string rootLogLocation)
         {
             // TODO: Verify that the following default is sufficiently unique for this payloads of this artifact type, or implement custom hash logic.
-            return LogsetHashUtil.GetLogSetHash(request.Target);
+            return HashUtility.ComputeDirectoryHash(rootLogLocation);
+        }
+
+        public IDictionary<string, object> GetAdditionalFileMetadata(LogFileContext fileContext)
+        {
+            // TODO: Optionally extract any additional metadata to store on each parsed document.
+            return new Dictionary<string, object>();
         }
 
         #endregion IArtifactProcessor Implementation

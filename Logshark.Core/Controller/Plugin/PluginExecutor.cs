@@ -1,4 +1,5 @@
 ﻿using log4net;
+using log4net.Appender;
 using Logshark.Common.Extensions;
 using Logshark.ConnectionModel.Mongo;
 using Logshark.ConnectionModel.Postgres;
@@ -10,6 +11,7 @@ using Logshark.PluginLib.Model;
 using Logshark.PluginLib.Model.Impl;
 using Logshark.PluginModel.Model;
 using Logshark.RequestModel.Config;
+using Optional;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -22,13 +24,15 @@ using Tableau.RestApi.Model;
 namespace Logshark.Core.Controller.Plugin
 {
     /// <summary>
-    ///  Handles execution of plugins.
+    /// Handles execution of plugins.
     /// </summary>
     internal class PluginExecutor
     {
         protected readonly MongoConnectionInfo mongoConnectionInfo;
-        protected readonly PostgresConnectionInfo postgresConnectionInfo;
+        protected readonly Option<PostgresConnectionInfo> postgresConnectionInfo;
         protected readonly TableauServerConnectionInfo tableauConnectionInfo;
+        protected readonly string applicationTempDirectory;
+        protected readonly string applicationOutputDirectory;
 
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -37,6 +41,8 @@ namespace Logshark.Core.Controller.Plugin
             mongoConnectionInfo = config.MongoConnectionInfo;
             postgresConnectionInfo = config.PostgresConnectionInfo;
             tableauConnectionInfo = config.TableauConnectionInfo;
+            applicationTempDirectory = config.ApplicationTempDirectory;
+            applicationOutputDirectory = config.ApplicationOutputDirectory;
         }
 
         #region Public Methods
@@ -46,11 +52,8 @@ namespace Logshark.Core.Controller.Plugin
         /// </summary>
         public PluginExecutionResult ExecutePlugins(PluginExecutionRequest request)
         {
-            string pluginOutputLocation = GetOutputLocation(request.RunId);
-            if (!Directory.Exists(pluginOutputLocation))
-            {
-                Directory.CreateDirectory(pluginOutputLocation);
-            }
+            string pluginOutputLocation = GetRunOutputDirectory(applicationOutputDirectory, request.RunId);
+            Directory.CreateDirectory(pluginOutputLocation);
 
             // Execute all plugins.
             using (new LogsharkTimer("Executed Plugins", GlobalEventTimingData.Add))
@@ -67,17 +70,12 @@ namespace Logshark.Core.Controller.Plugin
         /// <summary>
         /// Get the output location where a Logshark run stores any output artifacts.
         /// </summary>
+        /// <param name="baseOutputDirectory">The base application output directory path.</param>
         /// <param name="runId">The ID of the Logshark run.</param>
         /// <returns>Absolute path to the directory where Logshark output is stored.</returns>
-        public static string GetOutputLocation(string runId)
+        public static string GetRunOutputDirectory(string baseOutputDirectory, string runId)
         {
-            string outputDirectory = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Output");
-            if (!Directory.Exists(outputDirectory))
-            {
-                Directory.CreateDirectory(outputDirectory);
-            }
-
-            return Path.Combine(outputDirectory, runId);
+            return Path.Combine(baseOutputDirectory, runId);
         }
 
         #endregion Public Methods
@@ -120,31 +118,25 @@ namespace Logshark.Core.Controller.Plugin
             try
             {
                 string outputDatabaseName = GetOutputDatabaseName(pluginName, pluginRequest, pluginExecutionRequest);
-                IPlugin plugin = InitializePlugin(pluginType, pluginExecutionRequest.MongoDatabaseName, outputDatabaseName, previousPluginResponses);
+
+                var plugin = InitializePlugin(pluginType, pluginRequest, pluginExecutionRequest.MongoDatabaseName, outputDatabaseName, previousPluginResponses);
 
                 Log.InfoFormat("Execution of {0} plugin started at {1}..", pluginName, DateTime.Now.ToString("h:mm tt", CultureInfo.InvariantCulture));
-                pluginResponse = plugin.Execute(pluginRequest);
+                pluginResponse = plugin.Execute();
 
                 // Flush any workbooks, if this was a workbook creation plugin.
                 if (plugin is IWorkbookCreationPlugin)
                 {
-                    string workbookOutputDirectory = GetOutputLocation(pluginExecutionRequest.RunId);
-                    IEnumerable<string> workbookFilePaths = WriteWorkbooksToDisk(workbookOutputDirectory, plugin as IWorkbookCreationPlugin, pluginResponse, outputDatabaseName);
+                    IEnumerable<string> workbookFilePaths = WriteWorkbooksToDisk(pluginRequest.OutputDirectory, plugin as IWorkbookCreationPlugin, pluginResponse, outputDatabaseName);
                     pluginResponse.WorkbooksOutput.AddRange(workbookFilePaths);
                 }
 
                 // Publish any associated workbooks, if requested.
                 if (pluginExecutionRequest.PublishingOptions != null && pluginExecutionRequest.PublishingOptions.PublishWorkbooks)
                 {
-                    var workbookPublisher = new WorkbookPublisher(
-                        tableauConnectionInfo,
-                        postgresConnectionInfo,
-                        pluginExecutionRequest.PublishingOptions,
-                        new RestApiRequestor(
-                            tableauConnectionInfo.Uri,
-                            tableauConnectionInfo.Username,
-                            tableauConnectionInfo.Password,
-                            tableauConnectionInfo.Site));
+                    var restApiRequestor = new RestApiRequestor(tableauConnectionInfo.Uri, tableauConnectionInfo.Username, tableauConnectionInfo.Password, tableauConnectionInfo.Site);
+                    var workbookPublisher = new WorkbookPublisher(tableauConnectionInfo, postgresConnectionInfo, pluginExecutionRequest.PublishingOptions, restApiRequestor);
+
                     ICollection<PublishedWorkbookResult> workbooksPublished = workbookPublisher.PublishWorkbooks(pluginResponse);
                     pluginResponse.WorkbooksPublished.AddRange(workbooksPublished);
                 }
@@ -184,14 +176,17 @@ namespace Logshark.Core.Controller.Plugin
         protected IPluginRequest CreatePluginRequest(Type pluginType, PluginExecutionRequest pluginExecutionRequest)
         {
             Guid logsetHash = Guid.Parse(pluginExecutionRequest.LogsetHash);
-            string outputDirectory = GetOutputLocation(pluginExecutionRequest.RunId);
-            var pluginRequest = new PluginRequest(logsetHash, outputDirectory, pluginExecutionRequest.RunId);
+            string outputDirectory = GetPluginOutputDirectory(pluginExecutionRequest.RunId);
+            string applicationLogDirectory = GetApplicationLogDirectory();
+            var mongoDatabase = mongoConnectionInfo.GetDatabase(pluginExecutionRequest.MongoDatabaseName);
+
+            var pluginRequest = new PluginRequest(logsetHash, outputDirectory, applicationTempDirectory, applicationLogDirectory, pluginExecutionRequest.RunId, mongoDatabase);
 
             // Append all global and plugin specific arguments to the plugin argument map.
             foreach (string argumentKey in pluginExecutionRequest.PluginArguments.Keys)
             {
-                if (argumentKey.StartsWith(pluginType.Name + ".", StringComparison.InvariantCultureIgnoreCase)
-                    || argumentKey.StartsWith("Global.", StringComparison.InvariantCultureIgnoreCase))
+                if (argumentKey.StartsWith(pluginType.Name + ".", StringComparison.InvariantCultureIgnoreCase) ||
+                    argumentKey.StartsWith("Global.", StringComparison.InvariantCultureIgnoreCase))
                 {
                     pluginRequest.SetRequestArgument(argumentKey, pluginExecutionRequest.PluginArguments[argumentKey]);
                 }
@@ -222,29 +217,36 @@ namespace Logshark.Core.Controller.Plugin
         /// <summary>
         /// Handles initialization of an IPlugin object for a given plugin type.
         /// </summary>
-        protected IPlugin InitializePlugin(Type pluginType, string mongoDatabaseName, string postgresDatabaseName, IEnumerable<IPluginResponse> previousPluginResponses)
+        protected IPlugin InitializePlugin(Type pluginType, IPluginRequest pluginRequest, string mongoDatabaseName, string outputDatabaseName, IEnumerable<IPluginResponse> previousPluginResponses)
         {
             Log.InfoFormat("Initializing {0} plugin..", pluginType.Name);
 
             try
             {
-                // Create plugin object.
-                var plugin = (IPlugin)Activator.CreateInstance(pluginType);
+                // For an explanation of these types and their composition, see https://gitlab.tableausoftware.com/product-troubleshooting-tools/Logshark-CLI/merge_requests/552#note_295479
+                var plugin = (IPlugin) Activator.CreateInstance(pluginType, pluginRequest);
 
-                // Set database connections.
-                plugin.MongoDatabase = mongoConnectionInfo.GetDatabase(mongoDatabaseName);
-                plugin.OutputDatabaseConnectionFactory = postgresConnectionInfo.GetConnectionFactory(postgresDatabaseName);
+                if (PluginLoader.IsDatabasePersistencePlugin(pluginType))
+                {
+                    IDatabasePersistencePlugin dbPersistencePlugin = (IDatabasePersistencePlugin) plugin;
+
+                    if (dbPersistencePlugin.IsDatabaseRequired && !postgresConnectionInfo.HasValue)
+                    {
+                        throw new PluginInitializationException(String.Format("Plugin {0} requires that an output database connection is configured", pluginType.Name));
+                    }
+
+                    postgresConnectionInfo.MatchSome(connection => dbPersistencePlugin.OutputDatabaseConnectionFactory = connection.GetConnectionFactory(outputDatabaseName));
+                    plugin = dbPersistencePlugin;
+                }
 
                 if (PluginLoader.IsPostExecutionPlugin(pluginType))
                 {
                     IPostExecutionPlugin postExecutionPlugin = (IPostExecutionPlugin)plugin;
                     postExecutionPlugin.PluginResponses = previousPluginResponses;
-                    return postExecutionPlugin;
+                    plugin = postExecutionPlugin;
                 }
-                else
-                {
-                    return plugin;
-                }
+
+                return plugin;
             }
             catch (Exception ex)
             {
@@ -255,11 +257,11 @@ namespace Logshark.Core.Controller.Plugin
         /// <summary>
         /// Writes all workbooks associated with a workbook creation plugin to the output directory.
         /// </summary>
-        /// <param name="outputLocation">The absolute path where the workbooks should be written.</param>
+        /// <param name="outputLocation">The absolute path where plugin output was written.</param>
         /// <param name="plugin">The workbook creation plugin that ran.</param>
         /// <param name="response">The response object, containing information about the results of executing the plugin.</param>
-        /// <param name="postgresDatabaseName">The name of the Postgres database that the workbook should connect to.</param>
-        protected IEnumerable<string> WriteWorkbooksToDisk(string outputLocation, IWorkbookCreationPlugin plugin, IPluginResponse response, string postgresDatabaseName)
+        /// <param name="outputDatabaseName">The name of the Postgres database that the workbook should connect to.</param>
+        protected IEnumerable<string> WriteWorkbooksToDisk(string outputLocation, IWorkbookCreationPlugin plugin, IPluginResponse response, string outputDatabaseName)
         {
             var workbookFilePaths = new List<string>();
 
@@ -279,13 +281,14 @@ namespace Logshark.Core.Controller.Plugin
             {
                 foreach (var workbookName in plugin.WorkbookNames)
                 {
-                    WorkbookEditor workbookEditor = new WorkbookEditor(workbookName, plugin.GetWorkbookXml(workbookName));
-                    workbookEditor.ReplacePostgresConnections(postgresConnectionInfo, postgresDatabaseName);
-                    workbookEditor.RemoveThumbnails();
+                    var workbookEditor = new WorkbookEditor(outputLocation, postgresConnectionInfo, outputDatabaseName);
 
-                    string workbookFilePath = workbookEditor.Save(outputLocation);
-                    workbookFilePaths.Add(workbookFilePath);
-                    Log.InfoFormat("Saved workbook to '{0}'!", workbookFilePath);
+                    using (var workbookInputStream = plugin.GetWorkbook(workbookName))
+                    {
+                        var processedWorkbook = workbookEditor.Process(workbookInputStream, workbookName);
+                        workbookFilePaths.Add(processedWorkbook.FullName);
+                        Log.InfoFormat("Saved workbook to '{0}'!", processedWorkbook.FullName);
+                    }
                 }
             }
 
@@ -328,6 +331,26 @@ namespace Logshark.Core.Controller.Plugin
             {
                 Log.InfoFormat("{0} execution completed! [{1}]", response.PluginName, response.PluginRunTime.Print());
             }
+        }
+
+
+        /// <summary>
+        /// Get the output location where a Logshark plugin stores any output artifacts.
+        /// </summary>
+        /// <param name="runId">The ID of the Logshark run.</param>
+        /// <returns>Absolute path to the directory where plugin output is stored.</returns>
+        protected string GetPluginOutputDirectory(string runId)
+        {
+            return GetRunOutputDirectory(applicationOutputDirectory, runId);
+        }
+
+        /// <summary>
+        /// Gets the absolute path to the directory where application logs are written.
+        /// </summary>
+        protected string GetApplicationLogDirectory()
+        {
+            var fileAppender = Log.Logger.Repository.GetAppenders().OfType<RollingFileAppender>().FirstOrDefault();
+            return fileAppender == null ? null : new FileInfo(fileAppender.File).Directory.FullName;
         }
 
         #endregion Protected Methods

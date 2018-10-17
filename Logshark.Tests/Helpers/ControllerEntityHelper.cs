@@ -14,10 +14,7 @@ namespace Logshark.Tests.Helpers
 
         public static LogsharkConfiguration GetMockConfiguration()
         {
-            var options = LogsharkConfigReader.LoadConfiguration();
-            options.TableauConnectionInfo.Site = "Test";
-
-            return options;
+            return LogsharkConfigReader.LoadConfiguration();
         }
     }
 }

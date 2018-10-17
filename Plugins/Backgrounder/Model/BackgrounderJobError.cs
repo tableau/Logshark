@@ -1,36 +1,21 @@
 ﻿using Logshark.PluginLib.Helpers;
 using MongoDB.Bson;
-using ServiceStack.DataAnnotations;
 using System;
 
 namespace Logshark.Plugins.Backgrounder.Model
 {
     internal class BackgrounderJobError
     {
-        [AutoIncrement]
-        [PrimaryKey]
-        public int Id { get; set; }
-
-        [Index]
         public long BackgrounderJobId { get; set; }
 
-        [Index]
         public DateTime Timestamp { get; set; }
-
         public string Site { get; set; }
-
         public string Thread { get; set; }
-
-        [Index]
         public string Severity { get; set; }
-
         public string Class { get; set; }
-
         public string Message { get; set; }
         public string File { get; set; }
-
         public int Line { get; set; }
-
 
         public BackgrounderJobError() { }
 

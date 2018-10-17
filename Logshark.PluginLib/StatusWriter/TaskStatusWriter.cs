@@ -23,10 +23,10 @@ namespace Logshark.PluginLib.StatusWriter
     ///         Task.WaitAll(tasks.ToArray());
     ///     }
     /// </summary>
-    public class TaskStatusWriter : BaseStatusWriter
+    public sealed class TaskStatusWriter : BaseStatusWriter
     {
-        protected readonly ICollection<Task> tasks;
-        protected readonly long totalTasks;
+        private readonly ICollection<Task> tasks;
+        private readonly long totalTasks;
 
         /// <summary>
         /// Creates a new task progress heartbeat timer with the given parameters.
@@ -36,9 +36,8 @@ namespace Logshark.PluginLib.StatusWriter
         /// <param name="progressFormatMessage">The progress message. Can contain tokens (see class summary).</param>
         /// <param name="pollIntervalSeconds">The number of seconds to wait between heartbeats.</param>
         /// <param name="expectedTotalTasks">The number of tasks expected to be executed.  Optional.</param>
-        /// <param name="options">Options about when to write status.</param>
-        public TaskStatusWriter(ICollection<Task> tasks, ILog logger, string progressFormatMessage, int pollIntervalSeconds, long? expectedTotalTasks = null, StatusWriterOptions options = StatusWriterOptions.WriteOnStop)
-            : base(logger, progressFormatMessage, pollIntervalSeconds, options)
+        public TaskStatusWriter(ICollection<Task> tasks, ILog logger, string progressFormatMessage, int pollIntervalSeconds, long? expectedTotalTasks = null)
+            : base(logger, progressFormatMessage, pollIntervalSeconds)
         {
             this.tasks = tasks;
             totalTasks = tasks.Count;
@@ -46,13 +45,14 @@ namespace Logshark.PluginLib.StatusWriter
             {
                 totalTasks = expectedTotalTasks.Value;
             }
-            Start();
+
+            progressHeartbeatTimer.Start();
         }
 
         protected override string GetStatusMessage()
         {
-            long tasksCompleted = CountCompletedTasks();
-            long tasksRunning = CountRunningTasks();
+            long tasksCompleted = tasks.Count(task => task.IsCompleted);
+            long tasksRunning = tasks.Count(task => task.Status == TaskStatus.Running);
             long tasksRemaining = totalTasks - tasksCompleted;
 
             string percentCompleteString;
@@ -71,16 +71,6 @@ namespace Logshark.PluginLib.StatusWriter
                                         .Replace("{TasksRunning}", tasksRunning.ToString())
                                         .Replace("{TasksRemaining}", tasksRemaining.ToString())
                                         .Replace("{PercentComplete}", percentCompleteString);
-        }
-
-        protected int CountCompletedTasks()
-        {
-            return tasks.Count(task => task.IsCompleted);
-        }
-
-        protected int CountRunningTasks()
-        {
-            return tasks.Count(task => task.Status == TaskStatus.Running);
         }
     }
 }

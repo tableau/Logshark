@@ -1,4 +1,5 @@
-﻿using Logshark.PluginLib.Helpers;
+﻿using Logshark.PluginLib.Extensions;
+using Logshark.PluginLib.Helpers;
 using MongoDB.Bson;
 
 namespace Logshark.Plugins.Vizql.Models.Events.Query
@@ -13,12 +14,11 @@ namespace Logshark.Plugins.Vizql.Models.Events.Query
 
         public VizqlEndPrepareQuickFilterQueries(BsonDocument document)
         {
-            ValidateArguments("end-prepare-quick-filter-queries", document);
             SetEventMetadata(document);
             BsonDocument values = BsonDocumentHelper.GetValuesStruct(document);
-            Elapsed = BsonDocumentHelper.GetDouble("elapsed", values);
-            Sheet = BsonDocumentHelper.GetString("sheet", values);
-            View = BsonDocumentHelper.GetString("view", values);
+            Elapsed = values.GetDouble("elapsed");
+            Sheet = values.GetString("sheet");
+            View = values.GetString("view");
         }
 
         public override double? GetElapsedTimeInSeconds()

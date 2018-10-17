@@ -1,6 +1,6 @@
-﻿using Logshark.PluginLib.Helpers;
+﻿using Logshark.PluginLib.Extensions;
+using Logshark.PluginLib.Helpers;
 using MongoDB.Bson;
-using ServiceStack.DataAnnotations;
 using System;
 using System.Collections.Generic;
 
@@ -13,26 +13,21 @@ namespace Logshark.Plugins.Vizql.Models.Events.Query
         public double? ElapsedComputeKeys { get; set; }
         public double ElapsedSum { get; set; }
 
-        [Index(Unique = true)]
         public string QpBatchSummaryEventGuid { get; set; }
 
-        [Ignore]
         public List<VizqlQpBatchSummaryJob> QpBatchSummaryJobs { get; private set; }
 
-        public VizqlQpBatchSummary()
-        {
-        }
+        public VizqlQpBatchSummary() { }
 
         public VizqlQpBatchSummary(BsonDocument document)
         {
-            ValidateArguments("qp-batch-summary", document);
             SetEventMetadata(document);
 
             BsonDocument values = BsonDocumentHelper.GetValuesStruct(document);
-            Elapsed = BsonDocumentHelper.GetDouble("elapsed", values);
-            ElapsedComputeKeys = BsonDocumentHelper.GetNullableDouble("elapsed-compute-keys", values);
-            ElapsedSum = BsonDocumentHelper.GetDouble("elapsed-sum", values);
-            JobCount = BsonDocumentHelper.GetInt("job-count", values);
+            Elapsed = values.GetDouble("elapsed");
+            ElapsedComputeKeys = values.GetNullableDouble("elapsed-compute-keys");
+            ElapsedSum = values.GetDouble("elapsed-sum");
+            JobCount = values.GetInt("job-count");
 
             QpBatchSummaryEventGuid = GetQpBatchSummaryGuid();
 

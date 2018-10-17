@@ -18,13 +18,13 @@ namespace Logshark.CLI
     {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-        private readonly LogsharkConfiguration configuration;
-        private readonly string currentWorkingDirectory;
+        private readonly LogsharkConfiguration _configuration;
+        private readonly string _currentWorkingDirectory;
 
         public LogsharkCLI(string currentWorkingDirectory)
         {
-            configuration = LogsharkConfigReader.LoadConfiguration();
-            this.currentWorkingDirectory = currentWorkingDirectory;
+            _configuration = LogsharkConfigReader.LoadConfiguration();
+            _currentWorkingDirectory = currentWorkingDirectory;
         }
 
         #region Public Methods
@@ -44,17 +44,17 @@ namespace Logshark.CLI
                 }
                 catch (Exception ex)
                 {
-                    Log.FatalFormat("Unable to retrieve list of available plugins: {0}", ex.Message);
+                    Log.FatalFormat($"Unable to retrieve list of available plugins: {ex.Message}");
                     return ExitCode.ExecutionError;
                 }
             }
 
             try
             {
-                LogsharkRequest request = BuildLogsharkRequest(commandLineOptions);
+                var request = BuildLogsharkRequest(commandLineOptions);
 
                 var requestProcessor = new LogsharkRequestProcessor();
-                LogsharkRunContext outcome = requestProcessor.ProcessRequest(request);
+                var outcome = requestProcessor.ProcessRequest(request);
 
                 return outcome.IsRunSuccessful.Equals(true) ? ExitCode.Success : ExitCode.ExecutionError;
             }
@@ -72,8 +72,8 @@ namespace Logshark.CLI
 
         private LogsharkRequest BuildLogsharkRequest(LogsharkCommandLineOptions commandLineArgs)
         {
-            string target = commandLineArgs.Target;
-            if (String.IsNullOrWhiteSpace(target))
+            var target = commandLineArgs.Target;
+            if (string.IsNullOrWhiteSpace(target))
             {
                 throw new ArgumentException("No logset target specified! See 'logshark --help' for usage examples.");
             }
@@ -81,12 +81,12 @@ namespace Logshark.CLI
             // If the target is a relative path, we first need to convert it to an absolute path.
             if (!target.IsValidMD5() && !Path.IsPathRooted(target))
             {
-                target = Path.Combine(currentWorkingDirectory, target);
+                target = Path.Combine(_currentWorkingDirectory, target);
             }
 
             try
             {
-                LogsharkRequest request = new LogsharkRequestBuilder(target, configuration)
+                var request = new LogsharkRequestBuilder(target, _configuration)
                     .WithCustomId(commandLineArgs.Id)
                     .WithDropParsedLogset(commandLineArgs.DropParsedLogset)
                     .WithForceParse(commandLineArgs.ForceParse)
@@ -109,7 +109,7 @@ namespace Logshark.CLI
             }
             catch (Exception ex)
             {
-                Log.FatalFormat("Invalid request: {0}", ex.Message);
+                Log.FatalFormat($"Invalid request: {ex.Message}");
                 throw;
             }
         }
@@ -119,13 +119,13 @@ namespace Logshark.CLI
         /// </summary>
         /// <param name="args">A collection of args to parse.</param>
         /// <returns>Dictionary of parsed arguments.</returns>
-        private IDictionary<string, object> ParseCommandLineArgToDictionary(IEnumerable<string> args)
+        private static IDictionary<string, object> ParseCommandLineArgToDictionary(IEnumerable<string> args)
         {
             var argCollection = new Dictionary<string, object>();
 
             foreach (var arg in args)
             {
-                string[] keyAndValue = arg.Split(':');
+                var keyAndValue = arg.Split(':');
                 if (keyAndValue.ToList().Count != 2)
                 {
                     throw new ArgumentException("Invalid argument! Custom arguments must be formatted as ArgumentName:ArgumentValue", arg);

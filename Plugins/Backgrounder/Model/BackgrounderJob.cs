@@ -1,27 +1,15 @@
 ﻿using Logshark.PluginLib.Helpers;
 using MongoDB.Bson;
-using ServiceStack.DataAnnotations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Tableau.ExtractApi.DataAttributes;
 
 namespace Logshark.Plugins.Backgrounder.Model
 {
     internal class BackgrounderJob
     {
-        [AutoIncrement]
-        [PrimaryKey]
-        public int Id { get; set; }
-
-        public Guid LogsetHash { get; set; }
-
-        [Index(Unique = true)]
-        public Guid EventHash { get; set; }
-
-        [Index]
         public long JobId { get; set; }
-
-        [Index]
         public string JobType { get; set; }
 
         public int? Timeout { get; set; }
@@ -41,25 +29,23 @@ namespace Logshark.Plugins.Backgrounder.Model
         public string EndFile { get; set; }
         public int? EndLine { get; set; }
 
-        [Ignore]
+        [ExtractIgnore]
         public BackgrounderJobDetail BackgrounderJobDetail { get; set; }
 
-        [Ignore]
+        [ExtractIgnore]
         public ICollection<BackgrounderJobError> Errors { get; set; }
 
         public BackgrounderJob()
         {
         }
 
-        public BackgrounderJob(BsonDocument startEvent, BsonDocument finishEvent, Guid logsetHash)
+        public BackgrounderJob(BsonDocument startEvent, BsonDocument finishEvent)
         {
             ParseStartEventElements(startEvent);
             ParseEndEventElements(finishEvent);
-            LogsetHash = logsetHash;
-            EventHash = HashHelper.GenerateHashGuid(JobId, WorkerId, BackgrounderId, StartTime, Args);
         }
 
-        public BackgrounderJob(BsonDocument startEvent, bool timedOut, Guid logsetHash)
+        public BackgrounderJob(BsonDocument startEvent, bool timedOut)
         {
             if (timedOut)
             {
@@ -69,8 +55,6 @@ namespace Logshark.Plugins.Backgrounder.Model
                 EndLine = null;
                 ErrorMessage = "TimeoutExceptionReached";
             }
-            LogsetHash = logsetHash;
-            EventHash = HashHelper.GenerateHashGuid(JobId, WorkerId, BackgrounderId, StartTime);
         }
 
         private void ParseStartEventElements(BsonDocument startEvent)
@@ -90,6 +74,12 @@ namespace Logshark.Plugins.Backgrounder.Model
             StartFile = String.Format(@"{0}\{1}", BsonDocumentHelper.GetString("file_path", startEvent), fileName);
             StartLine = BsonDocumentHelper.GetInt("line", startEvent);
 
+            // Get job id, if directly available
+            if (startEvent.Contains("job_id"))
+            {
+                JobId = BsonDocumentHelper.GetLong("job_id", startEvent);
+            }
+
             // Get job type, if directly available
             JobType = BsonDocumentHelper.GetString("job_type", startEvent);
 
@@ -100,7 +90,7 @@ namespace Logshark.Plugins.Backgrounder.Model
             {
                 if (String.IsNullOrWhiteSpace(JobType) && item.Contains("Running job of type"))
                 {
-                    string jobType = item.Split(':').Last().Trim();
+                    string jobType = item.Split(new[] {':', ' '}).Last().Trim();
                     if (String.IsNullOrWhiteSpace(jobType))
                     {
                         throw new ArgumentOutOfRangeException(String.Format("Failed to parse job type from document '{0}'.", BsonDocumentHelper.GetString("_id", startEvent)));
@@ -120,10 +110,14 @@ namespace Logshark.Plugins.Backgrounder.Model
                     Priority = Int32.Parse(priority);
                 }
 
-                if (item.Contains("id:"))
+                if (JobId == default(long) && item.Contains("id:"))
                 {
                     string id = item.Split(':').Last().Trim();
-                    JobId = Int64.Parse(id);
+                    long parsedJobId;
+                    if (Int64.TryParse(id, out parsedJobId))
+                    {
+                        JobId = parsedJobId;
+                    }
                 }
 
                 string argPrefix = "args:";
@@ -131,7 +125,7 @@ namespace Logshark.Plugins.Backgrounder.Model
                 {
                     int argStartIndex = item.LastIndexOf(argPrefix, StringComparison.InvariantCultureIgnoreCase) + argPrefix.Length;
                     string args = item.Substring(argStartIndex, item.Length - argPrefix.Length - 1).Trim();
-                    if (!args.Equals("[]"))
+                    if (!args.Equals("[]") && !args.Equals("null"))
                     {
                         Args = args;
                     }

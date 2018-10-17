@@ -1,30 +1,26 @@
-﻿using Logshark.PluginLib.Helpers;
+﻿using Logshark.PluginLib.Extensions;
 using Logshark.Plugins.ClusterController.Helpers;
 using MongoDB.Bson;
-using ServiceStack.DataAnnotations;
 using System;
 
 namespace Logshark.Plugins.ClusterController.Models
 {
-    public class ClusterControllerPostgresAction : ClusterControllerEvent
+    public class ClusterControllerPostgresAction : BaseClusterControllerEvent
     {
-        [Index]
         public string Action { get; set; }
 
         public ClusterControllerPostgresAction()
         {
         }
 
-        public ClusterControllerPostgresAction(BsonDocument document, Guid logsetHash)
-            : base(document, logsetHash)
+        public ClusterControllerPostgresAction(BsonDocument document) : base(document)
         {
             Action = GetActionValue(document);
-            EventHash = GetEventHash();
         }
 
         protected string GetActionValue(BsonDocument document)
         {
-            String message = BsonDocumentHelper.GetString("message", document);
+            string message = document.GetString("message");
 
             switch (message)
             {
@@ -46,11 +42,6 @@ namespace Logshark.Plugins.ClusterController.Models
                 default:
                     throw new Exception("No action for log message: " + message);
             }
-        }
-
-        protected Guid GetEventHash()
-        {
-            return HashHelper.GenerateHashGuid(Timestamp, Action, Worker, Filename, LineNumber);
         }
     }
 }

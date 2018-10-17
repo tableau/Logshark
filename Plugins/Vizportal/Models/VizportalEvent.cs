@@ -1,63 +1,45 @@
-﻿using System;
-using Logshark.PluginLib.Helpers;
-using MongoDB.Bson;
-using ServiceStack.DataAnnotations;
+﻿using MongoDB.Bson.Serialization.Attributes;
+using System;
 
 namespace Logshark.Plugins.Vizportal.Models
 {
+    [BsonIgnoreExtraElements]
     public class VizportalEvent
     {
-        [PrimaryKey]
-        [AutoIncrement]
-        public int Id { get; set; }
-
-        public Guid LogsetHash { get; set; }
-
-        [Index(Unique = true)]
-        public Guid EventHash { get; set; }
-
-        [Index]
+        [BsonElement("req")]
         public string RequestId { get; set; }
 
-        [Index]
+        [BsonElement("ts")]
         public DateTime Timestamp { get; set; }
 
-        public string Worker { get; set; }
+        [BsonElement("user")]
         public string User { get; set; }
 
-        [Index]
+        [BsonElement("sess")]
         public string SessionId { get; set; }
 
+        [BsonElement("site")]
         public string Site { get; set; }
 
-        [Index]
+        [BsonElement("sev")]
         public string Severity { get; set; }
 
+        [BsonElement("class")]
         public string Class { get; set; }
+
+        [BsonElement("message")]
         public string Message { get; set; }
 
-        public VizportalEvent()
-        {
-        }
+        [BsonElement("worker")]
+        public string Worker { get; set; }
 
-        public VizportalEvent(BsonDocument logLine, Guid logsetHash)
-        {
-            LogsetHash = logsetHash;
-            RequestId = BsonDocumentHelper.GetString("req", logLine);
-            Timestamp = BsonDocumentHelper.GetDateTime("ts", logLine);
-            Worker = BsonDocumentHelper.GetString("worker", logLine);
-            User = BsonDocumentHelper.GetString("user", logLine);
-            SessionId = BsonDocumentHelper.GetString("sess", logLine);
-            Site = BsonDocumentHelper.GetString("site", logLine);
-            Severity = BsonDocumentHelper.GetString("sev", logLine);
-            Class = BsonDocumentHelper.GetString("class", logLine);
-            Message = BsonDocumentHelper.GetString("message", logLine);
-            EventHash = GetEventHash(logLine);
-        }
+        [BsonElement("file_path")]
+        public string FilePath { get; set; }
 
-        protected Guid GetEventHash(BsonDocument logLine)
-        {
-            return HashHelper.GenerateHashGuid(Site, User, RequestId, Message, Timestamp, Worker, SessionId);
-        }
+        [BsonElement("file")]
+        public string File { get; set; }
+
+        [BsonElement("line")]
+        public int LineNumber { get; set; }
     }
 }

@@ -1,29 +1,17 @@
 ﻿using Logshark.PluginLib.Helpers;
 using MongoDB.Bson;
-using ServiceStack.DataAnnotations;
-using System;
 using System.Collections.Generic;
 
 namespace Logshark.Plugins.Backgrounder.Model
 {
     internal class BackgrounderSubscriptionJobDetail : BackgrounderJobDetail
     {
-        [AutoIncrement]
-        [PrimaryKey]
-        public int Id { get; set; }
-
-        [Index]
         public long BackgrounderJobId { get; set; }
-
-        [Index]
-        public Guid BackgrounderJobEventHash { get; set; }
 
         public string SenderEmail { get; set; }
         public string RecipientEmail { get; set; }
         public string SmtpServer { get; set; }
         public string SubscriptionName { get; set; }
-
-        [Index]
         public string VizqlSessionId { get; set; }
 
         public BackgrounderSubscriptionJobDetail()
@@ -33,7 +21,7 @@ namespace Logshark.Plugins.Backgrounder.Model
         public BackgrounderSubscriptionJobDetail(BackgrounderJob backgrounderJob, IList<BsonDocument> subscriptionJobEvents)
         {
             BackgrounderJobId = backgrounderJob.JobId;
-            BackgrounderJobEventHash = backgrounderJob.EventHash;
+
             foreach (var subscriptionJobEvent in subscriptionJobEvents)
             {
                 string className = BsonDocumentHelper.GetString("class", subscriptionJobEvent);

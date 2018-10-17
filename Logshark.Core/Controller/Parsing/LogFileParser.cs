@@ -37,14 +37,17 @@ namespace Logshark.Core.Controller.Parsing
                     if (document != null)
                     {
                         DocumentWriteResult result = writer.Write(document);
-                        if (!result.IsSuccessful)
+                        switch (result.Result)
                         {
-                            Log.WarnFormat("Failed to write document parsed from file '{0}': {1}", logFile, result.ErrorMessage);
+                            case DocumentWriteResultType.Failure:
+                                Log.WarnFormat("Failed to write document parsed from file '{0}': {1}", logFile, result.ErrorMessage);
+                                break;
+                            case DocumentWriteResultType.SuccessWithWarning:
+                                Log.WarnFormat($"Document from file '{logFile}' processed with warning: {result.ErrorMessage}");
+                                break;
                         }
-                        else
-                        {
-                            processedDocumentCount++;
-                        }
+
+                        processedDocumentCount++;
                     }
                 }
             }

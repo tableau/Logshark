@@ -19,12 +19,12 @@ namespace Logshark.Plugins.CustomWorkbooks.Config
         {
             var pluginDependencies = workbookElement.Elements("PluginDependency")
                                                     .Select(pluginDependencyElement => pluginDependencyElement.Attribute("name").Value);
-            var workbookDependencyMapping = new WorkbookDependencyMapping
+
+            return new WorkbookDependencyMapping
             {
                 WorkbookName = workbookElement.Attribute("name").Value,
                 PluginDependencies = new HashSet<string>(pluginDependencies)
             };
-            return workbookDependencyMapping;
         }
     }
 }

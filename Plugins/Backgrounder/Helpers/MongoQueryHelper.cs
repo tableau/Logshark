@@ -28,7 +28,7 @@ namespace Logshark.Plugins.Backgrounder.Helpers
             IEnumerable<string> distinctFileNames = collection.Distinct<string>("file", FilterByWorkerId(workerId)).ToEnumerable();
             foreach (string distinctFileName in distinctFileNames)
             {
-                int? backgrounderId = BackgrounderJobProcessor.GetBackgrounderIdFromFilename(distinctFileName);
+                int? backgrounderId = Backgrounder.GetBackgrounderIdFromFilename(distinctFileName);
                 if (backgrounderId.HasValue)
                 {
                     distinctBackgrounderIdsForWorker.Add(backgrounderId.Value);
@@ -38,7 +38,7 @@ namespace Logshark.Plugins.Backgrounder.Helpers
             return distinctBackgrounderIdsForWorker;
         }
 
-        public static IEnumerable<BsonDocument> GetJobEventsForProcessByType(string workerId, int processId, string jobType, IMongoCollection<BsonDocument> collection)
+        public static IEnumerable<BsonDocument> GetJobEventsForProcessByType(IMongoCollection<BsonDocument> collection, string workerId, int processId, string jobType)
         {
             var filter = Query.And(FilterByWorkerId(workerId),
                                    FilterByProcessId(processId),
@@ -93,7 +93,7 @@ namespace Logshark.Plugins.Backgrounder.Helpers
 
         private static FilterDefinition<BsonDocument> FilterByProcessId(int processId)
         {
-            return Query.Regex("file", new BsonRegularExpression(String.Format(@"^backgrounder-{0}\.", processId)));
+            return Query.Regex("file", new BsonRegularExpression(String.Format(@"^backgrounder(_node\d+)?-{0}\.", processId)));
         }
 
         private static FilterDefinition<BsonDocument> FilterBySeverity(string severity)

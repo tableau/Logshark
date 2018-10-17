@@ -1,13 +1,12 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
-using ServiceStack.DataAnnotations;
+using Tableau.ExtractApi.DataAttributes;
 
 namespace Logshark.Plugins.Hyper.Models
 {
-    [Alias("hyper_queries")]
     public class HyperQuery : BaseHyperEvent
     {
         [BsonElement("v")]
-        [Ignore]
+        [ExtractIgnore]
         public HyperEndQueryDetails Value { get; set; }
 
         // Unfortunately we have to duplicate all of the fields here to map to the nested representation,
@@ -17,7 +16,6 @@ namespace Logshark.Plugins.Hyper.Models
         // Also, Postgres has no native unsigned integer types, so we have to coerce the underlying ulong properties 
         // on the model to decimal so that they are properly persisted as Postgres type "numeric".
 
-        [Index]
         public string ClientSessionId { get { return Value.ClientSessionId; } }
 
         public decimal Columns { get { return Value.Columns; } }

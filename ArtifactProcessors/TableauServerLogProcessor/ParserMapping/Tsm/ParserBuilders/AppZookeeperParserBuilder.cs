@@ -13,8 +13,8 @@ namespace Logshark.ArtifactProcessors.TableauServerLogProcessor.ParserMapping.Ts
         private static readonly IDictionary<string, Type> fileMap =
             new Dictionary<string, Type>
             {
-                { @"^appzookeeper-.*log.*", typeof(ZookeeperParser) },
-                { @"^control-appzookeeper-.*log.*", typeof(ServiceControlParser) }
+                { @"^appzookeeper.*log.*", typeof(ZookeeperParser) },
+                { @"^control.appzookeeper.*log.*", typeof(ServiceControlParser) }
             };
 
         protected override IDictionary<string, Type> FileMap

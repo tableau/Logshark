@@ -1,4 +1,4 @@
-﻿using Logshark.PluginLib.Helpers;
+﻿using Logshark.PluginLib.Extensions;
 using MongoDB.Bson;
 
 namespace Logshark.Plugins.Vizql.Models.Events.Etc
@@ -9,18 +9,15 @@ namespace Logshark.Plugins.Vizql.Models.Events.Etc
         public int Line { get; set; }
         public string Sev { get; set; }
 
-        public VizqlMessage()
-        {
-        }
+        public VizqlMessage() { }
 
         public VizqlMessage(BsonDocument document)
         {
-            ValidateArguments("msg", document);
             SetEventMetadata(document);
 
-            Line = BsonDocumentHelper.GetInt("line", document);
-            Message = BsonDocumentHelper.GetString("v", document);
-            Sev = BsonDocumentHelper.GetString("sev", document);
+            Line = document.GetInt("line");
+            Message = document.GetString("v");
+            Sev = document.GetString("sev");
         }
     }
 }

@@ -31,7 +31,7 @@ namespace Logshark.RequestModel.Config
             }
             catch (ConfigurationErrorsException ex)
             {
-                Log.FatalFormat("Error parsing Logshark.config: {0})", ex.Message);
+                Log.FatalFormat($"Error parsing Logshark.config: {ex.Message})");
                 throw;
             }
         }

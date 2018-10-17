@@ -1,4 +1,5 @@
-﻿using Logshark.PluginLib.Helpers;
+﻿using Logshark.PluginLib.Extensions;
+using Logshark.PluginLib.Helpers;
 using MongoDB.Bson;
 using System;
 
@@ -14,27 +15,24 @@ namespace Logshark.Plugins.Vizql.Models
         public string Os { get; set; }
         public DateTime StartTime { get; set; }
 
-        public VizqlDesktopSession()
-        {
-        }
+        public VizqlDesktopSession() { }
 
-        public VizqlDesktopSession(BsonDocument startupinfo, Guid logsetHash)
+        public VizqlDesktopSession(BsonDocument startupinfo)
         {
             BsonDocument values = BsonDocumentHelper.GetValuesStruct(startupinfo);
-            TableauVersion = BsonDocumentHelper.GetString("tableau-version", values);
-            CurrentWorkingDirectory = BsonDocumentHelper.GetString("cwd", values);
-            ProcessId = BsonDocumentHelper.GetInt("pid", startupinfo);
-            Domain = BsonDocumentHelper.GetString("domain", values);
+            TableauVersion = values.GetString("tableau-version");
+            CurrentWorkingDirectory = values.GetString("cwd");
+            ProcessId = startupinfo.GetInt("pid");
+            Domain = values.GetString("domain");
             if (Domain.Equals("\'\'"))
             {
                 Domain = null;
             }
-            Hostname = BsonDocumentHelper.GetString("hostname", values);
-            Os = BsonDocumentHelper.GetString("os", values);
-            StartTime = BsonDocumentHelper.GetDateTime("ts", startupinfo);
+            Hostname = values.GetString("hostname");
+            Os = values.GetString("os");
+            StartTime = startupinfo.GetDateTime("ts");
 
-            VizqlSessionId = Hostname + "_" + ProcessId + "_" + StartTime.ToString("yyMMdd_HHmmssff");
-            LogsetHash = logsetHash;
+            VizqlSessionId = String.Format("{0}_{1}_{2:yyMMdd_HHmmssff}", Hostname, ProcessId, StartTime);
 
             CreateEventCollections();
         }

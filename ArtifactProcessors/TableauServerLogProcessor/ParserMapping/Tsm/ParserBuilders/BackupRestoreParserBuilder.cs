@@ -13,8 +13,8 @@ namespace Logshark.ArtifactProcessors.TableauServerLogProcessor.ParserMapping.Ts
         private static readonly IDictionary<string, Type> fileMap =
             new Dictionary<string, Type>
             {
-                { @"^backuprestore-.*log.*", typeof(BackupRestoreParser) },
-                { @"^control-backuprestore-.*log.*", typeof(ServiceControlParser) }
+                { @"^backuprestore.*log.*", typeof(BackupRestoreParser) },
+                { @"^control.backuprestore.*log.*", typeof(ServiceControlParser) }
             };
 
         protected override IDictionary<string, Type> FileMap

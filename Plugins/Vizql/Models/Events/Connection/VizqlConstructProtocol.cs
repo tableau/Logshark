@@ -1,4 +1,5 @@
-﻿using Logshark.PluginLib.Helpers;
+﻿using Logshark.PluginLib.Extensions;
+using Logshark.PluginLib.Helpers;
 using MongoDB.Bson;
 
 namespace Logshark.Plugins.Vizql.Models.Events.Connection
@@ -17,21 +18,20 @@ namespace Logshark.Plugins.Vizql.Models.Events.Connection
 
         public VizqlConstructProtocol(BsonDocument document)
         {
-            ValidateArguments("construct-protocol", document);
             SetEventMetadata(document);
 
             BsonDocument values = BsonDocumentHelper.GetValuesStruct(document);
 
-            Elapsed = BsonDocumentHelper.GetNullableDouble("created-elapsed", values);
-            ProtocolId = BsonDocumentHelper.GetNullableInt("id", values);
-            ProtocolGroupId = BsonDocumentHelper.GetNullableInt("group_id", values);
+            Elapsed = values.GetNullableDouble("created-elapsed");
+            ProtocolId = values.GetNullableInt("id");
+            ProtocolGroupId = values.GetNullableInt("group_id");
 
             BsonDocument attributes = BsonDocumentHelper.GetBsonDocument("attributes", values);
             if (attributes != null)
             {
-                Class = BsonDocumentHelper.GetString("class", attributes);
-                DatabaseName = BsonDocumentHelper.GetString("dbname", attributes);
-                DatabaseServer = BsonDocumentHelper.GetString("server", attributes);
+                Class = attributes.GetString("class");
+                DatabaseName = attributes.GetString("dbname");
+                DatabaseServer = attributes.GetString("server");
                 Attributes = attributes.ToString();
             }
         }

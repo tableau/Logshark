@@ -50,7 +50,6 @@ namespace Logshark.Tests.ServerLogProcessorTests
         public void ParseConnectionsPropertiesFile(string logFile)
         {
             var logPath = TestDataHelper.GetServerLogProcessorResourcePath(logFile);
-            const string sampleLogWorerName = "worker2";
 
             IList<JObject> documents = ParserTestHelpers.ParseFile(logPath, new ConnectionsConfigParser(), SampleLogWorkerName);
 
