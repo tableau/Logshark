@@ -34,10 +34,6 @@ Database Requirements
 
     -   You can Download MongoDB Community Server at: [https://www.mongodb.com/download-center#community](https://www.mongodb.com/download-center#community){:target="_blank"}. To configure it, see [Use your own MongoDB instance.](logshark_mongo)
 
--   PostgreSQL - Logshark requires a PostgreSQL database as the backing data source for the workbooks that analyze the Tableau log files. PostgreSQL is not included in the Logshark installation. To use Logshark, you need to download and install PostgreSQL (version 9.5 or later) on your computer. [https://www.postgresql.org/](https://www.postgresql.org/){:target="_blank"}. As with MongoDB, for best performance on very large log files, we recommend that you install PostgreSQL on a separate computer.
-
-    -   **NOTE:** Do **NOT** use your Tableau Server repository for Logshark or any other existing PostgreSQL instance. Logshark needs to have its own PostgreSQL to store data.
-
 Tableau Archive Log Requirements
 --------------------------------
 
