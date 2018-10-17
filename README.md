@@ -13,11 +13,13 @@ Some common use cases for Logshark include:
 
 # How do I set up Logshark?
 
-[![Download Logshark](https://img.shields.io/badge/Download%20Logshark-Version%202.1-blue.svg)](https://github.com/tableau/Logshark/releases/download/v2.1/Setup_Logshark_v2.1.exe)
+[![Download Logshark](https://img.shields.io/badge/Download%20Logshark-Version%203.0-blue.svg)](https://github.com/tableau/Logshark/releases/download/v3.0/Setup_Logshark_v3.0.exe)
 
 [![Setup Logshark](https://img.shields.io/badge/Setup%20Logshark-Installation%20and%20User%20Guide-lightgrey.svg)](https://tableau.github.io/Logshark/)
 
 Logshark is deployed via a custom installer, which you can download from the [releases page](https://github.com/tableau/Logshark/releases/latest).  The installer manages dependencies and also bundles MongoDB for ease of setup for new users. To get up and running, download the installer and then follow the instructions in the [installation guide](https://tableau.github.io/Logshark/) to configure it.
+
+In the latest release of Logshark, the run outputs are saved as hyper extracts instead of using PostgreSQL. Not only does Logshark no longer need a dedicated PostgreSQL database, it also runs significantly faster. The results of the Logshark run are now saved as hyper extracts embedded with the workbook (.twbx), which enables the vizzes to load much faster.
 
 Logshark requires a 64-bit version of Windows in order to run, and must be run as an account with administrator privileges.
 
@@ -39,6 +41,7 @@ The current development requirements are:
   * Available at http://www.wixtoolset.org
 4. Configuration Section Designer Visual Studio Extension - Required if you wish to modify & regenerate the "LogsharkConfigSection" custom config section class.
   * Available at http://csd.codeplex.com
+5. Download [hyperd.exe](https://github.com/tableau/Logshark/releases/download/v3.0/hyperd.exe) and [hyperd_sse2.exe](https://github.com/tableau/Logshark/releases/download/v3.0/hyperd_sse2.exe) and place them in .\Tableau.ExtractApi\lib\SDK\hyper\
 
 It is recommended that you install the Logshark Workbook Creation Plugin Project Template extension by running the "Logshark Workbook Creation Plugin Project Template.vsix" file found in the root directory.  This adds a "Logshark Workbook Creation Plugin" project type to Visual Studio which you can use to easily get up and running developing a new plugin.
 
