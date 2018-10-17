@@ -29,6 +29,7 @@ In this section:
 - [Run Logshark and View the Results](docs/logshark_run)
 
 
+NOTE: In the latest release of Logshark, the run outputs are saved as hyper extracts instead of using PostgreSQL. Not only does Logshark no longer needs a dedicated PostgreSQL database, but it also runs significantly faster. The results of the Logshark run are now saved as hyper extracts embedded with the workbook (.twbx), which enables the vizzes to load much faster.
 
 ### Logshark and Tableau Technical Support
  
