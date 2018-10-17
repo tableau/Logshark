@@ -19,7 +19,7 @@ Some common use cases for Logshark include:
 
 Logshark is deployed via a custom installer, which you can download from the [releases page](https://github.com/tableau/Logshark/releases/latest).  The installer manages dependencies and also bundles MongoDB for ease of setup for new users. To get up and running, download the installer and then follow the instructions in the [installation guide](https://tableau.github.io/Logshark/) to configure it.
 
-Logshark requires a 64-bit version of Windows in order to run, and must be run as an account with administrator privileges.
+In the latest release of the Logshark run outputs are saved as hyper extracts instead of PostgreSQL. Not only Logshark no longer needs a dedicated PostgreSQL database, it also runs significantly faster. The results of the Logshark run are now saved as hyper extracts embedded with the workbook (twbx), which enables the vizzes to load much faster. 
 
 NOTE: If you are upgrading from a previous version of Logshark, the installer will handle most of the upgrade work for you, but during the upgrade your Logshark.config file will be overwritten.  If there are settings from this config you wish to preserve, please make a backup.
 
