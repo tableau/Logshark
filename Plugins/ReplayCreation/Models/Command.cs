@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace Logshark.Plugins.ReplayCreation.Models
 {
@@ -15,12 +16,15 @@ namespace Logshark.Plugins.ReplayCreation.Models
         }
 
         // namespace of the command "tabdoc" or "tabsrv"
+        [JsonProperty("commandNamespace")]
         public string CommandNamespace { get; set; }
 
         // commandName "Select", "sort-from-indicator"
+        [JsonProperty("commandName")]
         public string CommandName { get; set; }
 
         // parameters for the command
+        [JsonProperty("commandParams")]
         public Dictionary<string, object> CommandParams { get; set; }
     }
 }

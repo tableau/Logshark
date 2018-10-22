@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 
 namespace Logshark.Plugins.ReplayCreation.Models
 {
@@ -7,8 +8,10 @@ namespace Logshark.Plugins.ReplayCreation.Models
     /// </summary>
     public class TabCommand : IComparable<TabCommand>
     {
+        [JsonProperty("Time")]
         public string Time { get; set; }
 
+        [JsonProperty("Command")]
         public Command Command { get; set; }
 
         public TabCommand(string time, Command command)

@@ -415,7 +415,7 @@ namespace Logshark.Plugins.ReplayCreation
                 Log.DebugFormat(" Exception  {0}, moving on to next access request", ex.Message);
                 return null;
             }
-            var requestURL = accessInfo.resource;
+            var requestURL = accessInfo.Resource;
 
             var urlParts = requestURL.Split('/');
             var index = 0; //index from where search for "views" or "authoring" should start
@@ -431,7 +431,7 @@ namespace Logshark.Plugins.ReplayCreation
             {
                 if (urlParts[i] == "authoring" || urlParts[i] == "views")
                 {
-                    var dt = accessInfo.request_time;
+                    var dt = accessInfo.RequestTime;
                     //not interested in anything before the start time
                     if (dt.CompareTo(m_startTime) < 0)
                     {
@@ -439,11 +439,11 @@ namespace Logshark.Plugins.ReplayCreation
                     }
 
                     var browerSession = new BrowserSession();
-                    browerSession.BrowserStartTime = accessInfo.request_time.ToString(m_dateFormat);
+                    browerSession.BrowserStartTime = accessInfo.RequestTime.ToString(m_dateFormat);
                     browerSession.Url = requestURL;
-                    browerSession.AccessRequestID = accessInfo.apache_request_id;
-                    browerSession.HttpStatus = accessInfo.status_code;
-                    browerSession.LoadTime = accessInfo.load_time;
+                    browerSession.AccessRequestID = accessInfo.ApacheRequestID;
+                    browerSession.HttpStatus = accessInfo.StatusCode;
+                    browerSession.LoadTime = accessInfo.LoadTime;
 
                     try
                     {
