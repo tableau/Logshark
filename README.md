@@ -29,7 +29,7 @@ NOTE: If you are upgrading from a previous version of Logshark, the installer wi
 
 The best way to analyze results is to run Logshark on your own logset and explore the generated workbooks via Tableau! Beyond what is included, you can configure Logshark to output your own custom workbooks. See the [installation guide](https://tableau.github.io/Logshark/) for more details on how to do this.
 
-For the truly adventurous, Logshark features a plugin framework, so you can even build your own analysis plugin to leverage Logshark�s log parsing engine!
+For the truly adventurous, Logshark features a plugin framework, so you can even build your own analysis plugin to leverage Logshark's log parsing engine!
 
 # What do I need to build Logshark from source?
 
