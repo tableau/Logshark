@@ -52,18 +52,3 @@ The following table shows the list of available Logshark plugins and the names o
 | VizqlServer            | `VizqlServer.twb`                              | Collects high-level session summary information from Tableau vizqlserver log files, including error data.                                                                                                                                                                                                                       |
 | VizqlServerPerformance | `VizqlServerPerformance.twb`                   | Collect and analyze all events from Tableau Server vizqlserver log files, including detailed performance information.                                                                                                                                                                                                           |
 
---------
-
-### Appending Logshark-generated Data to the Same Workbook
-
-
-When you run Logshark using the default command options, Logshark generates a new PostgreSQL database for each run. If you want to append data to the same database, so that the data will all be available in the same workbook, you can specify the name of the database on the command line, using the <code>--dbname <i>database</i></code> option. You can use this option to set a custom name for the database where the plugin output is stored (the data source for the plugin workbook).
-
-
-**Example**
-
-```
-logshark C:\Logs\logs.zip --plugins Apache --dbname myApacheData
-```
-
-If the `–-dbname` option is not specified, a new database will be generated.
