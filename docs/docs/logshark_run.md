@@ -67,7 +67,7 @@ By default, all workbooks (or other plugin-generated content) are placed in the 
 
 2.  Navigate to results folder you are interested in and double-click the Tableau workbook you want to view. 
 
-    For example, if you open the `Apache.twb` workbook, you can view the viz load statistics generated from the Apache log files.     
+    For example, if you open the `Apache.twbx` workbook, you can view the viz load statistics generated from the Apache log files.     
 
 
     ![]({{ site.baseurl }}/assets/SampleScreenshot.png)
