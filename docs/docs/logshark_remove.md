@@ -17,7 +17,7 @@ Logshark can be removed by simply running the Logshark setup program. Temporary 
 Uninstall Logshark
 ------------------
 
--   If you want to remove Logshark from your computer, run the Logshark Setup program (`Setup\_Logshark\_v2.0.exe`), and then click **Uninstall** from the Logshark Setup dialog box. 
+-   If you want to remove Logshark from your computer, run the Logshark Setup program (`Setup\_Logshark\_v3.0.1.exe`), and then click **Uninstall** from the Logshark Setup dialog box. 
 
 -   You can also go to the Control Panel, open the Uninstall or change a program dialog box, and then right-click Logshark and choose **Uninstall**.
 
