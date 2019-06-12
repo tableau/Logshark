@@ -29,7 +29,7 @@ namespace Logshark.Plugins.ReplayCreation.Models
         /// <returns></returns>                 
         public int CompareTo(TabCommand other)
         {
-            return Time.CompareTo(other.Time);
+            return String.Compare(Time, other.Time, StringComparison.Ordinal);
         }
     }
 }

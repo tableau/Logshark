@@ -25,7 +25,7 @@ namespace Logshark.Plugins.ReplayCreation.Models
 
         //AccessRequestID from access logs
         [JsonProperty("AccessRequestID")]
-        public string AccessRequestID { get; set; }
+        public string AccessRequestId { get; set; }
 
         //Request time showing how long it took  to load
         [JsonProperty("LoadTime")]

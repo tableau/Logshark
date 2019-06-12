@@ -3,6 +3,7 @@ using Tableau.ExtractApi.DataAttributes;
 
 namespace Logshark.Plugins.Hyper.Models
 {
+    [BsonIgnoreExtraElements]
     public class HyperQuery : BaseHyperEvent
     {
         [BsonElement("v")]

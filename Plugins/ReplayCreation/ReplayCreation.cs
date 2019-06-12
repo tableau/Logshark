@@ -13,7 +13,6 @@ using MongoDB.Bson;
 using MongoDB.Driver;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using ServiceStack.OrmLite;
 
 namespace Logshark.Plugins.ReplayCreation
 {
@@ -25,21 +24,18 @@ namespace Logshark.Plugins.ReplayCreation
         public static readonly FilterDefinitionBuilder<BsonDocument> Query = Builders<BsonDocument>.Filter;
 
         //Regex that would break command namespace, command and arguments
-        private static readonly string s_commandPatternFormat = "^(\\S+):(\\S+)\\s*(.*)";
+        private const string CommandPatternFormat = "^(\\S+):(\\S+)\\s*(.*)";
 
-        private static readonly Regex SCommandPatternRegex = new Regex(s_commandPatternFormat);
-
-        //start time after which we are interested in replay
-        public DateTime? m_startTime = null;
+        private static readonly Regex SCommandPatternRegex = new Regex(CommandPatternFormat);
 
         // if there are ':' then encode it with below String
-        string SEMICOLONPRESERVER = "SEMICOLON";
+        private const string SemiColonPreserver = "SEMICOLON";
 
         //date format as expected by the replay tool
-        string m_dateFormat = "yyyy-MM-ddTHH:mm:ss.fffZ";
+        private const string UtcDateFormat = "yyyy-MM-ddTHH:mm:ss.fffZ";
 
         // time offset based on the timezone
-        TimeSpan m_timeOffset = new TimeSpan();
+        private TimeSpan _timeOffset;
 
         public override ISet<string> CollectionDependencies => new HashSet<string>
         {
@@ -63,7 +59,7 @@ namespace Logshark.Plugins.ReplayCreation
         /// </summary>
         /// <param name="keyStr"></param>
         /// <returns></returns>
-        private string CamelCaseKey(string keyStr)
+        private static string CamelCaseKey(string keyStr)
         {
             // find all occurrences forward
             for (var i = -1; (i = keyStr.IndexOf('-', i + 1)) != -1;)
@@ -82,7 +78,7 @@ namespace Logshark.Plugins.ReplayCreation
         /// </summary>
         /// <param name="keyValPairs"></param>
         /// <returns></returns>
-        private Match MatchKeyValue(string keyValPairs)
+        private static Match MatchKeyValue(string keyValPairs)
         {
             var regexMatcher = Regex.Match(keyValPairs,
                    "([A-Za-z0-9-$-_-\"]+):((?:[\\{\\[\"].*|[^:]*))($|\\s|,)",
@@ -109,8 +105,8 @@ namespace Logshark.Plugins.ReplayCreation
                 var regexBracketStringMatcher = Regex.Match(regexMatcher.Groups[2].Value, "^([\\{\\[\"].*)");
                 if (regexBracketStringMatcher.Success)
                 {
-                    var val = "";
-                    var restStartIndex = 0;
+                    string val;
+                    int restStartIndex;
                     if (regexMatcher.Groups[2].Value.StartsWith("\""))
                     {
                         var quotesEndIndex = GetStringQuotesIndex(regexBracketStringMatcher.Groups[1].Value);
@@ -124,7 +120,7 @@ namespace Logshark.Plugins.ReplayCreation
                         restStartIndex = bracketEndIndex + 1;
                         val = regexBracketStringMatcher.Groups[1].Value.Substring(0, restStartIndex);
                     }
-                    val = val.Replace(SEMICOLONPRESERVER, ":");
+                    val = val.Replace(SemiColonPreserver, ":");
                     //get the rest of the command to parse it again
                     var rest = regexBracketStringMatcher.Groups[1].Value.Substring(restStartIndex);
 
@@ -244,7 +240,7 @@ namespace Logshark.Plugins.ReplayCreation
             var commandArg = matcher.Groups[3].Value;
 
             // if there are ':' lets preserve that to later replace it back
-            commandArg = commandArg.Replace(":", SEMICOLONPRESERVER);
+            commandArg = commandArg.Replace(":", SemiColonPreserver);
             commandArg = commandArg.Replace("=", ":");
 
             var cmdParams = BuildJson(commandArg);
@@ -259,16 +255,16 @@ namespace Logshark.Plugins.ReplayCreation
         /// Queries and returns the vizqlsession ID list that corresponds to Apache session ID
         /// 
         /// </summary>
-        /// <param name="browerSession">Browser session</param>
-        /// <param name="accessRequestID">Request ID found in access logs</param>       
+        /// <param name="browserSession">Browser session</param>
+        /// <param name="accessRequestId">Request ID found in access logs</param>       
         /// <param name="mongoDatabase"></param>
         /// <returns></returns>
-        private static List<string> GetVizqlSessionsForApacheRequestID(BrowserSession browserSession, string accessRequestID, IMongoDatabase mongoDatabase)
+        private static List<string> GetVizqlSessionsForApacheRequestId(BrowserSession browserSession, string accessRequestId, IMongoDatabase mongoDatabase)
         {
             var vizqlSessionIDs = new List<string>();
             var vizqlSessionCollection = mongoDatabase.GetCollection<BsonDocument>("vizqlserver_cpp");
             var bUseLockSession = false; // flag to tell if lock session was used to get vizqlsession
-            var vizqlSessionQuery = Query.Eq("k", "server-telemetry") & Query.Eq("v.request-info.rid", accessRequestID);
+            var vizqlSessionQuery = Query.Eq("k", "server-telemetry") & Query.Eq("v.request-info.rid", accessRequestId);
             var vizqlServerResults = vizqlSessionCollection.Find(vizqlSessionQuery).ToList();
 
 
@@ -276,47 +272,51 @@ namespace Logshark.Plugins.ReplayCreation
             if (vizqlServerResults.Count == 0)
             {
                 bUseLockSession = true;
-                vizqlSessionQuery = Query.Eq("req", accessRequestID) & Query.Eq("k", "lock-session");              
+                vizqlSessionQuery = Query.Eq("req", accessRequestId) & Query.Eq("k", "lock-session");
                 vizqlServerResults = vizqlSessionCollection.Find(vizqlSessionQuery).ToList();
             }
 
             foreach (var vizqlServerLogLine in vizqlServerResults)
             {
-                string vizqlSessionID = null;
+                string vizqlSessionId;
                 if (bUseLockSession)
                 {
-                    vizqlSessionID = (string)vizqlServerLogLine.GetValue("sess", null);
+                    vizqlSessionId = (string)vizqlServerLogLine.GetValue("sess", null);
                 }
-                else {
-                    vizqlSessionID = vizqlServerLogLine["v"]["sid"].ToString();
+                else
+                {
+                    vizqlSessionId = vizqlServerLogLine["v"]["sid"].ToString();
                 }
-                if (vizqlSessionID == null)
+                if (vizqlSessionId == null)
                 {
                     //move to next vizqlserver line if this does not contain the vizqlserverSession
                     continue;
                 }
-                if (vizqlSessionIDs.Contains(vizqlSessionID))
+                if (vizqlSessionIDs.Contains(vizqlSessionId))
                 {
                     //if we already looked at this vizqlSessionID then dont have to get the commands again
                     continue;
                 }
                 if (browserSession.VizqlSession == null)
                 {
-                    browserSession.VizqlSession = vizqlSessionID;
+                    browserSession.VizqlSession = vizqlSessionId;
                 }
 
-                vizqlSessionIDs.Add(vizqlSessionID);
+                vizqlSessionIDs.Add(vizqlSessionId);
 
                 //look for new bootstrap session
-                var bootStrapSessionQuery = Query.And(Query.Eq("sess", vizqlSessionID), Query.Eq("k", "end-bootstrap-session"), Query.Eq("v.new-session", "true"));
+                var bootStrapSessionQuery = Query.And(
+                    Query.Eq("sess", vizqlSessionId), 
+                    Query.Or(Query.Eq("k", "end-bootstrap-session"), Query.Eq("k", "end-bootstrap-session-action.bootstrap-session")), 
+                    Query.Eq("v.new-session", "true"));
                 var bootStrapSessionCollection = vizqlSessionCollection.Find(bootStrapSessionQuery).ToList();
                 foreach (var bootStrapSession in bootStrapSessionCollection)
                 {
-                    var newAccessRequestID = bootStrapSession["v"]["new-session-id"].ToString();
+                    var newAccessRequestId = bootStrapSession["v"]["new-session-id"].ToString();
 
-                    if (!vizqlSessionIDs.Contains(newAccessRequestID))
+                    if (!vizqlSessionIDs.Contains(newAccessRequestId))
                     {
-                        vizqlSessionIDs.Add(newAccessRequestID);
+                        vizqlSessionIDs.Add(newAccessRequestId);
                     }
                 }
             }
@@ -324,30 +324,30 @@ namespace Logshark.Plugins.ReplayCreation
             return vizqlSessionIDs;
         }
 
-        /// <summary>
-        /// Get commands for the apache session using the list of vizqlsessionIDs
-        ///
-        /// </summary>
-        /// <param name="browerSession">Browser session</param>
-        /// <param name="accessRequestID">Request ID found in access logs</param>
+        ///  <summary>
+        ///  Get commands for the apache session using the list of vizqlsessionIDs
+        /// 
+        ///  </summary>
+        ///  <param name="browserSession">Browser session</param>
         /// <param name="mongoDatabase"></param>
-        /// <param name="vizqlSessionIDs">vizqlSessionIDs used in case of correlated vizql sessions</param>
-        /// <returns></returns>
-        private List<TabCommand> GetVizqlServerCommands(BrowserSession browserSession, IMongoDatabase mongoDatabase, List<string> vizqlSessionIDs)
+        ///  <param name="vizqlSessionIds">vizqlSessionIDs used in case of correlated vizql sessions</param>
+        ///  <returns></returns>
+        private List<TabCommand> GetVizqlServerCommands(BrowserSession browserSession, IMongoDatabase mongoDatabase, List<string> vizqlSessionIds)
         {
             var commands = new List<TabCommand>();
             var vizqlSessionCollection = mongoDatabase.GetCollection<BsonDocument>("vizqlserver_cpp");
-            foreach (var vizqlSessionID in vizqlSessionIDs)
+            foreach (var vizqlSessionId in vizqlSessionIds)
             {
-                var commandQuery = Query.And(Query.Regex("sess", vizqlSessionID + "*"), Query.Eq("k", "command-pre"));
+                // making query compatible with old and newer command name, suggest to remove command-pre when tableau version < 2018.3 becomes less relevant
+                var commandQuery = Query.And(Query.Regex("sess", vizqlSessionId + "*"), Query.Or(Query.Eq("k", "command-pre"), Query.Eq("k", "begin-commands-controller.invoke-command")));
                 var commandsLogs = vizqlSessionCollection.Find(commandQuery).ToList();
 
-                Log.DebugFormat("Getting commands for vizqlserver session {0}", vizqlSessionID);
+                Log.DebugFormat("Getting commands for vizqlserver session {0}", vizqlSessionId);
                 foreach (var commandLog in commandsLogs)
                 {
                     //convert the current time to UTC
-                    var browserStartTime = (DateTime)commandLog.GetElement("ts").Value - m_timeOffset;
-                    var timeStr = browserStartTime.ToUniversalTime().ToString(m_dateFormat);
+                    var browserStartTime = (DateTime)commandLog.GetElement("ts").Value - _timeOffset;
+                    var timeStr = browserStartTime.ToUniversalTime().ToString(UtcDateFormat);
 
                     var jsonCmd = commandLog["v"]["args"].ToString();
 
@@ -364,7 +364,7 @@ namespace Logshark.Plugins.ReplayCreation
                         var user = (string)commandLog.GetValue("user", null);
                         if (user != null)
                         {
-                            browserSession.User = user.ToString();
+                            browserSession.User = user;
                         }
                     }
                     var commandValue = new TabCommand(timeStr, command);
@@ -395,17 +395,18 @@ namespace Logshark.Plugins.ReplayCreation
             return new PluginResponse(GetType().Name);
         }
 
+
         /// <summary>
-        ///
+        /// Process access log request by querying mongo DB
         /// </summary>
         /// <param name="accessRequest"></param>
         /// <param name="mongoDatabase"></param>
+        /// <param name="browserSessions">List of browser sessions</param>
+        /// <param name="mutexBrowserSessions"></param>
         /// <returns></returns>
         private BrowserSession ProcessAccessRequest(BsonDocument accessRequest, IMongoDatabase mongoDatabase, List<BrowserSession> browserSessions, Mutex mutexBrowserSessions)
         {
-
-
-            AccessSessionInfo accessInfo = null;
+            AccessSessionInfo accessInfo;
             try
             {
                 accessInfo = new AccessSessionInfo(accessRequest);
@@ -415,9 +416,9 @@ namespace Logshark.Plugins.ReplayCreation
                 Log.DebugFormat(" Exception  {0}, moving on to next access request", ex.Message);
                 return null;
             }
-            var requestURL = accessInfo.Resource;
+            var requestUrl = accessInfo.Resource;
 
-            var urlParts = requestURL.Split('/');
+            var urlParts = requestUrl.Split('/');
             var index = 0; //index from where search for "views" or "authoring" should start
             if (urlParts.Length > 2 && urlParts[1] == "t")
             {
@@ -431,24 +432,17 @@ namespace Logshark.Plugins.ReplayCreation
             {
                 if (urlParts[i] == "authoring" || urlParts[i] == "views")
                 {
-                    var dt = accessInfo.RequestTime;
-                    //not interested in anything before the start time
-                    if (dt.CompareTo(m_startTime) < 0)
-                    {
-                        return null;
-                    }
-
-                    var browerSession = new BrowserSession();
-                    browerSession.BrowserStartTime = accessInfo.RequestTime.ToString(m_dateFormat);
-                    browerSession.Url = requestURL;
-                    browerSession.AccessRequestID = accessInfo.ApacheRequestID;
-                    browerSession.HttpStatus = accessInfo.StatusCode;
-                    browerSession.LoadTime = accessInfo.LoadTime;
+                    var browserSession = new BrowserSession();
+                    browserSession.BrowserStartTime = accessInfo.RequestTime.ToString(UtcDateFormat);
+                    browserSession.Url = requestUrl;
+                    browserSession.AccessRequestId = accessInfo.ApacheRequestId;
+                    browserSession.HttpStatus = accessInfo.StatusCode;
+                    browserSession.LoadTime = accessInfo.LoadTime;
 
                     try
                     {
-                        var vizqlSessionIDs = GetVizqlSessionsForApacheRequestID(browerSession, browerSession.AccessRequestID, mongoDatabase);
-                        browerSession.Commands = GetVizqlServerCommands(browerSession, mongoDatabase, vizqlSessionIDs);
+                        var vizqlSessionIDs = GetVizqlSessionsForApacheRequestId(browserSession, browserSession.AccessRequestId, mongoDatabase);
+                        browserSession.Commands = GetVizqlServerCommands(browserSession, mongoDatabase, vizqlSessionIDs);
                     }
                     catch (Exception ex)
                     {
@@ -457,11 +451,11 @@ namespace Logshark.Plugins.ReplayCreation
                     }
 
                     mutexBrowserSessions.WaitOne();
-                    browserSessions.Add(browerSession);
+                    browserSessions.Add(browserSession);
                     // Release the Mutex.
                     mutexBrowserSessions.ReleaseMutex();
 
-                    return browerSession;
+                    return browserSession;
                 }
             }
 
@@ -472,7 +466,6 @@ namespace Logshark.Plugins.ReplayCreation
         /// Execute function is called by Logshark framework to process the logs
         /// ReplayCreation plugin creates json file as output of the function
         /// </summary>
-        /// <param name="pluginRequest"></param>
         /// <returns></returns>
         public override IPluginResponse Execute()
         {
@@ -541,32 +534,31 @@ namespace Logshark.Plugins.ReplayCreation
             var options = new FindOptions { NoCursorTimeout = true };
 
             var results = collection.Find(accessLogQuery, options).ToEnumerable();
-            var timingData = new List<List<string>>();
-            var numberOfAccessRequests = results.Count();
+            var accessResults = results as BsonDocument[] ?? results.ToArray();
+            var numberOfAccessRequests = accessResults.Length;
             Log.InfoFormat("Number of Query Results : {0}", numberOfAccessRequests);
 
             //get the time offset from the first access log entry
             if (numberOfAccessRequests > 0)
             {
-                m_timeOffset = GetTimeOffset(results.ElementAt(0));
+                _timeOffset = GetTimeOffset(accessResults.ElementAt(0));
             }
-
-
-            var count = 1;         
+            
+            var count = 1;
             var concurrentRunSemaphore = new Semaphore(numConcurrentQueries, numConcurrentQueries);
 
             var mutexBrowserSessions = new Mutex();
             var threadsActive = new CountdownEvent(1);
 
-            var intervalForVerbosePrint = 500;
-            foreach (var result in results)
+            const int intervalForVerbosePrint = 500;
+            foreach (var result in accessResults)
             {
                 //process multiple requests in parallel
                 concurrentRunSemaphore.WaitOne();
                 try
                 {
                     threadsActive.AddCount();
-                    new Thread(new ThreadStart(() =>
+                    new Thread(() =>
                     {
                         try
                         {
@@ -580,7 +572,7 @@ namespace Logshark.Plugins.ReplayCreation
                         {
                             threadsActive.Signal();
                         }
-                    })).Start();
+                    }).Start();
                 }
                 finally
                 {
