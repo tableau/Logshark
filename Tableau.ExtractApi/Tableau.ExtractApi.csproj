@@ -128,6 +128,9 @@
     <Content Include="lib\IKVM\IKVM.Runtime.dll" />
     <Content Include="lib\IKVM\IKVM.Runtime.JNI.dll" />
     <Content Include="Instructions.txt" />
+    <Content Include="lib\SDK\hyper\crashdumper.exe" />
+    <Content Include="lib\SDK\hyper\libcrypto-1_1-x64.dll" />
+    <Content Include="lib\SDK\hyper\libssl-1_1-x64.dll" />
     <Content Include="lib\TableauExtractApiDotNet.dll" />
     <Content Include="lib\SDK\boost_chrono-vc140-mt-1_60.dll" />
     <Content Include="lib\SDK\boost_date_time-vc140-mt-1_60.dll" />
@@ -135,10 +138,6 @@
     <Content Include="lib\SDK\boost_system-vc140-mt-1_60.dll" />
     <Content Include="lib\SDK\boost_thread-vc140-mt-1_60.dll" />
     <Content Include="lib\SDK\concrt140.dll" />
-    <Content Include="lib\SDK\hyper\boost_chrono-vc140-mt-1_60.dll" />
-    <Content Include="lib\SDK\hyper\boost_filesystem-vc140-mt-1_60.dll" />
-    <Content Include="lib\SDK\hyper\boost_system-vc140-mt-1_60.dll" />
-    <Content Include="lib\SDK\hyper\boost_thread-vc140-mt-1_60.dll" />
     <Content Include="lib\SDK\hyper\hyperd.exe" />
     <Content Include="lib\SDK\hyper\hyperdstarter.exe" />
     <Content Include="lib\SDK\hyper\hyperd_sse2.exe" />
@@ -146,10 +145,6 @@
     <Content Include="lib\SDK\hyper\icuin44.dll" />
     <Content Include="lib\SDK\hyper\icuio44.dll" />
     <Content Include="lib\SDK\hyper\icuuc44.dll" />
-    <Content Include="lib\SDK\hyper\jemalloc.dll" />
-    <Content Include="lib\SDK\hyper\tablibeay32.dll" />
-    <Content Include="lib\SDK\hyper\tabssleay32.dll" />
-    <Content Include="lib\SDK\hyper\tabsys.dll" />
     <Content Include="lib\SDK\hyper\tabz.dll" />
     <Content Include="lib\SDK\hyper\tbb.dll" />
     <Content Include="lib\SDK\hyper\zstd.dll" />

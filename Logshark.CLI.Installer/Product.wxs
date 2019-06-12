@@ -76,6 +76,7 @@
                 <File Id="BouncyCastleCryptoDll" Name="BouncyCastle.Crypto.dll" Vital="yes" Source="$(var.Bin)\BouncyCastle.Crypto.dll" />
                 <File Id="CommandLineDll" Name="CommandLine.dll" Vital="yes" Source="$(var.Bin)\CommandLine.dll" />
                 <File Id="ConcrtDll" Name="concrt140.dll" Vital="yes" Source="$(var.Bin)\concrt140.dll" />
+                <File Id="CrashDumperExe" Name="crashdumper.exe" Vital="yes" Source="$(var.Bin)\crashdumper.exe" />
                 <File Id="CsvHelperDll" Name="CsvHelper.dll" Vital="yes" Source="$(var.Bin)\CsvHelper.dll" />
                 <File Id="DnsClientDll" Name="DnsClient.dll" Vital="yes" Source="$(var.Bin)\DnsClient.dll" />
                 <File Id="HyperdExe" Name="hyperd.exe" Vital="yes" Source="$(var.Bin)\hyperd.exe" />
@@ -117,7 +118,8 @@
                 <File Id="IkvmReflectionDll" Name="IKVM.Reflection.dll" Vital="yes" Source="$(var.Bin)\IKVM.Reflection.dll" />
                 <File Id="IkvmRuntimeDll" Name="IKVM.Runtime.dll" Vital="yes" Source="$(var.Bin)\IKVM.Runtime.dll" />
                 <File Id="IkvmRuntimeJniDll" Name="IKVM.Runtime.JNI.dll" Vital="yes" Source="$(var.Bin)\IKVM.Runtime.JNI.dll" />
-                <File Id="JeMallocDll" Name="jemalloc.dll" Vital="yes" Source="$(var.Bin)\jemalloc.dll" />
+                <File Id="LibCryptoDll" Name="libcrypto-1_1-x64.dll" Vital="yes" Source="$(var.Bin)\libcrypto-1_1-x64.dll" />
+                <File Id="LibSslDll" Name="libssl-1_1-x64.dll" Vital="yes" Source="$(var.Bin)\libssl-1_1-x64.dll" />
                 <File Id="LibPqDll" Name="libpq.dll" Vital="yes" Source="$(var.Bin)\libpq.dll" />
                 <File Id="Log4NetDll" Name="log4net.dll" Vital="yes" Source="$(var.Bin)\log4net.dll" />
                 <File Id="LogParsersBaseDll" Name="LogParsers.Base.dll" Vital="yes" Source="$(var.Bin)\LogParsers.Base.dll" />
@@ -151,8 +153,8 @@
                 <File Id="TableauCommonDll" Name="TableauCommon.dll" Vital="yes" Source="$(var.Bin)\TableauCommon.dll" />
                 <File Id="TableauExtractApiDotNetDll" Name="TableauExtractApiDotNet.dll" Vital="yes" Source="$(var.Bin)\TableauExtractApiDotNet.dll" />
                 <File Id="TableauHyperExtractDll" Name="TableauHyperExtract.dll" Vital="yes" Source="$(var.Bin)\TableauHyperExtract.dll" />
-                <File Id="TabLibEay32Dll" Name="tablibeay32.dll" Vital="yes" Source="$(var.Bin)\tablibeay32.dll" />
-                <File Id="TabSslEay32Dll" Name="tabssleay32.dll" Vital="yes" Source="$(var.Bin)\tabssleay32.dll" />
+                <File Id="TabLibEayDll" Name="tablibeay32.dll" Vital="yes" Source="$(var.Bin)\tablibeay32.dll" />
+                <File Id="TabSslEayDll" Name="tabssleay32.dll" Vital="yes" Source="$(var.Bin)\tabssleay32.dll" />
                 <File Id="TabSysDll" Name="tabsys.dll" Vital="yes" Source="$(var.Bin)\tabsys.dll" />
                 <File Id="TabzDll" Name="tabz.dll" Vital="yes" Source="$(var.Bin)\tabz.dll" />
                 <File Id="TbbDll" Name="tbb.dll" Vital="yes" Source="$(var.Bin)\tbb.dll" />

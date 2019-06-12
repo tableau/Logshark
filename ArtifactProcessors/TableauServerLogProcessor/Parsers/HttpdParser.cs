@@ -25,11 +25,11 @@ namespace Logshark.ArtifactProcessors.TableauServerLogProcessor.Parsers
                             (?<ts>\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3})\s
                             ""(?<ts_offset>.*?)""\s
                             (?<port>\d{1,5})\s
-                            ""(?<request_method>[A-Z]+)\s(?<resource>.+?)(\sHTTP/(?<http_version>.+?))?""\s
+                            ""((?<request_method>[A-Z]+)\s)?(?<resource>.+?)(\sHTTP\/(?<http_version>.+?))?""\s
                             ""(?<xforwarded_for>.+?)""\s
                             (?<status_code>\d{3})\s
                             (?<response_size>.+?)\s
-                            ""(?<content_length>.*?)""\s
+                            ""((?<content_length>-?[0-9]*?)|(.*?))""\s
                             (?<request_time>\d+)\s
                             (?<request_id>.*)",
                     RegexOptions.ExplicitCapture | RegexOptions.IgnorePatternWhitespace | RegexOptions.Compiled),
@@ -41,11 +41,11 @@ namespace Logshark.ArtifactProcessors.TableauServerLogProcessor.Parsers
                             (?<ts>\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}\.\d{3})\s
                             (?<ts_offset>.*?)\s
                             (?<port>\d{1,5})\s
-                            ""(?<request_method>[A-Z]+)\s(?<resource>.+?)(\sHTTP/(?<http_version>.+?))?""\s
+                            ""((?<request_method>[A-Z]+)\s)?(?<resource>.+?)(\sHTTP\/(?<http_version>.+?))?""\s
                             ""(?<xforwarded_for>.+?)""\s
                             (?<status_code>\d{3})\s
                             (?<response_size>.+?)\s
-                            ""(?<content_length>.*?)""\s
+                            ""((?<content_length>-?[0-9]*?)|(.*?))""\s
                             (?<request_time>\d+)\s
                             (?<request_id>.*)",
                     RegexOptions.ExplicitCapture | RegexOptions.IgnorePatternWhitespace | RegexOptions.Compiled),
@@ -56,11 +56,11 @@ namespace Logshark.ArtifactProcessors.TableauServerLogProcessor.Parsers
                             (?<requester>.+?)\s
                             \[(?<ts>\d+.*?)\s(?<ts_offset>.*?)\]\s
                             (?<port>\d{1,5})\s
-                            ""(?<request_method>[A-Z]+)\s(?<resource>.+?)(\sHTTP/(?<http_version>.+?))?""\s
+                            ""((?<request_method>[A-Z]+)\s)?(?<resource>.+?)(\sHTTP\/(?<http_version>.+?))?""\s
                             ""(?<xforwarded_for>.+?)""\s
                             (?<status_code>\d{3})\s
                             (?<response_size>.+?)\s""
-                            (?<content_length>.*?)""\s
+                            ((?<content_length>-?[0-9]*?)|(.*?))""\s
                             (?<request_time>\d+)\s
                             (?<request_id>.*)",
                     RegexOptions.ExplicitCapture | RegexOptions.IgnorePatternWhitespace | RegexOptions.Compiled)

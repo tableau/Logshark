@@ -8,9 +8,9 @@ namespace Logshark.Plugins.ReplayCreation.Models
     /// </summary>
     internal class AccessSessionInfo
     {
-        public string ApacheRequestID { get; set; }
+        public string ApacheRequestId { get; set; }
         public string RequestMethod { get; set; }
-        public string RequestID { get; set; }
+        public string RequestId { get; set; }
         public string Resource { get; set; }
         public DateTime RequestTime { get; set; }
         public string LoadTime { get; set; }
@@ -22,14 +22,14 @@ namespace Logshark.Plugins.ReplayCreation.Models
         /// <param name="logLine"></param>
         public AccessSessionInfo(BsonDocument logLine)
         {
-            ApacheRequestID = logLine.GetValue("request_id").AsString;
+            ApacheRequestId = logLine.GetValue("request_id").AsString;
             RequestMethod = logLine.GetValue("request_method").AsString;
-            RequestID = logLine.GetValue("request_ip").AsString;
+            RequestId = logLine.GetValue("request_ip").AsString;
             Resource = logLine.GetValue("resource").AsString;
             LoadTime = logLine.GetValue("request_time").AsString;
             var offset = logLine.GetElement("ts_offset").Value.ToString();
             var timeOffSet = int.Parse(offset);
-            var ts = new System.TimeSpan(timeOffSet / 100, timeOffSet % 100, 0);
+            var ts = new TimeSpan(timeOffSet / 100, timeOffSet % 100, 0);
 
             //convert the current time to UTC
             var browserStartTime = (DateTime)logLine.GetElement("ts").Value - ts;

@@ -34,12 +34,14 @@
     <!-- Extract SDK Files -->
     <file src="..\Logshark.Core\bin\$Env$\$Configuration$\boost_*.dll" target="output" />
     <file src="..\Logshark.Core\bin\$Env$\$Configuration$\concrt140.dll" target="output" />
+    <file src="..\Logshark.Core\bin\$Env$\$Configuration$\crashdumper.exe" target="output" />
     <file src="..\Logshark.Core\bin\$Env$\$Configuration$\hyperd*.exe" target="output" />
     <file src="..\Logshark.Core\bin\$Env$\$Configuration$\icu*.dll" target="output" />
     <file src="..\Logshark.Core\bin\$Env$\$Configuration$\IKVM.*.dll" target="output" />
     <file src="..\Logshark.Core\bin\$Env$\$Configuration$\ikvm-native-*.dll" target="output" />
-    <file src="..\Logshark.Core\bin\$Env$\$Configuration$\jemalloc.dll" target="output" />
     <file src="..\Logshark.Core\bin\$Env$\$Configuration$\libpq.dll" target="output" />
+    <file src="..\Logshark.Core\bin\$Env$\$Configuration$\libcrypto-*.dll" target="output" />
+    <file src="..\Logshark.Core\bin\$Env$\$Configuration$\libssl-*.dll" target="output" />
     <file src="..\Logshark.Core\bin\$Env$\$Configuration$\metrics2.dll" target="output" />
     <file src="..\Logshark.Core\bin\$Env$\$Configuration$\msvcp140.dll" target="output" />
     <file src="..\Logshark.Core\bin\$Env$\$Configuration$\TableauCommon.dll" target="output" />

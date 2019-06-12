@@ -5,6 +5,7 @@ using Tableau.ExtractApi.DataAttributes;
 
 namespace Logshark.Plugins.Hyper.Models
 {
+    [BsonIgnoreExtraElements]
     public class HyperError : BaseHyperEvent
     {
         [BsonElement("v")]
