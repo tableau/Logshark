@@ -13,15 +13,31 @@ namespace Logshark.ConnectionModel.TableauServer
         public int PublishingTimeoutSeconds { get; private set; }
         public string Scheme { get; private set; }
         public Uri Uri { get; private set; }
-
+        public static string TableauFormUser = null;
+        public static string TableauFormPass = null;
         public TableauServerConnectionInfo(TableauServerConnection tableauConfig)
         {
             Scheme = tableauConfig.Protocol;
             Hostname = tableauConfig.Server.Server;
             Port = tableauConfig.Server.Port;
             Site = tableauConfig.Server.Site;
-            Username = tableauConfig.User.Username;
-            Password = tableauConfig.User.Password;
+            if (tableauConfig.User.Username == " " || tableauConfig.User.Password == " ")
+            {
+               
+                Form1 passwordPopup = new Form1();
+                /* In case a value is maintained in the configuration xml, display the value of the logon details in the textboxes */
+                passwordPopup.textBox1.Text = tableauConfig.User.Username;
+                passwordPopup.textBox2.Text = tableauConfig.User.Password;
+
+                passwordPopup.ShowDialog();
+                
+                Username = TableauFormUser;
+                Password = TableauFormPass;
+            }
+            else {
+                Username = tableauConfig.User.Username;
+                Password = tableauConfig.User.Password;
+            }
             PublishingTimeoutSeconds = tableauConfig.PublishingTimeoutSeconds;
             Uri = GetUri();
         }
