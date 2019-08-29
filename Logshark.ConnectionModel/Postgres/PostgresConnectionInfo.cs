@@ -36,13 +36,25 @@ namespace Logshark.ConnectionModel.Postgres
             Hostname = postgresConfig.Server.Server;
             Port = postgresConfig.Server.Port;
             DefaultDatabase = postgresConfig.Database.Name;
-            if (String.IsNullOrEmpty(postgresConfig.User.Username) || String.IsNullOrEmpty(postgresConfig.User.Password))
+            if (String.IsNullOrEmpty(postgresConfig.User.Username) || String.IsNullOrEmpty(postgresConfig.User.Password) || postgresConfig.User.Username == " " || postgresConfig.User.Password == " ")
             {
 
                 PostgresForm passwordPopup = new PostgresForm();
                 /* In case a value is maintained in the configuration xml, display the value of the logon details in the textboxes */
-                passwordPopup.textBox4.Text = postgresConfig.User.Username;
-                passwordPopup.textBox3.Text = postgresConfig.User.Password;
+                if (postgresConfig.User.Username == " " || postgresConfig.User.Username.Length == 1)
+                {
+                    passwordPopup.textBox4.Text = "";
+                }
+                else if (postgresConfig.User.Password == " " || postgresConfig.User.Password.Length == 1)
+                {
+                    passwordPopup.textBox3.Text = "";
+                }
+                else
+                {
+                    passwordPopup.textBox4.Text = postgresConfig.User.Username;
+                    passwordPopup.textBox3.Text = postgresConfig.User.Password;
+                }
+
 
                 passwordPopup.ShowDialog();
 
