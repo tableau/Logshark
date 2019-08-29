@@ -26,8 +26,19 @@ namespace Logshark.ConnectionModel.TableauServer
                
                 Form1 passwordPopup = new Form1();
                 /* In case a value is maintained in the configuration xml, display the value of the logon details in the textboxes */
-                passwordPopup.textBox1.Text = tableauConfig.User.Username;
-                passwordPopup.textBox2.Text = tableauConfig.User.Password;
+                if (tableauConfig.User.Username == " " || tableauConfig.User.Username.Length == 1)
+                {
+                    passwordPopup.textBox1.Text = "";
+                }
+                else if(tableauConfig.User.Password == " " || tableauConfig.User.Password.Length == 1)
+                { 
+                    passwordPopup.textBox2.Text = "";
+                }
+                else
+                {
+                    passwordPopup.textBox1.Text = tableauConfig.User.Username;
+                    passwordPopup.textBox2.Text = tableauConfig.User.Password;
+                }
 
                 passwordPopup.ShowDialog();
                 
