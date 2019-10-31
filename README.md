@@ -17,7 +17,7 @@ Some common use cases for Logshark include:
 
 [![Setup Logshark](https://img.shields.io/badge/Setup%20Logshark-Installation%20and%20User%20Guide-lightgrey.svg)](https://tableau.github.io/Logshark/)
 
-No installer is needed for the new version, as LogShark is provided as a self-contained application. You can simply grab a zip file with LogShark, navigate to a location where you want to install it and unzip the file there.
+No installer is needed for the new version, as LogShark is provided as a self-contained application. Simply grab a zip file with LogShark, navigate to a location where you want to install it, and unzip the file there.
 
 # System Requirements
 
