@@ -1,4 +1,5 @@
-﻿using Logshark.PluginLib.Helpers;
+﻿using Logshark.PluginLib.Extensions;
+using Logshark.PluginLib.Helpers;
 using MongoDB.Bson;
 
 namespace Logshark.Plugins.Vizql.Models.Events.Caching
@@ -15,29 +16,26 @@ namespace Logshark.Plugins.Vizql.Models.Events.Caching
 
         public VizqlEcLoad(BsonDocument document)
         {
-            ValidateArguments("ec-load", document);
             SetEventMetadata(document);
 
             BsonDocument values = BsonDocumentHelper.GetValuesStruct(document);
 
-            KeyHash = BsonDocumentHelper.GetString("key-hash", values);
-            Outcome = BsonDocumentHelper.GetString("outcome", values);
-            KeySizeB = BsonDocumentHelper.GetInt("key-size-b", values);
-            Cns = BsonDocumentHelper.GetString("cns", values);
-            ElapsedMs = BsonDocumentHelper.GetNullableInt("elapsed-ms", values);
+            KeyHash = values.GetString("key-hash");
+            Outcome = values.GetString("outcome");
+            KeySizeB = values.GetInt("key-size-b");
+            Cns = values.GetString("cns");
+            ElapsedMs = values.GetNullableInt("elapsed-ms");
 
         }
 
         public override double? GetElapsedTimeInSeconds()
         {
-            if (ElapsedMs.HasValue)
-            {
-                return (double)ElapsedMs/1000;
-            }
-            else
+            if (!ElapsedMs.HasValue)
             {
                 return null;
             }
+
+            return (double) ElapsedMs / 1000;
         }
     }
 }

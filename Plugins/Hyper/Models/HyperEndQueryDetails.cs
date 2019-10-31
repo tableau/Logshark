@@ -1,6 +1,5 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
-using ServiceStack.DataAnnotations;
 using System.Collections.Generic;
 using System.ComponentModel;
 
@@ -9,7 +8,6 @@ namespace Logshark.Plugins.Hyper.Models
     public class HyperEndQueryDetails : ISupportInitialize
     {
         [BsonElement("client-session-id")]
-        [Index]
         public string ClientSessionId { get; set; }
 
         [BsonElement("cols")]

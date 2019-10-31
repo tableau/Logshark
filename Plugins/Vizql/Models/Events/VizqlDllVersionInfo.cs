@@ -1,4 +1,5 @@
-﻿using Logshark.PluginLib.Helpers;
+﻿using Logshark.PluginLib.Extensions;
+using Logshark.PluginLib.Helpers;
 using MongoDB.Bson;
 
 namespace Logshark.Plugins.Vizql.Models.Events
@@ -16,14 +17,13 @@ namespace Logshark.Plugins.Vizql.Models.Events
 
         public VizqlDllVersionInfo(BsonDocument document)
         {
-            ValidateArguments("dll-version-info", document);
             SetEventMetadata(document);
 
             BsonDocument values = BsonDocumentHelper.GetValuesStruct(document);
-            Filename = BsonDocumentHelper.GetString("filename", values);
-            ProductName = BsonDocumentHelper.GetString("product-name", values);
-            FileVersion = BsonDocumentHelper.GetString("file-version", values);
-            ProductVersion = BsonDocumentHelper.GetString("product-version", values);
+            Filename = values.GetString("filename");
+            ProductName = values.GetString("product-name");
+            FileVersion = values.GetString("file-version");
+            ProductVersion = values.GetString("product-version");
         }
     }
 }

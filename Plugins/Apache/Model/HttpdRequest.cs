@@ -1,91 +1,57 @@
-﻿using Logshark.PluginLib.Helpers;
-using MongoDB.Bson;
-using ServiceStack.DataAnnotations;
+﻿using MongoDB.Bson.Serialization.Attributes;
 using System;
 
 namespace Logshark.Plugins.Apache.Model
 {
+    [BsonIgnoreExtraElements]
     public class HttpdRequest
     {
-        [PrimaryKey]
-        [AutoIncrement]
-        public int Id { get; set; }
-
-        [Index(Unique = true)]
-        public Guid EventHash { get; set; }
-
-        #region Apache Data Fields
-
+        [BsonElement("content_length")]
         public long? ContentLength { get; set; }
 
+        [BsonElement("port")]
         public int? Port { get; set; }
 
+        [BsonElement("resource")]
         public string RequestBody { get; set; }
 
-        [Index]
+        [BsonElement("request_id")]
         public string RequestId { get; set; }
 
+        [BsonElement("request_ip")]
         public string RequestIp { get; set; }
 
+        [BsonElement("request_method")]
         public string RequestMethod { get; set; }
 
+        [BsonElement("request_time")]
         public long? RequestTimeMS { get; set; }
 
-        [Index]
+        [BsonElement("requester")]
         public string Requester { get; set; }
 
-        [Index]
+        [BsonElement("status_code")]
         public int? StatusCode { get; set; }
 
-        [Index]
+        [BsonElement("ts")]
         public DateTime Timestamp { get; set; }
 
+        [BsonElement("ts_offset")]
         public string TimestampOffset { get; set; }
 
+        [BsonElement("xforwarded_for")]
         public string XForwardedFor { get; set; }
 
-        #endregion Apache Data Fields
-
-        #region Metadata Fields
-
-        [Index]
-        public string File { get; set; }
-
-        public int? LineNumber { get; set; }
-
-        public Guid LogsetHash { get; set; }
-
-        [Index]
+        [BsonElement("worker")]
         public string Worker { get; set; }
 
-        #endregion Metadata Fields
+        [BsonElement("file_path")]
+        public string FilePath { get; set; }
 
-        public HttpdRequest() { }
+        [BsonElement("file")]
+        public string File { get; set; }
 
-        public HttpdRequest(BsonDocument logLine, Guid logsetHash)
-        {
-            // Initialize Apache Data fields
-            ContentLength = BsonDocumentHelper.GetNullableLong("content_length", logLine);
-            Port = BsonDocumentHelper.GetNullableInt("port", logLine);
-            RequestBody = BsonDocumentHelper.GetString("resource", logLine);
-            RequestId = BsonDocumentHelper.GetString("request_id", logLine);
-            RequestIp = BsonDocumentHelper.GetString("request_ip", logLine);
-            RequestMethod = BsonDocumentHelper.GetString("request_method", logLine);
-            RequestTimeMS = BsonDocumentHelper.GetNullableLong("request_time", logLine);
-            Requester = BsonDocumentHelper.GetString("requester", logLine);
-            StatusCode = BsonDocumentHelper.GetNullableInt("status_code", logLine);
-            Timestamp = BsonDocumentHelper.GetDateTime("ts", logLine);
-            TimestampOffset = BsonDocumentHelper.GetString("ts_offset", logLine);
-            XForwardedFor = BsonDocumentHelper.GetString("xforwarded_for", logLine);
-
-            // Initialize Metadata fields
-            File = String.Format(@"{0}\{1}", BsonDocumentHelper.GetString("file_path", logLine), BsonDocumentHelper.GetString("file", logLine));
-            LineNumber = BsonDocumentHelper.GetNullableInt("line", logLine);
-            LogsetHash = logsetHash;
-            Worker = BsonDocumentHelper.GetString("worker", logLine);
-
-            // Generate unique event hash
-            EventHash = HashHelper.GenerateHashGuid(RequestId, Timestamp, TimestampOffset, File);
-        }
+        [BsonElement("line")]
+        public int LineNumber { get; set; }
     }
 }

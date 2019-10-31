@@ -13,8 +13,8 @@ namespace Logshark.ArtifactProcessors.TableauServerLogProcessor.ParserMapping.Ts
         private static readonly IDictionary<string, Type> fileMap =
             new Dictionary<string, Type>
             {
-                { @"^backgrounder-.*log.*", typeof(BackgrounderJavaParser) },
-                { @"^control-backgrounder-.*log.*", typeof(ServiceControlParser) },
+                { @"^backgrounder.*log.*", typeof(BackgrounderJavaParser) },
+                { @"^control.backgrounder.*log.*", typeof(ServiceControlParser) },
                 { @"^nativeapi_backgrounder_.*txt.*", typeof(BackgrounderCppParser) },
                 { @"^tabprotosrv_backgrounder_.*txt.*", typeof(ProtocolServerParser) }
             };

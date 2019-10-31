@@ -1,4 +1,5 @@
-﻿using Logshark.PluginLib.Helpers;
+﻿using Logshark.PluginLib.Extensions;
+using Logshark.PluginLib.Helpers;
 using MongoDB.Bson;
 
 namespace Logshark.Plugins.Vizql.Models.Events.Query
@@ -17,23 +18,21 @@ namespace Logshark.Plugins.Vizql.Models.Events.Query
 
         public VizqlQpQueryEnd(BsonDocument document)
         {
-            ValidateArguments("qp-query-end", document);
             SetEventMetadata(document);
-
             BsonDocument values = BsonDocumentHelper.GetValuesStruct(document);
-            QueryId = BsonDocumentHelper.GetInt("query-id", values);
-            OwnerDashboard = BsonDocumentHelper.GetString("owner-dashboard", values);
-            OwnerComponent = BsonDocumentHelper.GetString("owner-component", values);
-            OwnerWorksheet = BsonDocumentHelper.GetString("owner-worksheet", values);
-            CacheHit = BsonDocumentHelper.GetString("cache-hit", values);
-            ProtocolId = BsonDocumentHelper.GetNullableInt("protocol-id", values);
-            Elapsed = BsonDocumentHelper.GetNullableDouble("elapsed", values);
+
+            QueryId = values.GetInt("query-id");
+            OwnerDashboard = values.GetString("owner-dashboard");
+            OwnerComponent = values.GetString("owner-component");
+            OwnerWorksheet = values.GetString("owner-worksheet");
+            CacheHit = values.GetString("cache-hit");
+            ProtocolId = values.GetNullableInt("protocol-id");
+            Elapsed = values.GetNullableDouble("elapsed");
         }
 
         public override double? GetElapsedTimeInSeconds()
         {
             return Elapsed;
         }
-
     }
 }

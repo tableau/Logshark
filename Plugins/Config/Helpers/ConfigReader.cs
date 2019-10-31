@@ -16,16 +16,14 @@ namespace Logshark.Plugins.Config.Helpers
         protected readonly IDictionary<string, string> config;
         protected readonly DateTime? fileLastModifiedTimestamp;
         protected readonly IDictionary<int, string> workerHostnameMap;
-        protected readonly string logsetHash;
 
-        public ConfigReader(IMongoDatabase mongoDatabase, Guid logsetHash)
+        public ConfigReader(IMongoDatabase mongoDatabase)
         {
             this.mongoDatabase = mongoDatabase;
             configDocument = LoadConfigDocument();
             config = LoadConfig();
             fileLastModifiedTimestamp = GetConfigModificationTimestamp();
             workerHostnameMap = ConfigDataHelper.GetWorkerHostnameMap(mongoDatabase);
-            this.logsetHash = logsetHash.ToString();
         }
 
         #region Public Methods
@@ -63,7 +61,7 @@ namespace Logshark.Plugins.Config.Helpers
         /// <returns>Collection of config entries for the given logset.</returns>
         public ICollection<ConfigEntry> GetConfigEntries()
         {
-            return config.Select(configEntry => new ConfigEntry(logsetHash, fileLastModifiedTimestamp, configEntry.Key, configEntry.Value)).ToList();
+            return config.Select(configEntry => new ConfigEntry(configEntry.Key, configEntry.Value, fileLastModifiedTimestamp)).ToList();
         }
 
         /// <summary>
@@ -179,7 +177,7 @@ namespace Logshark.Plugins.Config.Helpers
 
                     if (parsedPort && workerIndex.HasValue)
                     {
-                        postgresProcessInfo.Add(new ConfigProcessInfo(logsetHash, fileLastModifiedTimestamp, hostname, pgsqlProcessName, workerIndex.Value.ToString(), port));
+                        postgresProcessInfo.Add(new ConfigProcessInfo(hostname, pgsqlProcessName, workerIndex.Value.ToString(), port, fileLastModifiedTimestamp));
                     }
                 }
             }
@@ -253,7 +251,7 @@ namespace Logshark.Plugins.Config.Helpers
             ICollection<ConfigProcessInfo> results = new List<ConfigProcessInfo>();
             for (int i = 0; i < processCount; i++)
             {
-                var configProcessInfo = new ConfigProcessInfo(logsetHash, fileLastModifiedTimestamp, hostname, processName, workerIndex.ToString(), processPort.Value + i);
+                var configProcessInfo = new ConfigProcessInfo(hostname, processName, workerIndex.ToString(), processPort.Value + i, fileLastModifiedTimestamp);
                 results.Add(configProcessInfo);
             }
 

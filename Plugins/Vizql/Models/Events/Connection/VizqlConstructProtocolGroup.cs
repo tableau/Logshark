@@ -1,4 +1,5 @@
-﻿using Logshark.PluginLib.Helpers;
+﻿using Logshark.PluginLib.Extensions;
+using Logshark.PluginLib.Helpers;
 using MongoDB.Bson;
 
 namespace Logshark.Plugins.Vizql.Models.Events.Connection
@@ -16,16 +17,14 @@ namespace Logshark.Plugins.Vizql.Models.Events.Connection
 
         public VizqlConstructProtocolGroup(BsonDocument document)
         {
-            ValidateArguments("construct-protocol-group", document);
             SetEventMetadata(document);
 
             BsonDocument values = BsonDocumentHelper.GetValuesStruct(document);
-            InConstructionCount = BsonDocumentHelper.GetNullableInt("in-construction-count", values);
-            ClosedProtocolsCount = BsonDocumentHelper.GetNullableInt("closed-protocols-count", values);
-            ProtocolGroupId = BsonDocumentHelper.GetNullableInt("group-id", values);
-            ConnectionLimit = BsonDocumentHelper.GetInt("connection-limit", values);
-            Attributes = BsonDocumentHelper.GetString("attributes", values);
+            InConstructionCount = values.GetNullableInt("in-construction-count");
+            ClosedProtocolsCount = values.GetNullableInt("closed-protocols-count");
+            ProtocolGroupId = values.GetNullableInt("group-id");
+            ConnectionLimit = values.GetInt("connection-limit");
+            Attributes = values.GetString("attributes");
         }
     }
 }
- 

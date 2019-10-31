@@ -1,5 +1,4 @@
 ﻿using LogParsers.Base.ParserBuilders;
-using LogParsers.Base.Parsers.Shared;
 using Logshark.ArtifactProcessors.$safeprojectname$.Parsing.Parsers;
 using System;
 using System.Collections.Generic;

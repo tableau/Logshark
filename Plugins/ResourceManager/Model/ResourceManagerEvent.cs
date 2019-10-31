@@ -2,7 +2,6 @@
 using Logshark.PluginLib.Extensions;
 using Logshark.PluginLib.Logging;
 using MongoDB.Bson;
-using ServiceStack.DataAnnotations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,20 +27,15 @@ namespace Logshark.Plugins.ResourceManager.Model
 
         private static readonly ILog Log = PluginLogFactory.GetLogger(Assembly.GetExecutingAssembly(), MethodBase.GetCurrentMethod());
 
-        [PrimaryKey]
-        [AutoIncrement]
-        public int Id { get; set; }
-
-        public Guid LogsetHash { get; set; }
-
-        [Index(Unique = true)]
-        public Guid EventHash { get; set; }
-
         public string ProcessName { get; set; }
-        public string WorkerId { get; set; }
         public int? ProcessId { get; set; }
         public DateTime Timestamp { get; set; }
         public int Pid { get; set; }
+
+        public string Worker { get; set; }
+        public string FilePath { get; set; }
+        public string FileName { get; set; }
+        public int Line { get; set; }
 
         public ResourceManagerEvent()
         {
@@ -50,10 +44,14 @@ namespace Logshark.Plugins.ResourceManager.Model
         protected ResourceManagerEvent(BsonDocument document, string processName)
         {
             ProcessName = processName;
-            WorkerId = document.GetString("worker");
+            ProcessId = ParseProcessId(document.GetString("file"));
             Timestamp = document.GetDateTime("ts");
             Pid = document.GetInt("pid");
-            ProcessId = ParseProcessId(document.GetString("file"));
+
+            Worker = document.GetString("worker");
+            FilePath = document.GetString("file_path");
+            FileName = document.GetString("file");
+            Line = document.GetInt("line");
         }
 
         /// <summary>

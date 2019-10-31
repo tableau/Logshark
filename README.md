@@ -13,7 +13,7 @@ Some common use cases for Logshark include:
 
 # How do I set up Logshark?
 
-[![Download Logshark](https://img.shields.io/badge/Download%20Logshark-Version%203.0-blue.svg)](https://github.com/tableau/Logshark/releases/download/v3.0/Setup_Logshark_v3.0.exe)
+[![Download Logshark](https://img.shields.io/badge/Download%20Logshark-Version%203.0.1-blue.svg)](https://github.com/tableau/Logshark/releases/download/3.0.1/Setup_Logshark_v3.0.1.exe)
 
 [![Setup Logshark](https://img.shields.io/badge/Setup%20Logshark-Installation%20and%20User%20Guide-lightgrey.svg)](https://tableau.github.io/Logshark/)
 
@@ -29,7 +29,7 @@ NOTE: If you are upgrading from a previous version of Logshark, the installer wi
 
 The best way to analyze results is to run Logshark on your own logset and explore the generated workbooks via Tableau! Beyond what is included, you can configure Logshark to output your own custom workbooks. See the [installation guide](https://tableau.github.io/Logshark/) for more details on how to do this.
 
-For the truly adventurous, Logshark features a plugin framework, so you can even build your own analysis plugin to leverage Logshark’s log parsing engine!
+For the truly adventurous, Logshark features a plugin framework, so you can even build your own analysis plugin to leverage Logshark's log parsing engine!
 
 # What do I need to build Logshark from source?
 

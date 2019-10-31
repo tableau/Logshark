@@ -44,20 +44,8 @@
       <HintPath>..\..\packages\CsvHelper.2.16.3.0\lib\net45\CsvHelper.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="FluentAssertions, Version=4.19.0.0, Culture=neutral, PublicKeyToken=33f2691a05b67b6a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\FluentAssertions.4.19.0\lib\net45\FluentAssertions.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="FluentAssertions.Core, Version=4.19.0.0, Culture=neutral, PublicKeyToken=33f2691a05b67b6a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\FluentAssertions.4.19.0\lib\net45\FluentAssertions.Core.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="nunit.framework, Version=3.6.0.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\NUnit.3.6.0\lib\net45\nunit.framework.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed">
+      <HintPath>..\..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -88,6 +76,8 @@
     <Compile Include="ParserMapping\Classic\ParserBuilders\WgServerParserBuilder.cs" />
     <Compile Include="ParserMapping\Classic\ParserBuilders\ZookeeperParserBuilder.cs" />
     <Compile Include="ParserMapping\Tsm\ParserBuilders\BackgrounderParserBuilder.cs" />
+    <Compile Include="ParserMapping\Tsm\ParserBuilders\NetstatLinuxParserBuilder.cs" />
+    <Compile Include="ParserMapping\Tsm\ParserBuilders\NetstatWindowsParserBuilder.cs" />
     <Compile Include="ParserMapping\Tsm\ParserBuilders\VizqlServerParserBuilder.cs" />
     <Compile Include="ParserMapping\Tsm\ParserBuilders\VizPortalParserBuilder.cs" />
     <Compile Include="ParserMapping\Tsm\ParserBuilders\TabSvcParserBuilder.cs" />
@@ -110,6 +100,7 @@
     <Compile Include="ParserMapping\Tsm\ParserBuilders\ConfigParserBuilder.cs" />
     <Compile Include="ParserMapping\Tsm\ParserBuilders\RootParserBuilder.cs" />
     <Compile Include="ParserMapping\Tsm\ServerTsmParserFactory.cs" />
+    <Compile Include="ParserMapping\Tsm\ServerTsmLegacyParserFactory.cs" />
     <Compile Include="Parsers\BackgrounderCppParser.cs" />
     <Compile Include="Parsers\BackgrounderJavaParser.cs" />
     <Compile Include="Parsers\BackupRestoreParser.cs" />

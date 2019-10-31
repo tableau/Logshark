@@ -1,15 +1,15 @@
 ﻿using Logshark.PluginLib.Extensions;
 using MongoDB.Bson.Serialization.Attributes;
-using ServiceStack.DataAnnotations;
 using System.Collections.Generic;
+using Tableau.ExtractApi.DataAttributes;
 
 namespace Logshark.Plugins.Hyper.Models
 {
-    [Alias("hyper_errors")]
+    [BsonIgnoreExtraElements]
     public class HyperError : BaseHyperEvent
     {
         [BsonElement("v")]
-        [Ignore]
+        [ExtractIgnore]
         public IDictionary<string, object> ValuePayload { get; set; }
 
         [BsonIgnore]

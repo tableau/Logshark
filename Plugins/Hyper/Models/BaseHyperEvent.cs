@@ -1,47 +1,17 @@
-﻿using Logshark.PluginLib.Helpers;
-using MongoDB.Bson.Serialization.Attributes;
-using ServiceStack.DataAnnotations;
+﻿using MongoDB.Bson.Serialization.Attributes;
 using System;
+using Tableau.ExtractApi.DataAttributes;
 
 namespace Logshark.Plugins.Hyper.Models
 {
     [BsonIgnoreExtraElements]
     public abstract class BaseHyperEvent
     {
-        private Guid? eventHash;
-
-        #region Identity Fields & Constraints
-
-        [PrimaryKey]
-        [AutoIncrement]
-        public int Id { get; set; }
-
-        [Index(Unique = true)]
-        public Guid EventHash
-        {
-            get
-            {
-                if (eventHash == null)
-                {
-                    eventHash = HashHelper.GenerateHashGuid(Timestamp, Worker, FileName, Line);
-                }
-
-                return eventHash.Value;
-            }
-            set
-            {
-                eventHash = value;
-            }
-        }
-
         [BsonId]
-        [Ignore]
+        [ExtractIgnore]
         public string MongoId { get; set; }
 
-        #endregion Identity Fields & Constraints
-
         [BsonElement("ts")]
-        [Index]
         public DateTime Timestamp { get; set; }
 
         [BsonElement("pid")]
@@ -70,16 +40,11 @@ namespace Logshark.Plugins.Hyper.Models
         public string User { get; set; }
 
         [BsonElement("k")]
-        [Index]
         public string Key { get; set; }
 
         #region Metadata Fields
 
-        [BsonIgnoreIfNull]
-        public Guid LogsetHash { get; set; }
-
         [BsonElement("worker")]
-        [Index]
         public string Worker { get; set; }
 
         [BsonElement("file_path")]

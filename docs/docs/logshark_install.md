@@ -15,9 +15,9 @@ In this section:
 -------------------------------------------------------------------------------------
 
 ### Run the Logshark Setup program
- [![Download Logshark](https://img.shields.io/badge/Download%20Logshark-Version%203.0-blue.svg)](https://github.com/tableau/Logshark/releases/download/v3.0/Setup_Logshark_v3.0.exe)
+ [![Download Logshark](https://img.shields.io/badge/Download%20Logshark-Version%203.0.2-blue.svg)](https://github.com/tableau/Logshark/releases/download/3.0.2/Setup_Logshark_v3.0.2.exe)
 
-1.  From the directory where you downloaded Logshark, run the Logshark Setup program, double-click the file `Setup_Logshark_v3.0.exe`.
+1.  From the directory where you downloaded Logshark, run the Logshark Setup program, double-click the file `Setup_Logshark_v3.0.2.exe`.
    
 2.  Click **Install** to use the default configuration. This adds Logshark to the PATH environment variable.
 

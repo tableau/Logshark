@@ -5,7 +5,7 @@
 -->
 <CustomWorkbooks>
   <!-- Uncomment this element and update it to point to your custom workbook and the associated plugins.
-  <Workbook name="Sample.twb">
+  <Workbook name="Sample.twbx">
     <PluginDependency name="Apache" />
     <PluginDependency name="Backgrounder" />
     <PluginDependency name="VizqlServer" />

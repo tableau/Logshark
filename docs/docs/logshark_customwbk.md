@@ -8,7 +8,7 @@ title: Adding and Creating Your Own Custom Workbooks for Logshark
 Logshark provides an option to include your own custom workbooks in a Logshark run.  These workbooks will then be included in the run output if the CustomWorkbooks plugin is run and all of their dependencies are met.
 
 1. To configure this, first browse to your Logshark installation directory and open up the `CustomWorkbooks` folder.  
-2. Add your custom workbook (.twb) files to this folder.  
+2. Add your custom workbook (.twbx) files to this folder.  
 3. Additionally, you will need to edit `CustomWorkbookConfig.xml` file and add an `Workbook` entry for each custom workbook.  The required attributes and elements are the names of the workbooks and any dependencies they have on other workbooks.  
 
     For example:
@@ -24,13 +24,13 @@ Logshark provides an option to include your own custom workbooks in a Logshark r
 -->
 <CustomWorkbooks>
   <!-- EXAMPLE
-  <Workbook name="MyCustomWorkbook.twb">
+  <Workbook name="MyCustomWorkbook.twbx">
     <PluginDependency name="Apache" />
     <PluginDependency name="Backgrounder" />
   </Workbook>
   -->
 
-  <Workbook name="MyCustomApacheAndBackgrounderWorkbook.twb">
+  <Workbook name="MyCustomApacheAndBackgrounderWorkbook.twbx">
     <PluginDependency name="Apache" />
     <PluginDependency name="Backgrounder" />
   </Workbook>
@@ -40,7 +40,7 @@ Logshark provides an option to include your own custom workbooks in a Logshark r
 ```
 
 
-This entry will cause the file `MyCustomApacheAndBackgrounderWorkbook.twb` to be output at the Logshark run with the appropriate data sources substituted.  NOTE: The `PluginDependency` entries in the example above will make it so that the workbook will only be output if both the Apache and Backgrounder plugins run successfully.  You can declare multiple plugin dependencies for a single workbook, so that you can include workbooks that join the output tables of multiple plugins.
+This entry will cause the file `MyCustomApacheAndBackgrounderWorkbook.twbx` to be output at the Logshark run with the appropriate data sources substituted.  NOTE: The `PluginDependency` entries in the example above will make it so that the workbook will only be output if both the Apache and Backgrounder plugins run successfully.  You can declare multiple plugin dependencies for a single workbook, so that you can include workbooks that join the output tables of multiple plugins.
 
 
 ### Creating Your Own Custom Workbooks from Logshark Data

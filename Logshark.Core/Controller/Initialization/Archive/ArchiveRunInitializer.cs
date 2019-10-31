@@ -15,15 +15,15 @@ using System.Text.RegularExpressions;
 
 namespace Logshark.Core.Controller.Initialization.Archive
 {
-    internal class ArchiveRunInitializer : IRunInitializer
+    public class ArchiveRunInitializer : IRunInitializer
     {
-        protected readonly string applicationTempDirectory;
+        private readonly string _applicationTempDirectory;
 
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         public ArchiveRunInitializer(string applicationTempDirectory)
         {
-            this.applicationTempDirectory = applicationTempDirectory;
+            _applicationTempDirectory = applicationTempDirectory;
         }
 
         #region Public Methods
@@ -32,30 +32,24 @@ namespace Logshark.Core.Controller.Initialization.Archive
         {
             if (request.Target.Type != LogsetTarget.File && request.Target.Type != LogsetTarget.Directory)
             {
-                throw new ArgumentException("Request target must be a file or directory!", "request");
+                throw new ArgumentException("Request target must be a file or directory!", nameof(request));
             }
 
-            ExtractionResult extractionResult = ExtractLogset(request.Target, request.RunId);
+            var extractionResult = ExtractLogset(request.Target);
 
             var artifactProcessorLoader = new ArchiveArtifactProcessorLoader();
-            IArtifactProcessor artifactProcessor = artifactProcessorLoader.LoadArtifactProcessor(extractionResult.RootLogDirectory);
+            var artifactProcessor = artifactProcessorLoader.LoadArtifactProcessor(extractionResult.RootLogDirectory);
 
-            string logsetHash = ComputeLogsetHash(extractionResult.RootLogDirectory, artifactProcessor);
+            var logsetHash = ComputeLogsetHash(extractionResult.RootLogDirectory, artifactProcessor);
 
             var pluginLoader = new PluginLoader(request.ArtifactProcessorOptions);
-            ISet<Type> pluginsToExecute = pluginLoader.LoadPlugins(request.RequestedPlugins, artifactProcessor);
+            var pluginsToExecute = pluginLoader.LoadPlugins(request.RequestedPlugins, artifactProcessor);
 
             var extractedTarget = new LogsharkRequestTarget(extractionResult.RootLogDirectory);
 
-            ISet<string> collectionDependencies;
-            if (request.ParseFullLogset)
-            {
-                collectionDependencies = GetAllSupportedCollections(artifactProcessor, extractionResult.RootLogDirectory);
-            }
-            else
-            {
-                collectionDependencies = pluginLoader.GetCollectionDependencies(pluginsToExecute);
-            }
+            var collectionDependencies = request.ParseFullLogset
+                ? GetAllSupportedCollections(artifactProcessor, extractionResult.RootLogDirectory)
+                : PluginLoader.GetCollectionDependencies(pluginsToExecute);
 
             return new RunInitializationResult(extractedTarget, artifactProcessor, collectionDependencies, logsetHash, pluginsToExecute);
         }
@@ -64,22 +58,22 @@ namespace Logshark.Core.Controller.Initialization.Archive
 
         #region Protected Methods
 
-        protected ExtractionResult ExtractLogset(LogsharkRequestTarget target, string runId)
+        private ExtractionResult ExtractLogset(LogsharkRequestTarget target)
         {
-            string runTempDirectory = GetRunTempDirectory(runId);
+            var runTempDirectory = GetRunTempDirectory();
 
-            ISet<Regex> extractionWhitelist = BuildExtractionWhitelist();
+            var extractionWhitelist = BuildExtractionWhitelist();
 
-            string logsetLocation = PrepareLogsetLocation(target, runTempDirectory, extractionWhitelist);
+            var logsetLocation = PrepareLogsetLocation(target, runTempDirectory, extractionWhitelist);
 
             var extractor = new LogsetExtractor(extractionWhitelist);
             return extractor.Extract(logsetLocation, runTempDirectory);
         }
 
-        protected ISet<Regex> BuildExtractionWhitelist()
+        private static ISet<Regex> BuildExtractionWhitelist()
         {
             var artifactProcessorLoader = new ArtifactProcessorLoader();
-            ISet<IArtifactProcessor> availableArtifactProcessors = artifactProcessorLoader.LoadAllArtifactProcessors();
+            var availableArtifactProcessors = artifactProcessorLoader.LoadAllArtifactProcessors();
 
             ISet<Regex> supportedFilePatterns = new HashSet<Regex>();
             foreach (var processor in availableArtifactProcessors)
@@ -90,7 +84,7 @@ namespace Logshark.Core.Controller.Initialization.Archive
             return supportedFilePatterns;
         }
 
-        protected string PrepareLogsetLocation(LogsharkRequestTarget target, string runTempDirectory, ISet<Regex> fileWhitelist)
+        private static string PrepareLogsetLocation(LogsharkRequestTarget target, string runTempDirectory, ISet<Regex> fileWhitelist)
         {
             // If target is a directory and/or exists on a remote drive, make a local copy to avoid
             // destructive operations on the original & possibly improve extraction speed.
@@ -103,24 +97,24 @@ namespace Logshark.Core.Controller.Initialization.Archive
             return target;
         }
 
-        protected string ComputeLogsetHash(string rootLogDirectory, IArtifactProcessor artifactProcessor)
+        private static string ComputeLogsetHash(string rootLogDirectory, IArtifactProcessor artifactProcessor)
         {
             Log.Info("Computing logset hash..");
             try
             {
-                string logsetHash = artifactProcessor.ComputeArtifactHash(rootLogDirectory);
+                var logsetHash = artifactProcessor.ComputeArtifactHash(rootLogDirectory);
 
-                Log.InfoFormat("Logset hash is '{0}'.", logsetHash);
+                Log.InfoFormat($"Logset hash is '{logsetHash}'.");
                 return logsetHash;
             }
             catch (Exception ex)
             {
-                Log.FatalFormat("Unable to determine logset hash: {0}", ex.Message);
+                Log.FatalFormat($"Unable to determine logset hash: {ex.Message}");
                 throw;
             }
         }
 
-        protected ISet<string> GetAllSupportedCollections(IArtifactProcessor artifactProcessor, string rootLogLocation)
+        private static ISet<string> GetAllSupportedCollections(IArtifactProcessor artifactProcessor, string rootLogLocation)
         {
             return artifactProcessor.GetParserFactory(rootLogLocation)
                                     .GetAllParsers()
@@ -131,9 +125,10 @@ namespace Logshark.Core.Controller.Initialization.Archive
         /// <summary>
         /// Retrieves an absolute path to a folder where temporary files associated with a single run can be stored.
         /// </summary>
-        protected string GetRunTempDirectory(string runId)
+        private string GetRunTempDirectory()
         {
-            return Path.Combine(applicationTempDirectory, runId);
+            var currentTimestamp = DateTime.Now.ToString("yyMMddHHmmssff");
+            return Path.Combine(_applicationTempDirectory, currentTimestamp);
         }
 
         #endregion Protected Methods

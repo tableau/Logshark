@@ -39,7 +39,7 @@ namespace Logshark.Core.Controller.Parsing
         /// </summary>
         public LogsetParsingResult ParseLogset(LogsetParsingRequest request)
         {
-            Log.InfoFormat("Processing log directory '{0}'..", request.Target);
+            Log.InfoFormat($"Processing log directory '{request.Target}'..");
 
             LogsetParsingResult result;
             using (var parseTimer = new LogsharkTimer("Parsed Files", request.LogsetHash, GlobalEventTimingData.Add))
@@ -54,7 +54,7 @@ namespace Logshark.Core.Controller.Parsing
                     result = ProcessFiles(logFiles, request.ArtifactProcessor.GetParserFactory(request.Target), request.LogsetHash);
                 }
 
-                Log.InfoFormat("Finished processing log directory '{0}'! [{1}]", request.Target, parseTimer.Elapsed.Print());
+                Log.InfoFormat($"Finished processing log directory '{request.Target}'! [{parseTimer.Elapsed.Print()}]");
             }
 
             Finalize(request, result);
@@ -127,13 +127,13 @@ namespace Logshark.Core.Controller.Parsing
         {
             try
             {
-                Log.InfoFormat("Processing {0}.. ({1})", file, file.FileSize.ToPrettySize());
+                Log.InfoFormat($"Processing {file}.. ({file.FileSize.ToPrettySize()})");
                 using (var parseTimer = new LogsharkTimer("Parse File", file.ToString(), GlobalEventTimingData.Add))
                 {
                     IParser parser = parserFactory.GetParser(file);
                     if (parser == null)
                     {
-                        Log.ErrorFormat("Failed to locate a parser for file '{0}'.  Skipping this file..", file.FilePath);
+                        Log.ErrorFormat($"Failed to locate a parser for file '{file.FilePath}'.  Skipping this file..");
                         return false;
                     }
 
@@ -145,17 +145,17 @@ namespace Logshark.Core.Controller.Parsing
                     long documentsSuccessfullyParsed = fileProcessor.Parse(file);
                     if (file.FileSize > 0 && documentsSuccessfullyParsed == 0)
                     {
-                        Log.WarnFormat("Failed to parse any log events from {0}!", file);
+                        Log.WarnFormat($"Failed to parse any log events from {file}!");
                         return false;
                     }
 
-                    Log.InfoFormat("Completed processing of {0} ({1}) [{2}]", file, file.FileSize.ToPrettySize(), parseTimer.Elapsed.Print());
+                    Log.InfoFormat($"Completed processing of {file} ({file.FileSize.ToPrettySize()}) [{parseTimer.Elapsed.Print()}]");
                     return true;
                 }
             }
             catch (Exception ex)
             {
-                Log.Error(String.Format("Failed to process file '{0}': {1}", file, ex.Message));
+                Log.Error($"Failed to process file '{file}': {ex.Message}");
                 Log.Debug(ex.StackTrace);
                 return false;
             }
@@ -173,8 +173,8 @@ namespace Logshark.Core.Controller.Parsing
         {
             int maxFileProcessingConcurrency = Environment.ProcessorCount * tuningOptions.FileProcessorConcurrencyLimitPerCore;
 
-            Log.InfoFormat("Setting file processing concurrency limit to {0} concurrent files. ({1} logical {2} present)",
-                           maxFileProcessingConcurrency, Environment.ProcessorCount, "core".Pluralize(Environment.ProcessorCount));
+            Log.InfoFormat($"Setting file processing concurrency limit to {maxFileProcessingConcurrency} concurrent files. " +
+                           $"({Environment.ProcessorCount} logical {"core".Pluralize(Environment.ProcessorCount)} present)");
 
             var scheduler = new LimitedConcurrencyLevelTaskScheduler(maxFileProcessingConcurrency);
 
@@ -195,7 +195,7 @@ namespace Logshark.Core.Controller.Parsing
             catch (Exception ex)
             {
                 // Log & swallow exception; cleanup is a nice-to-have, not a need-to-have.
-                Log.DebugFormat("Failed to remove processed file '{0}': {1}", fileContext.FilePath, ex.Message);
+                Log.DebugFormat($"Failed to remove processed file '{fileContext.FilePath}': {ex.Message}");
                 return false;
             }
         }

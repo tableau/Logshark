@@ -10,16 +10,12 @@ namespace Logshark.ArtifactProcessors.TableauServerLogProcessor.ParserMapping.Ts
     /// </summary>
     internal sealed class FileStoreParserBuilder : BaseParserBuilder, IParserBuilder
     {
-        private static readonly IDictionary<string, Type> fileMap =
-            new Dictionary<string, Type>
-            {
-                { @"^control-filestore-.*log.*", typeof(ServiceControlParser) },
-                { @"^filestore.*log*", typeof(FileStoreParser) }
-            };
-
-        protected override IDictionary<string, Type> FileMap
+        private static readonly IDictionary<string, Type> FileMapStatic = new Dictionary<string, Type>
         {
-            get { return fileMap; }
-        }
+            { @"^control.filestore.*log.*", typeof(ServiceControlParser) },
+            { @"^filestore.*log*", typeof(FileStoreParser) }
+        };
+
+        protected override IDictionary<string, Type> FileMap => FileMapStatic;
     }
 }

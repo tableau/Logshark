@@ -1,18 +1,13 @@
 ﻿using Logshark.ArtifactProcessors.TableauServerLogProcessor.Parsers;
 using Logshark.ArtifactProcessors.TableauServerLogProcessor.PluginInterfaces;
-using Logshark.PluginLib.Extensions;
-using Logshark.PluginLib.Helpers;
 using Logshark.PluginLib.Model.Impl;
-using Logshark.PluginLib.Persistence;
+using Logshark.PluginLib.Processors;
 using Logshark.PluginModel.Model;
-using Logshark.Plugins.Tabadmin.Helpers;
 using Logshark.Plugins.Tabadmin.Models;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using ServiceStack.OrmLite;
-using System;
 using System.Collections.Generic;
-using System.Data;
+using System.Linq;
 
 namespace Logshark.Plugins.Tabadmin
 {
@@ -21,18 +16,6 @@ namespace Logshark.Plugins.Tabadmin
     /// </summary>
     public class Tabadmin : BaseWorkbookCreationPlugin, IServerClassicPlugin
     {
-        // The PluginResponse contains state about whether this plugin ran successfully, as well as any errors encountered.  Append any non-fatal errors to this.
-        private PluginResponse pluginResponse;
-
-        private Guid logsetHash;
-
-        private IPersister<TabadminModelBase> persistenceHelper;
-        private const string collectionToQuery = "tabadmin";
-
-        // Two public properties exist on the BaseWorkbookCreationPlugin which can be leveraged in this class:
-        //     MongoDatabase - Open connection handle to MongoDB database containing a parsed logset.
-        //     OutputDatabaseConnectionFactory - Connection factory for the Postgres database where backing data should be stored.
-
         public override ISet<string> CollectionDependencies
         {
             get
@@ -50,68 +33,68 @@ namespace Logshark.Plugins.Tabadmin
             {
                 return new List<string>
                 {
-                    "Tabadmin.twb"
+                    "Tabadmin.twbx"
                 };
             }
         }
 
-        public override IPluginResponse Execute(IPluginRequest pluginRequest)
+        public Tabadmin() { }
+        public Tabadmin(IPluginRequest request) : base(request) { }
+
+        public override IPluginResponse Execute()
         {
-            pluginResponse = CreatePluginResponse();
-            logsetHash = pluginRequest.LogsetHash;
-            IMongoCollection<BsonDocument> tabadminCollection = MongoDatabase.GetCollection<BsonDocument>(collectionToQuery);
-            persistenceHelper = GetConcurrentBatchPersister<TabadminModelBase>(pluginRequest);
+            var pluginResponse = CreatePluginResponse();
 
-            using (IDbConnection dbConnection = GetOutputDatabaseConnection())
+            IMongoCollection<BsonDocument> collection = MongoDatabase.GetCollection<BsonDocument>(ParserConstants.TabAdminCollectionName);
+
+            Log.Info("Processing Tableau Server version data from tabadmin logs...");
+            var versions = TabadminVersionProcessor.BuildVersionTimeline(collection).ToList();
+
+            bool persistedData;
+
+            using (var persister = ExtractFactory.CreateExtract<TableauServerVersion>())
+            using (GetPersisterStatusWriter(persister, versions.Count))
             {
-                Log.Info("Processing Tableau Server version data from tabadmin logs...");
-                dbConnection.CreateOrMigrateTable<TSVersion>();
-                TabadminVersionProcessor.Execute(tabadminCollection, persistenceHelper, pluginResponse, logsetHash);
-
-                // TODO: Create one class for processing Action and Error objects, as they are nearly identical.
-                Log.Info("Processing tabadmin error data...");
-                dbConnection.CreateOrMigrateTable<TabadminError>();
-                TabadminErrorProcessor.Execute(tabadminCollection, persistenceHelper, pluginResponse, logsetHash);
-
-                Log.Info("Processing tabadmin admin action data...");
-                dbConnection.CreateOrMigrateTable<TabadminAction>();
-                TabadminActionProcessor.Execute(tabadminCollection, persistenceHelper, pluginResponse, logsetHash);
-
-                // Shutdown the persistenceHelper to force a flush to the database, then re-initialize it for future use.
-                persistenceHelper.Shutdown();
-                persistenceHelper = GetConcurrentBatchPersister<TabadminModelBase>(pluginRequest);
-
-                IList<TSVersion> allTsVersions = dbConnection.Query<TSVersion>("select * from tabadmin_ts_version");
-
-                // TODO: Figure out how to do a lazy query of Error and Action objects, and update them one at a time, rather than loading
-                // the entire table into memory. I ran into issues updating the objects while holding the SELECT query connection open with Each().
-                // The driver doesn't seem to be able to handle two connections at once.
-                Log.Info("Updating version_id foreign keys for TabadminError objects...");
-                foreach (var tabadminError in dbConnection.Query<TabadminError>("select * from tabadmin_error"))
-                {
-                    tabadminError.VersionId = TSVersionHelper.GetTSVersionIdByDate(allTsVersions, tabadminError);
-                    dbConnection.Update(tabadminError);
-                }
-
-                Log.Info("Updating version_id foreign keys for TabadminAction objects...");
-                foreach (var tabadminAction in dbConnection.Query<TabadminAction>("select * from tabadmin_action"))
-                {
-                    tabadminAction.VersionId = TSVersionHelper.GetTSVersionIdByDate(allTsVersions, tabadminAction);
-                    dbConnection.Update(tabadminAction);
-                }
+                persister.Enqueue(versions);
+                persistedData = persister.ItemsPersisted > 0;
             }
-            persistenceHelper.Shutdown();
 
-            // Check if we persisted any data.
-            if (!PostgresHelper.ContainsRecord<TSVersion>(OutputDatabaseConnectionFactory) &&
-                !PostgresHelper.ContainsRecord<TabadminError>(OutputDatabaseConnectionFactory) &&
-                !PostgresHelper.ContainsRecord<TabadminAction>(OutputDatabaseConnectionFactory))
+            using (var persister = ExtractFactory.CreateExtract<TabadminError>())
+            using (var processor = new SimpleModelProcessor<BsonDocument, TabadminError>(persister, Log))
+            {
+                var filter = BuildTabadminErrorFilter();
+                processor.Process(collection, new QueryDefinition<BsonDocument>(filter), document => new TabadminError(document, versions), filter);
+
+                persistedData = persistedData || persister.ItemsPersisted > 0;
+            }
+
+            using (var persister = ExtractFactory.CreateExtract<TabadminAction>())
+            using (var processor = new SimpleModelProcessor<BsonDocument, TabadminAction>(persister, Log))
+            {
+                var filter = BuildTabadminActionFilter();
+                processor.Process(collection, new QueryDefinition<BsonDocument>(filter), document => new TabadminAction(document, versions), filter);
+
+                persistedData = persistedData || persister.ItemsPersisted > 0;
+            }
+
+            if (!persistedData)
             {
                 Log.Info("Failed to persist any data from Tabadmin logs!");
                 pluginResponse.GeneratedNoData = true;
             }
 
             return pluginResponse;
+        }
+
+        private static FilterDefinition<BsonDocument> BuildTabadminErrorFilter()
+        {
+            string[] errorSeverities = { "WARN", "ERROR", "FATAL" };
+            return Builders<BsonDocument>.Filter.In("sev", errorSeverities);
+        }
+
+        private static FilterDefinition<BsonDocument> BuildTabadminActionFilter()
+        {
+            return Builders<BsonDocument>.Filter.Regex("message", new BsonRegularExpression("/^run as: <script>/"));
         }
     }
 }

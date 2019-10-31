@@ -13,7 +13,7 @@ namespace Logshark.ArtifactProcessors.TableauServerLogProcessor.ParserMapping.Ts
         private static readonly IDictionary<string, Type> fileMap =
             new Dictionary<string, Type>
             {
-                { @"^control-tabadmincontroller-.*log.*", typeof(ServiceControlParser) },
+                { @"^control.tabadmincontroller.*log.*", typeof(ServiceControlParser) },
                 { @"^nativeapi_tabadmincontroller_.*txt.*", typeof(TabAdminControllerCppParser) },
                 { @"^tabadmincontroller.*log.*", typeof(TabAdminControllerJavaParser) }
             };

@@ -11,7 +11,6 @@ namespace Logshark.Plugins.Vizql.Models.Events.Compute
 
         public VizqlComputePercentages(BsonDocument document)
         {
-            ValidateArguments("compute-percentages", document);
             SetEventMetadata(document);
             Elapsed = BsonDocumentHelper.GetDouble("elapsed", BsonDocumentHelper.GetValuesStruct(document));
         }

@@ -1,4 +1,5 @@
-﻿using Logshark.PluginLib.Helpers;
+﻿using Logshark.PluginLib.Extensions;
+using Logshark.PluginLib.Helpers;
 using MongoDB.Bson;
 
 namespace Logshark.Plugins.Vizql.Models.Events.Query
@@ -18,16 +19,15 @@ namespace Logshark.Plugins.Vizql.Models.Events.Query
 
         public VizqlProcessQuery(BsonDocument document)
         {
-            ValidateArguments("process_query", document);
             SetEventMetadata(document);
             BsonDocument values = BsonDocumentHelper.GetValuesStruct(document);
 
-            Error = BsonDocumentHelper.GetString("error", values);
-            Cached = BsonDocumentHelper.GetBool("cached", values);
-            Success = BsonDocumentHelper.GetBool("success", values);
-            CacheHit = BsonDocumentHelper.GetBool("cachehit", values);
-            Elapsed = BsonDocumentHelper.GetDouble("elapsed", values);
-            Query = BsonDocumentHelper.GetString("query", values);
+            Error = values.GetString("error");
+            Cached = values.GetBool("cached");
+            Success = values.GetBool("success");
+            CacheHit = values.GetBool("cachehit");
+            Elapsed = values.GetDouble("elapsed");
+            Query = values.GetString("query");
         }
 
         public override double? GetElapsedTimeInSeconds()

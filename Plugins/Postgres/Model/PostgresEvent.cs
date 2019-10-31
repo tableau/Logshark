@@ -1,63 +1,59 @@
-﻿using Logshark.PluginLib.Helpers;
-using MongoDB.Bson;
-using ServiceStack.DataAnnotations;
+﻿using MongoDB.Bson.Serialization.Attributes;
 using System;
 using System.Text.RegularExpressions;
 
 namespace Logshark.Plugins.Postgres.Model
 {
+    [BsonIgnoreExtraElements]
     internal class PostgresEvent
     {
-        private static readonly Regex DurationMessageRegex = new Regex(@"^duration: (?<duration>\d+?)\..*", RegexOptions.Compiled);
+        private static readonly Regex DurationMessageRegex = new Regex(@"^duration: (?<duration>\d+?)\..*", RegexOptions.ExplicitCapture | RegexOptions.Compiled);
 
-        [PrimaryKey]
-        [AutoIncrement]
-        public int Id { get; set; }
-
-        public Guid LogsetHash { get; set; }
-
-        [Index(Unique = true)]
-        public Guid EventHash { get; set; }
-
-        [Index]
+        [BsonElement("ts")]
         public DateTime Timestamp { get; set; }
-        public string ProcessId { get; set; }
+
+        [BsonElement("pid")]
+        public int ProcessId { get; set; }
+
+        [BsonElement("sev")]
         public string Severity { get; set; }
+
+        [BsonElement("message")]
         public string Message { get; set; }
-        public int? Duration { get; set; }
-        public string Worker { get; set; }
 
-        public PostgresEvent() { }
-
-        public PostgresEvent(BsonDocument logLine, Guid logsetHash)
+        [BsonIgnore]
+        public int? Duration
         {
-            LogsetHash = logsetHash;
-            Timestamp = BsonDocumentHelper.GetDateTime("ts", logLine);
-            ProcessId = BsonDocumentHelper.GetString("pid", logLine);
-            Severity = BsonDocumentHelper.GetString("sev", logLine);
-            Message = BsonDocumentHelper.GetString("message", logLine);
-            if (Message != null)
+            get
             {
-                // Check if message contains a duration.
-                Match match = DurationMessageRegex.Match(Message);
-                if (match.Success && match.Groups["duration"] != null && match.Groups["duration"].Success)
+                if (Message != null)
                 {
-                    int duration;
-                    if (Int32.TryParse(match.Groups["duration"].Value, out duration))
+                    // Check if message contains a duration.
+                    Match match = DurationMessageRegex.Match(Message);
+                    if (match.Success && match.Groups["duration"] != null)
                     {
-                        Duration = duration;
+                        int duration;
+                        if (Int32.TryParse(match.Groups["duration"].Value, out duration))
+                        {
+                            return duration;
+                        }
                     }
                 }
+
+                return null;
             }
-            Worker = BsonDocumentHelper.GetString("worker", logLine);
-            EventHash = GetEventHash(logLine);
         }
 
-        protected Guid GetEventHash(BsonDocument logLine)
-        {
-            string file = BsonDocumentHelper.GetString("file", logLine);
-            int line = BsonDocumentHelper.GetInt("line", logLine);
-            return HashHelper.GenerateHashGuid(Timestamp, ProcessId, Message, Worker, file, line);
-        }
+        [BsonElement("worker")]
+        public string Worker { get; set; }
+
+        [BsonElement("file_path")]
+        public string FilePath { get; set; }
+
+        [BsonElement("file")]
+        public string File { get; set; }
+
+        [BsonElement("line")]
+        public int LineNumber { get; set; }
     }
 }

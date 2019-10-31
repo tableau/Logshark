@@ -53,15 +53,15 @@ namespace Logshark.Core
                     var serviceDependencyValidator = new ServiceDependencyValidator(request.Configuration);
                     serviceDependencyValidator.ValidateAllDependencies();
 
-                    var metadataWriter = new LogsharkRunMetadataPostgresWriter(request.Configuration.PostgresConnectionInfo);
+                    var metadataWriter = BuildRunMetadataWriter(request.Configuration);
 
                     return ExecuteLogsharkRun(request, metadataWriter);
                 }
             }
             catch (Exception ex)
             {
-                Log.FatalFormat("Logshark run failed: {0}", ex.Message);
-                if (!String.IsNullOrWhiteSpace(ex.StackTrace))
+                Log.FatalFormat($"Logshark run failed: {ex.Message}");
+                if (!string.IsNullOrWhiteSpace(ex.StackTrace))
                 {
                     Log.Debug(ex.StackTrace);
                 }
@@ -83,6 +83,15 @@ namespace Logshark.Core
         #region Private Methods
 
         /// <summary>
+        /// Builds a metadata writer that will persist information about the run.
+        /// </summary>
+        private static ILogsharkRunMetadataWriter BuildRunMetadataWriter(LogsharkConfiguration config)
+        {
+            return config.PostgresConnectionInfo.Map(postgresConnection => new LogsharkRunMetadataPostgresWriter(postgresConnection) as ILogsharkRunMetadataWriter)
+                                                .ValueOr(new LogsharkRunMetadataLogger());
+        }
+
+        /// <summary>
         /// Orchestrates a Logshark run from end to end.
         /// </summary>
         /// <param name="request">The user's processing request.</param>
@@ -95,7 +104,7 @@ namespace Logshark.Core
                 var run = new LogsharkRunContext(request);
                 try
                 {
-                    Log.InfoFormat("Preparing logset target '{0}' for processing..", request.Target);
+                    Log.InfoFormat($"Preparing logset target '{request.Target}' for processing..");
 
                     StartPhase(ProcessingPhase.Initializing, run, metadataWriter);
                     run.InitializationResult = InitializeRun(request);
@@ -120,9 +129,9 @@ namespace Logshark.Core
                     StartPhase(ProcessingPhase.Complete, run, metadataWriter);
                     TearDown(run);
 
-                    Log.InfoFormat("Logshark run complete! [{0}]", runTimer.Elapsed.Print());
-                    string runSummary = run.BuildRunSummary();
-                    if (!String.IsNullOrWhiteSpace(runSummary))
+                    Log.InfoFormat($"Logshark run complete! [{runTimer.Elapsed.Print()}]");
+                    var runSummary = run.BuildRunSummary();
+                    if (!string.IsNullOrWhiteSpace(runSummary))
                     {
                         Log.Info(runSummary);
                     }
@@ -136,7 +145,7 @@ namespace Logshark.Core
         /// <param name="phaseToStart">The phase to start.</param>
         /// <param name="context">The current Logshark run.</param>
         /// <param name="metadataWriter">The metadata writer responsible for tracking the state of the run.</param>
-        private void StartPhase(ProcessingPhase phaseToStart, LogsharkRunContext context, ILogsharkRunMetadataWriter metadataWriter)
+        private static void StartPhase(ProcessingPhase phaseToStart, LogsharkRunContext context, ILogsharkRunMetadataWriter metadataWriter)
         {
             context.CurrentPhase = phaseToStart;
             metadataWriter.WriteMetadata(context);
@@ -147,10 +156,11 @@ namespace Logshark.Core
         /// </summary>
         private RunInitializationResult InitializeRun(LogsharkRequest request)
         {
-            // Blow out the application temp directory so that we start with as much disk space as possible.
+            // Clean up the application temp directory and run output directories so that we start with as much disk space as possible.
             PurgeTempDirectory(request.Configuration);
+            PruneRunOutputDirectory(request.Configuration);
 
-            IRunInitializer runInitializer = RunInitializerFactory.GetRunInitializer(request.Target, request.Configuration);
+            var runInitializer = RunInitializerFactory.GetRunInitializer(request.Target, request.Configuration);
             var initializationRequest = new RunInitializationRequest(request.Target, request.RunId, request.PluginsToExecute, request.ProcessFullLogset, request.Configuration.ArtifactProcessorOptions);
 
             return runInitializer.Initialize(initializationRequest);
@@ -162,13 +172,14 @@ namespace Logshark.Core
         private LogsetParsingResult ProcessLogset(LogsharkRequest request, RunInitializationResult runInitializationResult)
         {
             var statusChecker = new LogsetProcessingStatusChecker(request.Configuration.MongoConnectionInfo);
-            LogsetProcessingStatus existingProcessedLogsetStatus = statusChecker.GetStatus(runInitializationResult.LogsetHash, runInitializationResult.CollectionsRequested);
-
-            Func<LogsetParsingRequest, LogsetParsingResult> parseLogset = logsetParsingRequest => ParseLogset(logsetParsingRequest, request.Configuration);
-            Action<string> dropLogset = logsetHash => MongoAdminHelper.DropDatabase(request.Configuration.MongoConnectionInfo.GetClient(), logsetHash);
+            var existingProcessedLogsetStatus = statusChecker.GetStatus(runInitializationResult.LogsetHash, runInitializationResult.CollectionsRequested);
 
             var parsingRequest = new LogsetParsingRequest(runInitializationResult, request.ForceParse);
-            ILogsetProcessingStrategy processingStrategy = LogsetProcessingStrategyFactory.GetLogsetProcessingStrategy(request.Target, parseLogset, dropLogset, request.Configuration);
+            var processingStrategy = LogsetProcessingStrategyFactory.GetLogsetProcessingStrategy(
+                target: request.Target,
+                parseLogset: logsetParsingRequest => ParseLogset(logsetParsingRequest, request.Configuration),
+                dropExistingLogset: logsetHash => MongoAdminHelper.DropDatabase(request.Configuration.MongoConnectionInfo.GetClient(), logsetHash),
+                config: request.Configuration);
 
             return processingStrategy.ProcessLogset(parsingRequest, existingProcessedLogsetStatus);
         }
@@ -176,7 +187,7 @@ namespace Logshark.Core
         /// <summary>
         /// Encapsulates extracting and parsing logset.
         /// </summary>
-        private LogsetParsingResult ParseLogset(LogsetParsingRequest parsingRequest, LogsharkConfiguration config)
+        private static LogsetParsingResult ParseLogset(LogsetParsingRequest parsingRequest, LogsharkConfiguration config)
         {
             try
             {
@@ -185,7 +196,7 @@ namespace Logshark.Core
             }
             catch (Exception ex)
             {
-                Log.FatalFormat("Encountered a fatal error while processing logset: {0}", ex.Message);
+                Log.FatalFormat($"Encountered a fatal error while processing logset: {ex.Message}");
                 if (ex.InnerException != null)
                 {
                     Log.DebugFormat(ex.InnerException.StackTrace);
@@ -197,9 +208,9 @@ namespace Logshark.Core
         /// <summary>
         /// Execute plugins requested by the user against an initialized logset.
         /// </summary>
-        private PluginExecutionResult ExecutePlugins(LogsharkRequest request, RunInitializationResult initializationResult)
+        private static PluginExecutionResult ExecutePlugins(LogsharkRequest request, RunInitializationResult initializationResult)
         {
-            PublishingOptions publishingOptions = BuildPublishingOptions(request, initializationResult);
+            var publishingOptions = BuildPublishingOptions(request, initializationResult);
             var pluginExecutionRequest = new PluginExecutionRequest(initializationResult, publishingOptions, request.PluginCustomArguments, request.RunId, request.PostgresDatabaseName);
 
             var pluginExecutor = new PluginExecutor(request.Configuration);
@@ -210,7 +221,7 @@ namespace Logshark.Core
         /// <summary>
         /// Builds a PublishingOptions object in accordance with the user's request.
         /// </summary>
-        private PublishingOptions BuildPublishingOptions(LogsharkRequest request, RunInitializationResult initializationResult)
+        private static PublishingOptions BuildPublishingOptions(LogsharkRequest request, RunInitializationResult initializationResult)
         {
             return new PublishingOptions(request.PublishWorkbooks, request.ProjectName, BuildProjectDescription(request, initializationResult), request.WorkbookTags);
         }
@@ -218,19 +229,20 @@ namespace Logshark.Core
         /// <summary>
         /// Builds the project description that will be used for any published workbooks.
         /// </summary>
-        private string BuildProjectDescription(LogsharkRequest request, RunInitializationResult initializationResult)
+        private static string BuildProjectDescription(LogsharkRequest request, RunInitializationResult initializationResult)
         {
-            if (!String.IsNullOrWhiteSpace(request.ProjectDescription))
+            if (!string.IsNullOrWhiteSpace(request.ProjectDescription))
             {
                 return request.ProjectDescription;
             }
 
+            var pluginsRun = string.Join(", ", initializationResult.PluginTypesToExecute.Select(pluginType => pluginType.Name));
             var sb = new StringBuilder();
-            sb.AppendFormat("Generated from logset <b>'{0}'</b> on {1} by {2}.<br>", request.Target, DateTime.Now.ToString("M/d/yy"), Environment.UserName);
+            sb.AppendFormat($"Generated from logset <b>'{request.Target}'</b> on {DateTime.Now:M/d/yy} by {Environment.UserName}.<br>");
             sb.Append("<br>");
-            sb.AppendFormat(" Logset Hash: <b>{0}</b><br>", initializationResult.LogsetHash);
-            sb.AppendFormat(" Postgres DB: <b>{0}</b><br>", request.PostgresDatabaseName);
-            sb.AppendFormat(" Plugins Run: <b>{0}</b>", String.Join(", ", initializationResult.PluginTypesToExecute.Select(pluginType => pluginType.Name)));
+            sb.AppendFormat($" Logset Hash: <b>{initializationResult.LogsetHash}</b><br>");
+            sb.AppendFormat($" Postgres DB: <b>{request.PostgresDatabaseName}</b><br>");
+            sb.AppendFormat($" Plugins Run: <b>{pluginsRun}</b>");
 
             return sb.ToString();
         }
@@ -238,23 +250,25 @@ namespace Logshark.Core
         /// <summary>
         /// Performs any teardown tasks.
         /// </summary>
-        private void TearDown(LogsharkRunContext context)
+        private static void TearDown(LogsharkRunContext context)
         {
-            // Purge application temp directory to free up disk space for the user.
+            // Clean up application temp directory and run output directories to free up disk space for the user.
             PurgeTempDirectory(context.Request.Configuration);
+            PruneRunOutputDirectory(context.Request.Configuration);
 
             // Drop logset if user didn't want to retain it, assuming they didn't piggyback on an existing processed logset.
-            bool utilizedExistingLogset = context.ParsingResult != null && context.ParsingResult.UtilizedExistingProcessedLogset;
+            var utilizedExistingLogset = context.ParsingResult != null && context.ParsingResult.UtilizedExistingProcessedLogset;
             if (context.Request.DropMongoDBPostRun && utilizedExistingLogset)
             {
-                Log.InfoFormat("Dropping Mongo database {0}..", context.InitializationResult);
+                Log.InfoFormat($"Dropping Mongo database {context.InitializationResult}..");
+                
                 try
                 {
                     MongoAdminHelper.DropDatabase(context.Request.Configuration.MongoConnectionInfo.GetClient(), context.InitializationResult.LogsetHash);
                 }
                 catch (Exception ex)
                 {
-                    Log.ErrorFormat("Failed to clean up Mongo database '{0}': {1}", context.InitializationResult.LogsetHash, ex.Message);
+                    Log.ErrorFormat($"Failed to clean up Mongo database '{context.InitializationResult.LogsetHash}': {ex.Message}");
                 }
             }
         }
@@ -262,23 +276,47 @@ namespace Logshark.Core
         /// <summary>
         /// Removes all contents of the root application temp directory.
         /// </summary>
-        private bool PurgeTempDirectory(LogsharkConfiguration config)
+        private static void PurgeTempDirectory(LogsharkConfiguration config)
         {
-            string tempDirectoryPath = config.ApplicationTempDirectory;
-            if (String.IsNullOrWhiteSpace(tempDirectoryPath) || !Directory.Exists(tempDirectoryPath))
+            var tempDirectoryPath = config.ApplicationTempDirectory;
+            if (string.IsNullOrWhiteSpace(tempDirectoryPath) || !Directory.Exists(tempDirectoryPath))
             {
-                return false;
+                return;
             }
 
             try
             {
                 DirectoryHelper.DeleteDirectory(tempDirectoryPath);
-                return true;
             }
             catch (Exception ex)
             {
-                Log.ErrorFormat("Failed to gracefully clean up logsets left over from previous run(s): {0}", ex.Message);
-                return false;
+                Log.ErrorFormat($"Failed to gracefully clean up logsets left over from previous run(s): {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Prunes all but the most recent N run output directories from the application output directory.
+        /// </summary>
+        private static void PruneRunOutputDirectory(LogsharkConfiguration config)
+        {
+            Log.DebugFormat($"Pruning all but the most recent {config.DataRetentionOptions.MaxRuns} runs from '{config.ApplicationOutputDirectory}'..");
+
+            try
+            {
+                var expiredDirectories = Directory.EnumerateDirectories(config.ApplicationOutputDirectory)
+                                                  .Select(subdirectoryPath => new DirectoryInfo(subdirectoryPath))
+                                                  .OrderByDescending(directory => directory.CreationTime)
+                                                  .Skip(config.DataRetentionOptions.MaxRuns);
+
+                foreach (var expiredDirectory in expiredDirectories)
+                {
+                    Log.DebugFormat($"Deleting expired run data directory '{expiredDirectory.Name}'..");
+                    expiredDirectory.Delete(recursive: true);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.WarnFormat($"Failed to prune directories exceeding the data retention threshold: {ex.Message}");
             }
         }
 

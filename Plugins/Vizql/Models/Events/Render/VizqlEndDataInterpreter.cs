@@ -1,17 +1,16 @@
-﻿using Logshark.PluginLib.Helpers;
+﻿using Logshark.PluginLib.Extensions;
 using MongoDB.Bson;
 
 namespace Logshark.Plugins.Vizql.Models.Events.Render
 {
-    class VizqlEndDataInterpreter : VizqlEvent
+    public class VizqlEndDataInterpreter : VizqlEvent
     {
         public double? Elapsed { get; set; }
 
         public VizqlEndDataInterpreter(BsonDocument document)
         {
-            ValidateArguments("end-data-interpreter", document);
             SetEventMetadata(document);
-            Elapsed = BsonDocumentHelper.GetNullableDouble("elapsed", document);
+            Elapsed = document.GetNullableDouble("elapsed");
         }
 
         public override double? GetElapsedTimeInSeconds()

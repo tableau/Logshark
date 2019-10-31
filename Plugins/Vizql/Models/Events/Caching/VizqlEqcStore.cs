@@ -1,4 +1,5 @@
-﻿using Logshark.PluginLib.Helpers;
+﻿using Logshark.PluginLib.Extensions;
+using Logshark.PluginLib.Helpers;
 using MongoDB.Bson;
 
 namespace Logshark.Plugins.Vizql.Models.Events.Caching
@@ -19,32 +20,29 @@ namespace Logshark.Plugins.Vizql.Models.Events.Caching
 
         public VizqlEqcStore(BsonDocument document)
         {
-            ValidateArguments("eqc-store", document);
             SetEventMetadata(document);
 
             BsonDocument values = BsonDocumentHelper.GetValuesStruct(document);
 
-            KeyHash = BsonDocumentHelper.GetString("key-hash", values);
-            Outcome = BsonDocumentHelper.GetString("outcome", values);
-            KeySizeB = BsonDocumentHelper.GetNullableInt("key-size-b", values);
-            ValueSizeB = BsonDocumentHelper.GetNullableInt("value-size-b", values);
-            QueryKind = BsonDocumentHelper.GetString("query-kind", values);
-            ElapsedMs = BsonDocumentHelper.GetNullableInt("elapsed-ms", values);
-            QueryLatencyMs = BsonDocumentHelper.GetNullableInt("query-latency-ms", values);
-            ColumnCount = BsonDocumentHelper.GetNullableInt("column-count", values);
-            RowCount = BsonDocumentHelper.GetNullableInt("row-count", values);
+            KeyHash = values.GetString("key-hash");
+            Outcome = values.GetString("outcome");
+            KeySizeB = values.GetNullableInt("key-size-b");
+            ValueSizeB = values.GetNullableInt("value-size-b");
+            QueryKind = values.GetString("query-kind");
+            ElapsedMs = values.GetNullableInt("elapsed-ms");
+            QueryLatencyMs = values.GetNullableInt("query-latency-ms");
+            ColumnCount = values.GetNullableInt("column-count");
+            RowCount = values.GetNullableInt("row-count");
         }
 
         public override double? GetElapsedTimeInSeconds()
         {
-            if (ElapsedMs.HasValue)
-            {
-                return (double)ElapsedMs/1000;
-            }
-            else
+            if (!ElapsedMs.HasValue)
             {
                 return null;
             }
+
+            return (double) ElapsedMs / 1000;
         }
     }
 }

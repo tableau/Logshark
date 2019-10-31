@@ -6,107 +6,109 @@ using Logshark.Plugins.Vizql.Models.Events.Etc;
 using Logshark.Plugins.Vizql.Models.Events.Performance;
 using Logshark.Plugins.Vizql.Models.Events.Query;
 using Logshark.Plugins.Vizql.Models.Events.Render;
-using ServiceStack.DataAnnotations;
 using System;
 using System.Collections.Generic;
+using Tableau.ExtractApi.DataAttributes;
 
 namespace Logshark.Plugins.Vizql.Models
 {
     public abstract class VizqlSession
     {
-        [AutoIncrement]
-        [PrimaryKey]
-        public int Id { get; set; }
-
-        [Index(Unique = true)]
         public string VizqlSessionId { get; set; }
 
-        public Guid LogsetHash { get; protected set; }
+        // Errors
 
-        //Errors
-        [Ignore]
+        [ExtractIgnore]
         public IList<VizqlErrorEvent> ErrorEvents { get; private set; }
 
-        //Performance
-        [Ignore]
+        // Performance
+
+        [ExtractIgnore]
         public IList<VizqlPerformanceEvent> PerformanceEvents { get; private set; }
 
-        //Connections
-        [Ignore]
+        // Connections
+
+        [ExtractIgnore]
         public IList<VizqlConstructProtocol> ConstructProtocolEvents { get; private set; }
 
-        [Ignore]
+        [ExtractIgnore]
         public IList<VizqlConstructProtocolGroup> ConstructProtocolGroupEvents { get; private set; }
 
-        [Ignore]
+        [ExtractIgnore]
         public IList<VizqlDsConnect> DsConnectEvents { get; private set; }
 
-        //Caching
-        [Ignore]
+        // Caching
+
+        [ExtractIgnore]
         public IList<VizqlEcDrop> EcDropEvents { get; private set; }
 
-        [Ignore]
+        [ExtractIgnore]
         public IList<VizqlEcStore> EcStoreEvents { get; private set; }
 
-        [Ignore]
+        [ExtractIgnore]
         public IList<VizqlEcLoad> EcLoadEvents { get; private set; }
 
-        [Ignore]
+        [ExtractIgnore]
         public IList<VizqlEqcStore> EqcStoreEvents { get; private set; }
 
-        [Ignore]
+        [ExtractIgnore]
         public IList<VizqlEqcLoad> EqcLoadEvents { get; private set; }
 
-        //Query
-        [Ignore]
+        // Query
+
+        [ExtractIgnore]
         public IList<VizqlDsInterpretMetadata> DsInterpretMetadataEvents { get; private set; }
 
-        [Ignore]
+        [ExtractIgnore]
         public IList<VizqlQpBatchSummary> QpBatchSummaryEvents { get; private set; }
 
-        [Ignore]
+        [ExtractIgnore]
         public IList<VizqlEndQuery> EndQueryEvents { get; private set; }
 
-        [Ignore]
+        [ExtractIgnore]
         public IList<VizqlQpQueryEnd> QpQueryEndEvents { get; private set; }
 
-        [Ignore]
+        [ExtractIgnore]
         public IList<VizqlEndSqlTempTableTuplesCreate> EndSqlTempTableTuplesCreateEvents { get; private set; }
 
-        [Ignore]
+        [ExtractIgnore]
         public IList<VizqlEndPrepareQuickFilterQueries> EndPrepareQuickFilterQueriesEvents { get; private set; }
 
-        [Ignore]
+        [ExtractIgnore]
         public IList<VizqlSetCollation> SetCollationEvents { get; private set; }
 
-        [Ignore]
+        [ExtractIgnore]
         public IList<VizqlProcessQuery> ProcessQueryEvents { get; private set; }
 
-        //Compute
-        [Ignore]
+        // Compute
+
+        [ExtractIgnore]
         public IList<VizqlEndComputeQuickFilterState> EndComputeQuickFilterStateEvents { get; private set; }
 
-        //Render
-        [Ignore]
+        // Render
+
+        [ExtractIgnore]
         public IList<VizqlEndUpdateSheet> EndUpdateSheetEvents { get; private set; }
 
-        //Message
-        [Ignore]
+        // Message
+
+        [ExtractIgnore]
         public IList<VizqlMessage> MessageEvents { get; private set; }
 
-        //Etc
-        [Ignore]
+        // Etc
+
+        [ExtractIgnore]
         public IList<VizqlEtc> EtcEvents { get; private set; }
 
         protected void CreateEventCollections()
         {
-            //Errors
+            // Errors
             ErrorEvents = new List<VizqlErrorEvent>();
 
-            //Performance
+            // Performance
             PerformanceEvents = new List<VizqlPerformanceEvent>();
 
-            //Query
+            // Query
             DsInterpretMetadataEvents = new List<VizqlDsInterpretMetadata>();
             QpBatchSummaryEvents = new List<VizqlQpBatchSummary>();
             EndQueryEvents = new List<VizqlEndQuery>();
@@ -116,28 +118,28 @@ namespace Logshark.Plugins.Vizql.Models
             SetCollationEvents = new List<VizqlSetCollation>();
             ProcessQueryEvents = new List<VizqlProcessQuery>();
 
-            //Connection
+            // Connection
             ConstructProtocolEvents = new List<VizqlConstructProtocol>();
             ConstructProtocolGroupEvents = new List<VizqlConstructProtocolGroup>();
             DsConnectEvents = new List<VizqlDsConnect>();
 
-            //Caching
+            // Caching
             EcDropEvents = new List<VizqlEcDrop>();
             EcStoreEvents = new List<VizqlEcStore>();
             EcLoadEvents = new List<VizqlEcLoad>();
             EqcStoreEvents = new List<VizqlEqcStore>();
             EqcLoadEvents = new List<VizqlEqcLoad>();
 
-            //Compute
+            // Compute
             EndComputeQuickFilterStateEvents = new List<VizqlEndComputeQuickFilterState>();
 
-            //Render
+            // Render
             EndUpdateSheetEvents = new List<VizqlEndUpdateSheet>();
 
-            //Message
+            // Message
             MessageEvents = new List<VizqlMessage>();
 
-            //Etc
+            // Etc
             EtcEvents = new List<VizqlEtc>();
         }
 
@@ -148,19 +150,19 @@ namespace Logshark.Plugins.Vizql.Models
                 vizqlEvent.VizqlSessionId = VizqlSessionId;
             }
 
-            //Performance
+            // Performance
             if (vizqlEvent.GetElapsedTimeInSeconds().HasValue)
             {
                 PerformanceEvents.Add(new VizqlPerformanceEvent(vizqlEvent));
             }
 
-            //Error
+            // Error
             if (vizqlEvent is VizqlErrorEvent)
             {
                 ErrorEvents.Add(vizqlEvent as VizqlErrorEvent);
             }
 
-            //Connections
+            // Connections
             else if (vizqlEvent is VizqlConstructProtocol)
             {
                 ConstructProtocolEvents.Add(vizqlEvent as VizqlConstructProtocol);
@@ -174,7 +176,7 @@ namespace Logshark.Plugins.Vizql.Models
                 DsConnectEvents.Add(vizqlEvent as VizqlDsConnect);
             }
 
-            //Caching
+            // Caching
             else if (vizqlEvent is VizqlEcDrop)
             {
                 EcDropEvents.Add(vizqlEvent as VizqlEcDrop);
@@ -196,7 +198,7 @@ namespace Logshark.Plugins.Vizql.Models
                 EqcStoreEvents.Add(vizqlEvent as VizqlEqcStore);
             }
 
-            //Query
+            // Query
             else if (vizqlEvent is VizqlDsInterpretMetadata)
             {
                 DsInterpretMetadataEvents.Add(vizqlEvent as VizqlDsInterpretMetadata);
@@ -230,35 +232,29 @@ namespace Logshark.Plugins.Vizql.Models
                 ProcessQueryEvents.Add(vizqlEvent as VizqlProcessQuery);
             }
 
-            //Compute
+            // Compute
             else if (vizqlEvent is VizqlEndComputeQuickFilterState)
             {
                 EndComputeQuickFilterStateEvents.Add(vizqlEvent as VizqlEndComputeQuickFilterState);
             }
 
-            //Render
+            // Render
             else if (vizqlEvent is VizqlEndUpdateSheet)
             {
                 EndUpdateSheetEvents.Add(vizqlEvent as VizqlEndUpdateSheet);
             }
 
-            //Message
+            // Message
             else if (vizqlEvent is VizqlMessage)
             {
                 MessageEvents.Add(vizqlEvent as VizqlMessage);
             }
 
-            //Etc
+            // Etc
             else if (vizqlEvent is VizqlEtc)
             {
                 EtcEvents.Add(vizqlEvent as VizqlEtc);
             }
-        }
-
-        public bool ContainsEvents()
-        {
-            return (ErrorEvents.Count > 0 ||
-                    PerformanceEvents.Count > 0);
         }
     }
 }

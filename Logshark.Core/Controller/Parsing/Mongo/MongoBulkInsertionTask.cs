@@ -13,23 +13,23 @@ namespace Logshark.Core.Controller.Parsing.Mongo
 
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-        public static bool InsertDocuments(ICollection<BsonDocument> documents, IMongoCollection<BsonDocument> collection, int maxRetries)
+        public static void InsertDocuments(ICollection<BsonDocument> documents, IMongoCollection<BsonDocument> collection, int maxRetries)
         {
             if (documents.Count == 0)
             {
-                return false;
+                return;
             }
 
-            bool success = false;
-            int retries = 0;
+            var success = false;
+            var retries = 0;
 
-            while (!success && retries <= maxRetries)
+            while (!success && retries < maxRetries)
             {
                 try
                 {
                     if (retries >= 1)
                     {
-                        Log.DebugFormat("Retrying insertion into {0} [Attempt {1} of {2}]", collection.CollectionNamespace.CollectionName, retries, maxRetries);
+                        Log.DebugFormat($"Retrying insertion into {collection.CollectionNamespace.CollectionName} [Attempt {retries} of {maxRetries}]");
                     }
 
                     collection.InsertMany(documents, InsertManyOptions);
@@ -38,11 +38,9 @@ namespace Logshark.Core.Controller.Parsing.Mongo
                 catch (Exception ex)
                 {
                     retries++;
-                    Log.ErrorFormat("Error inserting into {0}: {1}", collection.CollectionNamespace.CollectionName, ex.Message);
+                    Log.ErrorFormat($"Error inserting into {collection.CollectionNamespace.CollectionName}: {ex.Message}");
                 }
             }
-
-            return success;
         }
     }
 }

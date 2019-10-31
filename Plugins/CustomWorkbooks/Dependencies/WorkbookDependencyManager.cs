@@ -67,7 +67,7 @@ namespace Logshark.Plugins.CustomWorkbooks.Dependencies
         }
 
         /// <summary>
-        /// Retrieves a collection of workbook depedency mappings from the specified config file.
+        /// Retrieves a collection of workbook dependency mappings from the specified config file.
         /// </summary>
         protected IEnumerable<WorkbookDependencyMapping> LoadWorkbookDependencyMappings()
         {

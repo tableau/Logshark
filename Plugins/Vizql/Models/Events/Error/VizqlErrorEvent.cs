@@ -1,4 +1,5 @@
-﻿using MongoDB.Bson;
+﻿using Logshark.PluginLib.Extensions;
+using MongoDB.Bson;
 
 namespace Logshark.Plugins.Vizql.Models.Events.Error
 {
@@ -13,12 +14,12 @@ namespace Logshark.Plugins.Vizql.Models.Events.Error
         {
             SetEventMetadata(document);
 
-            Severity = document.GetValue("sev").AsString;
             Message = message;
+            Severity = document.GetValue("sev").AsString;
         }
 
         public VizqlErrorEvent(BsonDocument document)
-            : this(document, document.GetValue("v").AsString)
+            : this(document, document.GetString("v"))
         {
         }
     }

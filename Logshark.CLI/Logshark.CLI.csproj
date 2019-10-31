@@ -86,12 +86,8 @@
       <HintPath>..\packages\log4net.2.0.5\lib\net45-full\log4net.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Optional, Version=3.2.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Optional.3.2.0\lib\net451\Optional.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Optional.Collections, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Optional.Collections.1.1.0\lib\net451\Optional.Collections.dll</HintPath>
+    <Reference Include="Optional, Version=4.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Optional.4.0.0\lib\net45\Optional.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Optional.Utilities, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -129,10 +125,10 @@
     <Content Include="Config\Log.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Config\Logshark.config">
+    <None Include="Config\Logshark.config">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    </None>
     <None Include="Config\Logshark-Prod.config">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -161,17 +157,19 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>if not exist "$(TargetDir)ArtifactProcessors" mkdir "$(TargetDir)ArtifactProcessors"
-xcopy "$(SolutionDir)Logshark.Core\$(OutDir)ArtifactProcessors\*" "$(TargetDir)ArtifactProcessors"/Y /I /E
+xcopy "$(SolutionDir)Logshark.Core\$(OutDir)ArtifactProcessors\*" "$(TargetDir)ArtifactProcessors" /Y /I /E
 
 if not exist "$(TargetDir)Plugins" mkdir "$(TargetDir)Plugins"
-xcopy "$(SolutionDir)Logshark.Core\$(OutDir)Plugins\*" "$(TargetDir)Plugins"/Y /I /E
+xcopy "$(SolutionDir)Logshark.Core\$(OutDir)Plugins\*" "$(TargetDir)Plugins" /Y /I /E
 
 if not exist "$(TargetDir)MongoDB" mkdir "$(TargetDir)MongoDB"
-xcopy "$(SolutionDir)Logshark.Core\$(OutDir)MongoDB\*" "$(TargetDir)MongoDB"/Y /I /E
+xcopy "$(SolutionDir)Logshark.Core\$(OutDir)MongoDB\*" "$(TargetDir)MongoDB" /Y /I /E
 
 if not exist "$(TargetDir)CustomWorkbooks" mkdir "$(TargetDir)CustomWorkbooks"
-xcopy "$(SolutionDir)Logshark.Core\$(OutDir)CustomWorkbooks\*" "$(TargetDir)CustomWorkbooks"/Y /I /E
-</PostBuildEvent>
+xcopy "$(SolutionDir)Logshark.Core\$(OutDir)CustomWorkbooks\*" "$(TargetDir)CustomWorkbooks" /Y /I /E
+
+xcopy "$(SolutionDir)Tableau.ExtractApi\$(OutDir)*.dll" "$(TargetDir)" /Y /I /E
+xcopy "$(SolutionDir)Tableau.ExtractApi\$(OutDir)*.exe" "$(TargetDir)" /Y /I /E</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

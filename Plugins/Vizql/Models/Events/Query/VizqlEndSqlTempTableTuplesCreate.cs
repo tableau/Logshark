@@ -1,4 +1,5 @@
-﻿using Logshark.PluginLib.Helpers;
+﻿using Logshark.PluginLib.Extensions;
+using Logshark.PluginLib.Helpers;
 using MongoDB.Bson;
 
 namespace Logshark.Plugins.Vizql.Models.Events.Query
@@ -15,14 +16,13 @@ namespace Logshark.Plugins.Vizql.Models.Events.Query
 
         public VizqlEndSqlTempTableTuplesCreate(BsonDocument document)
         {
-            ValidateArguments("end-sql-temp-table-tuples-create", document);
             SetEventMetadata(document);
             BsonDocument values = BsonDocumentHelper.GetValuesStruct(document);
-            Elapsed = BsonDocumentHelper.GetDouble("elapsed", values);
-            ElapsedCreate = BsonDocumentHelper.GetDouble("elapsed-create", values);
-            ElapsedInsert = BsonDocumentHelper.GetDouble("elapsed-insert", values);
-            ProtocolId = BsonDocumentHelper.GetInt("protocol-id", values);
-            TableName = BsonDocumentHelper.GetString("tablename", values);
+            Elapsed = values.GetDouble("elapsed");
+            ElapsedCreate = values.GetDouble("elapsed-create");
+            ElapsedInsert = values.GetDouble("elapsed-insert");
+            ProtocolId = values.GetInt("protocol-id");
+            TableName = values.GetString("tablename");
         }
 
         public override double? GetElapsedTimeInSeconds()

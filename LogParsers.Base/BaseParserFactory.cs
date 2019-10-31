@@ -48,8 +48,7 @@ namespace LogParsers.Base
         /// <returns>True if the file is parsable.</returns>
         public bool IsSupported(string fileName)
         {
-            // Sanity check.
-            if (String.IsNullOrWhiteSpace(fileName) || !File.Exists(fileName))
+            if (string.IsNullOrWhiteSpace(fileName) || !File.Exists(fileName))
             {
                 throw new ArgumentException("Invalid filename!");
             }
@@ -93,7 +92,7 @@ namespace LogParsers.Base
         /// </summary>
         /// <param name="fileName">The absolute path to a log file.</param>
         /// <returns>ParserBuilder object for the file.</returns>
-        protected IParserBuilder GetParserBuilder(string fileName)
+        protected virtual IParserBuilder GetParserBuilder(string fileName)
         {
             // Get a list of all the subdirectories between this log file and the root of the extracted log zip,
             // then recursively walk that list looking for matches to our DirectoryMap dictionary.
@@ -103,7 +102,7 @@ namespace LogParsers.Base
             {
                 if (DirectoryMap.ContainsKey(dir))
                 {
-                    Type parserBuilderType = DirectoryMap[dir];
+                    var parserBuilderType = DirectoryMap[dir];
                     var parserBuilder = Activator.CreateInstance(parserBuilderType) as IParserBuilder;
                     return parserBuilder;
                 }

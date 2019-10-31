@@ -50,6 +50,7 @@
     <Compile Include="Parsing\ParserBuilders\RootParserBuilder.cs" />
     <Compile Include="Parsing\ParserConstants.cs" />
     <Compile Include="Parsing\Parsers\SampleJsonParser.cs" />
+    <Compile Include="PluginInterfaces\ISamplePluginInterface.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\LogParsers.Base\LogParsers.Base.csproj">
@@ -67,10 +68,6 @@
     <ProjectReference Include="..\..\Logshark.PluginLib\Logshark.PluginLib.csproj">
       <Project>{C80ED597-1C60-465B-A18D-B249B7C2849F}</Project>
       <Name>Logshark.PluginLib</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Logshark.RequestModel\Logshark.RequestModel.csproj">
-      <Project>{c3f0fafa-1c38-42cf-a1ae-37ef00d0ead5}</Project>
-      <Name>Logshark.RequestModel</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

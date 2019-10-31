@@ -1,8 +1,6 @@
 ﻿using Logshark.ArtifactProcessors.TableauServerLogProcessor.Parsers;
 using Logshark.ArtifactProcessors.TableauServerLogProcessor.PluginInterfaces;
-using Logshark.PluginLib.Extensions;
 using Logshark.PluginLib.Model.Impl;
-using Logshark.PluginLib.Persistence;
 using Logshark.PluginModel.Model;
 using Logshark.Plugins.ResourceManager.Helpers;
 using Logshark.Plugins.ResourceManager.Model;
@@ -10,18 +8,12 @@ using MongoDB.Bson;
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
-using System.Data;
+using System.Linq;
 
 namespace Logshark.Plugins.ResourceManager
 {
     public class ResourceManager : BaseWorkbookCreationPlugin, IServerClassicPlugin, IServerTsmPlugin
     {
-        private PluginResponse pluginResponse;
-
-        private Guid logsetHash;
-        private IPersister<ResourceManagerEvent> resourceManagerPersister;
-
-        // List of all of the collections in MongoDB that this plugin is dependent on.
         public override ISet<string> CollectionDependencies
         {
             get
@@ -44,38 +36,32 @@ namespace Logshark.Plugins.ResourceManager
             {
                 return new List<string>
                 {
-                    "ResourceManager.twb"
+                    "ResourceManager.twbx"
                 };
             }
         }
 
-        private void Setup(IPluginRequest pluginRequest)
+        public ResourceManager()
         {
-            CreateTables();
-            logsetHash = pluginRequest.LogsetHash;
-            resourceManagerPersister = GetConcurrentCustomPersister<ResourceManagerEvent>(pluginRequest, ResourceManagerPersistenceHelper.PersistResourceManagerInfo);
         }
 
-        public override IPluginResponse Execute(IPluginRequest pluginRequest)
+        public ResourceManager(IPluginRequest request) : base(request)
         {
-            Setup(pluginRequest);
+        }
 
-            pluginResponse = CreatePluginResponse();
+        public override IPluginResponse Execute()
+        {
+            var pluginResponse = CreatePluginResponse();
 
-            using (GetPersisterStatusWriter(resourceManagerPersister))
-            {
-                try
-                {
-                    ProcessSrmEvents();
-                }
-                finally
-                {
-                    resourceManagerPersister.Shutdown();
-                }
-            }
+            var collectionWorkerMap = CollectionDependencies.ToDictionary(collection => collection,
+                                                                          collection => ResourceManagerQueries.GetDistinctWorkers(MongoDatabase.GetCollection<BsonDocument>(collection)));
 
-            // Check if we persisted any data.
-            if (!PersistedData())
+            bool persistedThresholds = ProcessDocuments(collectionWorkerMap, GetThresholds);
+            bool persistedCpuInfo = ProcessDocuments(collectionWorkerMap, SelectByPid(ResourceManagerQueries.GetCpuSamples));
+            bool persistedMemoryInfo = ProcessDocuments(collectionWorkerMap, SelectByPid(ResourceManagerQueries.GetMemorySamples));
+            bool persistedActions = ProcessDocuments(collectionWorkerMap, SelectByPid(ResourceManagerQueries.GetActions));
+
+            if (!persistedThresholds && !persistedCpuInfo && !persistedMemoryInfo && !persistedActions)
             {
                 Log.Info("Failed to persist any Server Resource Manager data!");
                 pluginResponse.GeneratedNoData = true;
@@ -84,60 +70,38 @@ namespace Logshark.Plugins.ResourceManager
             return pluginResponse;
         }
 
-        private void ProcessSrmEvents()
+        private bool ProcessDocuments<T>(IDictionary<string, ISet<string>> collectionWorkerMap, Func<string, IMongoCollection<BsonDocument>, IEnumerable<T>> selector) where T : new()
         {
-            foreach (var collectionName in CollectionDependencies)
+            Log.InfoFormat("Processing {0} events..", typeof(T).Name);
+
+            using (var persister = ExtractFactory.CreateExtract<T>())
+            using (GetPersisterStatusWriter(persister))
             {
-                Log.InfoFormat("Processing SRM sessions from {0}..", collectionName);
-
-                var collection = MongoDatabase.GetCollection<BsonDocument>(collectionName);
-
-                var distinctWorkers = MongoQueryHelper.GetDistinctWorkers(collection);
-                foreach (string workerId in distinctWorkers)
+                foreach (var collectionWorkerMapping in collectionWorkerMap)
                 {
-                    PersistThresholds(workerId, collection);
-                    PersistEvents(workerId, collection);
+                    var collection = MongoDatabase.GetCollection<BsonDocument>(collectionWorkerMapping.Key);
+
+                    foreach (var worker in collectionWorkerMapping.Value)
+                    {
+                        var records = selector(worker, collection);
+                        persister.Enqueue(records);
+                    }
                 }
+
+                return persister.ItemsPersisted > 0;
             }
         }
 
-        private void PersistThresholds(string workerId, IMongoCollection<BsonDocument> collection)
+        private static Func<string, IMongoCollection<BsonDocument>, IEnumerable<T>> SelectByPid<T>(Func<string, int, IMongoCollection<BsonDocument>, IEnumerable<T>> selector) where T : new()
         {
-            IList<BsonDocument> startEvents = MongoQueryHelper.GetSrmStartEventsForWorker(workerId, collection);
-            foreach (var srmStartEvent in startEvents)
-            {
-                ResourceManagerThreshold threshold = MongoQueryHelper.GetThreshold(srmStartEvent, collection);
-                threshold.LogsetHash = logsetHash;
-                resourceManagerPersister.Enqueue(threshold);
-            }
+            return (worker, collection) => ResourceManagerQueries.GetDistinctPids(worker, collection)
+                                                                 .SelectMany(pid => selector(worker, pid, collection));
         }
 
-        private void PersistEvents(string workerId, IMongoCollection<BsonDocument> collection)
+        private static IEnumerable<ResourceManagerThreshold> GetThresholds(string workerId, IMongoCollection<BsonDocument> collection)
         {
-            foreach (var pid in MongoQueryHelper.GetAllUniquePidsByWorker(workerId, collection))
-            {
-                List<ResourceManagerEvent> resourceManagerEvents = new List<ResourceManagerEvent>();
-                resourceManagerEvents.AddRange(MongoQueryHelper.GetCpuInfos(workerId, pid, collection));
-                resourceManagerEvents.AddRange(MongoQueryHelper.GetMemoryInfos(workerId, pid, collection));
-                resourceManagerEvents.AddRange(MongoQueryHelper.GetActions(workerId, pid, collection));
-
-                foreach (ResourceManagerEvent infoEvent in resourceManagerEvents)
-                {
-                    infoEvent.LogsetHash = logsetHash;
-                    resourceManagerPersister.Enqueue(infoEvent);
-                }
-            }
-        }
-
-        private void CreateTables()
-        {
-            using (IDbConnection connection = GetOutputDatabaseConnection())
-            {
-                connection.CreateOrMigrateTable<ResourceManagerCpuInfo>();
-                connection.CreateOrMigrateTable<ResourceManagerMemoryInfo>();
-                connection.CreateOrMigrateTable<ResourceManagerAction>();
-                connection.CreateOrMigrateTable<ResourceManagerThreshold>();
-            }
+            return ResourceManagerQueries.GetSrmStartEventsForWorker(workerId, collection)
+                                         .Select(startEvent => ResourceManagerQueries.GetThreshold(startEvent, collection));
         }
     }
 }

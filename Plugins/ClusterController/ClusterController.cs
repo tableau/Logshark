@@ -1,8 +1,6 @@
 ﻿using Logshark.ArtifactProcessors.TableauServerLogProcessor.Parsers;
 using Logshark.ArtifactProcessors.TableauServerLogProcessor.PluginInterfaces;
-using Logshark.PluginLib.Extensions;
 using Logshark.PluginLib.Model.Impl;
-using Logshark.PluginLib.Persistence;
 using Logshark.PluginModel.Model;
 using Logshark.Plugins.ClusterController.Helpers;
 using Logshark.Plugins.ClusterController.Models;
@@ -10,23 +8,11 @@ using MongoDB.Bson;
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Logshark.Plugins.ClusterController
 {
-    public class ClusterController : BaseWorkbookCreationPlugin, IServerClassicPlugin, IServerTsmPlugin
+    public sealed class ClusterController : BaseWorkbookCreationPlugin, IServerClassicPlugin, IServerTsmPlugin
     {
-        private PluginResponse pluginResponse;
-
-        private Guid logsetHash;
-
-        private IPersister<ClusterControllerError> clusterControllerErrorPersister;
-        private IPersister<ClusterControllerPostgresAction> clusterControllerPostgresActionPersister;
-        private IPersister<ClusterControllerDiskIoSample> clusterControllerDiskIoSamplePersister;
-        private IPersister<ZookeeperError> zookeeperErrorPersister;
-        private IPersister<ZookeeperFsyncLatency> zookeeperFsyncPersister;
-
         public override ISet<string> CollectionDependencies
         {
             get
@@ -45,53 +31,31 @@ namespace Logshark.Plugins.ClusterController
             {
                 return new List<string>
                 {
-                    "ClusterController.twb"
+                    "ClusterController.twbx"
                 };
             }
         }
 
-        public override IPluginResponse Execute(IPluginRequest pluginRequest)
+        public ClusterController()
         {
-            pluginResponse = CreatePluginResponse();
-            logsetHash = pluginRequest.LogsetHash;
+        }
 
-            clusterControllerErrorPersister = GetConcurrentBatchPersister<ClusterControllerError>(pluginRequest);
-            using (GetPersisterStatusWriter(clusterControllerErrorPersister))
-            {
-                ProcessClusterControllerErrors();
-            }
-            Log.Info("Finished processing Cluster Controller Error events!");
+        public ClusterController(IPluginRequest request) : base(request)
+        {
+        }
 
-            clusterControllerPostgresActionPersister = GetConcurrentBatchPersister<ClusterControllerPostgresAction>(pluginRequest);
-            using (GetPersisterStatusWriter(clusterControllerPostgresActionPersister))
-            {
-                ProcessClusterControllerPostgresActions();
-            }
-            Log.Info("Finished processing Cluster Controller Postgres actions!");
+        public override IPluginResponse Execute()
+        {
+            var pluginResponse = CreatePluginResponse();
 
-            clusterControllerDiskIoSamplePersister = GetConcurrentBatchPersister<ClusterControllerDiskIoSample>(pluginRequest);
-            using (GetPersisterStatusWriter(clusterControllerDiskIoSamplePersister))
-            {
-                ProcessClusterControllerDiskIoSamples();
-            }
-            Log.Info("Finished processing Cluster Controller Disk I/O monitoring samples!");
+            bool processedClusterControllerErrors = ProcessDocuments(ParserConstants.ClusterControllerCollectionName, Queries.GetErrorEvents(), document => new ClusterControllerError(document));
+            bool processedPostgresActions = ProcessDocuments(ParserConstants.ClusterControllerCollectionName, Queries.GetPostgresActions(), document => new ClusterControllerPostgresAction(document));
+            bool processedDiskIoSamples = ProcessDocuments(ParserConstants.ClusterControllerCollectionName, Queries.GetDiskIoSamples(), document => new ClusterControllerDiskIoSample(document));
+            bool processedZookeeperErrors = ProcessDocuments(ParserConstants.ZookeeperCollectionName, Queries.GetErrorEvents(), document => new ZookeeperError(document));
+            bool processedZookeeperFsyncEvents = ProcessDocuments(ParserConstants.ZookeeperCollectionName, Queries.GetFsyncLatencyEvents(), document => new ZookeeperFsyncLatency(document));
 
-            zookeeperErrorPersister = GetConcurrentBatchPersister<ZookeeperError>(pluginRequest);
-            using (GetPersisterStatusWriter(zookeeperErrorPersister))
-            {
-                ProcessZookeeperErrors();
-            }
-            Log.Info("Finished processing Zookeeper Error events!");
-
-            zookeeperFsyncPersister = GetConcurrentBatchPersister<ZookeeperFsyncLatency>(pluginRequest);
-            using (GetPersisterStatusWriter(zookeeperFsyncPersister))
-            {
-                ProcessZookeeperFsyncLatencies();
-            }
-            Log.Info("Finished processing Zookeeper Fsync Latency events!");
-
-            // Check if we persisted any data.
-            if (!PersistedData())
+            bool persistedData = processedClusterControllerErrors || processedPostgresActions || processedDiskIoSamples || processedZookeeperErrors || processedZookeeperFsyncEvents;
+            if (!persistedData)
             {
                 Log.Info("Failed to persist any data from Cluster Controller logs!");
                 pluginResponse.GeneratedNoData = true;
@@ -100,175 +64,40 @@ namespace Logshark.Plugins.ClusterController
             return pluginResponse;
         }
 
-        protected void ProcessClusterControllerErrors()
+        private bool ProcessDocuments<T>(string collectionName, FilterDefinition<BsonDocument> query, Func<BsonDocument, T> transform) where T : new()
         {
-            IMongoCollection<BsonDocument> clusterControllerCollection = MongoDatabase.GetCollection<BsonDocument>("clustercontroller");
+            bool persistedData;
+            Log.InfoFormat("Processing {0} events..", typeof(T).Name);
 
-            GetOutputDatabaseConnection().CreateOrMigrateTable<ClusterControllerError>();
-
-            Log.Info("Queueing Cluster Controller errors for processing..");
-
-            // Construct a cursor to the requests to be processed.
-            var cursor = MongoQueryHelper.GetErrorEventsCursor(clusterControllerCollection);
-            var tasks = new List<Task>();
-
-            while (cursor.MoveNext())
+            using (var persister = ExtractFactory.CreateExtract<T>())
+            using (GetPersisterStatusWriter(persister))
             {
-                tasks.AddRange(cursor.Current.Select(document => Task.Factory.StartNew(() => ProcessClusterControllerError(document))));
+                var collection = MongoDatabase.GetCollection<BsonDocument>(collectionName);
+                var documents = collection.Find(query).ToEnumerable();
+
+                foreach (var document in documents)
+                {
+                    var instance = TransformDocument(document, transform);
+                    persister.Enqueue(instance);
+                }
+
+                persistedData = persister.ItemsPersisted > 0;
             }
 
-            Task.WaitAll(tasks.ToArray());
-            clusterControllerErrorPersister.Shutdown();
+            Log.InfoFormat("Finished processing {0} events!", typeof(T).Name);
+            return persistedData;
         }
 
-        protected void ProcessClusterControllerError(BsonDocument document)
+        private T TransformDocument<T>(BsonDocument document, Func<BsonDocument, T> transform)
         {
             try
             {
-                ClusterControllerError clustercontrollerError = new ClusterControllerError(document, logsetHash);
-                clusterControllerErrorPersister.Enqueue(clustercontrollerError);
+                return transform(document);
             }
             catch (Exception ex)
             {
-                string errorMessage = String.Format("Encountered an exception on {0}: {1}", document.GetValue("_id"), ex);
-                pluginResponse.AppendError(errorMessage);
-                Log.Error(errorMessage);
-            }
-        }
-
-        protected void ProcessClusterControllerPostgresActions()
-        {
-            IMongoCollection<BsonDocument> clusterControllerCollection = MongoDatabase.GetCollection<BsonDocument>("clustercontroller");
-
-            GetOutputDatabaseConnection().CreateOrMigrateTable<ClusterControllerPostgresAction>();
-
-            Log.Info("Queueing Cluster Controller Postgres Actions for processing..");
-
-            // Construct a cursor to the requests to be processed.
-            var cursor = MongoQueryHelper.GetPostgresActions(clusterControllerCollection);
-            var tasks = new List<Task>();
-
-            while (cursor.MoveNext())
-            {
-                tasks.AddRange(cursor.Current.Select(document => Task.Factory.StartNew(() => ProcessClusterControllerPostgresAction(document))));
-            }
-
-            Task.WaitAll(tasks.ToArray());
-            clusterControllerPostgresActionPersister.Shutdown();
-        }
-
-        protected void ProcessClusterControllerPostgresAction(BsonDocument document)
-        {
-            try
-            {
-                ClusterControllerPostgresAction postgresAction = new ClusterControllerPostgresAction(document, logsetHash);
-                clusterControllerPostgresActionPersister.Enqueue(postgresAction);
-            }
-            catch (Exception ex)
-            {
-                string errorMessage = String.Format("Encountered an exception on {0}: {1}", document.GetValue("_id"), ex);
-                pluginResponse.AppendError(errorMessage);
-                Log.Error(errorMessage);
-            }
-        }
-
-        protected void ProcessClusterControllerDiskIoSamples()
-        {
-            IMongoCollection<BsonDocument> clusterControllerCollection = MongoDatabase.GetCollection<BsonDocument>("clustercontroller");
-
-            GetOutputDatabaseConnection().CreateOrMigrateTable<ClusterControllerDiskIoSample>();
-
-            Log.Info("Queueing Cluster Controller disk I/O monitoring samples for processing..");
-
-            // Construct a cursor to the requests to be processed.
-            var cursor = MongoQueryHelper.GetDiskIoSamplesCursor(clusterControllerCollection);
-            var tasks = new List<Task>();
-
-            while (cursor.MoveNext())
-            {
-                tasks.AddRange(cursor.Current.Select(document => Task.Factory.StartNew(() => ProcessClusterControllerDiskIoSample(document))));
-            }
-
-            Task.WaitAll(tasks.ToArray());
-            clusterControllerDiskIoSamplePersister.Shutdown();
-        }
-
-        protected void ProcessClusterControllerDiskIoSample(BsonDocument document)
-        {
-            try
-            {
-                ClusterControllerDiskIoSample diskIoSample = new ClusterControllerDiskIoSample(document, logsetHash);
-                clusterControllerDiskIoSamplePersister.Enqueue(diskIoSample);
-            }
-            catch (Exception ex)
-            {
-                string errorMessage = String.Format("Encountered an exception on {0}: {1}", document.GetValue("_id"), ex);
-                pluginResponse.AppendError(errorMessage);
-                Log.Error(errorMessage);
-            }
-        }
-
-        protected void ProcessZookeeperErrors()
-        {
-            IMongoCollection<BsonDocument> zookeeperCollection = MongoDatabase.GetCollection<BsonDocument>("zookeeper");
-
-            GetOutputDatabaseConnection().CreateOrMigrateTable<ZookeeperError>();
-            Log.Info("Queueing Zookeeper error events for processing..");
-
-            var cursor = MongoQueryHelper.GetErrorEventsCursor(zookeeperCollection);
-            var tasks = new List<Task>();
-
-            while (cursor.MoveNext())
-            {
-                tasks.AddRange(cursor.Current.Select(document => Task.Factory.StartNew(() => ProcessZookeeperError(document))));
-            }
-
-            Task.WaitAll(tasks.ToArray());
-
-            zookeeperErrorPersister.Shutdown();
-        }
-
-        protected void ProcessZookeeperError(BsonDocument document)
-        {
-            try
-            {
-                zookeeperErrorPersister.Enqueue(new ZookeeperError(document, logsetHash));
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex);
-            }
-        }
-
-        protected void ProcessZookeeperFsyncLatencies()
-        {
-            IMongoCollection<BsonDocument> zookeeperCollection = MongoDatabase.GetCollection<BsonDocument>("zookeeper");
-
-            GetOutputDatabaseConnection().CreateOrMigrateTable<ZookeeperFsyncLatency>();
-            Log.Info("Queueing Zookeeper fsync latencies for processing..");
-
-            var cursor = MongoQueryHelper.GetFsyncLatencyEventsCursor(zookeeperCollection);
-            var tasks = new List<Task>();
-
-            while (cursor.MoveNext())
-            {
-                tasks.AddRange(cursor.Current.Select(document => Task.Factory.StartNew(() => ProcessZookeeperFsyncLatency(document))));
-            }
-
-            Task.WaitAll(tasks.ToArray());
-
-            zookeeperFsyncPersister.Shutdown();
-        }
-
-        protected void ProcessZookeeperFsyncLatency(BsonDocument document)
-        {
-            try
-            {
-                zookeeperFsyncPersister.Enqueue(new ZookeeperFsyncLatency(document, logsetHash));
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex);
+                Log.ErrorFormat("Failed to process {0} document: {1}", typeof(T).Name, ex.Message);
+                return default(T);
             }
         }
     }

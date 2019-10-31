@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Logshark.Core.Controller.Initialization
 {
-    internal class RunInitializationRequest
+    public class RunInitializationRequest
     {
         public LogsharkRequestTarget Target { get; protected set; }
 

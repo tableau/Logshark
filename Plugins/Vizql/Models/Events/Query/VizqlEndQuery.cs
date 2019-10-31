@@ -1,6 +1,7 @@
-﻿using System;
+﻿using Logshark.PluginLib.Extensions;
 using Logshark.PluginLib.Helpers;
 using MongoDB.Bson;
+using System;
 
 namespace Logshark.Plugins.Vizql.Models.Events.Query
 {
@@ -17,17 +18,15 @@ namespace Logshark.Plugins.Vizql.Models.Events.Query
 
         public VizqlEndQuery(BsonDocument document)
         {
-            ValidateArguments("end-query", document);
-
             SetEventMetadata(document);
             BsonDocument values = BsonDocumentHelper.GetValuesStruct(document);
 
-            Query = BsonDocumentHelper.GetString("query", values);
-            ProtocolId = BsonDocumentHelper.GetNullableLong("protocol-id", values);
-            Cols = BsonDocumentHelper.GetInt("cols", values);
-            Rows = BsonDocumentHelper.GetInt("rows", values);
-            QueryHash = BsonDocumentHelper.GetNullableLong("query-hash", values);
-            Elapsed = BsonDocumentHelper.GetDouble("elapsed", values);
+            Query = values.GetString("query-trunc") ?? values.GetString("query");
+            ProtocolId = values.GetNullableLong("protocol-id");
+            Cols = values.GetInt("cols");
+            Rows = values.GetInt("rows");
+            QueryHash = values.GetNullableLong("query-hash");
+            Elapsed = values.GetDouble("elapsed");
         }
 
         /// <summary>
