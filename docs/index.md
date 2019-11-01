@@ -25,7 +25,7 @@ In this section:
 
 **Ready to get set up?**
 
-- [Get your Computer Set Up For LogShark](docs/logshark_prefunc)
+- [Get your Computer Set Up For LogShark](docs/logshark_prefunc.md)
 - [Install LogShark](docs/logshark_install)
 
 **Ready to roll?**
