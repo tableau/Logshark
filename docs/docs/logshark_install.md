@@ -1,9 +1,6 @@
 ---
-title: Install and Configure Logshark
+title: Install Logshark
 ---
-
-If you have not done so already, you need to run the Logshark Setup program. If you need to uninstall or re-install Logshark, you should follow the [Uninstall Logshark](logshark_remove) instructions.
-
 
 In this section:
 
@@ -14,16 +11,21 @@ In this section:
 
 -------------------------------------------------------------------------------------
 
-### Run the Logshark Setup program
+### Download LogShark
  [![Download Logshark](https://img.shields.io/badge/Download%20Logshark-Version%203.0.2-blue.svg)](https://github.com/tableau/Logshark/releases/download/3.0.2/Setup_Logshark_v3.0.2.exe)
 
-1.  From the directory where you downloaded Logshark, run the Logshark Setup program, double-click the file `Setup_Logshark_v3.0.2.exe`.
-   
-2.  Click **Install** to use the default configuration. This adds Logshark to the PATH environment variable.
+Navigate to a location where you want to install LogShark and unzip the file there.
 
--   Click **Options** if you need to change the default installation directory (from `C:\Program Files\Logshark`).
 
-**NOTE:** The archive logs will need to be unzipped or copied to the drive where you have installed Logshark. If your `C:\` drive is low on space, you should install Logshark in a different location.
+### Running LogShark from any Directory
+If you want to run LogShark from anywhere, you need to add the directory where you unzipped LogShark to your PATH system variable. Here are instructions on how to do it in Windows 10.
+
+1. In Search, search for and then select: **System**.
+1. Click the **Advanced system settings** link.
+1. Click **Environment Variables**. In the section System Variables, find the `PATH` environment variable and select it. Click **Edit**. If the PATH environment variable does not exist, click **New**.
+1. In the **Edit System Variable** (or New System Variable) window, specify the value of the `PATH` environment variable. Click OK. Close all remaining windows by clicking OK.
+
+**NOTE:** The archive logs will need to be unzipped or copied to the drive where you have installed Logshark. If your `C:\` drive is low on space, you should install Logshark in a different location. :question: **TRUE?**
 
 
 ---------------------------------------------------------------------------------------

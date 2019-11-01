@@ -1,9 +1,9 @@
 ---
-title: Run Logshark and View the Results
+title: Run Logshark
 ---
 
 
-After you have installed and configured Logshark (and set up MongoDB, if necessary), the rest is easy. You just point Logshark to the log files and view the results in Tableau workbooks.
+After you have installed, the rest is easy. You just point Logshark to the log files and view the results in Tableau workbooks.
 
 In this section:
 
@@ -15,55 +15,42 @@ In this section:
 ### Run Logshark to process the log files
 
 
-1.  Open a Command Prompt window as administrator.
+1. Open a Command Prompt window (Windows) or Terminal (mac) as administrator.
 
-2.  Navigate to the Logshark install directory.  The default location is `C:\Program Files\Logshark`.
+1. To see the LogShark command options and syntax, run `logshark --help`
 
-3.  Run `logshark.exe` and specify the path to the Tableau archive and any other option you wish to set. Logshark uses the following syntax:
-  
-    <code>logshark <i>Target</i> [<i>Options</i>]</code>
+1. Navigate to the directory where you want to output the results
 
+1. To process a logset, just run LogShark.exe and specify the path to the Tableau archive and any other option you wish to set.
 
-    Where *`Target`* represents a zipped archive file (`logs.zip`), directory, or hash value from a previous run. Logshark supports both absolute and relative paths.
-    One option that you will likely use is `--startlocalmongo`, unless you are using your own MongoDB instance in place of the one Logshark provides.
-    To see all the Logshark command options and syntax, use the `--help` option.
- 
-    ```   
-    logshark --help
     ```
+    logshark <i>\<\LogSetLocation></i> [<i>Options</i>]
+    ```
+    {: .language-ruby}
 
+    Where *`Target`* represents a zipped archive file (`logs.zip`), directory, or hash value from a previous run. Logshark supports both absolute and relative paths. **true?**
 
 
 **Examples:**
 
-The following example runs Logshark on the archive file, `logs.zip` and uses the local MongoDB that Logshark provides. Results are available in the `\Output` folder in the location where you installed Logshark.
+Here are varios examples of how to run LogShark. 
 
 ```
-logshark C:\Logs\logs.zip --startlocalmongo
+logshark D:\logs.zip                                                  | Runs logshark on logs.zip and outputs locally.
+logshark C:\logs\logset --plugins "Backgrounder;ClusterController"    | Runs specified plugins on existing unzipped log directory.
+logshark logs.zip -p                                                  | Runs logshark and publishes to Tableau Server.
+logshark logs.zip -c CustomLogSharkConfig.json                        | Runs logshark with a custom config file.
 ```
 
-The following command directs Logshark to process logs on a file share, and uses the `-p` option to publish the generated workbooks in the default Tableau Server location.
-
-```
-logshark \\workgroup\Files\Home\Shared\logs.zip -p --startlocalmongo
-
-```
 For more information, see the [Logshark command options](logshark_cmds).
-
-
-
 
 -----------------
 
 ### View the generated Tableau workbooks (Desktop)
 
-By default, all workbooks (or other plugin-generated content) are placed in the `\Output` folder in the location where you installed Logshark. 
+1.  All workbooks or other plugin-generated content is saved in a `\<LogShark_run_location>\Output\workbooks` folder in the directory from where Logshark is run. If the folder doesn't exist, LogShark creates it.
 
-1.  Navigate to the `\Output` folder (for example, `C:\Program Files\Logshark\Output`). 
-    
-    Or click **Start** &gt; **All Programs** &gt; **Logshark** &gt; **Logshark** **Output**
-
-    When Logshark processes the log files it creates a new folder for the results in the `\Output` folder. The name of the folder is *`HostName_DateTime_FileName`*, where  *`HostName`* is the name of the computer where Logshark was run. *`DateTime`* is the time stamp that indicates when the logs were processed, and *`FileName`* is the name of the archive file. The folder contains all the workbooks for the plugins that were run in that instance.
+    When Logshark processes the log files it creates a new folder for the results in the `\Output` folder. The name of the folder is *`DateTime_HostName_FileName`*, where  *`HostName`* is the name of the computer where Logshark was run. *`DateTime`* is the time stamp that indicates when the logs were processed, and *`FileName`* is the name of the archive file. The folder contains all the workbooks for the plugins that were run in that instance.
 
 2.  Navigate to results folder you are interested in and double-click the Tableau workbook you want to view. 
 
@@ -73,21 +60,3 @@ By default, all workbooks (or other plugin-generated content) are placed in the 
     ![]({{ site.baseurl }}/assets/SampleScreenshot.png)
 
    For information about all the plugins and workbooks, see [Logshark Plugins and Generated Workbooks](logshark_plugins)
-
-### Publish and view results on Tableau Server
-
-If you want to publish the workbooks to Tableau Server instead of the default `\Output` folder, you need to modify the `Logshark.config` file and use the `-p` option when you run Logshark. 
-
-1. Modify the Logshark.config file. Change the  `<TableauConnection>` settings to match your Tableau Server configuration.   For information about setting up a Tableau Server, see [Edit the Tableau Server connection information in the Logshark configuration file](logshark_install#edit-the-tableau-server-connection-information-in-the-logshark-configuration-file). 
-
-2. Specify the `-p` or `--publishworkbooks` option when you run Logshark. When you use this option, the workbooks are published on the Tableau Server identified in the `Logshark.config` file.
-
-3.  Navigate to your Tableau Server. 
-    The URL for your workbooks would look like the following:  
-
-    <code>http://<i>yourServer</i>/#/site/<i>yourSite</i>/projects   </code>
-
-    The generated workbooks are organized in project folders. The name of a project is  *`HostName_DateTime_FileName`*, where  *`HostName`* is the name of the computer where Logshark was run. *`DateTime`* is the time stamp that indicates when the logs were processed, and *`FileName`* is the name of the archive file. The project contains all the workbooks for the archive file.
-
-4.   Navigate to projects folder you are interested in and double-click the Tableau workbook you want to view. 
-     For information about all the plugins and workbooks, see [Logshark Plugins and Generated Workbooks](logshark_plugins)
