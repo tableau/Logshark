@@ -29,12 +29,11 @@ In this section:
     - [If you are running macOS Catalina](docs/logshark_catalina.md)
 - [Install LogShark](docs/logshark_install.md)
 
-
 **Ready to roll?**
 
 - [Run LogShark](docs/logshark_run.md)
 - [Configure and Customize](docs/logshark_configure.md)
-- [Publish to Server](docs/logshark_server.md)]
+- [Publish to Server](docs/logshark_server.md)
 - [View Historic Trends (Output to Postgres)](docs/logshark_postgres.md)
 
 **Reference**

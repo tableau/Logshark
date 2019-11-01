@@ -95,24 +95,12 @@ Each of the fields for the configuration may be supplied as a command line argum
 
 | Command | Description|
 |---------|------------|
-
-| -w|--writer <WRITER>  | Select type of output writer to use (i.e. "csv", "postgres", "sql", etc) |
-
-|--pg-db-conn-string |
-Connection string for output database for postgres writer |
-
-| --pg-db-host  |
-Output database hostname for postgres writer | 
-
-| --pg-db-name  |
-Output database name for postgres writer | 
-
-| --pg-db-user  |
-Output database username for postgres writer | 
-
-|  --pg-db-pass  |
-Output database password for postgres writer | 
-```
+| -w,--writer <WRITER>  | Select type of output writer to use (i.e. "csv", "postgres", "sql", etc) |
+|--pg-db-conn-string | Connection string for output database for postgres writer | 
+| --pg-db-host  | Output database hostname for postgres writer | 
+| --pg-db-name  | Output database name for postgres writer | 
+| --pg-db-user  | Output database username for postgres writer | 
+|  --pg-db-pass | Output database password for postgres writer | 
 
 
 #### Results
@@ -122,7 +110,7 @@ All workbooks or other plugin-generated content are saved in an `\<LogShark_run_
 #### Updates
 LogShark is an active project, so it’s possible that different versions may have different output schema. Despite this, LogShark will never remove data, columns, tables, schema, or databases. LogShark only ever creates the schema necessary to store data for its current execution. This means it’s possible that one version may create a table and/or column which is unused in subsequent versions. These extra table/columns do not impact LogShark’s ability to extract data. LogShark simply ignores unused schema.
 
------------------------------------------------------------------------
+----
 
 ### Append Results to a Previous Run
 Another way to see historic trends in the same viz is to use an `append` command to append data from a new log set to an existing LogShark output. The section below describes how to do it.
