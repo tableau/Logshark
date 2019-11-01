@@ -1,7 +1,7 @@
 ---
 title: Visualize Historic Trends of Your Logs
 ---
-In the previous version LogShark could append multiple log sets to visualize historic trends view of your logs on the same viz. When we switched from Postgres to Hyper extracts, LogShark lost that functionality. We’ve received multiple request to implement this feature in LogShark both internally and externally. Now, you can either write LogShark's output to a PostgreSQL database or append data from a new log set to an existing LogShark output. 
+In the previous version LogShark we are bringning back the ability to  visualize historic trends view of your logs. You can either write LogShark's output to a PostgreSQL database server or append data from a new log set to an existing LogShark output.
 
 In this section:
 
@@ -11,7 +11,7 @@ In this section:
 -----------
 
 ## Write Output to PostgreSQL
-LogShark can write its output to a PostgreSQL database server. Simply provide the connection string, ensure the chosen user has the necessary permissions, and LogShark will handle creating the database, tables, columns, and inserting all the extracted data from your Tableau logs.
+To write LogShark's output to PostgreSQL database you need to provide the connection string and ensure the chosen user has the necessary permissions. LogShark will handle creating the database, tables, columns, and inserting all the extracted data from your Tableau logs.
 
 ### System Requirements
 You will need:
@@ -93,29 +93,30 @@ LogShark <LogSetLocation> <RunId> --writer postgres
 Each of the fields for the configuration may be supplied as a command line argument. This can be beneficial if you wish to avoid storing user credentials as plain text inside LogSharkConfig.json. You may mix and match supplying connection information between the config file and command line arguments (for example, supply a connection string with a placeholder password inside the config file, and supply the actual password as a command line argument). For each field, any value supplied as a command line argument supersedes the value supplied in the config file. 
 
 
-```
--w|--writer <WRITER>  |
-Select type of output writer to use (i.e. "csv", "postgres", "sql", etc)
+| Command | Description|
+|---------|------------|
 
---pg-db-conn-string |
-Connection string for output database for postgres writer
+| -w|--writer <WRITER>  | Select type of output writer to use (i.e. "csv", "postgres", "sql", etc) |
 
---pg-db-host  |
-Output database hostname for postgres writer
+|--pg-db-conn-string |
+Connection string for output database for postgres writer |
 
---pg-db-name  |
-Output database name for postgres writer
+| --pg-db-host  |
+Output database hostname for postgres writer | 
 
---pg-db-user  |
-Output database username for postgres writer
+| --pg-db-name  |
+Output database name for postgres writer | 
 
---pg-db-pass  |
-Output database password for postgres writer
+| --pg-db-user  |
+Output database username for postgres writer | 
+
+|  --pg-db-pass  |
+Output database password for postgres writer | 
 ```
 
 
 #### Results
-**Update once we know how results are published**
+**Update once we know how results are published** :question:
 All workbooks or other plugin-generated content are saved in an `\<LogShark_run_location>\Output` folder the directory from where Logshark is run. If the folder doesn't exist, LogShark creates it.    
 
 #### Updates

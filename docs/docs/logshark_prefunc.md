@@ -2,7 +2,7 @@
 title: Get your Computer Set Up for LogShark
 ---
 
-Before you install and run LogShark on your computer, you'll need to make sure your system meets the necessary requirements. This section will walk you through:
+Before you install and run LogShark on your computer, you'll need to make sure your system meets the necessary requirements. This section will walk you through them:
 
 * TOC
 {:toc}
@@ -19,7 +19,7 @@ System Requirements
 -   Hyper API for C++. If Hyper requirements are not met on the machine, LogShark will fail. The simpest way to meet Hyper requirements is to install Tableau Desktop on your machine. 
   If you don't have Tableau Desktop installed, you will need Visual C++ Redistributables. Download x64 version of "Visual Studio 2015, 2017 and 2019" package from https://support.microsoft.com/en-us/help/2977003/the-latest-supported-visual-c-downloads.
 
--   .NET Framework 4.5.1 installed (or later versions). The LogShark setup program checks for the correct version of the .NET Framework and automatically installs it if necessary. **Need this?**
+-   .NET Framework 4.5.1 installed (or later versions). The LogShark setup program checks for the correct version of the .NET Framework and automatically installs it if necessary. **Need this?** :question:
 
 -   For best performance, use a computer with the latest hardware and software available. The ability of LogShark to process log files improves as the performance of the computer's CPU, Memory and Disk I/O increases.
 
@@ -27,22 +27,22 @@ System Requirements
 
 **For macOS:** 
 -   OS version must be 10.12 "Sierra" or later
-  - If you are running 10.15 "Catalina", you will run into the following error, see [resolution steps](logshark_catalina.md) **add a page with reolution steps**
-    *Logshark.exe can't be opened because its integrity cannot be verified. This software needs to be updated. Conctact the developer for more information.*
+  - If you are running 10.15 "Catalina", you will run into the error message below, see [resolution steps](logshark_catalina.md) on how to address it. 
+    > *Logshark.exe can't be opened because its integrity cannot be verified. This software needs to be updated. Conctact the developer for more information.*
 
-Tableau Archive Log Requirements
+Tableau Log Requirements
 --------------------------------
 
 The archive log files must be from Tableau Server or Tableau Desktop version 9.0 or later. LogShark requires that the Tableau Server log files that you process are compressed (zipped) files, also known as *archive* files or *snapshots*.
 
-# Tableau Server Logs
+### Server Logs
 **USING TSM**
 You can create these archive files using Tableau Services Manager (TSM) web interface or TSM CLI `tsm maintenance ziplogs` command on the Tableau Server. For more information about gathering Tableau Server log files using TSM, see [Archive Log Files](https://onlinehelp.tableau.com/current/server/en-us/logs_archive.htm){:target="_blank"}.
 
 **USING TABADMIN**
 You can create these archive files using the `tabadmin ziplogs` command on the Tableau Server, or by creating a snapshot from the Status or Maintenance menu within Tableau Server. For more information about gathering Tableau Server log files using `tabadmin`, see [Archive Log Files](http://onlinehelp.tableau.com/v2018.1/server/en-us/logs_create.htm){:target="_blank"}.
 
-# Tableau Desktop Logs
+### Desktop Logs
 For Tableau Desktop, the log files are located in the `My Tableau Repository` directory. The default location is <code>\Users\<i>username</i>\Documents\My Tableau Repository\Logs</code>. You can also find the location using Tableau. Start Tableau Desktop and click **File &gt; Repository** **Location**.
 
 After you locate the log files, you can copy them to another location to process, or specify the path to their current location when you run LogShark.

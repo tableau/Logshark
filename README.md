@@ -19,11 +19,11 @@ Some common use cases for LogShark include:
 
 No installer is needed for this version, as LogShark is provided as a self-contained application. Simply download a zip file with LogShark (see link above), navigate to a location where you want to install it, and unzip the file there.
 
-This version of LogShark is significantly ***FASTER*** and brings back the ability to write to a PostgreSQL database server, as well as a number of other improvements. See [release page](**add a link**) for a full list of updates.
+This version of LogShark is significantly ***FASTER*** and brings back the ability to write to a PostgreSQL database server, as well as a number of other improvements. See [releases page](https://github.com/tableau/Logshark/releases/latest) for a full list of updates.
 
 # System Requirements
 
-**For Windows**: -   LogShark requires a 64-bit version of Windows in order to run, and must be run as an account with administrator privileges. 
+**For Windows**: LogShark requires a 64-bit version of Windows in order to run, and must be run as an account with administrator privileges. 
 -   Hyper API for C++. If Hyper requirements are not met on the machine, LogShark will fail. The simpest way to meet Hyper requirements is to install Tableau Desktop on your machine.
   If you don't have Tableau Desktop installed, you will need Visual C++ Redistributables. Download x64 version of "Visual Studio 2015, 2017 and 2019" package from https://support.microsoft.com/en-us/help/2977003/the-latest-supported-visual-c-downloads.
 
@@ -36,7 +36,7 @@ NOTE: If you are copying over existing LogShark folder, make a backup copy of yo
 
 The best way to analyze results is to run LogShark on your own logset and explore the generated workbooks via Tableau. Beyond what is included, you can configure LogShark to output your own custom workbooks. See the [installation guide](https://tableau.github.io/Logshark/) for more details on how to do this.
 
-For the truly adventurous, LogShark features a plugin framework, so you can even build your own analysis plugin to leverage LogShark's log parsing engine! _ **Remove? Similar to internal documentation**:question:
+For the truly adventurous, LogShark features a plugin framework, so you can even build your own analysis plugin to leverage LogShark's log parsing engine!  **Remove? Similar to internal documentation**:question:
 
 # What do I need to build LogShark from source? 
 

@@ -7,6 +7,8 @@ LogShark is a tool you can use to analyze and troubleshoot Tableau performance a
 
 LogShark works by running a set of targeted plugins that pull specific data out of the log files. LogShark builds a data source and provides Tableau workbooks which you can then use to analyze the log files in Tableau.
 
+**NOTE**: This version of LogShark is significantly faster and brings back the ability to write to a PostgreSQL database server, as well as a number of other improvements. See [releases page](https://github.com/tableau/Logshark/releases/latest) for a full list of updates.
+
 This installation and user guide will walk you through the steps to get started, how to run LogShark and view the results, and a command dictionary.
 
 <!--
@@ -30,8 +32,6 @@ In this section:
 
 - [Run LogShark and View the Results](docs/logshark_run)
 
-
-**NOTE**: This version of LogShark is significantly faster and brings back the ability to write to a POstgreSQL database server, as well as a number of other improvements. See [releases page](https://github.com/tableau/Logshark/releases/latest) for a full list of updates.
 
 ### LogShark and Tableau Technical Support
  

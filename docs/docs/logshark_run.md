@@ -23,12 +23,12 @@ In this section:
 
 1. To process a logset, just run LogShark.exe and specify the path to the Tableau archive and any other option you wish to set.
 
-    ```
-    logshark <i>\<\LogSetLocation></i> [<i>Options</i>]
-    ```
-    {: .language-ruby}
+```
+        logshark\<LogSetLocation>\[Options]
+```
 
-    Where *`Target`* represents a zipped archive file (`logs.zip`), directory, or hash value from a previous run. Logshark supports both absolute and relative paths. **true?**
+
+    Where *`LogSetLocation`* represents a zipped archive file (`logs.zip`), directory, or hash value from a previous run. Logshark supports both absolute and relative paths. **true?**
 
 
 **Examples:**
@@ -46,7 +46,7 @@ For more information, see the [Logshark command options](logshark_cmds).
 
 -----------------
 
-### View the generated Tableau workbooks (Desktop)
+### View the generated workbooks
 
 1.  All workbooks or other plugin-generated content is saved in a `\<LogShark_run_location>\Output\workbooks` folder in the directory from where Logshark is run. If the folder doesn't exist, LogShark creates it.
 
