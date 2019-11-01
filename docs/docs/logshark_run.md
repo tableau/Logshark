@@ -24,12 +24,10 @@ In this section:
 1. To process a logset, just run LogShark.exe and specify the path to the Tableau archive and any other option you wish to set.
 
 ```
-        logshark\<LogSetLocation>\[Options]
+    logshark <LogSetLocation> <RunId> [Options]
 ```
 
-
-    Where *`LogSetLocation`* represents a zipped archive file (`logs.zip`), directory, or hash value from a previous run. Logshark supports both absolute and relative paths. **true?**
-
+Where *`LogSetLocation`* represents a zipped archive file (`logs.zip`), directory, or hash value from a previous run. Logshark supports both absolute and relative paths. **true?**
 
 **Examples:**
 
