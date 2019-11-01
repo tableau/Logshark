@@ -19,8 +19,6 @@ System Requirements
 -   Hyper API for C++. If Hyper requirements are not met on the machine, LogShark will fail. The simpest way to meet Hyper requirements is to install Tableau Desktop on your machine. 
   If you don't have Tableau Desktop installed, you will need Visual C++ Redistributables. Download x64 version of "Visual Studio 2015, 2017 and 2019" package from https://support.microsoft.com/en-us/help/2977003/the-latest-supported-visual-c-downloads.
 
--   .NET Framework 4.5.1 installed (or later versions). The LogShark setup program checks for the correct version of the .NET Framework and automatically installs it if necessary. **Need this?** :question:
-
 -   For best performance, use a computer with the latest hardware and software available. The ability of LogShark to process log files improves as the performance of the computer's CPU, Memory and Disk I/O increases.
 
 -   Tableau Desktop version 10.5 (or later) to view workbooks. You can download Tableau from: [http://www.tableau.com/products/desktop](http://www.tableau.com/products/desktop){:target="_blank"}
