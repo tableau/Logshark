@@ -7,17 +7,17 @@ In this section:
 * TOC
 {:toc}
 
+----
 
-
--------------------------------------------------------------------------------------
-
-### Download LogShark
+Download LogShark
+------------------
  [![Download Logshark](https://img.shields.io/badge/Download%20Logshark-Version%203.0.2-blue.svg)](https://github.com/tableau/Logshark/releases/download/3.0.2/Setup_Logshark_v3.0.2.exe)
 
 Navigate to a location where you want to install LogShark and unzip the file there.
 
 
-### Running LogShark from any Directory (add to PATH)
+Running LogShark from any Directory (add to PATH)
+-------------------
 If you want to run LogShark from anywhere, you need to add the directory where you unzipped LogShark to your PATH system variable. Here are instructions on how to do it in Windows 10.
 
 1. In Search, search for and then select: **System**.
