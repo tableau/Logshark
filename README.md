@@ -17,7 +17,7 @@ Some common use cases for Logshark include:
 
 [![Setup Logshark](https://img.shields.io/badge/Setup%20Logshark-Installation%20and%20User%20Guide-lightgrey.svg)](https://tableau.github.io/Logshark/)
 
-No installer is needed for the new version, as LogShark is provided as a self-contained application. Simply grab a zip file with LogShark, navigate to a location where you want to install it, and unzip the file there.
+No installer is needed for the new version, as LogShark is provided as a self-contained application. Simply download a zip file with LogShark (**add link**), navigate to a location where you want to install it, and unzip the file there.
 
 # System Requirements
 
@@ -25,17 +25,17 @@ LogShark requires a 64-bit version of Windows in order to run, and must be run a
 
 **Mac iOS requirements?**
 
-If Hyper requirements are not met on the machine, LogShark would start to fail. The simpest way to meet Hyper requirements is to install Tableau Desktop on your machine. Or you can follow these instructions https://onlinehelp.tableau.com/current/api/extract_api/en-us/Extract/extract_api_installing.htm (**is this link the same or a new one**) 
+If Hyper requirements are not met on the machine, LogShark will fail. The simpest way to meet Hyper requirements is to install Tableau Desktop on your machine. Or you can follow these instructions https://www.tableau.com/support/releases/hyper-api/0.0.8953m (**Check the link**) 
 
-**NOTE:** If you are upgrading from a previous version of Logshark, the installer will handle most of the upgrade work for you, but during the upgrade your Logshark.config file will be overwritten.  If there are settings from this config you wish to preserve, please make a backup.
+**NOTE:** If you are copying over existing LogShark folder, make a backup copy of your config file to preserve any valuable settings you have previously set for LogShark.
 
 # How do I analyze results from Logshark?
 
-The best way to analyze results is to run Logshark on your own logset and explore the generated workbooks via Tableau! Beyond what is included, you can configure Logshark to output your own custom workbooks. See the [installation guide](https://tableau.github.io/Logshark/) for more details on how to do this.
+The best way to analyze results is to run Logshark on your own logset and explore the generated workbooks via Tableau. Beyond what is included, you can configure Logshark to output your own custom workbooks. See the [installation guide](https://tableau.github.io/Logshark/) for more details on how to do this.
 
-For the truly adventurous, Logshark features a plugin framework, so you can even build your own analysis plugin to leverage Logshark's log parsing engine! _ **Still true?**
+For the truly adventurous, Logshark features a plugin framework, so you can even build your own analysis plugin to leverage Logshark's log parsing engine! _ **Remove? Similar to internal documentation**
 
-# What do I need to build Logshark from source?
+# What do I need to build Logshark from source? (**Remove this since we are not publishing the source code for now or just keep it?**)
 
 The current development requirements are:
 
@@ -45,11 +45,11 @@ The current development requirements are:
   * Available at http://www.wixtoolset.org
 4. Configuration Section Designer Visual Studio Extension - Required if you wish to modify & regenerate the "LogsharkConfigSection" custom config section class.
   * Available at http://csd.codeplex.com
-5. Download [hyperd.exe](https://github.com/tableau/Logshark/releases/download/v3.0/hyperd.exe) and [hyperd_sse2.exe](https://github.com/tableau/Logshark/releases/download/v3.0/hyperd_sse2.exe) and place them in .\Tableau.ExtractApi\lib\SDK\hyper\
+5. Download [hyperd.exe](https://github.com/tableau/Logshark/releases/download/v3.0/hyperd.exe) and [hyperd_sse2.exe](https://github.com/tableau/Logshark/releases/download/v3.0/hyperd_sse2.exe) and place them in .\Tableau.ExtractApi\lib\SDK\hyper\ (**Is this relevant or is the link different**)
 
 It is recommended that you install the Logshark Workbook Creation Plugin Project Template extension by running the "Logshark Workbook Creation Plugin Project Template.vsix" file found in the root directory.  This adds a "Logshark Workbook Creation Plugin" project type to Visual Studio which you can use to easily get up and running developing a new plugin.
 
-Note that you do not need to build Logshark from source to use it; a pre-built installer is available on the [releases page](https://github.com/tableau/Logshark/releases/latest).
+Note that you do not need to build Logshark from source to use it; a zipped self-contained application is available here [releases page](https://github.com/tableau/Logshark/releases/latest). **check the link**
 
 # Is Logshark supported?
 
