@@ -35,4 +35,4 @@ In this section:
 
 ### LogShark and Tableau Technical Support
  
-LogShark is released as a [Community-Supported](https://www.tableau.com/support/itsupport) tool. It is intended to be a self-service tool and includes this user guide. Any bugs discovered should be filed in the [LogShark Git Issue tracker](https://github.com/tableau/Logshark/issues){:target="_blank"}.
+LogShark is released as a [Community-Supported](https://www.tableau.com/support/itsupport) tool. It is intended to be a self-service tool and includes this user guide. Any bugs discovered should be filed in the [LogShark Git Issue tracker](https://github.com/tableau/Logshark/issues).

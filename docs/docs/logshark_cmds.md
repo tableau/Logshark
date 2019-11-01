@@ -6,7 +6,11 @@ Full usage can be viewed at any time by invoking `logshark --help`.  The only 
 
 **Logshark command syntax**
 
-   <code>logshark <i>Target</i> [<i>Options</i>]...</code>
+```xml
+...
+   logshark <i>Target</i> [<i>Options</i>]
+...
+```
 
 
 
