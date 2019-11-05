@@ -36,8 +36,6 @@ In this section:
 
 1. The Server `Url` attribute should just contain the hostname or IP address of the computer (for example, *myTableauServer.tableau.com*), and should not be prefixed with the protocol (*http or https*).
 
-1.   When using a non-standard port for your Tableau Server, ensure the `port` attribute is set correctly (by default, HTTP uses port **80** and HTTPS uses port **443**). **do we need this?**:question:
-
 1.   The `site` attribute cannot be blank. If you are using the default site (for example, `http://localhost/#`), specify **Default** as the name (`site="Default"`).
 
 1.   To publish workbooks, the user account you specify must exist on the Tableau Server (and the site) with Publisher permissions and the permissions to create projects. (*Site Administrator role will be the easiest option*).
@@ -59,9 +57,9 @@ logshark logs.zip --publishworkbooks --username "myUserName" --password "myPassw
 
     <code>http://<i>yourServer</i>/#/site/<i>yourSite</i>/projects   </code>
 
-    The generated workbooks are organized in project folders. The name of a project is  *`HostName_DateTime_FileName`*, where  *`HostName`* is the name of the computer where Logshark was run. *`DateTime`* is the time stamp that indicates when the logs were processed, and *`FileName`* is the name of the archive file. The project contains all the workbooks for the archive file. **Need to check and update**:question:
+    The generated workbooks are organized in project folders. The name of a project is  *`Timestamp-MachineName-FileName`*, where *`DateTime`* is the time stamp that indicates when the logs were processed, *`MachineName`* is the name of the computer where Logshark was run, and *`FileName`* is the name of the archive file. The project contains all the workbooks for the archive file. If you want to replace *`MachineName-FileName`* with your own *`RunID`*, please see instructions on the [Configure and Customize Logshark](docs/logshark_configure.md) page. 
 
 4.   Navigate to projects folder you are interested in and double-click the Tableau workbook you want to view. 
      For information about all the plugins and workbooks, see [Logshark Plugins and Generated Workbooks](logshark_plugins)
 
-**NOTE:** To be able to publish workbooks to Tableau Server, the REST API option (`api.server.enabled`) must be enabled. See the [REST API Requirements](https://onlinehelp.tableau.com/current/api/rest_api/en-us/help.htm#REST/rest_api_requ.htm%3FTocPath%3D_____3){:target="_blank"} article for more details. **Do we still need this?** :question:
+**NOTE:** To be able to publish workbooks to Tableau Server, the REST API option (`api.server.enabled`) must be enabled. See the [REST API Requirements](https://onlinehelp.tableau.com/current/api/rest_api/en-us/help.htm#REST/rest_api_requ.htm%3FTocPath%3D_____3){:target="_blank"} article for more details.
