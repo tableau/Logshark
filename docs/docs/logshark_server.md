@@ -39,7 +39,7 @@ In this section:
 1.   To publish workbooks, the user account you specify must exist on the Tableau Server (and the site) with Publisher permissions and the permissions to create projects. (*Site Administrator role will be the easiest option*).
   **NOTE**: If you get a 403 error: *Call failed with status code 403 (Forbidden)*, delete **"All Users"** (including quotes) from `GroupsToProvideWithDefaultPermissions` parameter. 
 
-1. If you don't want to store username and password in the config file, you can use command line to specify them. See full list of the available command parameters on [LogShark Command Options](/docs/LogShark_cmds).
+1. If you don't want to store username and password in the config file, you can use command line to specify them. See full list of the available command parameters on [LogShark Command Options](/docs/logshark_cmds).
 
 ```
 LogShark <LogSetLocation> <RunId> --publishworkbooks --username "myUserName" --password "myPassword"
@@ -56,7 +56,7 @@ LogShark logs.zip --publishworkbooks --username "myUserName" --password "myPassw
 
     <code>http://<i>myServer</i>/#/site/<i>yourSite</i>/projects   </code>
 
-    The generated workbooks are organized in project folders. The default name of a project is  *`Timestamp-MachineName-FileName`*, where *`Timestamp`* is the time stamp that indicates when the logs were processed, *`MachineName`* is the name of the computer where LogShark was run, and *`FileName`* is the name of the archive file. The project contains all the workbooks for the archive file. If you want to replace *`MachineName-FileName`* portion with your own *`RunID`*, please see instructions on the [Configure and Customize LogShark](docs/LogShark_configure.md) page. 
+    The generated workbooks are organized in project folders. The default name of a project is  *`Timestamp-MachineName-FileName`*, where *`Timestamp`* is the time stamp that indicates when the logs were processed, *`MachineName`* is the name of the computer where LogShark was run, and *`FileName`* is the name of the archive file. The project contains all the workbooks for the archive file. If you want to replace *`MachineName-FileName`* portion with your own *`RunID`*, please see instructions on the [Configure and Customize LogShark](docs/logshark_configure.md) page. 
 
 4.   Navigate to projects folder you are interested in and double-click the Tableau workbook you want to view. 
      For information about all the plugins and workbooks, see [LogShark Plugins and Generated Workbooks](LogShark_plugins)

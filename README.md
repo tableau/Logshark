@@ -9,20 +9,20 @@ Some common use cases for LogShark include:
   * Self-solving problems in Tableau without the fear of exposing sensitive corporate information. 
   * Regularly validating Tableau Server application behavior against historical data when taking a new build or making a system change.
   
-![Sample Apache Workbook Screenshot](/LogShark.CLI/Resources/SampleScreenshot.png)
+![Sample Apache Workbook Screenshot](/Logshark.CLI/Resources/SampleScreenshot.png)
 
 # How do I set up LogShark?
 
-[![Download LogShark for Win](https://img.shields.io/badge/Download%20LogShark%20for%20Win-Version%204.1-blue.svg)](https://github.com/tableau/LogShark/releases/download/v4.1/LogShark.Win.4.1.1911.09672-public.zip)
+[![Download LogShark for Win](https://img.shields.io/badge/Download%20LogShark%20for%20Win-Version%204.1-blue.svg)](https://github.com/tableau/Logshark/releases/download/v4.1/LogShark.Win.4.1.1911.09672-public.zip)
 )
 
-[![Download LogShark for macOS](https://img.shields.io/badge/Download%20LogShark%20for%20macOS-Version%204.1-blue.svg)](https://github.com/tableau/LogShark/releases/download/v4.1/LogShark.Mac.4.1.1911.09672-public.zip)
+[![Download LogShark for macOS](https://img.shields.io/badge/Download%20LogShark%20for%20macOS-Version%204.1-blue.svg)](https://github.com/tableau/Logshark/releases/download/v4.1/LogShark.Mac.4.1.1911.09672-public.zip)
 
-[![Setup LogShark](https://img.shields.io/badge/Setup%20LogShark-Installation%20and%20User%20Guide-lightgrey.svg)](https://tableau.github.io/LogShark/)
+[![Setup LogShark](https://img.shields.io/badge/Setup%20LogShark-Installation%20and%20User%20Guide-lightgrey.svg)](https://tableau.github.io/Logshark/)
 
 No installer is needed for this version, as LogShark is provided as a self-contained application. Simply download a zip file with LogShark (see link above), navigate to a location where you want to install it, and unzip the file there.
 
-This version of LogShark is significantly ***FASTER*** and brings back the ability to write to a PostgreSQL database server, as well as a number of other improvements. See [releases page](https://github.com/tableau/LogShark/releases/latest) for a full list of updates.
+This version of LogShark is significantly ***FASTER*** and brings back the ability to write to a PostgreSQL database server, as well as a number of other improvements. See [releases page](https://github.com/tableau/Logshark/releases/latest) for a full list of updates.
 
 # System Requirements
 
@@ -39,7 +39,7 @@ NOTE: If you are copying over existing LogShark folder, make a backup copy of yo
 
 # How do I analyze results from LogShark?
 
-The best way to analyze results is to run LogShark on your own logset and explore the generated workbooks via Tableau. Beyond what is included, you can configure LogShark to output your own custom workbooks. See the [installation guide](https://tableau.github.io/LogShark/) for more details on how to do this.
+The best way to analyze results is to run LogShark on your own logset and explore the generated workbooks via Tableau. Beyond what is included, you can configure LogShark to output your own custom workbooks. See the [installation guide](https://tableau.github.io/Logshark/) for more details on how to do this.
 
 # What do I need to build LogShark from source? 
 
@@ -50,8 +50,8 @@ Please note that current source code is for LogShark 3.0. The source code for Lo
 
 # Is LogShark supported?
 
-LogShark is released as a [Community-Supported](https://www.tableau.com/support/itsupport) tool. It is intended to be a self-service tool and includes this user guide. Any bugs discovered should be filed in the LogShark [Git issue tracker](https://github.com/tableau/LogShark/issues).
+LogShark is released as a [Community-Supported](https://www.tableau.com/support/itsupport) tool. It is intended to be a self-service tool and includes this user guide. Any bugs discovered should be filed in the LogShark [Git issue tracker](https://github.com/tableau/Logshark/issues).
 
 # How can I contribute to LogShark?
 
-Code contributions & improvements by the community are welcomed and encouraged! See the [LICENSE file](https://github.com/tableau/LogShark/blob/master/LICENSE) for current open-source licensing & use information.  Before we can accept pull requests from contributors, we do require a Contributor License Agreement.  See http://tableau.github.io for more details.
+Code contributions & improvements by the community are welcomed and encouraged! See the [LICENSE file](https://github.com/tableau/Logshark/blob/master/LICENSE) for current open-source licensing & use information.  Before we can accept pull requests from contributors, we do require a Contributor License Agreement.  See http://tableau.github.io for more details.
