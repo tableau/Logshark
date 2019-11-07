@@ -31,7 +31,7 @@ Where *`LogSetLocation`* represents a zipped archive file (`logs.zip`), director
 
 **Examples:**
 
-Here are varios examples of how to run LogShark. 
+Here are various examples of how to run LogShark. 
 
 ```
 LogShark D:\logs.zip                                                  | Runs LogShark on logs.zip and outputs locally.

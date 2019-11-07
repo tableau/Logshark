@@ -38,7 +38,7 @@ In this section:
 
 1.   To publish workbooks, the user account you specify must exist on the Tableau Server (and the site) with Publisher permissions and the permissions to create projects. (*Site Administrator role will be the easiest option*).
 
-1. If you don't want to store username and password in the config file, you can use command line to specify them. See full list of the available command parameters on [LogShark Command Options](/docs/logshark_cmds).
+1. If you don't want to store username and password in the config file, you can use the command line to specify them. To see a full list of the available command parameters go to <a href="logshark_cmds">LogShark Command Options</a>.
 
 ```
 LogShark <LogSetLocation> <RunId> --publishworkbooks --username "myUserName" --password "myPassword"
@@ -69,7 +69,7 @@ If you want to publish logs into sub-projects on Tableau Server, you can do so e
 
 If neither name nor id specified (default) - LogShark created projects at the root of the site.
 
-Please note that the sub-projects will inherit parent project's permissions settings. 
+Please note that the sub-projects will inherit the parent project's permissions settings. 
 
  
 ```xml

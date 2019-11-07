@@ -1,7 +1,7 @@
 ---
-title: Visualize Historic Trends of Your Logs
+title: Visualize Historical Trends of Your Logs
 ---
-In the previous version LogShark we are bringning back the ability to  visualize historic trends view of your logs. You can either write LogShark's output to a PostgreSQL database server or append data from a new log set to an existing LogShark output.
+In the previous version LogShark we are bringing back the ability to  visualize historic trends view of your logs. You can either write LogShark's output to a PostgreSQL database server or append data from a new log set to an existing LogShark output.
 
 In this section:
 
@@ -11,7 +11,7 @@ In this section:
 -----------
 
 ## Write Output to PostgreSQL
-To write LogShark's output to PostgreSQL database you need to provide the connection string and ensure the chosen user has the necessary permissions. LogShark will handle creating the database, tables, columns, and inserting all the extracted data from your Tableau logs.
+To write LogShark's output to PostgreSQL database, you need to provide the connection string and ensure the chosen user has the necessary permissions. LogShark will handle creating the database, tables, columns, and inserting all the extracted data from your Tableau logs.
 
 ### System Requirements
 You will need:
@@ -36,14 +36,14 @@ Tables: LogShark will create the tables necessary to store the data extracted fr
 
 `ALTER`
 
-- Table: LogShark will add the columns necessary to store the data extracted you’re your logs.
+- Table: LogShark will add the columns necessary to store the data extracted from your logs.
 
 `INSERT`
 
-- LogShark needs to be able to insert the data it extracted from your Tableau logs!
+- LogShark needs to be able to insert the data extracted from your Tableau logs!
 
 ### Connection Setup
-To direct LogShark to write to PostgreSQL database, you need to update settings. You can do it in config file or command line. 
+To direct LogShark to write to PostgreSQL database, you need to update settings. You can do it in the config file or the command line. 
 
 #### Config File
 To update config settings, navigate to config file `<LogShark_install_location>\Config\LogSharkConfig.json` and update the following fields inside the `PostgresWriterDatabase` group. Note that each field above supersedes values from previous fields. For example, a value supplied in the `DatabaseName` field will override the database name supplied in the `ConnectionString` field.
@@ -81,7 +81,7 @@ If either a `ConnectionString`, `Username`, or a `Password` are not provided, th
 #### Write Output to PostgreSQL
 1.  Open a Command Prompt window (Windows) or Terminal (mac)
 1.  To see the LogShark command options and syntax, enter LogShark --help
-1.  To process a logset, just run LogShark and specify the path to the log file and any other option you wish to set. 
+1.  To process a log set, just run LogShark and specify the path to the log file and any other option you wish to set. 
 
 Here is a syntax reference for invoking PostgreSQL command in LogShark.
 

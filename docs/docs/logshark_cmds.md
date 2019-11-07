@@ -18,20 +18,20 @@ Full usage can be viewed at any time by invoking `LogShark --help`.  The only 
 
 | **Options** | Description  |
 |-------------|--------------|
- --force-run-id |LogShark prefixes RunId with timestamp even if RunId provided by user. This flag prevents timestamps from being added to user-supplied RunId. In this case you are responsible for providing unique RunId for each run |
+ --force-run-id |LogShark prefixes RunId with timestamp even if RunId provided by the user. This flag prevents timestamps from being added to user-supplied RunId. In this case, you are responsible for providing unique RunId for each run |
 | --password | Tableau server password |
 | --pg-db-conn-string | Connection string for output database for postgres writer |
 | --pg-db-host | Output database hostname for postgres writer |
 | --pg-db-name | Output database name for postgres writer |
 | --pg-db-pass | Output database password for postgres writer |
 | --pg-db-user | Output database username for postgres writer |
-| `-plugins all, --plugins <plugin1>;<plugin2>...` | (Default: All) List of plugins to run, to specify more than one plugin, list them separated by semicolon, no spaces. Or "All" to run all applicable plugins. See LogShark plugins and generated workbooks |
+| `-plugins all, --plugins <plugin1>;<plugin2>...` | (Default: All) List of plugins to run, to specify more than one plugin, list them separated by a semicolon, no spaces. Or "All" to run all applicable plugins. See LogShark plugins and generated workbooks |
 | --site | Tableau server site name |
-| --url | Tableau server url | 
+| --url | Tableau server URL | 
 | --username | Tableau server username | 
 | --workbookname <string> | Custom workbook name to append to the end of each workbook generated. | 
 | -?, -h, --help | Show help information | 
-| -a, --append-to <APPEND_TO>  | Append this run results to the results from specified run id. Implementation varies by output writer. See <a href="logshark_postgres">Visualize Historic Trends of Your Logs for more info | 
+| -a, --append-to <APPEND_TO>  | Append this run results to the results from a specified run id. Implementation varies by output writer. See <a href="logshark_postgres">Visualize Historical Trends of Your Logs for more info | 
 | -c, --config <CONFIG>  | Specify alternative config file to use. By default `<LogShark_Install_location.\Config\LogSharkConfig.json` is used | 
 | -l, --listplugins | Lists the LogShark plugins available for use with `--plugins` parameter |
 | -p, --publishworkbooks | (Default: False) Publish resulting workbooks to Tableau Server | 
