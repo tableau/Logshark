@@ -1,7 +1,7 @@
 # LogShark
 [![Community Supported](https://img.shields.io/badge/Support%20Level-Community%20Supported-457387.svg)](https://www.tableau.com/support-levels-it-and-developer-tools)
 
-LogShark is a command line utility that you can use to analyze and troubleshoot Tableau performance and activity. LogShark extracts data from Tableau Server and Desktop logs and builds a set of Tableau workbooks that provide insights into the system performance, content usage, and error conditions.
+Logshark is a tool you can use to analyze and troubleshoot Tableau Server performance and activity. Logshark extracts data from Tableau Server and Tableau Desktop log files and builds workbooks that can help you identify and understand error conditions, performance bottlenecks, and background activity. Logshark works by running a set of targeted plugins that pull specific data out of the log files. Logshark builds a data source and provides Tableau workbooks which you can then use to analyze the log files in Tableau.
 
 Some common use cases for LogShark include: 
   * Troubleshooting issue(s) that are recorded in the logs. 
@@ -27,8 +27,8 @@ This version of LogShark is significantly ***FASTER*** and brings back the abili
 -   Hyper API for C++. If Hyper requirements are not met on the machine, LogShark will fail. The simpest way to meet Hyper requirements is to install Tableau Desktop on your machine.
   If you don't have Tableau Desktop installed, you will need Visual C++ Redistributables. Download x64 version of "Visual Studio 2015, 2017 and 2019" package from https://support.microsoft.com/en-us/help/2977003/the-latest-supported-visual-c-downloads.
 
-**For macOS:** OS version must be 10.12 "Sierra" or later
-- If you are running 10.15 "Catalina", you will need to follow the following [resolution steps](/docs/logshark_catalina.md).
+**For macOS:** LogShark runs on macOS versions 10.12 "Sierra", 10.13 "High Sierra, and 10.14 "Mojave".
+- Currently LogShark doesn't support macOS 10.15 "Catalina".
 
 NOTE: If you are copying over existing LogShark folder, make a backup copy of your config file to preserve any valuable settings you have previously set for LogShark.
 
@@ -40,21 +40,8 @@ For the truly adventurous, LogShark features a plugin framework, so you can even
 
 # What do I need to build LogShark from source? 
 
-(**Remove this since we are not publishing the source code for now or just keep it?**):question:
+Instructions on how to build LogShark from the source code are coming soon.
 
-The current development requirements are:
-
-1. Windows operating system. (64-bit)
-2. Visual Studio 2015 or later.
-3. WiX Toolset Visual Studio Extension v3.10.1 or later - Required if you wish to to modify the installer projects.
-  * Available at http://www.wixtoolset.org
-4. Configuration Section Designer Visual Studio Extension - Required if you wish to modify & regenerate the "LogsharkConfigSection" custom config section class.
-  * Available at http://csd.codeplex.com
-5. Download [hyperd.exe](https://github.com/tableau/Logshark/releases/download/v3.0/hyperd.exe) and [hyperd_sse2.exe](https://github.com/tableau/Logshark/releases/download/v3.0/hyperd_sse2.exe) and place them in .\Tableau.ExtractApi\lib\SDK\hyper\ (**Is this relevant or is the link different**)
-
-It is recommended that you install the LogShark Workbook Creation Plugin Project Template extension by running the "LogShark Workbook Creation Plugin Project Template.vsix" file found in the root directory.  This adds a "LogShark Workbook Creation Plugin" project type to Visual Studio which you can use to easily get up and running developing a new plugin.
-
-Note that you do not need to build LogShark from source to use it; a zipped self-contained application is available here [releases page](https://github.com/tableau/Logshark/releases/latest). **check the link**
 
 # Is LogShark supported?
 

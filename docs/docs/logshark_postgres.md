@@ -104,8 +104,9 @@ Each of the fields for the configuration may be supplied as a command line argum
 
 
 #### Results
-**Update once we know how results are published** :question:
-All workbooks or other plugin-generated content are saved in an `\<LogShark_run_location>\Output` folder the directory from where Logshark is run. If the folder doesn't exist, LogShark creates it.    
+The data from the run is saved in the PostgreSQL database specified in the config or command line paramaters. 
+
+All workbooks are saved in an `\<LogShark_run_location>\Output\<RunID>\woorkbooks` folder the directory from where Logshark is run. If the folder doesn't exist, LogShark creates it. The workbooks in that folder are connected to the Postgres database you specified when you ran LogShark. When you open the workbook, you will be asked to provide your Postgres credentials.
 
 #### Updates
 LogShark is an active project, so it’s possible that different versions may have different output schema. Despite this, LogShark will never remove data, columns, tables, schema, or databases. LogShark only ever creates the schema necessary to store data for its current execution. This means it’s possible that one version may create a table and/or column which is unused in subsequent versions. These extra table/columns do not impact LogShark’s ability to extract data. LogShark simply ignores unused schema.

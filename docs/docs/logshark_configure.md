@@ -45,7 +45,7 @@ Example of config file
     "Username": "<EnterUsernameHere>",
     "Password": "<EnterPasswordHere>",
     "Timeout": 240,
-    "GroupsToProvideWithDefaultPermissions": [ "All Users" ],
+    "GroupsToProvideWithDefaultPermissions": [],
     "ParentProject": {
       "Id": "",
       "Name": ""
@@ -93,23 +93,6 @@ If you are working on several cases at the same time, having several Apache work
 You can also override the config value in command line using  `--workbookname "<string>"`command. 
 
 
-
-----
-### Publishing into Sub-projects on Tableau Server
-
-If you want to publish logs into sub-projects on Tableau Server, you can do so easily by specifying either `ParentProject` or `ID` variable in the config file. (You only need to provide one or of the other. If you provided both, ID is used.) Make sure that the project folder already exists on the site.
-
-`ID` variable is GUID of the project. You can get it using Tableau Rest API. You only really ever need to use ID if the name of the project you want to use is present more than once on the site.
-
-If neither name nor id specified (default) - LogShark created projects at the root of the site
-
- 
-```xml
-"ParentProject": {
-  "Id": "",
-  "Name": ""
-}
-```
 ----
 ### Changing format of LogShark's logs to JSON
 LogShark generates saves run summaries as logs in the LogShark’s `<LogShark_install_location>\Logs` folder. You can specify the format to be JSON by flipping the Json switch to true. 

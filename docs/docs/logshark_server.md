@@ -1,7 +1,7 @@
 ---
 title: Publish Logshark Results to Tableau Server
 ---
-If you want to publish the workbooks to Tableau Server instead of the default `\Output` folder, you need to modify the `Logshark.config` file and use the `-p` or `--publishworkbooks` option when you run Logshark. Here is the syntax to use.
+If you want to publish the workbooks to Tableau Server instead of the default `\Output` folder, you need to modify the `<LogShark_install_location>\Config\LogSharkConfig.json` file and use the `-p` or `--publishworkbooks` option when you run Logshark. Here is the syntax to use.
 
 ```
 logshark <LogSetLocation> Options -p
@@ -18,7 +18,7 @@ In this section:
 
 ### Update Config
 
-1. You will need to update the `Logshark.config` file. Change the  `<TableauServer>` settings to match your Tableau Server configuration.
+1. You will need to update the `<LogShark_install_location>\Config\LogSharkConfig.json` file. Change the  `<TableauServer>` settings to match your Tableau Server configuration.
 
 ```xml
   "TableauServer": {
@@ -34,11 +34,10 @@ In this section:
     }
 ```
 
-1. The Server `Url` attribute should just contain the hostname or IP address of the computer (for example, *myTableauServer.tableau.com*), and should not be prefixed with the protocol (*http or https*).
-
-1.   The `site` attribute cannot be blank. If you are using the default site (for example, `http://localhost/#`), specify **Default** as the name (`site="Default"`).
+1. The Server `Url` attribute should contain full URL address or IP address of the computer (for example, *https://myServer*).
 
 1.   To publish workbooks, the user account you specify must exist on the Tableau Server (and the site) with Publisher permissions and the permissions to create projects. (*Site Administrator role will be the easiest option*).
+  **NOTE**: If you get a 403 error: *Call failed with status code 403 (Forbidden)*, delete **"All Users"** (including quotes) from `GroupsToProvideWithDefaultPermissions` parameter. 
 
 1. If you don't want to store username and password in the config file, you can use command line to specify them. See full list of the available command parameters on [LogShark Command Options](/docs/logshark_cmds).
 
@@ -55,11 +54,39 @@ logshark logs.zip --publishworkbooks --username "myUserName" --password "myPassw
 
 3.  Navigate to your Tableau Server. The URL for your workbooks would look like the following:  
 
-    <code>http://<i>yourServer</i>/#/site/<i>yourSite</i>/projects   </code>
+    <code>http://<i>myServer</i>/#/site/<i>yourSite</i>/projects   </code>
 
-    The generated workbooks are organized in project folders. The name of a project is  *`Timestamp-MachineName-FileName`*, where *`DateTime`* is the time stamp that indicates when the logs were processed, *`MachineName`* is the name of the computer where Logshark was run, and *`FileName`* is the name of the archive file. The project contains all the workbooks for the archive file. If you want to replace *`MachineName-FileName`* with your own *`RunID`*, please see instructions on the [Configure and Customize Logshark](docs/logshark_configure.md) page. 
+    The generated workbooks are organized in project folders. The default name of a project is  *`Timestamp-MachineName-FileName`*, where *`Timestamp`* is the time stamp that indicates when the logs were processed, *`MachineName`* is the name of the computer where Logshark was run, and *`FileName`* is the name of the archive file. The project contains all the workbooks for the archive file. If you want to replace *`MachineName-FileName`* portion with your own *`RunID`*, please see instructions on the [Configure and Customize Logshark](docs/logshark_configure.md) page. 
 
 4.   Navigate to projects folder you are interested in and double-click the Tableau workbook you want to view. 
      For information about all the plugins and workbooks, see [Logshark Plugins and Generated Workbooks](logshark_plugins)
 
-**NOTE:** To be able to publish workbooks to Tableau Server, the REST API option (`api.server.enabled`) must be enabled. See the [REST API Requirements](https://onlinehelp.tableau.com/current/api/rest_api/en-us/help.htm#REST/rest_api_requ.htm%3FTocPath%3D_____3){:target="_blank"} article for more details.
+----
+### Publishing into Sub-projects on Tableau Server
+
+If you want to publish logs into sub-projects on Tableau Server, you can do so easily by specifying either `ParentProject` or `ID` variable in the config file. (You only need to provide one or of the other. If you provided both, ID is used.) Make sure that the project folder already exists on the site.
+
+`ID` variable is GUID of the project. You can get it using Tableau Rest API. You only really ever need to use ID if the name of the project you want to use is present more than once on the site.
+
+If neither name nor id specified (default) - LogShark created projects at the root of the site.
+
+Please note that the sub-projects will inherit parent project's permissions settings. 
+
+ 
+```xml
+"ParentProject": {
+  "Id": "",
+  "Name": ""
+}
+```
+
+Set permissions for workbooks
+
+You can give a specific user group permissions to workbooks generated by LogShark by specifying the user group in the parameter `GroupsToProvideWithDefaultPermissions` in the config file.
+
+Note that you need to have admin priveledges to be able to do that.
+
+```xml
+   "GroupsToProvideWithDefaultPermissions": [],
+}
+```

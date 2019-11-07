@@ -24,9 +24,9 @@ System Requirements
 -   Tableau Desktop version 10.5 (or later) to view workbooks. You can download Tableau from: [http://www.tableau.com/products/desktop](http://www.tableau.com/products/desktop){:target="_blank"}
 
 **For macOS:** 
--   OS version must be 10.12 "Sierra" or later
-  - If you are running 10.15 "Catalina", you will run into the error message below, see [resolution steps](logshark_catalina.md) on how to address it. 
-    > *Logshark.exe can't be opened because its integrity cannot be verified. This software needs to be updated. Conctact the developer for more information.*
+- LogShark runs on macOS versions 10.12 "Sierra", 10.13 "High Sierra, and 10.14 "Mojave".
+- Currently LogShark doesn't support macOS 10.15 "Catalina".
+
 
 Tableau Log Requirements
 --------------------------------
