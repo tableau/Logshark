@@ -7,7 +7,7 @@ LogShark is a tool you can use to analyze and troubleshoot Tableau performance a
 
 LogShark works by running a set of targeted plugins that pull specific data out of the log files. LogShark builds a data source and provides Tableau workbooks which you can then use to analyze the log files in Tableau.
 
-**NOTE**: This version of LogShark is significantly faster and brings back the ability to write to a PostgreSQL database server, as well as a number of other improvements. See [releases page](https://github.com/tableau/Logshark/releases/latest) for a full list of updates.
+**NOTE**: This version of LogShark is significantly faster and brings back the ability to write to a PostgreSQL database server, as well as a number of other improvements. See [releases page](https://github.com/tableau/LogShark/releases/latest) for a full list of updates.
 
 This installation and user guide will walk you through the steps to get started, how to run LogShark and view the results, and a command dictionary.
 
@@ -25,22 +25,22 @@ In this section:
 
 **Ready to get set up?**
 
-- [Get your Computer Set Up For LogShark](docs/logshark_prefunc.md)
-- [Install LogShark](docs/logshark_install.md)
+- [Get your Computer Set Up For LogShark](docs/LogShark_prefunc.md)
+- [Install LogShark](docs/LogShark_install.md)
 
 **Ready to roll?**
 
-- [Run LogShark](docs/logshark_run.md)
-- [Configure and Customize](docs/logshark_configure.md)
-- [Publish to Server](docs/logshark_server.md)
-- [View Historic Trends (Output to Postgres)](docs/logshark_postgres.md)
+- [Run LogShark](docs/LogShark_run.md)
+- [Configure and Customize](docs/LogShark_configure.md)
+- [Publish to Server](docs/LogShark_server.md)
+- [View Historic Trends (Output to Postgres)](docs/LogShark_postgres.md)
 
 **Reference**
-- [LogShark Command Options](docs/logshark_cmds.md)
-- [LogShark Plugins and Generated Workbooks](docs/logshark_plugins.md)
+- [LogShark Command Options](docs/LogShark_cmds.md)
+- [LogShark Plugins and Generated Workbooks](docs/LogShark_plugins.md)
 
 
 
 ### LogShark and Tableau Technical Support
  
-LogShark is released as a [Community-Supported](https://www.tableau.com/support/itsupport) tool. It is intended to be a self-service tool and includes this user guide. Any bugs discovered should be filed in the [LogShark Git Issue tracker](https://github.com/tableau/Logshark/issues).
+LogShark is released as a [Community-Supported](https://www.tableau.com/support/itsupport) tool. It is intended to be a self-service tool and includes this user guide. Any bugs discovered should be filed in the [LogShark Git Issue tracker](https://github.com/tableau/LogShark/issues).

@@ -1,10 +1,10 @@
 ---
-title: Publish Logshark Results to Tableau Server
+title: Publish LogShark Results to Tableau Server
 ---
-If you want to publish the workbooks to Tableau Server instead of the default `\Output` folder, you need to modify the `<LogShark_install_location>\Config\LogSharkConfig.json` file and use the `-p` or `--publishworkbooks` option when you run Logshark. Here is the syntax to use.
+If you want to publish the workbooks to Tableau Server instead of the default `\Output` folder, you need to modify the `<LogShark_install_location>\Config\LogSharkConfig.json` file and use the `-p` or `--publishworkbooks` option when you run LogShark. Here is the syntax to use.
 
 ```
-logshark <LogSetLocation> Options -p
+LogShark <LogSetLocation> Options -p
 ```
 
 In this section:
@@ -39,27 +39,27 @@ In this section:
 1.   To publish workbooks, the user account you specify must exist on the Tableau Server (and the site) with Publisher permissions and the permissions to create projects. (*Site Administrator role will be the easiest option*).
   **NOTE**: If you get a 403 error: *Call failed with status code 403 (Forbidden)*, delete **"All Users"** (including quotes) from `GroupsToProvideWithDefaultPermissions` parameter. 
 
-1. If you don't want to store username and password in the config file, you can use command line to specify them. See full list of the available command parameters on [LogShark Command Options](/docs/logshark_cmds).
+1. If you don't want to store username and password in the config file, you can use command line to specify them. See full list of the available command parameters on [LogShark Command Options](/docs/LogShark_cmds).
 
 ```
 LogShark <LogSetLocation> <RunId> --publishworkbooks --username "myUserName" --password "myPassword"
 ```
 
 ### Publish Workbooks
-2. Specify the `-p` or `--publishworkbooks` option when you run Logshark. 
+2. Specify the `-p` or `--publishworkbooks` option when you run LogShark. 
 
 ```
-logshark logs.zip --publishworkbooks --username "myUserName" --password "myPassword"
+LogShark logs.zip --publishworkbooks --username "myUserName" --password "myPassword"
 ```
 
 3.  Navigate to your Tableau Server. The URL for your workbooks would look like the following:  
 
     <code>http://<i>myServer</i>/#/site/<i>yourSite</i>/projects   </code>
 
-    The generated workbooks are organized in project folders. The default name of a project is  *`Timestamp-MachineName-FileName`*, where *`Timestamp`* is the time stamp that indicates when the logs were processed, *`MachineName`* is the name of the computer where Logshark was run, and *`FileName`* is the name of the archive file. The project contains all the workbooks for the archive file. If you want to replace *`MachineName-FileName`* portion with your own *`RunID`*, please see instructions on the [Configure and Customize Logshark](docs/logshark_configure.md) page. 
+    The generated workbooks are organized in project folders. The default name of a project is  *`Timestamp-MachineName-FileName`*, where *`Timestamp`* is the time stamp that indicates when the logs were processed, *`MachineName`* is the name of the computer where LogShark was run, and *`FileName`* is the name of the archive file. The project contains all the workbooks for the archive file. If you want to replace *`MachineName-FileName`* portion with your own *`RunID`*, please see instructions on the [Configure and Customize LogShark](docs/LogShark_configure.md) page. 
 
 4.   Navigate to projects folder you are interested in and double-click the Tableau workbook you want to view. 
-     For information about all the plugins and workbooks, see [Logshark Plugins and Generated Workbooks](logshark_plugins)
+     For information about all the plugins and workbooks, see [LogShark Plugins and Generated Workbooks](LogShark_plugins)
 
 ----
 ### Publishing into Sub-projects on Tableau Server

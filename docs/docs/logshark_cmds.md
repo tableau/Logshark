@@ -1,14 +1,14 @@
 ---
-title: Logshark Command Options
+title: LogShark Command Options
 ---
 
-Full usage can be viewed at any time by invoking `logshark --help`.  The only required argument is the log set location, which can be either an archive (zip file), a directory, or a logset hash. 
+Full usage can be viewed at any time by invoking `LogShark --help`.  The only required argument is the log set location, which can be either an archive (zip file), a directory, or a logset hash. 
 
-**Logshark command syntax**
+**LogShark command syntax**
 
 ```xml
 ...
-   logshark <i>LogSetLocation</i> <i>RunId</i> [<i>Options</i>]
+   LogShark <i>LogSetLocation</i> <i>RunId</i> [<i>Options</i>]
 ...
 ```
 `<LogSetLocation>` - Location of the logs to process (zip file or unzipped folder)
