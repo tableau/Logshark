@@ -13,7 +13,9 @@ Some common use cases for LogShark include:
 
 # How do I set up LogShark?
 
-[![Download LogShark](https://img.shields.io/badge/Download%20Logshark-Version%203.0.1-blue.svg)](https://github.com/tableau/Logshark/releases/download/3.0.1/Setup_Logshark_v3.0.1.exe)
+[![Download LogShark for Win](https://img.shields.io/badge/Download%20Logshark-Version%203.0.1-blue.svg)](https://github.com/tableau/Logshark/releases/download/3.0.1/Setup_Logshark_v3.0.1.exe)
+
+[![Download LogShark for mac](https://img.shields.io/badge/Download%20Logshark-Version%203.0.1-blue.svg)](https://github.com/tableau/Logshark/releases/download/3.0.1/Setup_Logshark_v3.0.1.exe)
 
 [![Setup LogShark](https://img.shields.io/badge/Setup%20Logshark-Installation%20and%20User%20Guide-lightgrey.svg)](https://tableau.github.io/Logshark/)
 
