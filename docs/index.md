@@ -26,7 +26,6 @@ In this section:
 **Ready to get set up?**
 
 - [Get your Computer Set Up For LogShark](docs/logshark_prefunc.md)
-    - [If you are running macOS Catalina](docs/logshark_catalina.md)
 - [Install LogShark](docs/logshark_install.md)
 
 **Ready to roll?**

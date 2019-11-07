@@ -40,11 +40,11 @@ NOTE: If you are copying over existing LogShark folder, make a backup copy of yo
 
 The best way to analyze results is to run LogShark on your own logset and explore the generated workbooks via Tableau. Beyond what is included, you can configure LogShark to output your own custom workbooks. See the [installation guide](https://tableau.github.io/Logshark/) for more details on how to do this.
 
-For the truly adventurous, LogShark features a plugin framework, so you can even build your own analysis plugin to leverage LogShark's log parsing engine!  **Remove? Similar to internal documentation**:question:
-
 # What do I need to build LogShark from source? 
 
-Instructions on how to build LogShark from the source code are coming soon.
+Instructions on how to build LogShark from the source code are coming soon. 
+
+Please note that current source code is for Logshark 3.0. The source code for LogShark 4.0 will be released soon.
 
 
 # Is LogShark supported?
