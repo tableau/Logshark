@@ -1,7 +1,7 @@
 # LogShark
 [![Community Supported](https://img.shields.io/badge/Support%20Level-Community%20Supported-457387.svg)](https://www.tableau.com/support-levels-it-and-developer-tools)
 
-LogShark is a tool you can use to analyze and troubleshoot Tableau Server performance and activity. LogShark extracts data from Tableau Server and Tableau Desktop log files and builds workbooks that can help you identify and understand error conditions, performance bottlenecks, and background activity. LogShark works by running a set of targeted plugins that pull specific data out of the log files. LogShark builds a data source and provides Tableau workbooks which you can then use to analyze the log files in Tableau.
+LogShark is a tool you can use to analyze and troubleshoot Tableau Server performance and activity. LogShark extracts data from Tableau Server and Tableau Desktop log files and builds workbooks that can help you identify and understand error conditions, performance bottlenecks, and background activity. LogShark works by running a set of targeted plugins that pull specific data out of the log files. LogShark builds a data source and provides Tableau workbooks, which you can then use to analyze the log files in Tableau.
 
 Some common use cases for LogShark include: 
   * Troubleshooting issue(s) that are recorded in the logs. 

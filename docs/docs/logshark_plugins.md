@@ -12,7 +12,7 @@ In this section:
 
 The following table shows the list of available LogShark plugins and the names of the workbooks that the plugin generates. You can preview workbooks before running LogShark by navigating to the folder `<LogShark_install_location>\Workbooks` and opening up the workbooks in Tableau. 
 
-To run specific plugin, specify the name of the plugin with the LogShark **`--plugins`** option. To specify more than one plugin, list them separated by semicolon, no spaces, and enclose the list in quotation marks (“ “).
+To run a specific plugin, specify the name of the plugin with the LogShark **`--plugins`** option. To specify more than one plugin, list them separated by a semicolon, no spaces, and enclose the list in quotation marks (“ “).
 
 
 **Usage:**
