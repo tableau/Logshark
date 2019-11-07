@@ -1,5 +1,5 @@
 ---
-title: Logshark Plugins and Generated Workbooks
+title: LogShark Plugins and Generated Workbooks
 ---
 
 In this section:
@@ -8,7 +8,7 @@ In this section:
 {:toc}
 
 
-### Logshark Plugins Syntax 
+### LogShark Plugins Syntax 
 
 The following table shows the list of available LogShark plugins and the names of the workbooks that the plugin generates. You can preview workbooks before running LogShark by navigating to the folder `<LogShark_install_location>\Workbooks` and opening up the workbooks in Tableau. 
 
@@ -17,19 +17,19 @@ To run specific plugin, specify the name of the plugin with the LogShark **`--pl
 
 **Usage:**
 
-   <code>logshark <i>LogSetLocation</i> <i>RunId</i></code>
+   <code>LogShark <i>LogSetLocation</i> <i>RunId</i></code>
 
-   <code>logshark <i>LogSetLocation</i> <i>RunId</i> --plugins <i>plugin</i></code>
+   <code>LogShark <i>LogSetLocation</i> <i>RunId</i> --plugins <i>plugin</i></code>
 
-   <code>logshark <i>LogSetLocation</i> <i>RunId</i> --plugins "<i>plugin1</i> <i>plugin2</i> <i>plugin3</i>..."</code>
+   <code>LogShark <i>LogSetLocation</i> <i>RunId</i> --plugins "<i>plugin1</i> <i>plugin2</i> <i>plugin3</i>..."</code>
 
 
 
 **Examples:**
 
 ```
-     logshark logs.zip --plugins Apache
-     logshark logs.zip --plugins "Apache;VizqlServer"
+     LogShark logs.zip --plugins Apache
+     LogShark logs.zip --plugins "Apache;VizqlServer"
             
    
  
