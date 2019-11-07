@@ -11,7 +11,9 @@ In this section:
 
 Download LogShark
 ------------------
- [![Download LogShark](https://img.shields.io/badge/Download%20LogShark-Version%203.0.2-blue.svg)](https://github.com/tableau/Logshark/releases/download/3.0.2/Setup_LogShark_v3.0.2.exe)
+[![Download LogShark for Win](https://img.shields.io/badge/Download%20LogShark%20for%20Win-Version%204.1-blue.svg)](https://github.com/tableau/Logshark/releases/download/v4.1/LogShark.Win.4.1.1911.09672-public.zip)
+
+[![Download LogShark for macOS](https://img.shields.io/badge/Download%20LogShark%20for%20macOS-Version%204.1-blue.svg)](https://github.com/tableau/Logshark/releases/download/v4.1/LogShark.Mac.4.1.1911.09672-public.zip)
 
 Navigate to a location where you want to install LogShark and unzip the file there.
 
@@ -25,4 +27,4 @@ If you want to run LogShark from anywhere, you need to add the directory where y
 1. Click **Environment Variables**. In the section System Variables, find the `PATH` environment variable and select it. Click **Edit**. If the PATH environment variable does not exist, click **New**.
 1. In the **Edit System Variable** (or New System Variable) window, specify the value of the `PATH` environment variable. Click OK. Close all remaining windows by clicking OK.
 
-**NOTE:** By default LogShark saves the resulting workbooks in an `Output` folder in the directory from where it was ran. If you want to modify that, check [Configure and Customize LogShark](/docs/logshark_configure.md).
+**NOTE:** By default LogShark saves the resulting workbooks in an `Output` folder in the directory from where it was ran. If you want to modify that, check <a href="logshark_configure">Configure and Customize LogShark</a>.

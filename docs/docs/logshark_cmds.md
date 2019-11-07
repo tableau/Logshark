@@ -31,7 +31,7 @@ Full usage can be viewed at any time by invoking `LogShark --help`.  The only 
 | --username | Tableau server username | 
 | --workbookname <string> | Custom workbook name to append to the end of each workbook generated. | 
 | -?, -h, --help | Show help information | 
-| -a, --append-to <APPEND_TO>  | Append this run results to the results from specified run id. Implementation varies by output writer. See [Visualize Historic Trends of Your Logs](add link here) for more info | 
+| -a, --append-to <APPEND_TO>  | Append this run results to the results from specified run id. Implementation varies by output writer. See <a href="logshark_postgres">Visualize Historic Trends of Your Logs for more info | 
 | -c, --config <CONFIG>  | Specify alternative config file to use. By default `<LogShark_Install_location.\Config\LogSharkConfig.json` is used | 
 | -l, --listplugins | Lists the LogShark plugins available for use with `--plugins` parameter |
 | -p, --publishworkbooks | (Default: False) Publish resulting workbooks to Tableau Server | 
