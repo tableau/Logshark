@@ -83,7 +83,7 @@ LogShark creates a project folder where all generated workbooks are saved. The d
 
 ----
 ### Attach Logset's Name to the Workbook
-If you are working on several cases at the same time, having several Apache workbooks open at the same time can get confusing quickly. With this version you can differentiate between workbooks by attaching the name of the logset to the workbook name by setting `AppendLogsetNameToOutput` to **true**. The resulting workbooks will be named **<PluginName>_<LogsetName>.twbx**, e.g. **Apache_TinyLog.twbx**.
+If you are working on several logsets at the same time, having several Apache workbooks open at the same time can get confusing quickly. With this version you can differentiate between workbooks by attaching the name of the logset to the workbook name by setting `AppendLogsetNameToOutput` to **true**. The resulting workbooks will be named **<PluginName>_<LogsetName>.twbx**, e.g. **Apache_TinyLog.twbx**.
 
 
 ```xml

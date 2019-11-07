@@ -23,12 +23,14 @@ This version of LogShark is significantly ***FASTER*** and brings back the abili
 
 # System Requirements
 
-**For Windows**: LogShark requires a 64-bit version of Windows in order to run, and must be run as an account with administrator privileges. 
--   Hyper API for C++. If Hyper requirements are not met on the machine, LogShark will fail. The simpest way to meet Hyper requirements is to install Tableau Desktop on your machine.
-  If you don't have Tableau Desktop installed, you will need Visual C++ Redistributables. Download x64 version of "Visual Studio 2015, 2017 and 2019" package from https://support.microsoft.com/en-us/help/2977003/the-latest-supported-visual-c-downloads.
+**For Windows**: 
+-  LogShark requires a 64-bit version of Windows in order to run, and must be run as an account with administrator privileges. 
+- Hyper API for C++. If Hyper requirements are not met on the machine, LogShark will fail. The simpest way to meet Hyper requirements is to install Tableau Desktop on your machine.
+  - If you don't have Tableau Desktop installed, you will need Visual C++ Redistributables. Download x64 version of "Visual Studio 2015, 2017 and 2019" package from https://support.microsoft.com/en-us/help/2977003/the-latest-supported-visual-c-downloads.
 
-**For macOS:** LogShark runs on macOS versions 10.12 "Sierra", 10.13 "High Sierra, and 10.14 "Mojave".
-- Currently LogShark doesn't support macOS 10.15 "Catalina".
+**For macOS:** 
+- LogShark runs on macOS versions 10.12 "Sierra", 10.13 "High Sierra, and 10.14 "Mojave".
+  - Currently LogShark doesn't support macOS 10.15 "Catalina".
 
 NOTE: If you are copying over existing LogShark folder, make a backup copy of your config file to preserve any valuable settings you have previously set for LogShark.
 
