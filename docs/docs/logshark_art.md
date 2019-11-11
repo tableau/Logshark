@@ -7,10 +7,9 @@ In this section:
 * TOC
 {:toc}
 
----
+
 ### What is it?
 The ART workbook is built from Vizqlserver Activity and Resource Tracing (ART) logging.  The ART logging captures CPU and memory utilization for each vizqlserver activity as well as the sponsorship and depth of the activitties and additional contextual metadata about the activity.
-
 
 **Note: Many of the views in the workbook make use of additional fields that were added to the ART logging in the 2018.3 release.  For Servers on versions prior to 2018.3 some functionality in the dashboards may be missing(Such as the ability to identify the different request Types**
  
@@ -48,7 +47,6 @@ When an Activity begins, a MemoryScope object is pushed onto a stack of MemorySc
 
 ## Accuracy
 - **Windows**: It is accurate to the extent that heap use occurs in a module linked to tabmemory; in other words, any untracked modules represent blind spots. 
-
 - **Linux**: Linux should provide greater accuracy because the overrides are seen process wide. 
 
 
@@ -63,7 +61,7 @@ CPU Thread Time tracking provides separate values for user and kernel time in Li
 **Views:**
 -  ***Allocations by View*** This sheet is a plot with Time of the request on the X axis and size of
 inclusive allocations on the Y axis
-    - Color: Colored by request description type(I.E. Bootstrap, Categorical filter, etc.)
+   - Color: Colored by request description type(I.E. Bootstrap, Categorical filter, etc.)
    - Mark Size: Size of inclusive allocations for the request
 -  ***Allocations Gantt*** This sheet is a depth flame chart with Timestamp on the Column and ART Depth and
 Activity name on the rows
@@ -78,7 +76,7 @@ Activity name on the rows
 -  Workbook+View Dropdown to filter to requests for a specific Workbook and View
 -  Art Description Dropdown To filter to specific request types
 
-Selection Filters:
+**Selection Filters:**
 -  Select any mark in the plot view to populate the Allocations flame chart with the requests activities 
 
 **Notes:**
@@ -92,12 +90,10 @@ If you are investigating Vizqlserver high memory usage issues having the custome
 ### CPU Time
 
 **Views:**
-- ***CPU by View*** This sheet is a plot with Time of the request on the X axis and Inclusive CPU time on the
-Y axis
+- ***CPU by View*** This sheet is a plot with Time of the request on the X axis and Inclusive CPU time on the Y axis
    - Color: Colored by request description type(I.E. Bootstrap, Categorical filter, etc.)
    - Mark Size: Size based on Inclusive CPU time for request
-- ***CPU Gantt*** This sheet is a depth flame chart with Timestamp on the Column and ART Depth and
-Activity name on the rows
+- ***CPU Gantt*** This sheet is a depth flame chart with Timestamp on the Column and ART Depth and Activity name on the rows
    - Mark Size: Gantt bars sized based on elapsed time
    - Mark Color: Gantt bars colored on Exclusive CPU utilization percentage for activity
 
@@ -111,7 +107,7 @@ Activity name on the rows
 - Art Description Dropdown To filter to specific request types
 
 **Selection Filters:**
-Select any mark in the plot view to populate the CPU flame chart with the requests activities
+- Select any mark in the plot view to populate the CPU flame chart with the requests activities
 
 **Notes:**
 -  If you are investigating Vizqlserver high CPU usage issues having the customer gather Perfmon data using the template on our 'Perfmon for customers' page will help narrow down to the specific time the memory spikes and allow you to narrow the timeframe you are looking at in the dashboard
@@ -142,8 +138,7 @@ Select any mark in the plot view to populate the CPU flame chart with the reques
 -  Cache Hits: This will show the cache hits and misses for each cache for the selected requests
 
 **Quick Filters:**
-- Art Description Dropdown To filter to specific request
-types
+- Art Description Dropdown To filter to specific request types
 - Art Workbook Dropdown To filter to requests related to a specific Workbook
 - Art View Dropdown Relevant values filter to filter to requests related to a specific view(If a specific workbook is selected this will only show views for that workbook)
 - Username Dropdown to filter to requests that come from a specific user
@@ -191,7 +186,7 @@ types
 -  Begin Timestamp range filter The begin timestamp range filter can be used to filter to requests that started in a specific range of time
 
 **Selection Filters:**
-Selecting any mark in the plot view will bring up the Component colored flamechart for the selected request
+- Selecting any mark in the plot view will bring up the Component colored flamechart for the selected request
 
 **Use Cases:**
 - The Component colored flame graphs are a great way to get a quick and detailed overview of the component-activity sponsorship, all of the activities that are called in processing the request and where the time is spent in the request
@@ -270,13 +265,11 @@ Selecting any mark in the plot view will bring up the Component colored flamecha
 ### Resource Intensive Requests
 
 **Views:**
-- ***Resource Intensive Requests Plot***: This view shows all requests on a plot graph with Inclusive CPU time on the X axis and Inclusive Allocated memory on the Y graph
-- ***CPU Gantt***: This sheet is a depth flame chart with Timestamp on the Column and ART Depth and
-Activity name on the rows
+- ***Resource Intensive Requests Plot***: This view shows all requests on a plot graph with Inclusive CPU time on the X axis and Inclusive Allocated memory on the Y graph 
+- ***CPU Gantt***: This sheet is a depth flame chart with Timestamp on the Column and ART Depth and Activity name on the rows
    - Mark Size: Gantt bars sized based on elapsed time
    - Mark Color: Gantt bars colored on Exclusive CPU utilization percentage for activity
-- ***Allocations Gantt***: This sheet is a depth flame chart with Timestamp on the Column and ART Depth and
-Activity name on the rows
+- ***Allocations Gantt***: This sheet is a depth flame chart with Timestamp on the Column and ART Depth and Activity name on the rows
    - Mark Size: Gantt bars sized based on elapsed time
    - Mark Color: Gantt bars colored on exclusive allocation bytes for the activity
 
@@ -315,7 +308,6 @@ Activity name on the rows
 
 **Notes:**
 - This dashboard shows the memory that is allocated and not freed for requests and activities that are captured in the ziplog set but may show net new memory for sessions that had not yet been cleared from memory at the time the iplogs were captured
-
 
 **Use Cases:**
 - This dashboard can be useful to identify the cause of persistent memory usage issues that cause vizqlserver memory usage to increase with uptime. The Allocation Detail sheet is useful to identify which activities for the request were responsible for the majority of the net new memory
