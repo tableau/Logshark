@@ -38,6 +38,7 @@ In this section:
 **Reference**
 - [LogShark Command Options](docs/logshark_cmds.md)
 - [LogShark Plugins and Generated Workbooks](docs/logshark_plugins.md)
+- [LogShark ART Plugin](docs/logshark_art.md)
 
 
 
