@@ -69,6 +69,7 @@ Activity name on the rows
    - Mark Color: Gantt bars colored on exclusive allocation bytes for the activity 
    
    <img src="./assets/MemoryAllocations.png" alt="Sample Memory Allocations Screenshot">
+   ![Sample Memory Allocations Screenshot](./assets/MemoryAllocations.png)
 
 **Quick Filters:**
 - Site Dropdown The Site dropdown filter can be used to show only requests from a specific site
@@ -84,7 +85,7 @@ If you are investigating Vizqlserver high memory usage issues having the custome
 
 **Use Cases:**
 - Identify requests that are causing high vizqlserver memory usage
-- For high memory usage requests the allocations gantt will be useful to identify which component and activity are allocating most of the memory  |
+- For high memory usage requests the allocations gantt will be useful to identify which component and activity are allocating most of the memory
 
 
 ### CPU Time
