@@ -68,7 +68,7 @@ Activity name on the rows
    - Mark Size: Gantt bars sized based on elapsed time
    - Mark Color: Gantt bars colored on exclusive allocation bytes for the activity 
    
-   <img src="/screenshots/MemoryAllocations.png" alt="Sample Memory Allocations Screenshot">
+   <img src="./assets/MemoryAllocations.png" alt="Sample Memory Allocations Screenshot">
 
 **Quick Filters:**
 - Site Dropdown The Site dropdown filter can be used to show only requests from a specific site
@@ -97,7 +97,7 @@ If you are investigating Vizqlserver high memory usage issues having the custome
    - Mark Size: Gantt bars sized based on elapsed time
    - Mark Color: Gantt bars colored on Exclusive CPU utilization percentage for activity
 
-   <img src="/screenshots/CPUTime.png" alt="Sample CPU Time Screenshot">
+   <img src="./assets/CPUTime.png" alt="Sample CPU Time Screenshot">
 
 
 **Quick Filters:**
@@ -128,7 +128,7 @@ If you are investigating Vizqlserver high memory usage issues having the custome
    -  Color: Depends on the parameter selection
    -  Sort: Depends on the Parameter Selection
 
-   <img src="/screenshots/CompareSession.png" alt="Sample Compare Sessions Screenshot">
+   <img src="./assets/CompareSession.png" alt="Sample Compare Sessions Screenshot">
 
 **Parameter Selection:**
 - Comparison Type: This parameter decides the metrics that will be used for the flamechart and bar chart for the selected requests
@@ -168,7 +168,7 @@ If you are investigating Vizqlserver high memory usage issues having the custome
    -  Color: The activities are colored based on the exclusive CPU percentage of a core used by each activity
    -  Size: The Gantt bars for each activity begin at the activity begin timestamp and the length is determined by the Art elapsed time
 
-<img src="/screenshots/ComponentFlameGraph.png" alt="Sample Flamecharts Screenshot">
+<img src="./assets/ComponentFlameGraph.png" alt="Sample Flamecharts Screenshot">
 
 
 **Parameter Selection:**
@@ -201,7 +201,7 @@ types
 - ***SlowQueriesByHash***: This view is a plot graph of the slow queries with the End timestamp on the X axis and the Elapsed Time for the query on the Y axis
    - Color: Same as the Slow Queries By Database Class coloring
 
-<img src="/screenshots/SlowQueriesDashboard.png" alt="Sample Intermitten Slow Queries Screenshot">
+<img src="./assets/SlowQueriesDashboard.png" alt="Sample Intermitten Slow Queries Screenshot">
 
 
 **Quick Filters:**
@@ -238,7 +238,7 @@ types
    - Color: The activities are colored based on the result returned for each activity in the request('ok','Error' etc)
    - Size: The Gantt bars for each activity begin at the activity begin timestamp and the length is determined by the Art elapsed time
 
-<img src="/screenshots/ErrorsDashboard.png" alt="Sample Errors Dashboard Screenshot">
+<img src="./assets/ErrorsDashboard.png" alt="Sample Errors Dashboard Screenshot">
 
 
 **Quick Filters:**
@@ -273,7 +273,7 @@ types
    - Mark Size: Gantt bars sized based on elapsed time
    - Mark Color: Gantt bars colored on exclusive allocation bytes for the activity
 
-<img src="/screenshots/ResourceIntensiveDashboard.png" alt="Sample Resource Intensive Dashboard Screenshot">
+<img src="./assets/ResourceIntensiveDashboard.png" alt="Sample Resource Intensive Dashboard Screenshot">
 
 **Quick Filters:**
 - Art Description Dropdown: This dropdown filter defaults to show all requests but can be used to filter down to just initial load or specific interactions
@@ -296,7 +296,7 @@ types
    - Color: The marks are colored based on the Request Type
 - ***Net New Memory Allocation Detail***: This sheet shows the new memory allocations for each activity for the selected request
 
-<img src="/screenshots/NetNewMemoryDashboard.png" alt="Sample Net New Memory Dashboard Screenshot">
+<img src="./assets/NetNewMemoryDashboard.png" alt="Sample Net New Memory Dashboard Screenshot">
 
 **Quick Filters:**
 - Begin Timestamp Range Filter: This range filter can be used to narrow the plot graph to only show requests for a specific timeframe
@@ -319,7 +319,7 @@ types
 - ***Sum of memory allocations by Request Type***: Shows which types of requests were responsible for the most memory usage across the logset
 - ***Percent Exclusive CPU Time by Activity***: This view shows which activities were responsible for the most CPU usage across all requests in the logset
 
-<img src="/screenshots/ResourceUtilOverview.png" alt="Sample Resource Utilization Overview Dashboard Screenshot">
+<img src="./assets/ResourceUtilOverview.png" alt="Sample Resource Utilization Overview Dashboard Screenshot">
 
 **Use Cases:**
 - This dashboard is a high level overview of which requests and activities were responsible for the most CPU and memory usage. This dashboard is useful to identify any issues with certain request types or activities using more CPU//Memory than expected in the deployment
