@@ -69,7 +69,10 @@ Activity name on the rows
    - Mark Color: Gantt bars colored on exclusive allocation bytes for the activity 
    
    <img src="./assets/MemoryAllocations.png" alt="Sample Memory Allocations Screenshot">
+
    ![Sample Memory Allocations Screenshot](./assets/MemoryAllocations.png)
+
+   ![Sample Memory Allocations Screenshot](/assets/MemoryAllocations.png)
 
 **Quick Filters:**
 - Site Dropdown The Site dropdown filter can be used to show only requests from a specific site
