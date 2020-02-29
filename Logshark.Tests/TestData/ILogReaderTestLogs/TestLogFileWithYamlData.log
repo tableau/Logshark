@@ -1,0 +1,6 @@
+param1: value1
+emptyParam:
+multiLineParam: 'line1
+  ''quotedThing''
+  line2'
+param4: value4

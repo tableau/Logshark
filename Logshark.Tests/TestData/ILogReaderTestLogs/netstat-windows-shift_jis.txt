@@ -1,0 +1,12 @@
+
+アクティブな接続
+
+  プロトコル  ローカル アドレス      外部アドレス           状態
+  TCP         0.0.0.0:135            0.0.0.0:0              LISTENING
+  RpcSs
+ [svchost.exe]
+  TCP         0.0.0.0:445            0.0.0.0:0              LISTENING
+ 所有者情報を取得できません
+  TCP         0.0.0.0:3389           0.0.0.0:0              LISTENING
+  TermService
+ [svchost.exe]

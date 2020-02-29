@@ -1,0 +1,67 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>netcoreapp2.1</TargetFramework>
+        <TargetLatestRuntimePatch>true</TargetLatestRuntimePatch>
+        <TrimUnusedDependencies>true</TrimUnusedDependencies>
+        <Company>Tableau Software</Company>
+        <Authors>Customer Data Platform</Authors>
+        <Product>LogShark</Product>
+        <Description>Application used to process Tableau logs to gather useful information about errors</Description>
+        <Copyright>Copyright © 2020</Copyright>
+        <Version>4.0.0.0</Version>
+    </PropertyGroup>
+
+  <ItemGroup>
+      <PackageReference Include="CsvHelper" Version="12.1.2" />
+      <PackageReference Include="Flurl.Http" Version="2.4.1" />
+      <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="2.3.4" />
+      <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.2.0" />
+      <PackageReference Include="Microsoft.Extensions.Logging" Version="2.2.0" />
+      <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="2.2.0" />
+      <PackageReference Include="Microsoft.Packaging.Tools.Trimming" Version="1.1.0-preview1-26619-01" />
+      <PackageReference Include="Npgsql" Version="4.0.9" />
+      <PackageReference Include="Polly" Version="7.1.0" />
+      <PackageReference Include="Serilog.Extensions.Logging.File" Version="1.1.0" />
+      <PackageReference Include="Tableau.HyperAPI.NET" Version="0.0.9746" />
+      <PackageReference Include="YamlDotNet" Version="6.0.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="Config\**">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Resources\**">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Workbooks\**">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Remove="Output\**" />
+      <None Remove="Logs\**" />
+      <None Remove="TestLogs\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Remove="Output\**" />
+      <Compile Remove="Logs\**" />
+      <Compile Remove="TestLogs\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Remove="Output\**" />
+      <EmbeddedResource Remove="Logs\**" />
+      <EmbeddedResource Remove="TestLogs\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Workbooks" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Reference Include="Tools.TableauServerRestApi">
+        <HintPath>..\thirdparty\Tools.TableauServerRestApi.dll</HintPath>
+      </Reference>
+    </ItemGroup>    
+</Project>

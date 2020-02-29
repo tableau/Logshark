@@ -1,0 +1,24 @@
+FileLastModifiedUtc,Hostname,Port,Process,Worker
+08/12/2019 11:37:44,localhost,9100,vizqlserver,0
+08/12/2019 11:37:44,localhost,9101,vizqlserver,0
+08/12/2019 11:37:44,localhost,8600,vizportal,0
+08/12/2019 11:37:44,localhost,8017,searchserver,0
+08/12/2019 11:37:44,localhost,9700,dataserver,0
+08/12/2019 11:37:44,localhost,9701,dataserver,0
+08/12/2019 11:37:44,localhost,8250,backgrounder,0
+08/12/2019 11:37:44,localhost,8251,backgrounder,0
+08/12/2019 11:37:44,localhost,80,gateway,0
+08/12/2019 11:37:44,localhost,8719,samlservice,0
+08/12/2019 11:37:44,localhost,8525,filestore,0
+08/12/2019 11:37:44,localhost,8509,hyper,0
+08/12/2019 11:37:44,localhost,15100,interactive,0
+08/12/2019 11:37:44,localhost,8343,backuprestore,0
+08/12/2019 11:37:44,localhost,8131,clientfileservice,0
+08/12/2019 11:37:44,localhost,8034,databasemaintenance,0
+08/12/2019 11:37:44,localhost,8895,elasticserver,0
+08/12/2019 11:37:44,localhost,8015,nlp,0
+08/12/2019 11:37:44,localhost,8556,siteimportexport,0
+08/12/2019 11:37:44,localhost,8850,tabadmincontroller,0
+08/12/2019 11:37:44,localhost,8060,pgsql,0
+08/12/2019 11:37:44,localhost,8912,cacheserver,0
+08/12/2019 11:37:44,localhost,8434,cacheserver,0

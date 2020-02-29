@@ -1,0 +1,85 @@
+{
+  "Logging": {
+    "PathFormat": "Logs/LogShark-{Date}.log",
+    "Json": false,
+    "FileSizeLimitBytes": 10485760,
+    "RetainedFileCountLimit": 5,
+    "LogLevel": {
+      "Default": "Debug",
+      "Microsoft": "Information"
+    },
+    "Console": {
+      "IncludeScopes": true
+    }
+  },
+  "EnvironmentConfig": {
+    "TempDirOverride": null,
+    "OutputDir": "Output",
+    "OutputDirMaxResults": null,
+    "WorkbookTemplatesDir": "Workbooks",
+    "CustomWorkbookTemplatesDir": null,
+    "NumberOfErrorDetailsToKeep": 25,
+    "DefaultWriter": "hyper",
+    "AppendLogsetNameToOutput": false
+  },
+  "PostgresWriterDatabase": {
+    "_comment": {
+      "1": "If Postgres writer is used to store output, either provide `ConnectionString` or `Host`+`Database`+`Username`+`Password`. If `ConnectionString` and individual parameters are provided at the same time, individual parameters will override respective values in connection string",
+      "2": "`DatabaseName` is where output should be stored (database will be created if does not exist).",
+      "3": "`ServiceDatabaseName` must always be specified - this is the database LogShark will log into in order to create output database if necessary. For most PostgreSQL instances the service database is named `postgres`",
+      "4": "Most of the values can also be specified through command line parameters. In this case command line values override values from this file",
+      "5": "`ConnectionTimeoutSeconds` parameter defines how long driver will wait for initial response from the database. It does NOT affect how long we wait for query results"
+    },
+    "Host": "",
+    "DatabaseName": "",
+    "Username": "",
+    "Password": "",
+    "ConnectionString": "",
+    "ServiceDatabaseName": "",
+    "BatchSize": 100,
+    "ConnectionTimeoutSeconds": 30,
+    "EmbedCredentialsOnPublish": false
+  },
+  "TableauServer": {
+    "_comment": {
+      "1": "If publishing results to Tableau Server is enabled, provide URL, Site, Username and Password for the Tableau Server to publish results to.",
+      "2": "Username and Password can be specified through command line parameters. In this case command line values override values from this file",
+      "3": "If `Id` or `Name` for the `ParentProject` is specified, LogShark will nest output project under the specified project, otherwise output project will be saved in the root of the site. `Id` takes precedence over `Name`"
+    },
+    "Url": "",
+    "Site": "",
+    "Username": "",
+    "Password": "",
+    "Timeout": 240,
+    "GroupsToProvideWithDefaultPermissions": [],
+    "ApplyPluginProvidedTagsToWorkbooks": true,
+    "ParentProject": {
+      "Id": "",
+      "Name": ""
+    }
+  },
+  "PluginsConfiguration": {
+    "DefaultPluginSet": {
+      "_comment": {
+        "1": "'PluginsToRunByDefault' can be used to specify the list of plugins to run when 'All' plugins requested or when --plugins is not specified.",
+        "2": "This should be a semicolon separated list of plugin names, no spaces (i.e. 'Apache;Backgrounder'). Leave empty to use all available plugins by default",
+        "3": "Plugins listed in 'PluginsToExcludeFromDefaultSet' will be excluded when 'All' plugins are requested for the run. Same format as 'PluginsToRunByDefault'"
+      },
+      "PluginsToRunByDefault": "",
+      "PluginsToExcludeFromDefaultSet": "Replayer"
+    },
+    "Apache": {
+      "IncludeGatewayChecks": true
+    },
+    "Replayer": {
+      "ReplayerOutputDirectory": "ReplayerOutput",
+      "ReplayFileName": "",
+      "ReplayerTimeZonesDictionary": "Resources/ReplayerTimeZonesDictionary.txt",
+      "RelevantVizqlServerEvents": [ "server-telemetry", "lock-session", "end-bootstrap-session", "end-bootstrap-session-action.bootstrap-session", "command-pre", "begin-commands-controller.invoke-command" ],
+      "SkippableCommands": ["tabdoc:refresh-data-server", "tabdoc:get-world-update", "tabdoc:geographic-search-load-data", "tabdoc:highlight", "tabdoc:filter-targets", "tabdoc:navigate-to-sheet", "tabdoc:get-marks-color-uber-effects", "tabdoc:update-selection-delta", "tabdoc:get-flipboard-nav", "tabdoc:set-auto-update-server", "tabdoc:get-flipboard", "tabdoc:hit-test-scene", "tabdoc:show-detailed-error-dialog", "tabdoc:non-blocking-checkpoint-workbook-xml", "tabsrv:refresh-data-server", "tabsrv:get-world-update", "tabsrv:geographic-search-load-data", "tabsrv:highlight", "tabsrv:filter-targets", "tabsrv:navigate-to-sheet", "tabsrv:get-marks-color-uber-effects", "tabsrv:update-selection-delta", "tabsrv:get-flipboard-nav", "tabsrv:set-auto-update-server", "tabsrv:get-flipboard", "tabsrv:hit-test-scene", "tabsrv:show-detailed-error-dialog", "tabsrv:non-blocking-checkpoint-workbook-xml"]
+    },
+    "VizqlDesktop": {
+      "MaxQueryLength": 10000
+    }
+  }
+}

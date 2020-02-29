@@ -1,21 +1,23 @@
-*.suo
-*.user
-.reviewboardrc
-packages/
-_Builds/
-.vs/
-*/bin/
-*/obj/
-*/Generated/
-ArtifactProcessors/*/bin/
-ArtifactProcessors/*/obj/
-Plugins/*/bin/
-Plugins/*/obj/
-Templates/*/bin/
-Templates/*/obj/
-Logshark.CLI.Installer.Bundle/Contents/
-Tableau.RestApi/GeneratedCode/*.cs
-*.DotSettings
-*.DS_Store
-*.CoreCompileInputs.cache
-/UpgradeLog.htm
+packages/*
+.vs/*
+.idea/*
+
+# Build results
+[Dd]ebug/
+[Rr]elease/
+x64/
+build/
+bld/
+[Bb]in/
+[Oo]bj/
+
+# Output folders
+Logs/
+Output/
+Temp/
+
+# Test data
+TestLogs/
+Properties/
+.terraform
+*.zip
