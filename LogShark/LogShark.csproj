@@ -10,7 +10,6 @@
         <Product>LogShark</Product>
         <Description>Application used to process Tableau logs to gather useful information about errors</Description>
         <Copyright>Copyright © 2020</Copyright>
-        <Version>4.0.0.0</Version>
     </PropertyGroup>
 
   <ItemGroup>
