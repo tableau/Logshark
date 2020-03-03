@@ -42,9 +42,7 @@ The best way to analyze results is to run LogShark on your own logset and explor
 
 # What do I need to build LogShark from source? 
 
-Instructions on how to build LogShark from the source code are coming soon. 
-
-Please note that current source code is for LogShark 3.0. The source code for LogShark 4.1 will be released soon.
+Instructions on how to build LogShark from the source code are coming soon.
 
 
 # Is LogShark supported?
