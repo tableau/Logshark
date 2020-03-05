@@ -31,7 +31,7 @@ Note that LogShark is configured by the LogSharkConfig.json file in the Config d
 
 ### Compile It Yourself
 
-LogShark is a .NET Core 2.1 application. To compile it yourself, first clone or download the repository. Then run the following commands
+LogShark is a .NET Core 2.1 application. To compile it yourself, first clone or download the repository. Then run the following command:
 
 Windows
 ```
