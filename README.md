@@ -1,15 +1,15 @@
 # LogShark
 [![Community Supported](https://img.shields.io/badge/Support%20Level-Community%20Supported-457387.svg)](https://www.tableau.com/support-levels-it-and-developer-tools)
 
-LogShark is a tool you can use to analyze and troubleshoot Tableau Server performance and activity. LogShark extracts data from Tableau Server and Tableau Desktop log files and builds workbooks that can help you identify and understand error conditions, performance bottlenecks, and background activity. LogShark works by running a set of targeted plugins that pull specific data out of the log files. LogShark builds a data source and provides Tableau workbooks, which you can then use to analyze the log files in Tableau.
+LogShark is a tool for analyzing and troubleshooting Tableau Server and Tableau Desktop. LogShark extracts data from log files and builds workbooks that can help you identify and understand error conditions, performance bottlenecks, and background activity. LogShark works by running a set of targeted plugins that pull specific data out of the log files, building data sources, and generating Tableau workbooks which can be used for analysis.
 
 LogShark can help you: 
-  * Troubleshoot issue(s) that are recorded in the logs. 
+  * Troubleshoot issues that are recorded in the logs. 
   * Analyze system metrics from log data. 
-  * Solve problems in Tableau without the fear of exposing sensitive corporate information. 
+  * Solve problems in Tableau without exposing sensitive corporate information. 
   * Validate Tableau Server application behavior against historical data when taking a new build or making a system change.
 
-LogShark version 4 is a significant rewrite, and is substantially faster than before. It brings back the ability to write to a PostgreSQL database server, as well as a number of other improvements. See [releases page](https://github.com/tableau/Logshark/releases/latest) for a full list of updates.
+See the [releases page](https://github.com/tableau/Logshark/releases/latest) for a full list of updates.
   
 ![Sample Apache Workbook Screenshot](/assets/screenshot.png)
 
