@@ -1,354 +1,47 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{B2D32B95-C0B5-4A9B-BA7F-2CD859B14CD1}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Logshark.Tests</RootNamespace>
-    <AssemblyName>Logshark.Tests</AssemblyName>
-    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
-    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
-    <ReferencePath>$(ProgramFiles)\Common Files\microsoft shared\VSTT\$(VisualStudioVersion)\UITestExtensionPackages</ReferencePath>
-    <IsCodedUITest>False</IsCodedUITest>
-    <TestProjectType>UnitTest</TestProjectType>
-    <TargetFrameworkProfile />
-    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
-    <RestorePackages>true</RestorePackages>
-  </PropertyGroup>
-  <PropertyGroup>
-    <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
-    None
-  </ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\x64\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <OutputPath>bin\x64\Release\</OutputPath>
-    <DefineConstants>
-    </DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Installer|AnyCPU'">
-    <OutputPath>bin\Installer\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Installer|x64'">
-    <OutputPath>bin\x64\Installer\</OutputPath>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="dotMemory.Unit, Version=111.0.0.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
-      <HintPath>..\packages\JetBrains.dotMemoryUnit.3.0.20171219.105559\lib\net35\dotMemory.Unit.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="FluentAssertions, Version=4.16.0.0, Culture=neutral, PublicKeyToken=33f2691a05b67b6a, processorArchitecture=MSIL">
-      <HintPath>..\packages\FluentAssertions.4.16.0\lib\net45\FluentAssertions.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="FluentAssertions.Core, Version=4.16.0.0, Culture=neutral, PublicKeyToken=33f2691a05b67b6a, processorArchitecture=MSIL">
-      <HintPath>..\packages\FluentAssertions.4.16.0\lib\net45\FluentAssertions.Core.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="IKVM.OpenJDK.Core, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Tableau.ExtractApi\lib\IKVM\IKVM.OpenJDK.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="IKVM.Runtime, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Tableau.ExtractApi\lib\IKVM\IKVM.Runtime.dll</HintPath>
-    </Reference>
-    <Reference Include="log4net">
-      <HintPath>..\packages\log4net.2.0.5\lib\net45-full\log4net.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed">
-      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="nunit.framework, Version=3.5.0.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
-      <HintPath>..\packages\NUnit.3.5.0\lib\net45\nunit.framework.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Optional, Version=4.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Optional.4.0.0\lib\net45\Optional.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Optional.Utilities, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Optional.Utilities.1.1.0\lib\net451\Optional.Utilities.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="ServiceStack.Common, Version=3.9.71.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ServiceStack.Common.3.9.71\lib\net35\ServiceStack.Common.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="ServiceStack.Interfaces, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ServiceStack.Common.3.9.71\lib\net35\ServiceStack.Interfaces.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="ServiceStack.Text, Version=3.9.71.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ServiceStack.Text.3.9.71\lib\net35\ServiceStack.Text.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.XML" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="TableauExtractApiDotNet, Version=0.0.0.0, Culture=neutral, processorArchitecture=AMD64">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Tableau.ExtractApi\lib\TableauExtractApiDotNet.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-  <Choose>
-    <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
-      <ItemGroup>
-        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
-      </ItemGroup>
-    </When>
-    <Otherwise />
-  </Choose>
-  <ItemGroup>
-    <Compile Include="ExtractTests.cs" />
-    <Compile Include="FilePartitionerTest.cs" />
-    <Compile Include="Helpers\ControllerEntityHelper.cs" />
-    <Compile Include="InitializationTests.cs" />
-    <Compile Include="Runner\LogsharkRunner.cs" />
-    <Compile Include="Helpers\PostgresHelper.cs" />
-    <Compile Include="Helpers\TestDataHelper.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="MongoTests.cs" />
-    <Compile Include="ServerLogProcessorTests\BuildVersionParserTests.cs" />
-    <Compile Include="ServerLogProcessorTests\ConfigParserTests.cs" />
-    <Compile Include="ServerLogProcessorTests\HttpdParserTests.cs" />
-    <Compile Include="ServerLogProcessorTests\HyperParserTests.cs" />
-    <Compile Include="ServerLogProcessorTests\JavaParserTests.cs" />
-    <Compile Include="ServerLogProcessorTests\NetstatParserTests.cs" />
-    <Compile Include="ServerLogProcessorTests\ParserTestHelpers.cs" />
-    <Compile Include="ServerLogProcessorTests\PostgresParserTests.cs" />
-    <Compile Include="ServerLogProcessorTests\RubyParserTests.cs" />
-    <Compile Include="ServerLogProcessorTests\SearchServerLocalhostTests.cs" />
-    <Compile Include="ServerLogProcessorTests\VizqlServerCppParserTests.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\ArtifactProcessors\TableauServerLogProcessor\TableauServerLogProcessor.csproj">
-      <Project>{d41508a6-3102-4453-ba41-5b408720505e}</Project>
-      <Name>TableauServerLogProcessor</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\LogParsers.Base\LogParsers.Base.csproj">
-      <Project>{1a35bb10-cc91-4515-a928-448dde9955c9}</Project>
-      <Name>LogParsers.Base</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Logshark.ArtifactProcessorModel\Logshark.ArtifactProcessorModel.csproj">
-      <Project>{e3e36b60-8b5e-4ee6-a6a8-03afeb1250f8}</Project>
-      <Name>Logshark.ArtifactProcessorModel</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Logshark.Common\Logshark.Common.csproj">
-      <Project>{0f89755a-ea3c-49bf-ae10-c5ee09e99916}</Project>
-      <Name>Logshark.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Logshark.ConnectionModel\Logshark.ConnectionModel.csproj">
-      <Project>{33ea5733-998c-4f71-ac5c-ad125268778e}</Project>
-      <Name>Logshark.ConnectionModel</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Logshark.Core\Logshark.Core.csproj">
-      <Project>{5ce5f893-3bf2-469e-8658-4ba329746d60}</Project>
-      <Name>Logshark.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Logshark.PluginLib\Logshark.PluginLib.csproj">
-      <Project>{c80ed597-1c60-465b-a18d-b249b7c2849f}</Project>
-      <Name>Logshark.PluginLib</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Logshark.PluginModel\Logshark.PluginModel.csproj">
-      <Project>{03d2b93a-3c04-4377-966c-051e102cd1bd}</Project>
-      <Name>Logshark.PluginModel</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Logshark.RequestModel\Logshark.RequestModel.csproj">
-      <Project>{c3f0fafa-1c38-42cf-a1ae-37ef00d0ead5}</Project>
-      <Name>Logshark.RequestModel</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Tableau.ExtractApi\Tableau.ExtractApi.csproj">
-      <Project>{b548f23e-5935-4b50-9b67-380365a85002}</Project>
-      <Name>Tableau.ExtractApi</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Tableau.RestApi\Tableau.RestApi.csproj">
-      <Project>{0aefc6d8-33b4-444b-bd5f-66028b62af73}</Project>
-      <Name>Tableau.RestApi</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="ServerLogProcessorTests\_TestData\buildversion.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="ServerLogProcessorTests\_TestData\searchserverlocalhost.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="ServerLogProcessorTests\_TestData\vizqlserver_cpp.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="_TestData\largeTextFile.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
-    <Content Include="Config\Log.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Config\Logshark.config">
-      <SubType>Designer</SubType>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <None Include="packages.config" />
-    <Content Include="_TestData\EmptyLog.zip">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="_TestData\EmptyPackagedWorkbook.twbx">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <None Include="ServerLogProcessorTests\_TestData\backgrounder_java.log">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="ServerLogProcessorTests\_TestData\clustercontroller_java.log">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="ServerLogProcessorTests\_TestData\connections.properties">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="ServerLogProcessorTests\_TestData\filestore_java.log">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="ServerLogProcessorTests\_TestData\httpd_access_9x.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="ServerLogProcessorTests\_TestData\httpd_error_9x.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="ServerLogProcessorTests\_TestData\hyper.log">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="ServerLogProcessorTests\_TestData\netstat_linux.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="ServerLogProcessorTests\_TestData\netstat_windows.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="ServerLogProcessorTests\_TestData\pg_hba.conf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="ServerLogProcessorTests\_TestData\postgresql_92.log">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="ServerLogProcessorTests\_TestData\postgresql_93.csv">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="ServerLogProcessorTests\_TestData\searchserver_java.log">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="ServerLogProcessorTests\_TestData\tabadmin.log">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="ServerLogProcessorTests\_TestData\tabadminservice_java.log">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="ServerLogProcessorTests\_TestData\tabsvc.yml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="ServerLogProcessorTests\_TestData\vizportal.log">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="ServerLogProcessorTests\_TestData\vizqlserver_java.log">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="ServerLogProcessorTests\_TestData\workgroup.yml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="ServerLogProcessorTests\_TestData\zookeeper_java.log">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <Choose>
-    <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
-      <ItemGroup>
-        <Reference Include="Microsoft.VisualStudio.QualityTools.CodedUITestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-          <Private>False</Private>
-        </Reference>
-        <Reference Include="Microsoft.VisualStudio.TestTools.UITest.Common, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-          <Private>False</Private>
-        </Reference>
-        <Reference Include="Microsoft.VisualStudio.TestTools.UITest.Extension, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-          <Private>False</Private>
-        </Reference>
-        <Reference Include="Microsoft.VisualStudio.TestTools.UITesting, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-          <Private>False</Private>
-        </Reference>
-      </ItemGroup>
-    </When>
-  </Choose>
-  <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PreBuildEvent>
-    </PreBuildEvent>
-  </PropertyGroup>
-  <PropertyGroup>
-    <PostBuildEvent>if not exist "$(TargetDir)ArtifactProcessors" mkdir "$(TargetDir)ArtifactProcessors"
-xcopy "$(SolutionDir)Logshark.Core\$(OutDir)ArtifactProcessors\*" "$(TargetDir)ArtifactProcessors" /Y /I /E
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
-if not exist "$(TargetDir)MongoDB" mkdir "$(TargetDir)MongoDB"
-xcopy "$(SolutionDir)Logshark.Core\$(OutDir)MongoDB\*" "$(TargetDir)MongoDB" /Y /I /E
+    <PropertyGroup>
+        <TargetFramework>netcoreapp3.0</TargetFramework>
+        <TargetLatestRuntimePatch>true</TargetLatestRuntimePatch>
+    </PropertyGroup>
 
-if not exist "$(TargetDir)Plugins" mkdir "$(TargetDir)Plugins"
-xcopy "$(SolutionDir)Logshark.Core\$(OutDir)Plugins\*" "$(TargetDir)Plugins" /Y /I /E
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+      <PlatformTarget>x64</PlatformTarget>
+    </PropertyGroup>
 
-xcopy "$(SolutionDir)Tableau.ExtractApi\$(OutDir)*.dll" "$(TargetDir)" /Y /I /E
-xcopy "$(SolutionDir)Tableau.ExtractApi\$(OutDir)*.exe" "$(TargetDir)" /Y /I /E</PostBuildEvent>
-  </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+    <ItemGroup>
+      <PackageReference Include="FluentAssertions" Version="5.10.0" />
+      <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.1.0" />
+      <PackageReference Include="Moq" Version="4.11.0" />
+      <PackageReference Include="Tools.TableauServerRestApi" Version="1.3.1.1309759" />
+      <PackageReference Include="xunit" Version="2.4.1" />
+      <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\LogShark\LogShark.csproj" />
+    </ItemGroup>
+    
+    <ItemGroup>
+        <None Update="TestData\**">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Tableau.ExtractAPI.deps.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Tableau.ExtractAPI.pdb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="TestData\EndToEndTests\logs_tiny.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="TestData\EndToEndTests\Expected\" />
+  </ItemGroup>
+  
 </Project>

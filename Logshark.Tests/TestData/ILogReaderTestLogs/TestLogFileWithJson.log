@@ -1,0 +1,6 @@
+{"ts":"2018-08-08T14:22:51.844","pid":22492,"tid":"7efd10c6f1c0","sev":"info","req":"-","sess":"-","k":"service-start","v":{"msg":"Running as a service"}}
+{"ts":"2018-08-08T14:22:51.844","pid":22492,"tid":"7efd10c6f1c0","sev":"info","req":"-","sess":"-","k":"service-start","v":"Running as a service"}
+{"ts":"notATimestamp","pid":22492,"tid":"7efd10c6f1c0","sev":"info","req":"-","sess":"-","k":null,"v":null}
+NotAJson
+{"ts":"2018-07-11T11:02:22.621","pid":18376,"tid":"1024","sev":"info","req":"W0ZGLuNWFihxZCr6rTgQvQAAA84","sess":"F71D8A10BE67431F85AC66F6E6932497-0:0","site":"Default","user":"Tableau","k":"end-create-protocol","l":{},"a":{"depth":3,"elapsed":0.003,"id":"P////+v7k0GP/////RtykS","name":"create-protocol","res":{"alloc":{"e":2.72e+04,"i":2.72e+04,"ne":290,"ni":290},"free":{"e":1.72e+04,"i":1.72e+04,"ne":180,"ni":180},"kcpu":{"e":0,"i":0},"ntid":2,"ucpu":{"e":1,"i":1}},"rk":"ok","rv":{},"sponsor":"PkvJ6EX4EatJyj2iUSNusL","type":"end","vw":"Summary Information","wb":"Test workbook"},"v":{"class":"hyper","elapsed":0.003,"protocol-class":"hyper"}}
+{"ts":"notATimestamp","pid":22492,{"tid":"7efd10c6f1c0","sev":"info","req":"-","sess":"-","k":null,"v":null, "ts":"2018-08-08T14:22:51.844","pid":22492,"tid":"7efd10c6f1c0","sev":"info","req":"-","sess":"-","k":"service-start","v":{"msg":"Running as a service"}}

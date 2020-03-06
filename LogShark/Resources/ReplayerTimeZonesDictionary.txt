@@ -1,0 +1,352 @@
+Dateline Standard Time,-12:00:00
+Dateline Daylight Time,-11:00:00
+UTC-11,-11:00:00
+Aleutian Standard Time,-10:00:00
+Aleutian Daylight Time,-09:00:00
+Hawaiian Standard Time,-10:00:00
+Hawaiian Daylight Time,-09:00:00
+Marquesas Standard Time,-09:30:00
+Marquesas Daylight Time,-08:30:00
+Alaskan Standard Time,-09:00:00
+Alaskan Daylight Time,-08:00:00
+UTC-09,-09:00:00
+Pacific Standard Time (Mexico),-08:00:00
+Pacific Daylight Time (Mexico),-07:00:00
+UTC-08,-08:00:00
+Pacific Standard Time,-08:00:00
+Pacific Daylight Time,-07:00:00
+US Mountain Standard Time,-07:00:00
+US Mountain Daylight Time,-06:00:00
+Mountain Standard Time (Mexico),-07:00:00
+Mountain Daylight Time (Mexico),-06:00:00
+Mountain Standard Time,-07:00:00
+Mountain Daylight Time,-06:00:00
+Central America Standard Time,-06:00:00
+Central America Daylight Time,-05:00:00
+Central Standard Time,-06:00:00
+Central Daylight Time,-05:00:00
+Easter Island Standard Time,-06:00:00
+Easter Island Daylight Time,-05:00:00
+Central Standard Time (Mexico),-06:00:00
+Central Daylight Time (Mexico),-05:00:00
+Canada Central Standard Time,-06:00:00
+Canada Central Daylight Time,-05:00:00
+SA Pacific Standard Time,-05:00:00
+SA Pacific Daylight Time,-04:00:00
+Eastern Standard Time (Mexico),-05:00:00
+Eastern Daylight Time (Mexico),-04:00:00
+Eastern Standard Time,-05:00:00
+Eastern Daylight Time,-04:00:00
+Haiti Standard Time,-05:00:00
+Haiti Daylight Time,-04:00:00
+Cuba Standard Time,-05:00:00
+Cuba Daylight Time,-04:00:00
+US Eastern Standard Time,-05:00:00
+US Eastern Daylight Time,-04:00:00
+Turks and Caicos Standard Time,-05:00:00
+Turks and Caicos Daylight Time,-04:00:00
+Paraguay Standard Time,-04:00:00
+Paraguay Daylight Time,-03:00:00
+Atlantic Standard Time,-04:00:00
+Atlantic Daylight Time,-03:00:00
+Venezuela Standard Time,-04:00:00
+Venezuela Daylight Time,-03:00:00
+Central Brazilian Standard Time,-04:00:00
+Central Brazilian Daylight Time,-03:00:00
+SA Western Standard Time,-04:00:00
+SA Western Daylight Time,-03:00:00
+Pacific SA Standard Time,-04:00:00
+Pacific SA Daylight Time,-03:00:00
+Newfoundland Standard Time,-03:30:00
+Newfoundland Daylight Time,-02:30:00
+Tocantins Standard Time,-03:00:00
+Tocantins Daylight Time,-02:00:00
+E. South America Standard Time,-03:00:00
+E. South America Daylight Time,-02:00:00
+SA Eastern Standard Time,-03:00:00
+SA Eastern Daylight Time,-02:00:00
+Argentina Standard Time,-03:00:00
+Argentina Daylight Time,-02:00:00
+Greenland Standard Time,-03:00:00
+Greenland Daylight Time,-02:00:00
+Montevideo Standard Time,-03:00:00
+Montevideo Daylight Time,-02:00:00
+Magallanes Standard Time,-03:00:00
+Magallanes Daylight Time,-02:00:00
+Saint Pierre Standard Time,-03:00:00
+Saint Pierre Daylight Time,-02:00:00
+Bahia Standard Time,-03:00:00
+Bahia Daylight Time,-02:00:00
+UTC-02,-02:00:00
+Mid-Atlantic Standard Time,-02:00:00
+Mid-Atlantic Daylight Time,-01:00:00
+Azores Standard Time,-01:00:00
+Azores Daylight Time,00:00:00
+Cabo Verde Standard Time,-01:00:00
+Cabo Verde Daylight Time,00:00:00
+Coordinated Universal Time,00:00:00
+GMT Standard Time,00:00:00
+GMT Daylight Time,01:00:00
+Greenwich Standard Time,00:00:00
+Greenwich Daylight Time,01:00:00
+Sao Tome Standard Time,00:00:00
+Sao Tome Daylight Time,01:00:00
+W. Europe Standard Time,01:00:00
+W. Europe Daylight Time,02:00:00
+Central Europe Standard Time,01:00:00
+Central Europe Daylight Time,02:00:00
+Romance Standard Time,01:00:00
+Romance Daylight Time,02:00:00
+Morocco Standard Time,01:00:00
+Morocco Daylight Time,02:00:00
+Central European Standard Time,01:00:00
+Central European Daylight Time,02:00:00
+W. Central Africa Standard Time,01:00:00
+W. Central Africa Daylight Time,02:00:00
+Jordan Standard Time,02:00:00
+Jordan Daylight Time,03:00:00
+GTB Standard Time,02:00:00
+GTB Daylight Time,03:00:00
+Middle East Standard Time,02:00:00
+Middle East Daylight Time,03:00:00
+Egypt Standard Time,02:00:00
+Egypt Daylight Time,03:00:00
+E. Europe Standard Time,02:00:00
+E. Europe Daylight Time,03:00:00
+Syria Standard Time,02:00:00
+Syria Daylight Time,03:00:00
+West Bank Gaza Standard Time,02:00:00
+West Bank Gaza Daylight Time,03:00:00
+South Africa Standard Time,02:00:00
+South Africa Daylight Time,03:00:00
+FLE Standard Time,02:00:00
+FLE Daylight Time,03:00:00
+Jerusalem Standard Time,02:00:00
+Jerusalem Daylight Time,03:00:00
+Russia TZ 1 Standard Time,02:00:00
+Russia TZ 1 Daylight Time,03:00:00
+Sudan Standard Time,02:00:00
+Sudan Daylight Time,03:00:00
+Libya Standard Time,02:00:00
+Libya Daylight Time,03:00:00
+Namibia Standard Time,02:00:00
+Namibia Daylight Time,03:00:00
+Arabic Standard Time,03:00:00
+Arabic Daylight Time,04:00:00
+Turkey Standard Time,03:00:00
+Turkey Daylight Time,04:00:00
+Arab Standard Time,03:00:00
+Arab Daylight Time,04:00:00
+Belarus Standard Time,03:00:00
+Belarus Daylight Time,04:00:00
+Russia TZ 2 Standard Time,03:00:00
+Russia TZ 2 Daylight Time,04:00:00
+E. Africa Standard Time,03:00:00
+E. Africa Daylight Time,04:00:00
+Iran Standard Time,03:30:00
+Iran Daylight Time,04:30:00
+Arabian Standard Time,04:00:00
+Arabian Daylight Time,05:00:00
+Astrakhan Standard Time,04:00:00
+Astrakhan Daylight Time,05:00:00
+Azerbaijan Standard Time,04:00:00
+Azerbaijan Daylight Time,05:00:00
+Russia TZ 3 Standard Time,04:00:00
+Russia TZ 3 Daylight Time,05:00:00
+Mauritius Standard Time,04:00:00
+Mauritius Daylight Time,05:00:00
+Saratov Standard Time,04:00:00
+Saratov Daylight Time,05:00:00
+Georgian Standard Time,04:00:00
+Georgian Daylight Time,05:00:00
+Volgograd Standard Time,04:00:00
+Volgograd Daylight Time,05:00:00
+Caucasus Standard Time,04:00:00
+Caucasus Daylight Time,05:00:00
+Afghanistan Standard Time,04:30:00
+Afghanistan Daylight Time,05:30:00
+West Asia Standard Time,05:00:00
+West Asia Daylight Time,06:00:00
+Russia TZ 4 Standard Time,05:00:00
+Russia TZ 4 Daylight Time,06:00:00
+Pakistan Standard Time,05:00:00
+Pakistan Daylight Time,06:00:00
+Qyzylorda Standard Time,05:00:00
+Qyzylorda Daylight Time,06:00:00
+India Standard Time,05:30:00
+India Daylight Time,06:30:00
+Sri Lanka Standard Time,05:30:00
+Sri Lanka Daylight Time,06:30:00
+Nepal Standard Time,05:45:00
+Nepal Daylight Time,06:45:00
+Central Asia Standard Time,06:00:00
+Central Asia Daylight Time,07:00:00
+Bangladesh Standard Time,06:00:00
+Bangladesh Daylight Time,07:00:00
+Omsk Standard Time,06:00:00
+Omsk Daylight Time,07:00:00
+Myanmar Standard Time,06:30:00
+Myanmar Daylight Time,07:30:00
+SE Asia Standard Time,07:00:00
+SE Asia Daylight Time,08:00:00
+Altai Standard Time,07:00:00
+Altai Daylight Time,08:00:00
+W. Mongolia Standard Time,07:00:00
+W. Mongolia Daylight Time,08:00:00
+Russia TZ 6 Standard Time,07:00:00
+Russia TZ 6 Daylight Time,08:00:00
+Novosibirsk Standard Time,07:00:00
+Novosibirsk Daylight Time,08:00:00
+Tomsk Standard Time,07:00:00
+Tomsk Daylight Time,08:00:00
+China Standard Time,08:00:00
+China Daylight Time,09:00:00
+Russia TZ 7 Standard Time,08:00:00
+Russia TZ 7 Daylight Time,09:00:00
+Malay Peninsula Standard Time,08:00:00
+Malay Peninsula Daylight Time,09:00:00
+W. Australia Standard Time,08:00:00
+W. Australia Daylight Time,09:00:00
+Taipei Standard Time,08:00:00
+Taipei Daylight Time,09:00:00
+Ulaanbaatar Standard Time,08:00:00
+Ulaanbaatar Daylight Time,09:00:00
+Aus Central W. Standard Time,08:45:00
+Aus Central W. Daylight Time,09:45:00
+Transbaikal Standard Time,09:00:00
+Transbaikal Daylight Time,10:00:00
+Tokyo Standard Time,09:00:00
+Tokyo Daylight Time,10:00:00
+North Korea Standard Time,09:00:00
+North Korea Daylight Time,10:00:00
+Korea Standard Time,09:00:00
+Korea Daylight Time,10:00:00
+Russia TZ 8 Standard Time,09:00:00
+Russia TZ 8 Daylight Time,10:00:00
+Cen. Australia Standard Time,09:30:00
+Cen. Australia Daylight Time,10:30:00
+AUS Central Standard Time,09:30:00
+AUS Central Daylight Time,10:30:00
+E. Australia Standard Time,10:00:00
+E. Australia Daylight Time,11:00:00
+AUS Eastern Standard Time,10:00:00
+AUS Eastern Daylight Time,11:00:00
+West Pacific Standard Time,10:00:00
+West Pacific Daylight Time,11:00:00
+Tasmania Standard Time,10:00:00
+Tasmania Daylight Time,11:00:00
+Russia TZ 9 Standard Time,10:00:00
+Russia TZ 9 Daylight Time,11:00:00
+Lord Howe Standard Time,10:30:00
+Lord Howe Daylight Time,11:30:00
+Bougainville Standard Time,11:00:00
+Bougainville Daylight Time,12:00:00
+Russia TZ 10 Standard Time,11:00:00
+Russia TZ 10 Daylight Time,12:00:00
+Magadan Standard Time,11:00:00
+Magadan Daylight Time,12:00:00
+Norfolk Standard Time,11:00:00
+Norfolk Daylight Time,12:00:00
+Sakhalin Standard Time,11:00:00
+Sakhalin Daylight Time,12:00:00
+Central Pacific Standard Time,11:00:00
+Central Pacific Daylight Time,12:00:00
+Russia TZ 11 Standard Time,12:00:00
+Russia TZ 11 Daylight Time,13:00:00
+New Zealand Standard Time,12:00:00
+New Zealand Daylight Time,13:00:00
+UTC+12,12:00:00
+Fiji Standard Time,12:00:00
+Fiji Daylight Time,13:00:00
+Kamchatka Standard Time,12:00:00
+Kamchatka Daylight Time,13:00:00
+Chatham Islands Standard Time,12:45:00
+Chatham Islands Daylight Time,13:45:00
+UTC+13,13:00:00
+Tonga Standard Time,13:00:00
+Tonga Daylight Time,14:00:00
+Samoa Standard Time,13:00:00
+Samoa Daylight Time,14:00:00
+Line Islands Standard Time,14:00:00
+Line Islands Daylight Time,15:00:00
+GMT-11:00,-11:00:00
+GMT-10:00,-10:00:00
+GMT-09:00,-09:00:00
+GMT-09:30,-09:30:00
+GMT-08:00,-08:00:00
+GMT-07:00,-07:00:00
+GMT-06:00,-06:00:00
+GMT-05:00,-05:00:00
+GMT-04:00,-04:00:00
+GMT-03:00,-03:00:00
+GMT-04:30,-04:30:00
+GMT-03:30,-03:30:00
+GMT-02:30,-02:30:00
+GMT,00:00:00
+GMT-02:00,-02:00:00
+GMT-01:00,-01:00:00
+GMT+01:00,01:00:00
+GMT+02:00,02:00:00
+GMT+03:00,03:00:00
+GMT+03:30,03:30:00
+GMT+04:30,04:30:00
+GMT+04:00,04:00:00
+GMT+05:00,05:00:00
+GMT+06:00,06:00:00
+GMT+05:30,05:30:00
+GMT+05:45,05:45:00
+GMT+06:30,06:30:00
+GMT+07:00,07:00:00
+GMT+08:00,08:00:00
+GMT+09:00,09:00:00
+GMT+08:45,08:45:00
+GMT+08:30,08:30:00
+GMT+09:30,09:30:00
+GMT+10:30,10:30:00
+GMT+10:00,10:00:00
+GMT+11:00,11:00:00
+GMT+12:00,12:00:00
+GMT+13:00,13:00:00
+GMT+12:45,12:45:00
+GMT+13:45,13:45:00
+GMT+14:00,14:00:00
+-11:00,-11:00:00
+-10:00,-10:00:00
+-09:00,-09:00:00
+-09:30,-09:30:00
+-08:00,-08:00:00
+-07:00,-07:00:00
+-06:00,-06:00:00
+-05:00,-05:00:00
+-04:00,-04:00:00
+-03:00,-03:00:00
+-04:30,-04:30:00
+-03:30,-03:30:00
+-02:30,-02:30:00
+-02:00,-02:00:00
+-01:00,-01:00:00
++01:00,01:00:00
++02:00,02:00:00
++03:00,03:00:00
++03:30,03:30:00
++04:30,04:30:00
++04:00,04:00:00
++05:00,05:00:00
++06:00,06:00:00
++05:30,05:30:00
++05:45,05:45:00
++06:30,06:30:00
++07:00,07:00:00
++08:00,08:00:00
++09:00,09:00:00
++08:45,08:45:00
++08:30,08:30:00
++09:30,09:30:00
++10:30,10:30:00
++10:00,10:00:00
++11:00,11:00:00
++12:00,12:00:00
++13:00,13:00:00
++12:45,12:45:00
++13:45,13:45:00
++14:00,14:00:00

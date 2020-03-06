@@ -1,0 +1,9 @@
+FileName,FilePath,Key,Line,ProcessId,RequestId,SessionId,Severity,Site,ThreadId,Timestamp,User,Value,Worker
+hyper_2019_08_12_21_19_30.log,worker1/hyper/hyper_2019_08_12_21_19_30.log,windows-timer-resolution-error,36,3728,-,-,error,-,da4,08/12/2019 21:28:31,-,"message: Unable to set Windows timer resolution.
+error-code: 0
+attempted-value-ms: 1",worker1
+hyper_2019_08_12_21_19_30.log,worker1/hyper/hyper_2019_08_12_21_19_30.log,server-shutdown-signal,1836,3728,-,-,fatal,-,1ab8,08/12/2019 22:10:44,-,"start-time-delta: 3073.78
+signal-number: 2",worker1
+hyper_2019_08_12_22_17_16.log,worker1/hyper/hyper_2019_08_12_22_17_16.log,windows-timer-resolution-error,38,9600,-,-,error,-,2160,08/12/2019 22:35:20,-,"message: Unable to set Windows timer resolution.
+error-code: 0
+attempted-value-ms: 1",worker1

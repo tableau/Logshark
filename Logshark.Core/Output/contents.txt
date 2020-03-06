@@ -1,1 +1,0 @@
-Artifacts produced by Logshark plugins are stored here.

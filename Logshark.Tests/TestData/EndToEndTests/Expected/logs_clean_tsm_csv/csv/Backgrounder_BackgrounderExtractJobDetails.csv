@@ -1,0 +1,50 @@
+BackgrounderJobId,ExtractGuid,ExtractId,ExtractSize,ExtractUrl,JobNotes,ResourceName,ResourceType,ScheduleName,Site,TotalSize,TwbSize,VizqlSessionId
+199,,,0,Large1,"The directory is missing or has been moved: C:/Users/Administrator/Desktop/autotel-shared-car-locations
+
+""
+com.tableausoftware.nativeapi.exceptions.DataSourceException: The directory is missing or has been moved: C:/Users/Administrator/Desktop/autotel-shared-car-locations
+
+
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:62)
+	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
+	at java.lang.reflect.Constructor.newInstance(Constructor.java:423)
+	at com.tableausoftware.nativeapi.serialization.ExceptionMapper.mapTableauException(ExceptionMapper.java:111)
+	at com.tableausoftware.nativeapi.serialization.ExceptionMapper.mapVizqlWorkerException(ExceptionMapper.java:57)
+	at com.tableausoftware.nativeapi.serialization.ExceptionMapper.mapVizqlWorkerException(ExceptionMapper.java:74)
+	at com.tableausoftware.nativeapi.transport.VizqlWorkerJNI.VizqlWorkerDispatchRpcCall(Native Method)
+	at com.tableausoftware.nativeapi.transport.InProcVizqlWorkerClient.invoke(InProcVizqlWorkerClient.java:103)
+	at com.tableausoftware.nativeapi.transport.InProcVizqlWorkerClient.invokeCommandInternal(InProcVizqlWorkerClient.java:131)
+	at com.tableausoftware.nativeapi.AutowiredVizqlWorker.invokeCommandInternal(AutowiredVizqlWorker.java:39)
+	at com.tableausoftware.nativeapi.commands.ExtractsCommands.refreshWorkbookExtracts(ExtractsCommands.java:536)
+	at com.tableausoftware.model.workgroup.extracts.HyperEngineWrapper.refreshExtracts_aroundBody8(HyperEngineWrapper.java:408)
+	at com.tableausoftware.model.workgroup.extracts.HyperEngineWrapper$AjcClosure9.run(HyperEngineWrapper.java:1)
+	at org.aspectj.runtime.reflect.JoinPointImpl.proceed(JoinPointImpl.java:149)
+	at com.tableausoftware.utils.logging.StructuredLoggerAspect.runWithLogging(StructuredLoggerAspect.java:49)
+	at com.tableausoftware.model.workgroup.extracts.HyperEngineWrapper.refreshExtracts(HyperEngineWrapper.java:401)
+	at com.tableausoftware.model.workgroup.extracts.ExtractActionService$SessionAction.doNativeApiWorkbookExtractAction(ExtractActionService.java:2150)
+	at com.tableausoftware.model.workgroup.extracts.ExtractActionService$SessionAction.access$800(ExtractActionService.java:1684)
+	at com.tableausoftware.model.workgroup.extracts.ExtractActionService.refreshExtractsForWorkbook(ExtractActionService.java:1001)
+	at com.tableausoftware.model.workgroup.extracts.ExtractActionService.refreshExtractsForWorkbook(ExtractActionService.java:120)
+	at com.tableausoftware.model.workgroup.workers.ExtractsWorker.refreshWorkbook(ExtractsWorker.java:871)
+	at com.tableausoftware.model.workgroup.workers.ExtractsWorker.executeWithDataengine(ExtractsWorker.java:614)
+	at com.tableausoftware.model.workgroup.workers.RefreshExtractsWorker.executeWithDataengine_aroundBody0(RefreshExtractsWorker.java:103)
+	at com.tableausoftware.model.workgroup.workers.RefreshExtractsWorker$AjcClosure1.run(RefreshExtractsWorker.java:1)
+	at org.aspectj.runtime.reflect.JoinPointImpl.proceed(JoinPointImpl.java:149)
+	at com.tableausoftware.instrumentation.InstrumentedMethod.instrumentInvocation(InstrumentedMethod.java:73)
+	at com.tableausoftware.instrumentation.InstrumentationAspect.aroundAnnotatedMethod(InstrumentationAspect.java:60)
+	at com.tableausoftware.model.workgroup.workers.RefreshExtractsWorker.executeWithDataengine(RefreshExtractsWorker.java:103)
+	at com.tableausoftware.model.workgroup.workers.DataengineDependentWorker.execute(DataengineDependentWorker.java:87)
+	at com.tableausoftware.backgrounder.runner.BackgroundJobRunner$ExecuteJobImplCallable.executeWithWorker(BackgroundJobRunner.java:811)
+	at com.tableausoftware.backgrounder.runner.BackgroundJobRunner$ExecuteJobImplCallable.call_aroundBody0(BackgroundJobRunner.java:763)
+	at com.tableausoftware.backgrounder.runner.BackgroundJobRunner$ExecuteJobImplCallable$AjcClosure1.run(BackgroundJobRunner.java:1)
+	at org.aspectj.runtime.reflect.JoinPointImpl.proceed(JoinPointImpl.java:149)
+	at com.tableausoftware.instrumentation.InstrumentedMethod.instrumentInvocation(InstrumentedMethod.java:73)
+	at com.tableausoftware.instrumentation.InstrumentationAspect.aroundAnnotatedMethod(InstrumentationAspect.java:60)
+	at com.tableausoftware.backgrounder.runner.BackgroundJobRunner$ExecuteJobImplCallable.call(BackgroundJobRunner.java:758)
+	at com.tableausoftware.backgrounder.runner.BackgroundJobRunner$ExecuteJobImplCallable.call(BackgroundJobRunner.java:745)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)",Large1,Workbook,Weekday early mornings,Default,,,CEBA7C505B3045DEB24C271FC6B25B21-1:1
+201,,78C1FCC2-E70E-4B25-BFFE-7B7F0096A4FE,57016320,Large1,"Finished refresh of extracts (new extract id:{78C1FCC2-E70E-4B25-BFFE-7B7F0096A4FE}) for Workbook 'Large1' ",Large1,Workbook,Weekday early mornings,Default,,,F7162DFF82CB48D386850188BD5B190A-1:1
