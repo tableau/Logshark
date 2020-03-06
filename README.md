@@ -21,9 +21,9 @@ There are 2 ways you can use LogShark.
 
 Download and unzip the precompiled self-contained application from the following links:
 
-[![Download LogShark for Win](https://img.shields.io/badge/Download%20LogShark%20for%20Win-Version%204.1-blue.svg)](https://github.com/tableau/Logshark/releases/download/v4.1/LogShark.Win.4.1.1911.09672-public.zip)
+[![Download LogShark for Win](https://img.shields.io/badge/Download%20LogShark%20for%20Win-Version%204.1.2-blue.svg)](https://github.com/tableau/Logshark/releases/download/v4.1.2/LogShark.Win.4.1.2.zip)
 
-[![Download LogShark for macOS](https://img.shields.io/badge/Download%20LogShark%20for%20macOS-Version%204.1-blue.svg)](https://github.com/tableau/Logshark/releases/download/v4.1/LogShark.Mac.4.1.1911.09672-public.zip)
+[![Download LogShark for macOS](https://img.shields.io/badge/Download%20LogShark%20for%20macOS-Version%204.1.2-blue.svg)](https://github.com/tableau/Logshark/releases/download/v4.1.2/LogShark.Mac.4.1.2.zip)
 
 [![Setup LogShark](https://img.shields.io/badge/Setup%20LogShark-Installation%20and%20User%20Guide-lightgrey.svg)](https://tableau.github.io/Logshark/)
 
