@@ -374,3 +374,9 @@ a.bg-primary:focus {
     padding-left: 1.5em;
     list-style-type: none;
 }
+
+/* Legal and Privacy Links */
+.aLegal  {
+    word-spacing:  8px;
+    padding-right: 8px;
+}
