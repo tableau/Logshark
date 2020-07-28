@@ -12,7 +12,7 @@ namespace LogShark
 {
     public class LogSharkConfiguration
     {
-        private LogSharkCommandLineParameters _parameters;
+        private readonly LogSharkCommandLineParameters _parameters;
         private readonly IConfiguration _config;
         private readonly string _rootDir;
         private readonly ILogger _logger;
@@ -25,7 +25,7 @@ namespace LogShark
             _logger = loggerFactory?.CreateLogger<LogSharkConfiguration>();
         }
 
-        // Escape hatch for plugin configuration. Ideally these would be strongy typed too
+        // Escape hatch for plugin configuration. Ideally these would be strongly typed too
         public IConfiguration GetPluginConfiguration(string pluginName)
         {
             return _config.GetSection($"PluginsConfiguration:{pluginName}");
@@ -77,6 +77,8 @@ namespace LogShark
 
         public int NumberOfErrorDetailsToKeep => _config.GetValueAndThrowAtNull<int>("EnvironmentConfig:NumberOfErrorDetailsToKeep");
 
+        public string OriginalFileName => _parameters.OriginalFileName;
+
         public string OriginalLocation => _parameters.OriginalLocation;
 
         public string OutputDir => _config.GetValueAndThrowAtNull<string>("EnvironmentConfig:OutputDir");
@@ -108,6 +110,8 @@ namespace LogShark
         public string PostgresPort => _parameters.DatabaseHost ?? _config.GetValue<string>("PostgresWriterDatabase:Port");
 
         public string PostgresServiceDatabaseName => _config.GetValue<string>("PostgresWriterDatabase:ServiceDatabaseName");
+        
+        public bool PostgresSkipDatabaseVerificationAndInitialization => _config.GetValue<bool>("PostgresWriterDatabase:SkipDatabaseVerificationAndInitialization");
 
         public string PostgresUsername => _parameters.DatabaseUsername ?? _config.GetValue<string>("PostgresWriterDatabase:Username");
 
@@ -137,7 +141,7 @@ namespace LogShark
 
         public int TelemetryTimeout => _config.GetValue<int>("Telemetry:Timeout", 30);
 
-        // Value needs to be cached because Path.GetTempPath is nondeterministic
+        // Value needs to be cached because Path.GetTempPath is non-deterministic
         private string _tempDir;
         public string TempDir
         {

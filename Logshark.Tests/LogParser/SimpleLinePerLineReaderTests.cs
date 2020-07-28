@@ -16,7 +16,7 @@ namespace LogShark.Tests.LogParser
         {
             using (var stream = TestLogFiles.OpenEmptyTestFile())
             {
-                var results = new SimpleLinePerLineReader(stream, null, null).ReadLines().ToList();
+                var results = new SimpleLinePerLineReader(stream).ReadLines().ToList();
                 results.Should().Equal(new List<ReadLogLineResult>());
             }
         }
@@ -26,7 +26,7 @@ namespace LogShark.Tests.LogParser
         {
             using (var stream = TestLogFiles.OpenTestFileWithPlainLines())
             {
-                var results = new SimpleLinePerLineReader(stream, null, null).ReadLines().ToList();
+                var results = new SimpleLinePerLineReader(stream).ReadLines().ToList();
                 results.Should().BeEquivalentTo(ExpectedResults);
             }
         }

@@ -38,7 +38,25 @@ namespace LogShark.Tests.Plugins.Backgrounder
             _persisterMock.VerifyNoOtherCalls();
             processingNotificationsCollector.TotalErrorsReported.Should().Be(2);
         }
-        
+
+
+        [Theory]
+        //valid 2020.1 lines that should not have error messages
+        [InlineData("2020-04-03 02:00:55.731 -0400 (,,,,3752759,:viz_recommendations_trainer,2680d163-b7cd-496c-a720-2264720faee8) pool-111-thread-1 backgrounder: INFO  com.tableausoftware.recommendations.service.VizRecommendationsDataValidator { method=validateViewsStats, site=1 } - Start validating viewsStats. 9 records.")]
+        [InlineData("2020-04-03 03:01:02.166 -0400 (CareBI,,,,3752821,:refresh_extracts,25fb3ebd-8aa0-481b-8a9e-affb480d469d) ActiveMQ Task-1 backgrounder: INFO  org.apache.activemq.transport.failover.FailoverTransport - Successfully connected to ssl")]
+        public void ValidLinesThatAreNotPersisted(string input)
+        {
+            var processingNotificationsCollector = new ProcessingNotificationsCollector(10);
+            var parser = new BackgrounderEventParser(_persisterMock.Object, processingNotificationsCollector);
+
+            var logLine = _startTestCases[0].GetLogLine();
+
+            parser.ParseAndPersistLine(logLine, input);
+
+            _persisterMock.VerifyNoOtherCalls();
+            processingNotificationsCollector.TotalErrorsReported.Should().Be(0);
+        }
+
         [Fact]
         public void ErrorEvents()
         {
@@ -262,6 +280,37 @@ namespace LogShark.Tests.Plugins.Backgrounder
                     TotalTime = (int?) null,
                     WorkerId = "worker0",
                 }
+            },
+
+            //2020.1
+            new PluginTestCase
+            {
+                LogContents =
+                    "2020-04-05 23:00:59.601 -0500 (kpi,,,,1968280,:refresh_extracts,6ee0e44f-0e70-4d31-bb34-57a6e09a6d72) scheduled-background-job-runner-1 backgrounder: INFO  com.tableausoftware.backgrounder.runner.BackgroundJobRunner - activity=backgrounder-job-start job_id=1968280 job_type=RefreshExtracts request_id=6ee0e44f-0e70-4d31-bb34-57a6e09a6d72 args=\"[Workbook, 9, Test COSMOS, 243, null]\" site=kpi site_id=3 timeout=9000",
+                LogType = LogType.BackgrounderJava,
+                LogFileInfo = TestLogFileInfo,
+                LineNumber = 125,
+                ExpectedOutput = new
+                {
+                    Args = "Workbook, 9, Test COSMOS, 243, null",
+                    BackgrounderId = 1,
+                    EndFile = (string) null,
+                    EndLine = (int?) null,
+                    EndTime = (DateTime?) null,
+                    ErrorMessage = (string) null,
+                    JobId = 1968280,
+                    JobType = "refresh_extracts",
+                    Notes = (string) null,
+                    Priority = 0,
+                    RunTime = (int?) null,
+                    StartFile = TestLogFileInfo.FileName,
+                    StartLine = 125,
+                    StartTime = new DateTime(2020, 4, 5, 23, 00, 59, 601),
+                    Success = (bool?) null,
+                    Timeout = 9000,
+                    TotalTime = (int?) null,
+                    WorkerId = "worker0",
+                }
             }
         };
 
@@ -357,6 +406,37 @@ namespace LogShark.Tests.Plugins.Backgrounder
                     WorkerId = (string) null,
                 }
             },
+
+            new PluginTestCase
+            {
+                LogContents =
+                    "2020-05-13 19:00:46.479 -0500 (,,,,5470253,:sos_reconcile,bded9cdd-acfd-4378-acf3-3f65760a6706) scheduled-background-job-runner-1 backgrounder: INFO  com.tableausoftware.backgrounder.runner.BackgroundJobRunner - Job finished: SUCCESS; name: Simple Object Storage Reconcile; type :sos_reconcile; id: 5470253; total time: 7 sec; run time: 0 sec",
+                LogType = LogType.BackgrounderJava,
+                LogFileInfo = TestLogFileInfo,
+                LineNumber = 123,
+                ExpectedOutput = new
+                {
+                    Args = (string) null,
+                    BackgrounderId = (int?) null,
+                    EndFile = TestLogFileInfo.FileName,
+                    EndLine = 123,
+                    EndTime = new DateTime(2020, 05, 13, 19, 00, 46, 479),
+                    ErrorMessage = (string) null,
+                    JobId = 5470253L,
+                    JobType = (string) null,
+                    Notes = (string) null,
+                    Priority = 0,
+                    RunTime = 0,
+                    StartFile = (string) null,
+                    StartLine = 0,
+                    StartTime = default(DateTime),
+                    Success = true,
+                    Timeout = (int?) null,
+                    TotalTime = 7,
+                    WorkerId = (string) null,
+                }
+            },
+
         };
         
         private readonly List<PluginTestCase> _extractJobDetailTestCases = new List<PluginTestCase>
@@ -429,7 +509,7 @@ namespace LogShark.Tests.Plugins.Backgrounder
                     TwbSize = (long?) null,
                     VizqlSessionId = "F7162DFF82CB48D386850188BD5B190A-1:1",
                 }},
-            
+
             new PluginTestCase // new format - partial event
             {
                 LogContents = "2019-08-09 21:50:17.641 +0000 (Default,,,,201,:refresh_extracts,ee6dd62e-f472-4252-a931-caf4dfb0009f) pool-12-thread-1 backgrounder: INFO  com.tableausoftware.model.workgroup.workers.RefreshExtractsWorker - |status=ExtractTimingSuccess|jobId=201|jobLuid=ee6dd62e-f472-4252-a931-caf4dfb0009f|siteName=\"Default\"|workbookName=\"Large1\"",

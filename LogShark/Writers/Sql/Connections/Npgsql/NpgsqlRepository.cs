@@ -117,20 +117,20 @@ namespace LogShark.Writers.Sql.Connections.Npgsql
             await _context.ExecuteNonQuery(commandText);
         }
 
-        public async Task InsertRow<T>(T row, Dictionary<string, object> additionalValues = null)
+        public async Task InsertRow<T>(T row, Dictionary<string, object> valueOverrides = null)
         {
             var typeProjection = _typeProjector.GetTypeProjection<T>();
-            var values = GenerateValues(row, typeProjection, additionalValues);
+            var values = GenerateValues(row, typeProjection, valueOverrides);
             await _insertCommandBuffer.Insert(
                 typeProjection.Schema,
                 typeProjection.TableName,
                 values);
         }
 
-        public async Task<TReturn> InsertRowWithReturnValue<T, TReturn>(T row, string returnColumnName, Dictionary<string, object> additionalValues = null)
+        public async Task<TReturn> InsertRowWithReturnValue<T, TReturn>(T row, string returnColumnName, Dictionary<string, object> valueOverrides = null, IEnumerable<string> excludeColumns = null)
         {
             var typeProjection = _typeProjector.GetTypeProjection<T>();
-            var values = GenerateValues(row, typeProjection, additionalValues);
+            var values = GenerateValues(row, typeProjection, valueOverrides, excludeColumns);
 
             var columnNames = values.Keys;
             var columnNamesForInsertColumnList = String.Join(", ", columnNames.Select(v => $"\"{v}\""));
@@ -143,7 +143,7 @@ namespace LogShark.Writers.Sql.Connections.Npgsql
             return await _context.ExecuteScalar<TReturn>(commandText, values);
         }
 
-        private Dictionary<string, object> GenerateValues<T>(T row, NpgsqlTypeProjection<T> typeProjection, Dictionary<string, object> additionalValues)
+        private static Dictionary<string, object> GenerateValues<T>(T row, NpgsqlTypeProjection<T> typeProjection, Dictionary<string, object> valueOverrides, IEnumerable<string> excludeColumns = null)
         {
             var values = typeProjection.TypePropertyProjections.ToDictionary(
                 tpp => tpp.ColumnName,
@@ -160,9 +160,24 @@ namespace LogShark.Writers.Sql.Connections.Npgsql
                 }
             );
 
-            if (additionalValues != null)
+            valueOverrides?.ToList().ForEach(kvp =>
             {
-                additionalValues.ToList().ForEach(x => values.Add(x.Key, x.Value));
+                if (values.ContainsKey(kvp.Key))
+                {
+                    values[kvp.Key] = kvp.Value;
+                }
+                else
+                {
+                    values.Add(kvp.Key, kvp.Value);    
+                }
+            });
+
+            if (excludeColumns != null)
+            {
+                foreach (var excludedColumn in excludeColumns)
+                {
+                    values.Remove(excludedColumn);
+                }
             }
 
             return values;

@@ -9,6 +9,7 @@ namespace LogShark
         CrashPackageLog,
         CrashPackageManifest,
         DataserverCpp,
+        DataserverJava,
         Filestore,
         Hyper,
         NetstatLinux,

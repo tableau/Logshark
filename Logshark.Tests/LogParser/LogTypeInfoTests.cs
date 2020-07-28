@@ -11,7 +11,7 @@ namespace LogShark.Tests.LogParser
 {
     public class LogTypeInfoTests : InvariantCultureTestsBase
     {
-        private readonly Func<Stream, string, ILogReader> _testFunc = (stream, __) => new SimpleLinePerLineReader(stream, null, null);
+        private readonly Func<Stream, string, ILogReader> _testFunc = (stream, __) => new SimpleLinePerLineReader(stream);
 
         [Fact]
         public void VerifyConstructorChecks()
@@ -33,7 +33,7 @@ namespace LogShark.Tests.LogParser
         [InlineData("fileTwo.txt", false)]
         public void TestSingleLocationInfo(string filename, bool expectedResult)
         {
-            var singleLocationInfo = new LogTypeInfo(LogType.Apache, (stream, _) => new SimpleLinePerLineReader(stream, null, null), new List<Regex>
+            var singleLocationInfo = new LogTypeInfo(LogType.Apache, (stream, _) => new SimpleLinePerLineReader(stream), new List<Regex>
             {
                 new Regex(@"fileOne\.txt", RegexOptions.Compiled)
             });

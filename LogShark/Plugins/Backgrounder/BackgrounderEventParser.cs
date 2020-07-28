@@ -33,24 +33,33 @@ namespace LogShark.Plugins.Backgrounder
         private static readonly Regex NewBackgrounderRegex =
             // 10.4+
             // 10.4 added "job type" and 10.5 added "local request id", either of which may be empty and thus are marked optional here
-            new Regex(@"^                           
-                           (?<ts>\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}.\d{3})\s
-                           (?<ts_offset>[^\s]+)\s
-                           \((?<site>[^,]*), (?<user>[^,]*), (?<data_sess_id>[^,]*), (?<vql_sess_id>[^,]*), (?<job_id>[^,]*), :?(?<job_type>[^,]*) ,(?<local_req_id>[^\s]*)\)\s
-                           (?<thread>[^\s]*)\s
-                           (?<service>[^\s]*):\s
-                           (?<sev>[A-Z]+)(\s+)
-                           (?<class>[^\s]*)\s-\s
-                           (?<message>.*)",
-                RegexOptions.ExplicitCapture | RegexOptions.IgnorePatternWhitespace | RegexOptions.Singleline | RegexOptions.Compiled);
+            new Regex(@"^
+                            (?<ts>\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}.\d{3})
+                            \s(?<ts_offset>[^\s]+)
+                            \s\((?<site>[^,]*), (?<user>[^,]*), (?<data_sess_id>[^,]*), (?<vql_sess_id>[^,]*), (?<job_id>[^,]*), :?(?<job_type>[^,]*) ,(?<local_req_id>[^\s]*)\)
+                            \s?(?<module>[^\s]*)?
+                            \s(?<thread>[^\s]*)
+                            \s(?<service>[^\s]*):
+                            \s(?<sev>[A-Z]+)(\s+)
+                            (?<class>[^\s]*)
+                            \s?(?<callinfo>{.*})?
+                            \s-\s(?<message>.*)",
+               RegexOptions.ExplicitCapture | RegexOptions.IgnorePatternWhitespace | RegexOptions.Singleline | RegexOptions.Compiled);
 
-        // Running job of type UpdateVerticaKeychains; no timeout; priority: 0; id: null; args: []
-        // --------------job_type_long---------------  -timeout--            ^      -id-        args
-        //                                                                   |>priority         ^comma delimited inside [], or "null"
-        private static readonly Regex StartMessageRegex =
+        private static readonly List<Regex> StartMessageRegexList = new List<Regex>() {
+            // Running job of type UpdateVerticaKeychains; no timeout; priority: 0; id: null; args: []
+            // --------------job_type_long---------------  -timeout--            ^      -id-        args
+            //                                                                   |>priority         ^comma delimited inside [], or "null"
             new Regex(
                 @"^Running\sjob\sof\stype\s(?<job_type_long>[^;]+);\s(?<timeout>[^;]+);\spriority:\s(?<priority>[0-9]+);\sid:\s(?<id>[^;]+);\sargs:\s(?<args>.+)$",
-                RegexOptions.ExplicitCapture | RegexOptions.IgnorePatternWhitespace | RegexOptions.Compiled);
+                RegexOptions.ExplicitCapture | RegexOptions.IgnorePatternWhitespace | RegexOptions.Compiled),
+
+
+            new Regex(
+                @"^activity=(?<activity>[^\s]*)\sjob_id=(?<job_id>[^\s]*)\sjob_type=(?<job_type_long>[^\s]*)\srequest_id=(?<request_id>[^\s]*)\sargs=""?\[?(?<args>.*?)\]?""?\ssite=(?<site>.*?)\stimeout=(?<timeout>.*)$",
+                RegexOptions.ExplicitCapture | RegexOptions.IgnorePatternWhitespace | RegexOptions.Compiled),
+        };
+
 
         //2018.2 linux/node1/backgrounder_0.20182.18.0627.22303567494456574693215/logs/backgrounder_node1-0.log:219:
         //2018-08-08 11:16:32.173 +1000 (,,,,1,:update_vertica_keychains,-) scheduled-background-job-runner-1 backgrounder: INFO  com.tableausoftware.backgrounder.runner.BackgroundJobRunner - Job finished: SUCCESS;name: Update Vertica Keychains; type :update_vertica_keychains; id: 1; notes: null; total time: 601 sec; run time: 0 sec
@@ -60,12 +69,12 @@ namespace LogShark.Plugins.Backgrounder
         //                                                                                           |>id                        |>total_time       |>run_time
         private static readonly Regex EndMessageRegex =
             new Regex(
-                @"(?<job_result>[^;]+);\s?name:\s(?<name>[^;]+);\s?type\s?:(?<type>[^;]+);\sid:\s(?<id>[^;]+);\snotes:\s(?<notes>[^;]+);\stotal\stime:\s(?<total_time>[0-9]+)\ssec;\srun\stime:\s(?<run_time>[0-9]+)\ssec",
+                @"(?<job_result>[^;]+);\s?name:\s(?<name>[^;]+);\s?type\s?:(?<type>[^;]+);\sid:\s(?<id>[^;]+);(\snotes:\s(?<notes>[^;]+);)?\stotal\stime:\s(?<total_time>[0-9]+)\ssec;\srun\stime:\s(?<run_time>[0-9]+)\ssec",
                 RegexOptions.ExplicitCapture | RegexOptions.IgnorePatternWhitespace | RegexOptions.Compiled);
-        
+
         // Sending email from tableau@test.com to john.doe@test.com from server mail.test.com
         //                    --sender_email--    -recipient_email-             -smtp_server--
-        private static readonly Regex SendEmailDetailsRegex = 
+        private static readonly Regex SendEmailDetailsRegex =
             new Regex(
                 @"Sending email from\s(?<sender_email>[^\s]*)\sto\s(?<recipient_email>[^\s]*)\sfrom server\s(?<smtp_server>.*)$",
                 RegexOptions.ExplicitCapture | RegexOptions.Compiled); // Not ignoring pattern whitespace to keep regex cleaner
@@ -84,6 +93,8 @@ namespace LogShark.Plugins.Backgrounder
                     \""?(?<subscription_name>.*?)\""?$",
                 RegexOptions.ExplicitCapture | RegexOptions.Compiled | RegexOptions.IgnorePatternWhitespace);
 
+        private static readonly Regex ExtractJobDetailsParseRegex = new Regex(@"\|(?<key>[a-zA-Z]+)=(?<value>[\s\S]*?)(?=\|[a-zA-Z]*=|$)",
+            RegexOptions.ExplicitCapture | RegexOptions.Compiled | RegexOptions.IgnorePatternWhitespace);
 
         #endregion Regex
 
@@ -197,18 +208,18 @@ namespace LogShark.Plugins.Backgrounder
 
         private static BackgrounderJob TryMatchStartMessage(Match lineMatch, LogLine logLine, int? backgrounderId, long jobId)
         {
-            var startMessageMatch = StartMessageRegex.Match(lineMatch.Groups["message"].Value);
-            if (!startMessageMatch.Success)
+            var message = lineMatch.Groups["message"].Value;
+            var startMessageMatch = message?.GetRegexMatchAndMoveCorrectRegexUpFront(StartMessageRegexList);
+
+            if (startMessageMatch == null || !startMessageMatch.Success)
             {
                 return null;
             }
 
             var args = startMessageMatch.Groups["args"].Value;
             args = (args == "[]" || args == "null") ? null : args;
-            var timeoutStr = startMessageMatch.Groups["timeout"].Value;
-            var timeout = timeoutStr.StartsWith("timeout:")
-                ? int.TryParse(timeoutStr.Replace("timeout: ", ""), out var to) ? to : default(int?)
-                : null;
+            var timeoutStr = startMessageMatch.Groups["timeout"].Value?.Replace("timeout: ", "");
+            var timeout = int.TryParse(timeoutStr, out var to) ? to : default(int?);
 
             return new BackgrounderJob
             {
@@ -243,7 +254,10 @@ namespace LogShark.Plugins.Backgrounder
 
             var endMessageMatch = EndMessageRegex.Match(message);
             var notes = endMessageMatch.Groups["notes"].Value;
-            notes = notes == "null" ? null : notes;
+            if (notes == "null" || string.IsNullOrWhiteSpace(notes))
+            {
+                notes = null;
+            }
 
             if (message.StartsWith("Job finished: SUCCESS"))
             {
@@ -275,7 +289,7 @@ namespace LogShark.Plugins.Backgrounder
                     return null;
             }
         }
-        
+
         //2019-04-30 06:16:53.626 -0400 (Enterprise Business Intelligence,,,3619ADAAA1B54302B9349F4368A3AAA3,4950695,:refresh_extracts,-) pool-19-thread-1 backgrounder: INFO  com.tableausoftware.model.workgroup.service.VqlSessionService - Storing to SOS: OPPE/extract reducedDataId:9eb94068-5e1f-437b-9c4d-a1b700414ca8 size:134352 (twb) + 3604480 (guid={0F1B99B6-71A2-48C8-A9BC-7BA6D447515E}) = 3738832
         // Storing to SOS: OPPE/extract reducedDataId:9eb94068-5e1f-437b-9c4d-a1b700414ca8 size:134352 (twb) + 3604480 (guid={0F1B99B6-71A2-48C8-A9BC-7BA6D447515E}) = 3738832
         //                 extract_url-               -------------extract_id-------------      twb_size       extract_size   -----------extract_guid------------      total_size
@@ -289,7 +303,7 @@ namespace LogShark.Plugins.Backgrounder
                         \(guid={(?<extract_guid>[0-9A-F-]+?)}\)\s
                         =\s(?<total_size>\d+?)$",
                 RegexOptions.ExplicitCapture | RegexOptions.IgnorePatternWhitespace | RegexOptions.Compiled);
-        
+
         private static BackgrounderExtractJobDetail TryMatchOlderFormatOfExtractJobDetails(string message, int jobId, string vizqlSessionId)
         {
             var extractMatch = VqlSessionExtractDetailsRegex.Match(message);
@@ -297,7 +311,7 @@ namespace LogShark.Plugins.Backgrounder
             {
                 return null;
             }
-            
+
             return new BackgrounderExtractJobDetail
             {
                 BackgrounderJobId = jobId,
@@ -313,8 +327,8 @@ namespace LogShark.Plugins.Backgrounder
                 VizqlSessionId = vizqlSessionId
             };
         }
-        
-        
+
+
         // New format log example
         // 2019-08-09 21:50:17.641 +0000 (Default,,,,201,:refresh_extracts,ee6dd62e-f472-4252-a931-caf4dfb0009f) pool-12-thread-1 backgrounder: INFO  com.tableausoftware.model.workgroup.workers.RefreshExtractsWorker - |status=ExtractTimingSuccess|jobId=201|jobLuid=ee6dd62e-f472-4252-a931-caf4dfb0009f|siteName="Default"|workbookName="Large1"|refreshedAt="2019-08-09T21:50:17.638Z"|sessionId=F7162DFF82CB48D386850188BD5B190A-1:1|scheduleName="Weekday early mornings"|scheduleType="FullRefresh"|jobName="Refresh Extracts"|jobType="RefreshExtracts"|totalTimeSeconds=48|runTimeSeconds=46|queuedTime="2019-08-09T21:49:29.076Z"|startedTime="2019-08-09T21:49:31.262Z"|endTime="2019-08-09T21:50:17.638Z"|correlationId=65|priority=0|serialId=null|extractsSizeBytes=57016320|jobNotes="Finished refresh of extracts (new extract id:{78C1FCC2-E70E-4B25-BFFE-7B7F0096A4FE}) for Workbook 'Large1' "
         private static readonly Regex ExtractIdNewFormat = new Regex(
@@ -326,37 +340,22 @@ namespace LogShark.Plugins.Backgrounder
             {
                 return null;
             }
-
-            var messageParts = message
-                .Split('|', StringSplitOptions.RemoveEmptyEntries)
-                .Select(entry => entry.Split('='))
-                .Where(pair =>
-                {
-                    if (pair.Length != 2)
-                    {
-                        _processingNotificationsCollector.ReportError(
-                           $"Line is expected to be in format `|param1=value1|param2=value2`, however splitting by `=` resulted in more than two records for some pair(s)",
-                            logLine,
-                            nameof(BackgrounderEventParser));
-                    }
-
-                    return pair.Length == 2;
-                })
-                .ToDictionary(validatedPair => validatedPair[0], validatedPair => validatedPair[1]);
+            
+            var messageParts = ExtractJobDetailsParseRegex.Matches(message).ToDictionary(m => m.Groups["key"].Value, m => m.Groups["value"].Value);
 
             var jobNotes = messageParts.GetStringValueOrNull("jobNotes").TrimSurroundingDoubleQuotes();
             var extractIdMatch = ExtractIdNewFormat.Match(jobNotes ?? string.Empty);
             var extractId = extractIdMatch.Success
                 ? extractIdMatch.Groups["extractGuid"].Value
                 : null;
-                
+
             return new BackgrounderExtractJobDetail
             {
                 BackgrounderJobId = jobId,
                 ExtractGuid = null, // Not available in the new format
                 ExtractId = extractId,
                 ExtractSize = messageParts.GetLongValueOrNull("extractsSizeBytes"),
-                ExtractUrl = messageParts.GetStringValueOrNull("workbookName").TrimSurroundingDoubleQuotes() 
+                ExtractUrl = messageParts.GetStringValueOrNull("workbookName").TrimSurroundingDoubleQuotes()
                              ?? messageParts.GetStringValueOrNull("datasourceName").TrimSurroundingDoubleQuotes(),
                 JobNotes = jobNotes,
                 ScheduleName = messageParts.GetStringValueOrNull("scheduleName").TrimSurroundingDoubleQuotes(),
@@ -384,21 +383,21 @@ namespace LogShark.Plugins.Backgrounder
                 case "com.tableausoftware.domain.subscription.SubscriptionRunner" when message.StartsWith("Starting subscription", System.StringComparison.InvariantCultureIgnoreCase):
                 case "com.tableausoftware.model.workgroup.service.subscriptions.SubscriptionRunner" when message.StartsWith("Starting subscription", System.StringComparison.InvariantCultureIgnoreCase):
                     var subscriptionMatch = StartingSubscriptionRegex.Match(message);
-                        return new BackgrounderSubscriptionJobDetail
+                    return new BackgrounderSubscriptionJobDetail
                     {
                         BackgrounderJobId = jobId,
                         SubscriptionName = subscriptionMatch.Groups["subscription_name"].Value
                     };
                 case "com.tableausoftware.model.workgroup.util.EmailHelper" when message.StartsWith("Sending email from"):
-                {
-                    var emailMatch = SendEmailDetailsRegex.Match(message);
-                    return new BackgrounderSubscriptionJobDetail
                     {
-                        BackgrounderJobId = jobId,
-                        SenderEmail = emailMatch.Groups["sender_email"].Value,
-                        RecipientEmail = emailMatch.Groups["recipient_email"].Value,
-                        SmtpServer = emailMatch.Groups["smtp_server"].Value,
-                    };
+                        var emailMatch = SendEmailDetailsRegex.Match(message);
+                        return new BackgrounderSubscriptionJobDetail
+                        {
+                            BackgrounderJobId = jobId,
+                            SenderEmail = emailMatch.Groups["sender_email"].Value,
+                            RecipientEmail = emailMatch.Groups["recipient_email"].Value,
+                            SmtpServer = emailMatch.Groups["smtp_server"].Value,
+                        };
                     }
                 default:
                     return null;

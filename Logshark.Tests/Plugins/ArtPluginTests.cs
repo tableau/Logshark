@@ -38,7 +38,7 @@ namespace LogShark.Tests.Plugins
                 plugin.ProcessLogLine(incorrectArtPayload, LogType.VizqlserverCpp);
             }
 
-            testWriterFactory.AssertAllWritersAreDisposedAndEmpty(1);
+            testWriterFactory.AssertAllWritersAreDisposedAndEmpty(2);
             processingNotificationsCollector.TotalErrorsReported.Should().Be(3);
         }
 
@@ -54,13 +54,18 @@ namespace LogShark.Tests.Plugins
                 plugin.ProcessLogLine(incorrectJsonInArtPayload, LogType.VizqlserverCpp);
             }
 
-            var writer = (TestWriter<FlattenedArtEvent>) testWriterFactory.Writers.First().Value;
-            writer.ReceivedObjects.Count.Should().Be(1);
-            writer.ReceivedObjects.First().Should().NotBeNull(); // All props are null, but object still exists
+            var testWriter = testWriterFactory.GetOneWriterAndVerifyOthersAreEmptyAndDisposed<FlattenedArtEvent>("Art", 2);
+            testWriter.ReceivedObjects.Count.Should().Be(1);
+            testWriter.ReceivedObjects.First().Should().NotBeNull(); // All props are null, but object still exists
         }
         
-        [Fact]
-        public void RunTestCases()
+        [Theory]
+        [InlineData(LogType.BackgrounderCpp, "Art")]
+        [InlineData(LogType.DataserverCpp, "Art")]
+        [InlineData(LogType.VizqlserverCpp, "Art")]
+        [InlineData(LogType.Filestore, "Art")] // We only check log type for Desktop, so the rest goes to Server
+        [InlineData(LogType.VizqlDesktop, "ArtDesktop")]
+        public void RunTestCases(LogType logTypeToUse, string expectedNonEmptyWriterName)
         {
             var testWriterFactory = new TestWriterFactory();
             using (var plugin = new ArtPlugin())
@@ -70,14 +75,14 @@ namespace LogShark.Tests.Plugins
                 foreach (var testCase in _testCases)
                 {
                     var logLine = testCase.GetLogLine();
-                    plugin.ProcessLogLine(logLine, LogType.Filestore);
+                    plugin.ProcessLogLine(logLine, logTypeToUse);
                 }
             }
 
             var expectedOutput = _testCases.Select(testCase => testCase.ExpectedOutput).ToList();
-            testWriterFactory.Writers.Count.Should().Be(1);
+            testWriterFactory.Writers.Count.Should().Be(2);
             
-            var testWriter = testWriterFactory.Writers.Values.First() as TestWriter<FlattenedArtEvent>;
+            var testWriter = testWriterFactory.GetOneWriterAndVerifyOthersAreEmptyAndDisposed<FlattenedArtEvent>(expectedNonEmptyWriterName, 2);
             testWriter.WasDisposed.Should().Be(true);
             testWriter.ReceivedObjects.Should().BeEquivalentTo(expectedOutput);
         }

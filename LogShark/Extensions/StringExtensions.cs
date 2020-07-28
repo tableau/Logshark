@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace LogShark.Extensions
@@ -10,7 +11,15 @@ namespace LogShark.Extensions
         private static readonly Regex TsmNodeNameCapture = new Regex(@"^node\d+", RegexOptions.Compiled);
         private static readonly Regex TabadminWorkerNameCapture = new Regex(@"^worker\d+", RegexOptions.Compiled);
         private static readonly Regex TsmV0WorkerNameCapture = new Regex(@"^(?<hostname>[^/]+)/tabadminagent.+/logs/.+", RegexOptions.Compiled);
-        
+
+        public static string CleanControlCharacters(this string message)
+        {
+            // Replace control characters with string literals like "{\u001F}"
+            return String.Join(
+                String.Empty,
+                message.Select(c => Char.IsControl(c) && !Char.IsWhiteSpace(c) ? $"{{\\u{Convert.ToInt32(c).ToString("X4")}}}" : c.ToString()));
+        }
+
         public static string EnforceMaxLength(this string stringToTrim, int maxSymbolsToKeep)
         {
             return stringToTrim.Substring(0, Math.Min(stringToTrim.Length, maxSymbolsToKeep));

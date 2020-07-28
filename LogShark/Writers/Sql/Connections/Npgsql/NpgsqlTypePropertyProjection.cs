@@ -25,7 +25,7 @@ namespace LogShark.Writers.Sql.Connections.Npgsql
             var lambda = Expression.Lambda<Func<T, object>>(convert, parameterExpression);
             GetPropertyValue = lambda.Compile();
 
-            var typeAttributes = typeof(T).GetCustomAttributes(true).Select(a => a as Attribute);
+            var typeAttributes = propertyInfo.GetCustomAttributes(true).Select(a => a as Attribute);
             var columnAttribute = typeAttributes.OfType<ColumnAttribute>().FirstOrDefault();
             ColumnName = columnAttribute?.Name ?? propertyInfo.Name;
             Order = columnAttribute?.Order;

@@ -13,18 +13,16 @@ namespace LogShark.Common
             {
                 return SetExitCode(ExitCode.OK);
             }
-            else
+            
+            switch (runSummary.IsTransient)
             {
-                switch (runSummary.IsTransient)
-                {
-                    case true:
-                        return SetExitCode(ExitCode.ERROR_TRANSIENT);
-                    case false:
-                        return SetExitCode(suppressNontransientErrors ? ExitCode.OK : ExitCode.ERROR);
-                    case null:
-                    default:
-                        return SetExitCode(ExitCode.ERROR_UNKNOWN);
-                }
+                case true:
+                    return SetExitCode(ExitCode.ERROR_TRANSIENT);
+                case false:
+                    return SetExitCode(suppressNontransientErrors ? ExitCode.OK : ExitCode.ERROR);
+                case null:
+                default:
+                    return SetExitCode(ExitCode.ERROR_UNKNOWN);
             }
         }
 

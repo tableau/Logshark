@@ -25,7 +25,9 @@ namespace LogShark.Writers.Sql.Connections.Npgsql
                 : throw new LogSharkConfigurationException("Database name cannot be empty! It must be supplied through configuration file or command line when Postgres writer is used");
             
             _connectionString = connectionStringBuilder.ConnectionString;
-            _connectionStringForServiceDatabase = GetConnectionStringForServiceDatabase(connectionStringBuilder, serviceDbName);
+            _connectionStringForServiceDatabase = string.IsNullOrWhiteSpace(serviceDbName)
+                ? _connectionString
+                : GetConnectionStringForServiceDatabase(connectionStringBuilder, serviceDbName);
 
             _logger = loggerFactory.CreateLogger<NpgsqlDataContext>();
         }

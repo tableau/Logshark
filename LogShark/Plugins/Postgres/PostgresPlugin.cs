@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using LogShark.Containers;
@@ -10,7 +9,7 @@ namespace LogShark.Plugins.Postgres
 {
     public class PostgresPlugin : IPlugin
     {
-        private static readonly Regex DurationMessageRegex = new Regex(@"^duration: (?<duration>\d+?)\..*", RegexOptions.ExplicitCapture | RegexOptions.Compiled);
+        private static readonly Regex DurationMessageRegex = new Regex(@"^duration: (?<duration>\d+)\.", RegexOptions.ExplicitCapture | RegexOptions.Compiled);
         private static readonly DataSetInfo OutputInfo = new DataSetInfo("Postgres", "PostgresEvents");
 
         private static readonly List<LogType> ConsumedLogTypesStatic = new List<LogType> { LogType.PostgresCsv };

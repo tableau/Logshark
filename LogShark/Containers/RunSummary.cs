@@ -7,31 +7,99 @@ namespace LogShark.Containers
     {
         public WorkbookGeneratorResults WorkbookGeneratorResults { get; }
         public TimeSpan Elapsed { get; }
-        public bool IsSuccess => string.IsNullOrWhiteSpace(ReasonForFailure);
-        public bool? IsTransient { get; }
-        public LogReadingResults LogReadingResults { get; }
+        public ExitReason ExitReason { get; }
+        public bool IsSuccess => ExitReason == ExitReason.CompletedSuccessfully;
+        public bool? IsTransient => IsErrorTypeTransient();
+        public ProcessLogSetResult ProcessLogSetResult { get; }
         public ProcessingNotificationsCollector ProcessingNotificationsCollector { get; }
         public PublisherResults PublisherResults { get; }
         public string ReasonForFailure { get; }
         public string RunId { get; }
 
-        public RunSummary(string runId,
+        public static RunSummary SuccessfulRunSummary(
+            string runId,
             TimeSpan elapsed,
             ProcessingNotificationsCollector processingNotificationsCollector,
-            LogReadingResults logReadingResults,
+            ProcessLogSetResult processLogSetResult,
+            WorkbookGeneratorResults workbookGeneratorResults,
+            PublisherResults publisherResults)
+        {
+            return new RunSummary(
+                runId,
+                elapsed,
+                processingNotificationsCollector,
+                processLogSetResult,
+                workbookGeneratorResults,
+                publisherResults,
+                null,
+                ExitReason.CompletedSuccessfully);
+        }
+        
+        public static RunSummary FailedRunSummary(
+            string runId,
+            string errorMessage,
+            ExitReason exitReason = ExitReason.UnclassifiedError,
+            ProcessingNotificationsCollector processingNotificationsCollector = null,
+            TimeSpan? elapsed = null,
+            ProcessLogSetResult processLogSetResult = null,
+            WorkbookGeneratorResults workbookGeneratorResults = null,
+            PublisherResults publisherResults = null)
+        {
+            return new RunSummary(
+                runId,
+                elapsed ?? TimeSpan.Zero,
+                processingNotificationsCollector,
+                processLogSetResult,
+                workbookGeneratorResults,
+                publisherResults,
+                errorMessage,
+                exitReason);
+        }
+
+        private RunSummary(
+            string runId,
+            TimeSpan elapsed,
+            ProcessingNotificationsCollector processingNotificationsCollector,
+            ProcessLogSetResult processLogSetResult,
             WorkbookGeneratorResults workbookGeneratorResults,
             PublisherResults publisherResults,
-            string reasonForFailure = null,
-            bool? isTransient = null)
+            string reasonForFailure,
+            ExitReason exitReason)
         {
             RunId = runId;
             Elapsed = elapsed;
+            ExitReason = exitReason;
             ProcessingNotificationsCollector = processingNotificationsCollector;
             WorkbookGeneratorResults = workbookGeneratorResults;
-            LogReadingResults = logReadingResults;
+            ProcessLogSetResult = processLogSetResult;
             PublisherResults = publisherResults;
             ReasonForFailure = reasonForFailure;
-            IsTransient = isTransient;
         }
+
+        private bool? IsErrorTypeTransient()
+        {
+            switch (ExitReason)
+            {
+                case ExitReason.BadLogSet:
+                case ExitReason.IncorrectConfiguration:
+                case ExitReason.LogSetDoesNotContainRelevantLogs:
+                case ExitReason.OutOfMemory:
+                    return false;
+                case ExitReason.CompletedSuccessfully:
+                case ExitReason.UnclassifiedError:
+                default:
+                    return null;
+            }
+        }
+    }
+
+    public enum ExitReason
+    {
+        BadLogSet,
+        CompletedSuccessfully,
+        IncorrectConfiguration,
+        LogSetDoesNotContainRelevantLogs,
+        OutOfMemory,
+        UnclassifiedError
     }
 }

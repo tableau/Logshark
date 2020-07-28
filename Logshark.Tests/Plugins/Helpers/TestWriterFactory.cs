@@ -42,6 +42,12 @@ namespace LogShark.Tests.Plugins.Helpers
             }
         }
 
+        public void AssertAllWritersAreDisposed(int expectedNumberOfWriters)
+        {
+            AssertAllWritersDisposedState(true);
+            Writers.Count.Should().Be(expectedNumberOfWriters);
+        }
+
         public TestWriter<T> GetWriterByName<T>(string name)
         {
             return Writers.First(pair => pair.Key.Name == name).Value as TestWriter<T>;
@@ -75,6 +81,12 @@ namespace LogShark.Tests.Plugins.Helpers
         public void AssertAllWritersAreDisposedAndEmpty(int expectedWriterCount)
         {
             GetOneWriterAndVerifyOthersAreEmptyAndDisposed<object>(null, expectedWriterCount);
+        }
+
+        public void AssertWriterIsEmpty<T>(string writerName)
+        {
+            var writer = GetWriterByName<T>(writerName);
+            writer.ReceivedObjects.Count.Should().Be(0);
         }
 
         public void Dispose()

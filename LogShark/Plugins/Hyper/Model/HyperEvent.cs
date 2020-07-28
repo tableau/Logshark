@@ -23,11 +23,20 @@ namespace LogShark.Plugins.Hyper.Model
         public string User { get; set; }
         public string Worker { get; set; }
 
-        // *-end, *-release
+        //log-rate-limit-reached
+        public string SubKey { get; set; }
+        public int? CurrentCount { get; set; }
+        public double? RemainingIntervalSeconds { get; set; }
+
+        //asio-continuation-slow
+        public string Source { get; set; }
+
+        // *-end, *-release, asio-continuation-slow
         public double? Elapsed { get; set; }
 
         // query-end, query-end-cancelled
         public string ClientSessionId { get; set; }
+        public string ClientRequestId { get; set; }
         public double? Columns { get; set; }
         public bool? ExclusiveExecution { get; set; }
         public double? LockAcquisitionTime { get; set; }
@@ -70,7 +79,7 @@ namespace LogShark.Plugins.Hyper.Model
         public string CredName { get; set; }
 
         // cancel-request-received
-        public int? Id { get; set; } 
+        public string Id { get; set; } 
         public long? Secret { get; set; } 
 
         // connection-close-request

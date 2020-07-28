@@ -9,6 +9,7 @@ using LogShark.Writers;
 using LogShark.Writers.Containers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace LogShark.Plugins.Hyper
@@ -27,10 +28,11 @@ namespace LogShark.Plugins.Hyper
         private IWriter<HyperEvent> _hyperQueryWriter;
         private IProcessingNotificationsCollector _processingNotificationsCollector;
 
-        private readonly HashSet<string> _eventTypes = new HashSet<string>() { "query-end", "query-end-cancelled", "connection-startup-begin", "connection-startup-end", "cancel-request-received", "connection-close-request",
+        private readonly HashSet<string> _eventTypes = new HashSet<string>() { "query-end", "query-end-cancelled", "query-end-canceled", "connection-startup-begin", "connection-startup-end", "cancel-request-received", "connection-close-request",
             "dbregistry-load", "dbregistry-release", "query-result-sent", "tcp-ip-client-allowed", "tcp-ip-client-rejected", "query-plan-slow", "query-plan-spooling", "query-plan-cancelled",
-            "startup-info", "resource-stats" };
-        
+            "startup-info", "resource-stats", "log-rate-limit-reached", "asio-continuation-slow" };
+
+
         public void Configure(IWriterFactory writerFactory, IConfiguration pluginConfig, IProcessingNotificationsCollector processingNotificationsCollector, ILoggerFactory loggerFactory)
         {
             _hyperErrorWriter = writerFactory.GetWriter<HyperError>(HyperErrorOutputInfo);
@@ -105,8 +107,19 @@ namespace LogShark.Plugins.Hyper
             {
                 return;
             }
-            
+
             var payload = jsonEvent.EventPayload;
+
+            if (jsonEvent.EventType == "log-rate-limit-reached")
+            {
+                //sub key.. currently only capture events for this one known subkey
+                if (payload["key"]?.ToString() != "number-network-threads-low")
+                {
+                    return;
+                }
+            }
+            
+            
             var hyperQuery = new HyperEvent()
             {
                 FileName = logLine.LogFileInfo.FileName,
@@ -124,11 +137,20 @@ namespace LogShark.Plugins.Hyper
                 User = jsonEvent.Username,
                 Worker = logLine.LogFileInfo.Worker,
 
+                // log-rate-limit-reached
+                SubKey = payload["key"]?.ToString(),
+                CurrentCount = payload["current-count"]?.ToObject<int>() ?? default(int?),
+                RemainingIntervalSeconds = payload["remaining-interval-seconds"]?.ToObject<double>() ?? default(double?),
+
+                // asio-continuation-slow
+                Source = payload["source"]?.ToString(),
+
                 // *-end, *-release
                 Elapsed = payload["elapsed"]?.ToObject<double>() ?? default(double?),
 
                 // query-end, query-end-cancelled
-                ClientSessionId = payload["client-session-id"]?.ToString(),
+                ClientSessionId = jsonEvent.ContextMetrics?.ClientSessionId ?? payload["client-session-id"]?.ToString(),
+                ClientRequestId = jsonEvent.ContextMetrics?.ClientRequestId, 
                 Columns = payload["cols"]?.ToObject<double>() ?? default(double?),
                 CopyDataSize = payload["copydata-size"]?.ToObject<int>() ?? default(int?),
                 CopyDataTime = payload["copydata-time"]?.ToObject<double>() ?? default(double?),
@@ -180,7 +202,8 @@ namespace LogShark.Plugins.Hyper
                 CredName = payload["cred-name"]?.ToString(),
 
                 // cancel-request-received
-                Id = payload["id"]?.ToObject<int>() ?? default(int?),
+                Id = payload["id"]?.ToString(Formatting.None), // some fields have a json object as an id, others have an int, this is a stop gap for our current parsing routine
+
                 Secret = payload["secret"]?.ToObject<long>() ?? default(long?),
 
                 // connection-close-request

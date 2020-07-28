@@ -1,7 +1,4 @@
-using System;
-using System.Collections.Generic;
 using System.Data.Common;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using LogShark.Containers;
@@ -9,44 +6,50 @@ using LogShark.Exceptions;
 using LogShark.Writers.Containers;
 using LogShark.Writers.Sql.Connections;
 using LogShark.Writers.Sql.Connections.Npgsql;
-using LogShark.Writers.Sql.Models;
 using Microsoft.Extensions.Logging;
 using static Tools.TableauServerRestApi.Containers.PublishWorkbookRequest;
 
 namespace LogShark.Writers.Sql
 {
-    public class PostgresWriterFactory : IWriterFactory
+    public class PostgresWriterFactory<TRunSummary> : IWriterFactory
     {
         private readonly string _runId;
         private readonly LogSharkConfiguration _config;
+        private DataSourceCredentials _dbCreds;
         private string _dbHost;
         private string _dbPort;
         private readonly ILoggerFactory _loggerFactory;
-        private readonly ILogger<PostgresWriterFactory> _logger;
-        private const string LogSharkRunIdColumnName = "logshark_run_id";
-        private int _logSharkRunId;
-        private DataSourceCredentials _dbCreds;
+        private readonly ILogger _logger;
+        private int _runSummaryId;
 
         private readonly ISqlRepository _repository;
+        private readonly TRunSummary _runSummaryRecord;
+        private readonly string _runSummaryIdColumnName;
 
         public PostgresWriterFactory(
             string runId,
             LogSharkConfiguration config,
-            ILoggerFactory loggerFactory)
+            ILoggerFactory loggerFactory,
+            TRunSummary runSummaryRecord,
+            string runSummaryIdColumnName)
         {
             _runId = runId;
             _config = config;
             _loggerFactory = loggerFactory;
-            _logger = _loggerFactory.CreateLogger<PostgresWriterFactory>();
+            _logger = _loggerFactory.CreateLogger<PostgresWriterFactory<TRunSummary>>();
+
+            _runSummaryRecord = runSummaryRecord;
+            _runSummaryIdColumnName = runSummaryIdColumnName;
 
             var connectionStringBuilder = GetConnectionStringBuilder();
             _repository = new NpgsqlRepository(new NpgsqlDataContext(connectionStringBuilder, _config.PostgresServiceDatabaseName, loggerFactory), _config.PostgresBatchSize);
+            _repository.RegisterType<TRunSummary>(null);
         }
 
         private DbConnectionStringBuilder GetConnectionStringBuilder()
         {
             var connectionStringBuilder = new DbConnectionStringBuilder();
-            var isRawConnectionStringSupplied = !String.IsNullOrWhiteSpace(_config.PostgresConnectionString);
+            var isRawConnectionStringSupplied = !string.IsNullOrWhiteSpace(_config.PostgresConnectionString);
             if (isRawConnectionStringSupplied)
             {
                 connectionStringBuilder.ConnectionString = _config.PostgresConnectionString;
@@ -59,12 +62,12 @@ namespace LogShark.Writers.Sql
             connectionStringBuilder.Add("Timeout", timeout);
 
             var areCredentialsSupplied = false;
-            if (!String.IsNullOrWhiteSpace(_config.PostgresUsername))
+            if (!string.IsNullOrWhiteSpace(_config.PostgresUsername))
             {
                 areCredentialsSupplied = true;
                 connectionStringBuilder.Add("User Id", _config.PostgresUsername);
             }
-            if (!String.IsNullOrWhiteSpace(_config.PostgresPassword))
+            if (!string.IsNullOrWhiteSpace(_config.PostgresPassword))
             {
                 areCredentialsSupplied = true;
                 connectionStringBuilder.Add("Password", _config.PostgresPassword);
@@ -73,10 +76,20 @@ namespace LogShark.Writers.Sql
             {
                 connectionStringBuilder.Add("Integrated Security", "true");
             }
+            string host = _config.PostgresHost;
+            if (string.IsNullOrEmpty(host))
+            {
+                if (connectionStringBuilder.ContainsKey("Host"))
+                {
+                    host = (string)connectionStringBuilder["Host"];
+                } else
+                {
+                    _logger.LogError("Error building connection string: No host was specified.");
+                }
+            }
 
-            var host = _config.PostgresHost;
             var port = _config.PostgresPort;
-            if (!String.IsNullOrWhiteSpace(host))
+            if (!string.IsNullOrWhiteSpace(host))
             {
                 // Grab any numbers after the last colon in the hostname
                 var r = Regex.Match(host, @"(?<host>.*?)(:?(?<port>\d+))?$");
@@ -89,7 +102,7 @@ namespace LogShark.Writers.Sql
             connectionStringBuilder.Add("Host", host);
             _dbHost = host;
 
-            if (String.IsNullOrWhiteSpace(port))
+            if (string.IsNullOrWhiteSpace(port))
             {
                 port = "5432";
             }
@@ -97,7 +110,7 @@ namespace LogShark.Writers.Sql
             connectionStringBuilder.Add("Port", port);
             _dbPort = port;
 
-            if (!String.IsNullOrWhiteSpace(_config.PostgresDatabaseName))
+            if (!string.IsNullOrWhiteSpace(_config.PostgresDatabaseName))
             {
                 connectionStringBuilder.Add("Database", _config.PostgresDatabaseName);
             }
@@ -117,29 +130,33 @@ namespace LogShark.Writers.Sql
 
         public async Task InitializeDatabase()
         {
-            await _repository.CreateDatabaseIfNotExist();
-            await InitializeLogSharkRunTable();
+            if (!_config.PostgresSkipDatabaseVerificationAndInitialization)
+            {
+                await _repository.CreateDatabaseIfNotExist();
+                await InitializeRunSummaryTable(_runSummaryIdColumnName);
+            }
+
+            await WriteRunSummary();
         }
 
-        private async Task InitializeLogSharkRunTable()
+        private async Task InitializeRunSummaryTable(string runSummaryIdColumnName)
         {
-            _repository.RegisterType<LogSharkRunModel>(null);
-            await _repository.CreateTableIfNotExist<LogSharkRunModel>();
-            await _repository.CreateColumnWithPrimaryKeyIfNotExist<LogSharkRunModel>(LogSharkRunIdColumnName);
-            await _repository.CreateColumnsForTypeIfNotExist<LogSharkRunModel>();
-            _logSharkRunId = await _repository.InsertRowWithReturnValue<LogSharkRunModel, int>(new LogSharkRunModel()
-            {
-                LogSetLocation = _config.LogSetLocation,
-                RunId = _runId,
-                StartTimestamp = DateTime.UtcNow,
-            }, LogSharkRunIdColumnName);
+            await _repository.CreateTableIfNotExist<TRunSummary>();
+            await _repository.CreateColumnWithPrimaryKeyIfNotExist<TRunSummary>(runSummaryIdColumnName);
+            await _repository.CreateColumnsForTypeIfNotExist<TRunSummary>();
+        }
+
+        private async Task WriteRunSummary()
+        {
+            _runSummaryId = await _repository.InsertRowWithReturnValue<TRunSummary, int>(_runSummaryRecord, _runSummaryIdColumnName, null, new [] { _runSummaryIdColumnName });
         }
 
         public IWriter<T> GetWriter<T>(DataSetInfo dataSetInfo)
         {
             _logger.LogDebug("Creating writer for {outputInfo}", dataSetInfo);
             var sqlWriter = new SqlWriter<T>(_repository, dataSetInfo, _loggerFactory.CreateLogger<SqlWriter<T>>());
-            sqlWriter.InitializeTable(LogSharkRunIdColumnName, _logSharkRunId).Wait();
+            sqlWriter.InitializeTable(_runSummaryIdColumnName, _runSummaryId, _config.PostgresSkipDatabaseVerificationAndInitialization).Wait();
+
             return sqlWriter;
         }
 

@@ -11,20 +11,29 @@ namespace LogShark.Plugins.Art
 {
     public class ArtPlugin : IPlugin
     {
-        private static readonly DataSetInfo OutputInfo = new DataSetInfo("Art", "Art");
-        private static readonly List<LogType> ConsumedLogTypesStatic = new List<LogType> { LogType.VizqlserverCpp };
+        private static readonly DataSetInfo DesktopOutputInfo = new DataSetInfo("Art", "ArtDesktop");
+        private static readonly DataSetInfo ServerOutputInfo = new DataSetInfo("Art", "Art");
+        private static readonly List<LogType> ConsumedLogTypesStatic = new List<LogType> 
+        {
+            LogType.BackgrounderCpp,
+            LogType.DataserverCpp,
+            LogType.VizqlDesktop,
+            LogType.VizqlserverCpp
+        };
 
         public IList<LogType> ConsumedLogTypes => ConsumedLogTypesStatic;
         public string Name => "Art";
 
         private IProcessingNotificationsCollector _processingNotificationsCollector;
-        private IWriter<FlattenedArtEvent> _writer;
+        private IWriter<FlattenedArtEvent> _desktopWriter;
+        private IWriter<FlattenedArtEvent> _serverWriter;
         private JsonSerializer _jsonSerializer;
 
         public void Configure(IWriterFactory writerFactory, IConfiguration pluginConfig, IProcessingNotificationsCollector processingNotificationsCollector, ILoggerFactory loggerFactory)
         {
             _processingNotificationsCollector = processingNotificationsCollector;
-            _writer = writerFactory.GetWriter<FlattenedArtEvent>(OutputInfo);
+            _desktopWriter = writerFactory.GetWriter<FlattenedArtEvent>(DesktopOutputInfo);
+            _serverWriter = writerFactory.GetWriter<FlattenedArtEvent>(ServerOutputInfo);
             _jsonSerializer = JsonSerializer.Create();
         }
 
@@ -54,18 +63,29 @@ namespace LogShark.Plugins.Art
             }
 
             var @event = new FlattenedArtEvent(artData, baseEvent, logLine);
-            _writer.AddLine(@event);
+            if (logType == LogType.VizqlDesktop)
+            {
+                _desktopWriter.AddLine(@event);
+            }
+            else
+            {
+                _serverWriter.AddLine(@event);
+            }
         }
 
         public SinglePluginExecutionResults CompleteProcessing()
         {
-            var writerStatistics = _writer.Close();
-            return new SinglePluginExecutionResults(writerStatistics);
+            return new SinglePluginExecutionResults(new []
+            {
+                _desktopWriter.Close(),
+                _serverWriter.Close()
+            });
         }
         
         public void Dispose()
         {
-            _writer?.Dispose();
+            _desktopWriter?.Dispose();
+            _serverWriter?.Dispose();
         }
     }
 }

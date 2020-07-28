@@ -38,7 +38,8 @@
     "ServiceDatabaseName": "",
     "BatchSize": 100,
     "ConnectionTimeoutSeconds": 30,
-    "EmbedCredentialsOnPublish": false
+    "EmbedCredentialsOnPublish": false,
+    "SkipDatabaseVerificationAndInitialization": false
   },
   "TableauServer": {
     "_comment": {

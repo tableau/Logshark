@@ -2,12 +2,10 @@
 using LogShark.Containers;
 using LogShark.Plugins.Vizportal;
 using LogShark.Tests.Plugins.Helpers;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using LogShark.LogParser.Containers;
 using Xunit;
 
@@ -33,6 +31,8 @@ namespace LogShark.Tests.Plugins
                 plugin.ProcessLogLine(wrongContentFormat, LogType.VizportalJava);
                 plugin.ProcessLogLine(nullContent, LogType.VizportalJava);
                 plugin.ProcessLogLine(wrongContent, LogType.VizportalJava);
+                
+                plugin.CompleteProcessing();
             }
 
             testWriterFactory.AssertAllWritersAreDisposedAndEmpty(1);
@@ -52,6 +52,8 @@ namespace LogShark.Tests.Plugins
                     var logLine = testCase.GetLogLine();
                     plugin.ProcessLogLine(logLine, LogType.VizportalJava);
                 }
+                
+                plugin.CompleteProcessing();
             }
 
             var expectedOutput = _testCases.Select(testCase => testCase.ExpectedOutput).ToList();

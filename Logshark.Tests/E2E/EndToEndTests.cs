@@ -18,8 +18,8 @@ namespace LogShark.Tests.E2E
 
         private const string UnzipDir = "./TestData/EndToEndTests/logs_clean_tsm_unzipped";
 
-        private const int ExpectedNumberOfLinesPersistedInTsmLogs = 50788; // Total lines LogShark writes when processing this set
-        private const int ExpectedNumberOfLinesPersistedInTabadminLogs = 17524;
+        private const int ExpectedNumberOfLinesPersistedInTsmLogs = 54128; // Total lines LogShark writes when processing this set
+        private const int ExpectedNumberOfLinesPersistedInTabadminLogs = 20068;
 
         private static readonly Dictionary<string, int> ExpectedTabadminProcessingErrors = new Dictionary<string, int>
         {

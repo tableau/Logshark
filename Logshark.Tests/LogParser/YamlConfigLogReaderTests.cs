@@ -18,7 +18,7 @@ namespace LogShark.Tests.LogParser
             var expectedResult = new List<ReadLogLineResult> {new ReadLogLineResult(0, null)};
             using (var stream = TestLogFiles.OpenEmptyTestFile())
             {
-                var results = new YamlConfigLogReader(stream, null, null).ReadLines().ToList();
+                var results = new YamlConfigLogReader(stream).ReadLines().ToList();
                 results.Should().BeEquivalentTo(expectedResult);
             }
         }
@@ -29,7 +29,7 @@ namespace LogShark.Tests.LogParser
             var expectedResult = new List<ReadLogLineResult> {new ReadLogLineResult(0, null)};
             using (var stream = TestLogFiles.OpenTestFileWithPlainLines())
             {
-                var results = new YamlConfigLogReader(stream, null, null).ReadLines().ToList();
+                var results = new YamlConfigLogReader(stream).ReadLines().ToList();
                 results.Should().BeEquivalentTo(expectedResult);
             }
         }
@@ -39,7 +39,7 @@ namespace LogShark.Tests.LogParser
         {
             using (var stream = TestLogFiles.OpenTestFileWithYamlData())
             {
-                var results = new YamlConfigLogReader(stream, null, null).ReadLines().ToList();
+                var results = new YamlConfigLogReader(stream).ReadLines().ToList();
                 results.Should().BeEquivalentTo(ExpectedResults);
             }
         }

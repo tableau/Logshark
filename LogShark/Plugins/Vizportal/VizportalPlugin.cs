@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
 using LogShark.Containers;
 using LogShark.Extensions;
 using LogShark.Plugins.Shared;
@@ -18,17 +17,6 @@ namespace LogShark.Plugins.Vizportal
 
         public string Name => "Vizportal";
 
-        private static readonly Regex LogLineRegex = new Regex(@"^
-            (?<ts>\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}.\d{3})\s
-            (?<ts_offset>.+?)\s
-            \((?<site>.*?), (?<user>.*?), (?<sess>.*?), (?<req>.*?) (,(?<local_req_id>.*?))?\)\s
-            (?<thread>.*?)\s
-             (?<service>.*?)?:\s
-            (?<sev>[A-Z]+)(\s+)
-            (?<class>.*?)\s-\s
-            (?<message>(.|\n)*)",
-            RegexOptions.ExplicitCapture | RegexOptions.IgnorePatternWhitespace | RegexOptions.Compiled);
-
         private IWriter<VizportalEvent> _writer;
         private IProcessingNotificationsCollector _processingNotificationsCollector;
 
@@ -40,17 +28,13 @@ namespace LogShark.Plugins.Vizportal
 
         public void ProcessLogLine(LogLine logLine, LogType logType)
         {
-            var match = logLine.LineContents.CastToStringAndRegexMatch(LogLineRegex);
+            var match = logLine.LineContents.CastToStringAndRegexMatch(SharedRegex.JavaLogLineRegex);
             if (match == null || !match.Success)
             {
                 _processingNotificationsCollector.ReportError("Failed to parse Vizportal Java event from log line", logLine, nameof(VizportalPlugin));
                 return;
             }
 
-            var site = string.IsNullOrWhiteSpace(match.GetString("site"))
-                ? null
-                : match.GetString("site");
-            
             var @event = new VizportalEvent()
             {
                 Class = match.GetString("class"),
@@ -61,7 +45,7 @@ namespace LogShark.Plugins.Vizportal
                 RequestId = match.GetString("req"),
                 SessionId = match.GetString("sess"),
                 Severity = match.GetString("sev"),
-                Site = site,
+                Site = match.GetNullableString("site"),
                 Timestamp = TimestampParsers.ParseJavaLogsTimestamp(match.GetString("ts")),
                 User = match.GetString("user"),
                 Worker = logLine.LogFileInfo.Worker,

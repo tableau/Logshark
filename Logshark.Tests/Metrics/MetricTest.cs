@@ -31,7 +31,7 @@ namespace LogShark.Tests.Metrics
             _configurationLevelBasic = new MetricsConfig(_testUploader, TelemetryLevel.Basic);
             _configurationLevelNone = new MetricsConfig(_testUploader, TelemetryLevel.None);
             _configDefault = new LogSharkConfiguration(new LogSharkCommandLineParameters(), new ConfigurationBuilder().Build(), null);
-            _runSummaryDefault = new RunSummary(null, default(TimeSpan), null, null, null, null, null);
+            _runSummaryDefault = RunSummary.FailedRunSummary(null, null);
         }
 
         [Fact]

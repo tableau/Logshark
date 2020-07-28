@@ -31,7 +31,7 @@ namespace LogShark.LogParser.LogReaders
         
         public IEnumerable<ReadLogLineResult> ReadLines()
         {
-            return new SimpleLinePerLineReader(_stream, _filePath, _processingNotificationsCollector)
+            return new SimpleLinePerLineReader(_stream)
                 .ReadLines()
                 .Select(TurnStringIntoNativeJsonLogBaseEvent);
         }

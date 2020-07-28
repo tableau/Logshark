@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using LogShark.Metrics;
 using LogShark.Common;
+using LogShark.Plugins;
 
 namespace LogShark
 {
@@ -122,7 +123,8 @@ Usage Examples:
             };
             var config = new LogSharkConfiguration(clParameters, configuration, loggerFactory);
 
-            var metricUploader = new MetricUploader(config, loggerFactory);
+            var metricUploaderConfiguration = new MetricsUploaderConfiguration(config);
+            var metricUploader = new MetricUploader(metricUploaderConfiguration, loggerFactory);
             var metricsConfig = new MetricsConfig(metricUploader, config);
             var metricsModule = new MetricsModule(metricsConfig, loggerFactory);
 
@@ -130,8 +132,11 @@ Usage Examples:
             {
                 if (ListPLugins)
                 {
-                    var plugins = string.Join("\n\t- ", Plugins.PluginInitializer.GetAllAvailablePluginNames());
-                    Console.WriteLine($"Available plugins:\n\t- {plugins}");
+                    using (var pluginManager = new PluginManager(config, loggerFactory))
+                    {
+                        var plugins = string.Join("\n\t- ", pluginManager.GetKnownPluginNames());
+                        Console.WriteLine($"Available plugins:\n\t- {plugins}");
+                    }
                     return EnvironmentController.SetExitCode(ExitCode.OK);
                 }
                 else if (string.IsNullOrWhiteSpace(LogSetLocation))
@@ -150,21 +155,23 @@ Usage Examples:
             }
             finally
             {
+                loggerFactory.Dispose();
                 Thread.Sleep(200); // Otherwise logger does not write final message sometimes
             }
 
             return Environment.ExitCode;
         }
-
+        
         private static ILoggerFactory ConfigureLogging(IConfiguration configRoot)
         {
-            var loggerFactory = new LoggerFactory();
-
             var loggingConfig = configRoot.GetSection("Logging");
+            var loggerFactory = LoggerFactory.Create(builder =>
+            {
+                builder
+                    .AddConfiguration(loggingConfig)
+                    .AddConsole();
+            });
             loggerFactory.AddFile(loggingConfig);
-
-            loggerFactory.AddConsole(loggingConfig);
-
             return loggerFactory;
         }
     }

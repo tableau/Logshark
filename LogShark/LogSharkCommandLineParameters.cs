@@ -1,7 +1,10 @@
+using System.IO;
+
 namespace LogShark
 {
     public class LogSharkCommandLineParameters
     {
+        private string _originalFileName;
         private string _originalLocation;
 
         public string AppendTo { get; set; }
@@ -14,6 +17,12 @@ namespace LogShark
         public bool EmbedCredentialsOnPublish { get; set; }
         public bool ForceRunId { get; set; }
         public string LogSetLocation { get; set; }
+
+        public string OriginalFileName
+        {
+            get => _originalFileName ?? Path.GetFileName(OriginalLocation);
+            set => _originalFileName = value;
+        }
 
         public string OriginalLocation
         {
@@ -30,5 +39,10 @@ namespace LogShark
         public string TableauServerSite { get; set; }
         public string TableauServerUrl { get; set; }
         public string WorkbookNameSuffixOverride { get; set; }
+
+        public LogSharkCommandLineParameters GetShallowCopy()
+        {
+            return (LogSharkCommandLineParameters) MemberwiseClone();
+        }
     }
 }

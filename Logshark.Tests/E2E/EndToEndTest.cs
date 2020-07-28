@@ -134,7 +134,7 @@ namespace LogShark.Tests.E2E
 
             if (expectSuccess && expectedNumberOfRecordsWritten.HasValue)
             {
-                var writersStatistics = runSummary.LogReadingResults.PluginsExecutionResults.GetWritersStatistics();
+                var writersStatistics = runSummary.ProcessLogSetResult.PluginsExecutionResults.GetWritersStatistics();
                 writersStatistics.DataSets.Values.Sum(stat => stat.LinesPersisted).Should().Be(expectedNumberOfRecordsWritten);
             }
         }

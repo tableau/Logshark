@@ -115,6 +115,7 @@ namespace LogShark.Writers
                     nameof(WorkbookPublisher),
                     _logger,
                     async () => await restApi.PublishWorkbook(publishWorkbookRequest));
+                _logger.LogDebug("Workbook `{publishedWorkbookName}` was published to Tableau Server as ID `{newWorkbookId}`", publishWorkbookRequest.WorkbookNameOnTableauServer, workbookInfo.Id);
             }
             catch (RestApiException ex)
             {

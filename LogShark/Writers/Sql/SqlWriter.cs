@@ -10,7 +10,7 @@ namespace LogShark.Writers.Sql
     public class SqlWriter<T> : BaseWriter<T>
     {
         private readonly ISqlRepository _repository;
-        private Dictionary<string, object> _additionalProperties;
+        private Dictionary<string, object> _valueOverrides;
         
         public SqlWriter(ISqlRepository repository, DataSetInfo dataSetInfo, ILogger logger)
         : base(dataSetInfo, logger, nameof(SqlWriter<T>))
@@ -19,10 +19,17 @@ namespace LogShark.Writers.Sql
             _repository.RegisterType<T>(dataSetInfo);
         }
 
-        public async Task InitializeTable(string logSharkRunIdColumnName, int logSharkRunId)
+        public async Task InitializeTable(string logSharkRunIdColumnName, int logSharkRunId, bool skipDbVerifyAndInit)
         {
-            _additionalProperties = new Dictionary<string, object>();
-            _additionalProperties[logSharkRunIdColumnName] = logSharkRunId;
+            _valueOverrides = new Dictionary<string, object>
+            {
+                [logSharkRunIdColumnName] = logSharkRunId
+            };
+
+            if (skipDbVerifyAndInit)
+            {
+                return;
+            }
 
             await _repository.CreateSchemaIfNotExist<T>();
             await _repository.CreateTableIfNotExist<T>();
@@ -32,7 +39,7 @@ namespace LogShark.Writers.Sql
 
         protected override void InsertNonNullLineLogic(T objectToWrite)
         {
-            _repository.InsertRow(objectToWrite, _additionalProperties).Wait();
+            _repository.InsertRow(objectToWrite, _valueOverrides).Wait();
         }
 
         protected override void CloseLogic()

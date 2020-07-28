@@ -1,3 +1,5 @@
+using System.Globalization;
+using System.Linq;
 using Newtonsoft.Json.Linq;
 
 namespace LogShark.Extensions
@@ -9,6 +11,11 @@ namespace LogShark.Extensions
             return token.SelectToken(path, false)?.Value<string>();
         }
 
+        public static string GetStringFromPaths(this JToken token, params string[] paths)
+        {
+            return paths.Select(token.GetStringFromPath).FirstOrDefault(value => value != null);
+        }
+
         public static double? GetDoubleFromPath(this JToken token, string path)
         {
             var str = GetStringFromPath(token, path);
@@ -16,6 +23,11 @@ namespace LogShark.Extensions
             return str != null && double.TryParse(str, out var result)
                 ? result
                 : (double?) null;
+        }
+        
+        public static double? GetDoubleFromPaths(this JToken token, params string[] paths)
+        {
+            return paths.Select(token.GetDoubleFromPath).FirstOrDefault(value => value != null);
         }
         
         public static int? GetIntFromPath(this JToken token, string path)
@@ -32,6 +44,18 @@ namespace LogShark.Extensions
             var str = GetStringFromPath(token, path);
 
             return str != null && long.TryParse(str, out var result)
+                ? result
+                : (long?) null;
+        }
+        
+        /// <summary>
+        /// This method allows to capture more numeric styles (i.e. "65,535"), but number parsing twice as slow (399 vs 212 seconds for 1B conversions)
+        /// </summary>
+        public static long? GetLongFromPathAnyNumberStyle(this JToken token, string path)
+        {
+            var str = GetStringFromPath(token, path);
+
+            return str != null && long.TryParse(str, NumberStyles.Any, null, out var result)
                 ? result
                 : (long?) null;
         }

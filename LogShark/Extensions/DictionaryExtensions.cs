@@ -39,10 +39,13 @@ namespace LogShark.Extensions
                 : null;
         }
 
-        public static Dictionary<string, List<T>> AddToDictionaryListOrCreate<T>(this Dictionary<string, List<T>> dict, string key, T value)
+        public static IDictionary<string, List<T>> AddToDictionaryListOrCreate<T>(this IDictionary<string, List<T>> dict, string key, T value)
         {
-            dict.TryAdd(key, new List<T>());
-            dict[key].Add(value);
+            if (key != null)
+            {
+                dict.TryAdd(key, new List<T>());
+                dict[key].Add(value);
+            }
             return dict;
         }
     }

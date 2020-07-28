@@ -45,7 +45,7 @@ namespace LogShark.Tests.Extensions
             var result = input.NormalizePath(rootPath);
             result.Should().Be(expectedResult);
         }
-        
+
         [Theory]
         [InlineData("abc", "def", null, true, false)]
         [InlineData("abc", "def", "", true, false)]
@@ -56,13 +56,13 @@ namespace LogShark.Tests.Extensions
         {
             var regex1 = new Regex(regexPattern1);
             var regex2 = new Regex(regexPattern2);
-            var regexList = new List<Regex> {regex1, regex2};
-            var expectedRegexList = wereSwapped 
-                ? new List<Regex> {regex2, regex1}
-                : new List<Regex> {regex1, regex2};
-            
+            var regexList = new List<Regex> { regex1, regex2 };
+            var expectedRegexList = wereSwapped
+                ? new List<Regex> { regex2, regex1 }
+                : new List<Regex> { regex1, regex2 };
+
             var match = input?.GetRegexMatchAndMoveCorrectRegexUpFront(regexList);
-            
+
             if (isNull)
             {
                 match.Should().BeNull();
@@ -85,6 +85,21 @@ namespace LogShark.Tests.Extensions
         public void TrimSurroundingDoubleQuotes(string input, string expected)
         {
             var actual = input.TrimSurroundingDoubleQuotes();
+            actual.Should().Be(expected);
+        }
+
+        [Theory]
+        [InlineData("This string is fine", "This string is fine")]
+        [InlineData(
+            "These characters are fine: 1234`~!@#$%^&*()_+-={}|[]\\;':\",./<>?", 
+            "These characters are fine: 1234`~!@#$%^&*()_+-={}|[]\\;':\",./<>?")]
+        [InlineData("", "")]
+        [InlineData("This will be replaced: \u0000", "This will be replaced: {\\u0000}")]
+        [InlineData("This will be replaced: \u001F", "This will be replaced: {\\u001F}")]
+        [InlineData("This will not be replaced: \n\t", "This will not be replaced: \n\t")]
+        public void CleanControlCharacters(string input, string expected)
+        {
+            var actual = input.CleanControlCharacters();
             actual.Should().Be(expected);
         }
     }

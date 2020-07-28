@@ -14,19 +14,15 @@ namespace LogShark.LogParser.LogReaders
     public class YamlConfigLogReader : ILogReader
     {
         private readonly Stream _stream;
-        private readonly string _filePath;
-        private readonly IProcessingNotificationsCollector _processingNotificationsCollector;
 
-        public YamlConfigLogReader(Stream stream, string filePath, IProcessingNotificationsCollector processingNotificationsCollector)
+        public YamlConfigLogReader(Stream stream)
         {
             _stream = stream;
-            _filePath = filePath;
-            _processingNotificationsCollector = processingNotificationsCollector;
         }
 
         public IEnumerable<ReadLogLineResult> ReadLines()
         {
-            var wholeFileAsLines = new SimpleLinePerLineReader(_stream, _filePath, _processingNotificationsCollector)
+            var wholeFileAsLines = new SimpleLinePerLineReader(_stream)
                 .ReadLines()
                 .Select(readLineResult => readLineResult.LineContent as string ?? string.Empty);
             var wholeFileAsString = string.Join(Environment.NewLine, wholeFileAsLines);
@@ -41,9 +37,9 @@ namespace LogShark.LogParser.LogReaders
             var parser = new Parser(stringReader);
             var deserializer = new Deserializer();
 
-            parser.Expect<StreamStart>();
-            parser.Accept<DocumentStart>();
-                
+            parser.Consume<StreamStart>();
+            parser.Accept<DocumentStart>(out var _);
+            
             var document = deserializer.Deserialize(parser);
             var rawDictionary = document as IDictionary<object, object>;
             return rawDictionary?.ToDictionary(k => k.Key.ToString(), k => SerializeValue(k));

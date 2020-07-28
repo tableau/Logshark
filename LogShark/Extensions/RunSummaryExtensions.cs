@@ -31,18 +31,18 @@ namespace LogShark.Extensions
                 GenerateWorkbookGeneratorResultsSection(sb, runSummary);
             }
 
-            if (runSummary.LogReadingResults != null)
+            if (runSummary.ProcessLogSetResult != null)
             {
                 GenerateLogReadingStatisticsSection(sb, runSummary);
             }
 
-            return sb.ToString();
+            return sb.ToString().CleanControlCharacters();
         }
 
-        public static bool HasLogReadingErrors(this RunSummary runSummary)
+        public static bool LogReadingCompletedSuccessfully(this RunSummary runSummary)
         {
-            return runSummary?.LogReadingResults?.Errors != null && 
-                   runSummary.LogReadingResults.Errors.Count > 0;
+            return runSummary?.ProcessLogSetResult != null &&
+                   runSummary.ProcessLogSetResult.IsSuccessful;
         }
 
         public static bool HasProcessingErrors(this RunSummary runSummary)
@@ -71,17 +71,11 @@ namespace LogShark.Extensions
                    hasErrorsForIndividualWorkbooks;
         }
 
-        public static string LogReadingErrorsReport(this RunSummary runSummary)
+        public static string LogSetProcessingStatusReport(this RunSummary runSummary)
         {
-            if (!runSummary.HasLogReadingErrors())
-            {
-                return "No errors occurred while reading logs";
-            }
-            
-            var sb = new StringBuilder();
-            sb.AppendLine("Errors occurred while reading logs:");
-            sb.AppendLine(string.Join(Environment.NewLine, runSummary.LogReadingResults.Errors));
-            return sb.ToString();
+            return runSummary.LogReadingCompletedSuccessfully()
+                ? "LogShark successfully processed all logs" 
+                : $"Error occurred while processing logs: {runSummary.ProcessLogSetResult.ErrorMessage}";
         }
 
         public static string ProcessingErrorsReport(this RunSummary runSummary)
@@ -249,16 +243,21 @@ namespace LogShark.Extensions
         
         private static void GenerateLogReadingStatisticsSection(StringBuilder sb, RunSummary runSummary)
         {
-            var logReadingResults = runSummary.LogReadingResults;
+            var processLogSetResult = runSummary.ProcessLogSetResult;
             sb.AppendLine(GenerateTitle("Log Reading Statistics"));
 
-            var sizeMb = logReadingResults.FullLogSetSizeBytes / 1024 / 1024;
+            if (!processLogSetResult.IsSuccessful)
+            {
+                sb.AppendLine($"Log processing did not complete successfully. Error message: {processLogSetResult.ErrorMessage ?? "(null)"}");
+            }
 
-            sb.AppendLine(logReadingResults.IsDirectory 
+            var sizeMb = processLogSetResult.FullLogSetSizeBytes / 1024 / 1024;
+
+            sb.AppendLine(processLogSetResult.IsDirectory 
                 ? $"Processed directory full size: {sizeMb:n0} MB"
                 : $"Processed zip file compressed size: {sizeMb:n0} MB");
             
-            var pluginsExecutionResults = logReadingResults.PluginsExecutionResults;
+            var pluginsExecutionResults = processLogSetResult.PluginsExecutionResults;
             if (pluginsExecutionResults != null)
             {
                 var additionalTags = pluginsExecutionResults.GetSortedTagsFromAllPlugins();
@@ -270,13 +269,13 @@ namespace LogShark.Extensions
                 }
             }
 
-            if (logReadingResults.PluginsReceivedAnyData.Count > 0)
+            if (processLogSetResult.PluginsReceivedAnyData.Count > 0)
             {
-                var pluginsReceivedAnyData = logReadingResults.PluginsReceivedAnyData.OrderBy(pluginName => pluginName);
+                var pluginsReceivedAnyData = processLogSetResult.PluginsReceivedAnyData.OrderBy(pluginName => pluginName);
                 sb.AppendLine($"Plugins that received any data: {string.Join(", ", pluginsReceivedAnyData)}");
                 sb.AppendLine();
 
-                var nonEmptyStatistics = logReadingResults.LogProcessingStatistics
+                var nonEmptyStatistics = processLogSetResult.LogProcessingStatistics
                     .Where(pair => pair.Value.FilesProcessed > 0)
                     .OrderBy(pair => pair.Key.ToString());
                 foreach (var (logType, logProcessingStatistics) in nonEmptyStatistics)
@@ -289,18 +288,17 @@ namespace LogShark.Extensions
                 sb.AppendLine("No relevant log files found for plugins selected or all log types failed to process");
             }
 
-            if (runSummary.HasLogReadingErrors())
-            {
-                sb.AppendLine();
-                sb.AppendLine(runSummary.LogReadingErrorsReport());
-            }
-
-            GenerateWritersStatisticsSection(sb, logReadingResults.PluginsExecutionResults.GetWritersStatistics());
+            GenerateWritersStatisticsSection(sb, processLogSetResult?.PluginsExecutionResults?.GetWritersStatistics());
         }
         
         private static void GenerateWritersStatisticsSection(StringBuilder sb, WritersStatistics writersStatistics)
         {
             sb.AppendLine(GenerateTitle("Data Writers Statistics"));
+            if (writersStatistics == null)
+            {
+                sb.AppendLine("No writer statistics generated");
+                return;
+            }
             
             var receivedAnything = writersStatistics.DataSets
                 .Where(pair => pair.Value.LinesPersisted > 0)

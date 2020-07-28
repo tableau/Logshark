@@ -22,7 +22,7 @@ namespace LogShark.Writers.Csv
         {
             _filename = filename;
             _textWriter = new StreamWriter(filename, appending);
-            _csvWriter = new CsvWriter(_textWriter, new CsvHelper.Configuration.Configuration(CultureInfo.InvariantCulture));
+            _csvWriter = new CsvWriter(_textWriter, new CsvConfiguration(CultureInfo.InvariantCulture));
             
             Logger.LogDebug("{writerType} created for {outputFileName}", nameof(CsvFileWriter<T>), filename);
         }

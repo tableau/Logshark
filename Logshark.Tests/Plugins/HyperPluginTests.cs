@@ -171,6 +171,88 @@ namespace LogShark.Tests.Plugins
 
         private readonly IList<PluginTestCase> _testCases = new List<PluginTestCase>
         {
+            new PluginTestCase() { // query-end ctx
+                LogContents = new NativeJsonLogsBaseEvent()
+                {
+                    ArtData = null,
+                    ContextMetrics = new ContextMetrics()
+                    {
+                        ClientSessionId = "F71D8A10BE67431F85AC66F6E6932497-0:0",
+                        ClientRequestId = "42"
+                    },
+                    EventPayload = JToken.Parse(@"
+                        {""statement-id"": 1,
+                            ""transaction-visible-id"": 0,
+                            ""transaction-id"": 0,
+                            ""client-session-id"": ""DONTUSETHISVALUE"",
+                            ""elapsed"": 0.000262673,
+                            ""parsing-time"": 0.000158191,
+                            ""compilation-time"": 8.9397E-05,
+                            ""execution-time"": 2.228E-05,
+                            ""time-to-schedule"": 0.00010993,
+                            ""lock-acquisition-time"": 6.496E-06,
+                            ""peak-transaction-memory-mb"": 0,
+                            ""peak-result-buffer-memory-mb"": 0.062561,
+                            ""result-size-mb"": 0.000495911,
+                            ""spooling"": false,
+                            ""plan-cache-status"": ""not run yet"",
+                            ""plan-cache-hit-count"": 0,
+                            ""cols"": 0,
+                            ""rows"": 0,
+                            ""query-trunc"": ""SET SESSIONID=\""F71D8A10BE67431F85AC66F6E6932497-0:0\""""
+                        }"),
+                    EventType = "query-end",
+                    ProcessId = 12252,
+                    RequestId = "2",
+                    SessionId = "2",
+                    Severity = "info",
+                    Site = "-",
+                    ThreadId = "4544",
+                    Timestamp = DateTime.Parse("2018-07-11T11:02:22"),
+                    Username = "tableau_internal_user",
+                },
+                ExpectedOutput = new HyperEvent()
+                {
+                    ClientRequestId = "42",
+                    ClientSessionId = "F71D8A10BE67431F85AC66F6E6932497-0:0",
+                    Columns = 0,
+                    Elapsed = 0.000262673d,
+                    ExclusiveExecution = null,
+                    FileName = "hyper_2018_07_12_02_56_45.log",
+                    FilePath = "hyper/hyper_2018_07_12_02_56_45.log",
+                    Key = "query-end",
+                    Line = 41,
+                    LockAcquisitionTime = 6.496E-06,
+                    PeakResultBufferMemoryMb = 0.062561d,
+                    PeakTransactionMemoryMb = 0,
+                    PlanCacheHitCount = 0,
+                    PlanCacheStatus = "not run yet",
+                    ProcessId = 12252,
+                    QueryCompilationTime = 8.9397E-05,
+                    QueryExecutionTime = 2.228E-05,
+                    QueryParsingTime = 0.000158191d,
+                    QueryTrunc = "SET SESSIONID=\"F71D8A10BE67431F85AC66F6E6932497-0:0\"",
+                    RequestId = "2",
+                    ResultSizeMb = 0.000495911d,
+                    Rows = 0,
+                    SessionId = "2",
+                    Severity = "info",
+                    Site = "-",
+                    Spooling = false,
+                    StatementId = "1",
+                    ThreadId = "4544",
+                    Timestamp = DateTime.Parse("2018-07-11T11:02:22"),
+                    TimeToSchedule = 0.00010993d,
+                    TransactionId = "0",
+                    TransactionVisibleId = "0",
+                    User = "tableau_internal_user",
+                    Worker = "worker0",
+                },
+                LineNumber = 41,
+                LogFileInfo = TestLogFileInfo,
+                LogType = LogType.Hyper
+            },
+
             new PluginTestCase() { // query-end
                 LogContents = new NativeJsonLogsBaseEvent()
                 {
@@ -247,7 +329,7 @@ namespace LogShark.Tests.Plugins
                 LogType = LogType.Hyper
             },
 
-            new PluginTestCase() { // query-end-cancelled
+            new PluginTestCase() { // query-end-canceLLed
                 LogContents = new NativeJsonLogsBaseEvent()
                 {
                     ArtData = null,
@@ -297,6 +379,181 @@ namespace LogShark.Tests.Plugins
                     FileName = "hyper_2018_07_12_02_56_45.log",
                     FilePath = "hyper/hyper_2018_07_12_02_56_45.log",
                     Key = "query-end-cancelled",
+                    Line = 45173,
+                    LockAcquisitionTime = 3.25e-07,
+                    PeakResultBufferMemoryMb = 0,
+                    PeakTransactionMemoryMb = 0.25,
+                    PlanCacheHitCount = 0,
+                    PlanCacheStatus = "cache miss",
+                    ProcessId = 12252,
+                    QueryCompilationTime = 0.11608,
+                    QueryExecutionTime = 947.971,
+                    QueryParsingTime = 5.8925e-05,
+                    QueryTrunc = "INSERT BULK INTO <truncated>",
+                    RequestId = "2",
+                    ResultSizeMb = 0.002388,
+                    Rows = 0,
+                    SessionId = "2",
+                    Severity = "info",
+                    Site = "-",
+                    Spooling = false,
+                    StatementId = null,
+                    ThreadId = "4544",
+                    Timestamp = DateTime.Parse("2018-07-11T11:02:22"),
+                    TimeToSchedule = 3.4804e-05,
+                    TransactionId = null,
+                    TransactionVisibleId = null,
+                    User = "tableau_internal_user",
+                    Worker = "worker0",
+                    ExecThreadsCpuTime = 20.1109,
+                    ExecThreadsWaitTime = 935.689,
+                    ExecThreadsTotalTime = 956.289,
+                    CopyDataTime = null,
+                    CopyDataSize = null,
+                    StorageAccessTime = 9.716e-06,
+                    StorageAccessCount = 9,
+                    StorageAccessBytes = 72,
+                    StorageWriteTime = 0.291634,
+                    StorageWriteCount = 936,
+                    StorageWriteBytes = 66498228,
+                },
+                LineNumber = 45173,
+                LogFileInfo = TestLogFileInfo,
+                LogType = LogType.Hyper
+            },
+            new PluginTestCase() { // asio-continuation-slow
+                LogContents = new NativeJsonLogsBaseEvent()
+                {
+                    ArtData = null,
+                    EventPayload = JToken.Parse(@"
+                    {   
+                       ""source"":""handleMain"",""elapsed"":2.11228,""lock-acquisition-time"":3.284e-06
+                    }"),
+                    EventType = "asio-continuation-slow",
+                    ProcessId = 12252,
+                    RequestId = "2",
+                    SessionId = "2",
+                    Severity = "info",
+                    Site = "-",
+                    ThreadId = "4544",
+                    Timestamp = DateTime.Parse("2018-07-11T11:02:22"),
+                    Username = "tableau_internal_user",
+                },
+                ExpectedOutput = new HyperEvent()
+                {
+                    Key = "asio-continuation-slow",
+                    Elapsed = 2.11228,
+                    LockAcquisitionTime = 3.284e-06,
+                    Source = "handleMain",
+                    Line = 45173,
+                    ProcessId = 12252,
+                    RequestId = "2",
+                    SessionId = "2",
+                    Severity = "info",
+                    Site = "-",
+                    ThreadId = "4544",
+                    Timestamp = DateTime.Parse("2018-07-11T11:02:22"),
+                    User = "tableau_internal_user",
+                    FileName = "hyper_2018_07_12_02_56_45.log",
+                    FilePath = "hyper/hyper_2018_07_12_02_56_45.log",
+                    Worker = "worker0",
+                },
+                LineNumber = 45173,
+                LogFileInfo = TestLogFileInfo,
+                LogType = LogType.Hyper
+            },
+            new PluginTestCase() { // log-rate-limit-reached
+                LogContents = new NativeJsonLogsBaseEvent()
+                {
+                    ArtData = null,
+                    EventPayload = JToken.Parse(@"
+                    {   
+                       ""key"":""number-network-threads-low"",""current-count"":10,""remaining-interval-seconds"":9.99987
+                    }"),
+                    EventType = "log-rate-limit-reached",
+                    ProcessId = 12252,
+                    RequestId = "2",
+                    SessionId = "2",
+                    Severity = "info",
+                    Site = "-",
+                    ThreadId = "4544",
+                    Timestamp = DateTime.Parse("2018-07-11T11:02:22"),
+                    Username = "tableau_internal_user",
+                },
+                ExpectedOutput = new HyperEvent()
+                {
+                    Key = "log-rate-limit-reached",
+                    SubKey = "number-network-threads-low",
+                    CurrentCount = 10,
+                    RemainingIntervalSeconds = 9.99987,
+                    Line = 45173,
+                    ProcessId = 12252,
+                    RequestId = "2",
+                    SessionId = "2",
+                    Severity = "info",
+                    Site = "-",
+                    ThreadId = "4544",
+                    Timestamp = DateTime.Parse("2018-07-11T11:02:22"),
+                    User = "tableau_internal_user",
+                    FileName = "hyper_2018_07_12_02_56_45.log",
+                    FilePath = "hyper/hyper_2018_07_12_02_56_45.log",
+                    Worker = "worker0",
+                },
+                LineNumber = 45173,
+                LogFileInfo = TestLogFileInfo,
+                LogType = LogType.Hyper
+            },
+
+            new PluginTestCase() { // query-end-canceLed
+                LogContents = new NativeJsonLogsBaseEvent()
+                {
+                    ArtData = null,
+                    EventPayload = JToken.Parse(@"
+                    {   
+                        ""elapsed"":948.088,
+                        ""parsing-time"":5.8925e-05,
+                        ""compilation-time"":0.11608,
+                        ""execution-time"":947.971,
+                        ""cancelation-delay"":0.528081,
+                        ""exec-threads"":{
+                            ""total-time"":956.289,""cpu-time"":20.1109,""wait-time"":935.689,
+                            ""storage"":{
+                                ""access-time"":9.716e-06,""access-count"":9,""access-bytes"":72,""write-time"":0.291634,""write-count"":936,""write-bytes"":66498228
+                            }
+                        },
+                        ""time-to-schedule"":3.4804e-05,
+                        ""lock-acquisition-time"":3.25e-07,
+                        ""peak-transaction-memory-mb"":0.25,
+                        ""peak-result-buffer-memory-mb"":0,
+                        ""peak-result-buffer-disk-mb"":0,
+                        ""result-size-mb"":0.002388,
+                        ""spooling"":false,
+                        ""query-settings-active"":false,
+                        ""plan-cache-status"": ""cache miss"",
+                        ""plan-cache-hit-count"":0,
+                        ""cols"":0,
+                        ""rows"":0,
+                        ""query-trunc"":
+                        ""INSERT BULK INTO <truncated>""
+                    }"),
+                    EventType = "query-end-canceled",
+                    ProcessId = 12252,
+                    RequestId = "2",
+                    SessionId = "2",
+                    Severity = "info",
+                    Site = "-",
+                    ThreadId = "4544",
+                    Timestamp = DateTime.Parse("2018-07-11T11:02:22"),
+                    Username = "tableau_internal_user",
+                },
+                ExpectedOutput = new HyperEvent()
+                {
+                    Columns = 0,
+                    Elapsed = 948.088,
+                    ExclusiveExecution = null,
+                    FileName = "hyper_2018_07_12_02_56_45.log",
+                    FilePath = "hyper/hyper_2018_07_12_02_56_45.log",
+                    Key = "query-end-canceled",
                     Line = 45173,
                     LockAcquisitionTime = 3.25e-07,
                     PeakResultBufferMemoryMb = 0,
@@ -470,7 +727,7 @@ namespace LogShark.Tests.Plugins
                     User = "tableau_internal_user",
                     Worker = "worker0",
 
-                    Id = 7688,
+                    Id = "7688",
                     Secret = 203817136,
                 },
                 LineNumber = 45173,

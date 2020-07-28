@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using LogShark.Containers;
-using LogShark.LogParser.Containers;
 using LogShark.Plugins;
 using LogShark.Writers;
 using LogShark.Writers.Containers;

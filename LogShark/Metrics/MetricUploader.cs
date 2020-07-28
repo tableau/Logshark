@@ -11,12 +11,12 @@ namespace LogShark.Metrics
 {
     public class MetricUploader : IMetricUploader
     {
-        private LogSharkConfiguration _config;
+        private MetricsUploaderConfiguration _config;
         private readonly string _correlationId;
         private readonly JsonSerializerSettings _jsonSerializerSettings;
         private readonly ILogger _logger;
 
-        public MetricUploader(LogSharkConfiguration config, ILoggerFactory loggerFactory)
+        public MetricUploader(MetricsUploaderConfiguration config, ILoggerFactory loggerFactory)
         {
             _config = config;
             _correlationId = Guid.NewGuid().ToString();
@@ -33,18 +33,18 @@ namespace LogShark.Metrics
             {
                 var payload = new MetricsMessage
                 {
-                    Application = _config.TelemetryApplication,
+                    Application = _config.Application,
                     Body = metricsBody,
                     CorrelationId = _correlationId,
-                    Environment = _config.TelemetryEnvironment,
+                    Environment = _config.Environment,
                     EventType = eventType,
                 };
                 
                 var serializedPayload = JsonConvert.SerializeObject(payload, _jsonSerializerSettings);
 
                 var response = await Retry.DoWithRetries<FlurlHttpException, HttpResponseMessage>(nameof(MetricUploader), _logger, async () =>
-                     await _config.TelemetryEndpoint
-                        .WithTimeout(_config.TelemetryTimeout)
+                     await _config.EndpointUrl
+                        .WithTimeout(_config.UploadTimeout)
                         .PostAsync(new StringContent(serializedPayload, Encoding.UTF8, "application/json")));
 
                 if (!response.IsSuccessStatusCode)

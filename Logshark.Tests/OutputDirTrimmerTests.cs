@@ -8,7 +8,7 @@ using Xunit;
 
 namespace LogShark.Tests
 {
-    public class OutputDirTrimmerTests : InvariantCultureTestsBase
+    public class OutputDirTrimmerTests : InvariantCultureTestsBase, IDisposable
     {
         private const string TestOutputDir = "OutputDirTrimmerTest";
         private const int NumberOfFolders = 5;

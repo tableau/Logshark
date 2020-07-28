@@ -8,7 +8,7 @@ namespace LogShark.Plugins.VizqlDesktop.Model
         public string KeyType { get; }
         public int ProcessId { get; }
         public string ThreadId { get; }
-        public string SessionId { get; } 
+        public string SessionId { get; }
 
         protected VizqlDesktopBaseEvent(LogLine logLine, NativeJsonLogsBaseEvent baseEvent, string sessionId) : base(logLine, baseEvent.Timestamp)
         {

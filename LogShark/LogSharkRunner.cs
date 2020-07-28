@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 using LogShark.Containers;
 using LogShark.Extensions;
 using LogShark.LogParser;
@@ -16,6 +17,7 @@ using LogShark.Writers.Containers;
 using LogShark.Writers.Csv;
 using LogShark.Writers.Hyper;
 using LogShark.Writers.Sql;
+using LogShark.Writers.Sql.Models;
 using Microsoft.Extensions.Logging;
 using Tools.TableauServerRestApi.Containers;
 
@@ -23,7 +25,6 @@ namespace LogShark
 {
     public class LogSharkRunner
     {
-        private readonly LogTypeDetails _logTypeDetails;
         private readonly LogSharkConfiguration _config;
 
         private readonly PublisherSettings _publisherSettings;
@@ -43,7 +44,6 @@ namespace LogShark
             _config = config;
 
             _processingNotificationsCollector = new ProcessingNotificationsCollector(_config.NumberOfErrorDetailsToKeep);
-            _logTypeDetails = new LogTypeDetails(_processingNotificationsCollector);
 
             if (_config.PublishWorkbooks)
             {
@@ -63,10 +63,10 @@ namespace LogShark
             _metricsModule = metricsModule;
         }
 
-        public async Task<RunSummary> Run()
+        public async Task<RunSummary> Run(IWriterFactory customWriterFactory = null)
         {
             var startMetricsTask = _metricsModule.ReportStartMetrics(_config);
-            var processLogTask = ProcessLog();
+            var processLogTask = ProcessLog(customWriterFactory);
             await Task.WhenAll(startMetricsTask, processLogTask);
 
             var runSummary = await processLogTask;
@@ -75,7 +75,7 @@ namespace LogShark
             return runSummary;
         }
 
-        private async Task<RunSummary> ProcessLog()
+        private async Task<RunSummary> ProcessLog(IWriterFactory customWriterFactory)
         {
             _logger.LogInformation("Starting to process Log set {logSetPath}", _config.LogSetLocation);
             var totalElapsedTimer = Stopwatch.StartNew();
@@ -92,59 +92,58 @@ namespace LogShark
             {
                 var error = $"Path `{_config.LogSetLocation}` does not exist or LogShark cannot open it. Make sure `LogSetLocation` parameter points to the valid zip files with Tableau logs or unzipped copy of it. Exception message was: {fileCheckResult.ErrorMessage ?? "(null)"}";
                 _logger.LogInformation(error);
-                return new RunSummary(runId, totalElapsedTimer.Elapsed, _processingNotificationsCollector, null, null, null, error);
+                return RunSummary.FailedRunSummary(runId, error, ExitReason.BadLogSet, _processingNotificationsCollector, totalElapsedTimer.Elapsed);
             }
 
             IWriterFactory writerFactory;
             try
             {
-                writerFactory = GetWriterFactory(runId);
+                writerFactory = customWriterFactory ?? GetWriterFactory(runId);
             }
             catch (Exception ex)
             {
+                if (ex.Message.Contains("Context: 0x86a93465"))
+                {
+                    _logger.LogError("Microsoft Visual C++ Runtime required to run LogShark. Please download and install it from 'https://support.microsoft.com/en-us/help/2977003/the-latest-supported-visual-c-downloads' and rerun application");
+                }
+
                 var error = $"Exception occurred while initializing writer factory for writer '{_config.RequestedWriter ?? "null"}'. Exception message: {ex.Message}";
                 _logger.LogError(ex, error);
-                return new RunSummary(runId, totalElapsedTimer.Elapsed, _processingNotificationsCollector, null, null, null, error);
+
+                return RunSummary.FailedRunSummary(runId, error, ExitReason.UnclassifiedError, _processingNotificationsCollector, totalElapsedTimer.Elapsed);
             }
             
             using (_logger.BeginScope(runId))
             using (writerFactory)
             {
-                var logReadingResults = ReadLogsAndGenerateDataSets(writerFactory);
-                
-                if (ProcessedAnyFiles(logReadingResults))
+                ProcessLogSetResult logSetProcessingResults;
+                using (var pluginManager = new PluginManager(_config, _loggerFactory))
                 {
-                    var pluginsReceivedAnyDataForLogs = string.Join(", ", logReadingResults.PluginsReceivedAnyData.OrderBy(name => name));
-                    _logger.LogInformation("Plugins that had any data sent to them: {pluginsReceivedAnyData}", pluginsReceivedAnyDataForLogs);
+                    var logTypeDetails = new LogTypeDetails(_processingNotificationsCollector);
+                    var tableauLogsReader = new TableauLogsProcessor(_config, pluginManager, writerFactory, logTypeDetails, _processingNotificationsCollector, _loggerFactory);
+                    logSetProcessingResults = tableauLogsReader.ProcessLogSet();
                 }
-                else if (logReadingResults.LoadedPlugins.Count > 0)
+
+                if (logSetProcessingResults.IsSuccessful)
                 {
-                    var selectedPluginsPart = string.IsNullOrWhiteSpace(_config.RequestedPlugins)
-                        ? "No plugins were explicitly requested, so LogShark ran with all plugins enabled."
-                        : $"Plugins requested: `{_config.RequestedPlugins}`.";
-                    var errorMessage = $"Did not find any Tableau log files associated with requested plugins in `{_config.LogSetLocation}`. " +
-                                       $"{selectedPluginsPart} Please make sure that provided path is a zip file generated " +
-                                       "by Tableau Server, or unzipped copy of the same file (with file structure preserved), or zip file with Desktop logs, " +
-                                       "or crash package generated by tabcrashreporter";
-                    _logger.LogInformation(errorMessage); // This is not really an error - just incorrect log set structure.
-                    return new RunSummary(runId, totalElapsedTimer.Elapsed, _processingNotificationsCollector, logReadingResults, null, null, errorMessage);
+                    var pluginsReceivedAnyDataForLogs = string.Join(", ",
+                        logSetProcessingResults.PluginsReceivedAnyData.OrderBy(name => name));
+                    _logger.LogInformation("Plugins that had any data sent to them: {pluginsReceivedAnyData}", pluginsReceivedAnyDataForLogs);
                 }
                 else
                 {
-                    var errorMessage = "Did not find any plugins matching name(s) provided. Use \"LogShark --listplugins\" option to see available plugins. " +
-                                       $"Plugins requested: {_config.RequestedPlugins}";
-                    _logger.LogError(errorMessage);
-                    return new RunSummary(runId, totalElapsedTimer.Elapsed, _processingNotificationsCollector, logReadingResults, null, null, errorMessage);
+                    _logger.LogDebug($"Log processing failed with error: {logSetProcessingResults.ErrorMessage}");
+                    return RunSummary.FailedRunSummary(runId, logSetProcessingResults.ErrorMessage, logSetProcessingResults.ExitReason, _processingNotificationsCollector, totalElapsedTimer.Elapsed, logSetProcessingResults);
                 }
 
                 var workbookGenerator = writerFactory.GetWorkbookGenerator();
-                var generatorResults = workbookGenerator.CompleteWorkbooksWithResults(logReadingResults.PluginsExecutionResults.GetWritersStatistics());
+                var generatorResults = workbookGenerator.CompleteWorkbooksWithResults(logSetProcessingResults.PluginsExecutionResults.GetWritersStatistics());
 
                 if (!GeneratedAnyWorkbooks(generatorResults.CompletedWorkbooks) && workbookGenerator.GeneratesWorkbooks)
                 {
                     const string errorMessage = "No workbooks were generated successfully.";
                     _logger.LogError(errorMessage);
-                    return new RunSummary(runId, totalElapsedTimer.Elapsed, _processingNotificationsCollector, logReadingResults, generatorResults, null, errorMessage);
+                    return RunSummary.FailedRunSummary(runId, errorMessage, ExitReason.UnclassifiedError, _processingNotificationsCollector, totalElapsedTimer.Elapsed, logSetProcessingResults, generatorResults);
                 }
 
                 PublisherResults publisherResults = null;
@@ -157,17 +156,17 @@ namespace LogShark
                         runId,
                         projectDescription,
                         generatorResults.CompletedWorkbooks,
-                        logReadingResults.PluginsExecutionResults.GetSortedTagsFromAllPlugins());
+                        logSetProcessingResults.PluginsExecutionResults.GetSortedTagsFromAllPlugins());
                     if (!publisherResults.CreatedProjectSuccessfully)
                     {
                         var errorMessage = $"Workbook publisher failed to connect to the Tableau Server or create project for the results. Exception message: {publisherResults.ExceptionCreatingProject.Message}";
                         _logger.LogError(errorMessage);
-                        return new RunSummary(runId, totalElapsedTimer.Elapsed, _processingNotificationsCollector, logReadingResults, generatorResults, publisherResults, errorMessage);
+                        return RunSummary.FailedRunSummary(runId, errorMessage, ExitReason.UnclassifiedError, _processingNotificationsCollector, totalElapsedTimer.Elapsed, logSetProcessingResults, generatorResults, publisherResults);
                     }
                 }
 
                 _logger.LogInformation("Done processing {logSetPath}. Whole run took {fullRunElapsedTime}", _config.LogSetLocation, totalElapsedTimer.Elapsed);
-                return new RunSummary(runId, totalElapsedTimer.Elapsed, _processingNotificationsCollector, logReadingResults, generatorResults, publisherResults);
+                return RunSummary.SuccessfulRunSummary(runId, totalElapsedTimer.Elapsed, _processingNotificationsCollector, logSetProcessingResults, generatorResults, publisherResults);
             }
         }
 
@@ -206,7 +205,13 @@ namespace LogShark
                     return new CsvWriterFactory(runId, _config, _loggerFactory);
                 case "postgres":
                     _logger.LogInformation("Postgres Writer requested. Initializing writer factory...");
-                    var sqlWriterFactory = new PostgresWriterFactory(runId, _config, _loggerFactory);
+                    var logSharkRunRecord = new LogSharkRunModel
+                    {
+                        LogSetLocation = _config.LogSetLocation,
+                        RunId = runId,
+                        StartTimestamp = DateTime.UtcNow,
+                    };
+                    var sqlWriterFactory = new PostgresWriterFactory<LogSharkRunModel>(runId, _config, _loggerFactory, logSharkRunRecord, LogSharkRunModel.RunSummaryIdColumnName);
                     sqlWriterFactory.InitializeDatabase().Wait();
                     return sqlWriterFactory;
                 default:
@@ -216,86 +221,15 @@ namespace LogShark
             }
         }
 
-        private LogReadingResults ReadLogsAndGenerateDataSets(IWriterFactory writerFactory)
-        {
-            _logger.LogInformation("Using temp folder `{tempDir}`", _config.TempDir);
-            
-            using (var logsExtractor = new TableauLogsExtractor(_config.LogSetLocation, _config.TempDir, _processingNotificationsCollector, _loggerFactory.CreateLogger<TableauLogsExtractor>()))
-            using (var pluginInitializer = new PluginInitializer(writerFactory, _config, _processingNotificationsCollector, _loggerFactory, _config.UsePluginsFromLogSharkAssembly))
-            {
-                var loadedPlugins = pluginInitializer.LoadedPlugins.Select(plugin => plugin.Name).ToHashSet();
-
-                var requiredLogTypes = pluginInitializer.LoadedPlugins
-                    .SelectMany(plugin => plugin.ConsumedLogTypes)
-                    .Distinct()
-                    .ToList();
-                var processedLogTypes = string.Join(", ", requiredLogTypes.OrderBy(name => name));
-                _logger.LogInformation("Based on requested plugins, the following log types will be processed: {processedLogTypes}", processedLogTypes);
-
-                var logsReader = new TableauLogsReader(_loggerFactory.CreateLogger<TableauLogsReader>());
-
-                var logProcessingErrors = new List<string>();
-                var logProcessingStatistics = new Dictionary<LogType, LogProcessingStatistics>();
-                var pluginsReceivedAnyData = new HashSet<string>();
-                foreach (var logType in requiredLogTypes)
-                {
-                    _logger.LogInformation("Starting to process {logType} logs", logType);
-                    
-                    var logTypeInfo = _logTypeDetails.GetInfoForLogType(logType);
-                    var applicablePlugins = pluginInitializer.LoadedPlugins
-                        .Where(plugin => plugin.ConsumedLogTypes.Contains(logType))
-                        .ToList();
-
-                    try
-                    {
-                        var processingResult = logsReader.ProcessLogs(logsExtractor.LogSetParts, logTypeInfo, applicablePlugins);
-                        logProcessingStatistics.Add(logType, processingResult);
-
-                        _logger.LogInformation("Done processing {logType} logs. {processingResult}", logType, processingResult);
-
-                        if (processingResult.FilesProcessed > 0)
-                        {
-                            foreach (var plugin in applicablePlugins)
-                            {
-                                pluginsReceivedAnyData.Add(plugin.Name);
-                            }
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        var errorMessage = $"Exception occurred while processing log type {logType}. Exception: {ex.Message}";
-                        _logger.LogError(errorMessage);
-                        logProcessingErrors.Add(errorMessage);
-                    }
-                }
-                
-                _logger.LogInformation("Telling all plugins to complete processing of any cached data");
-                var pluginsExecutionResults = pluginInitializer.SendCompleteProcessingSignalToPlugins();
-                _logger.LogInformation("Completed reading log set and generating data");
-
-                return new LogReadingResults(
-                    logProcessingErrors,
-                    logsExtractor.LogSetSizeBytes,
-                    logsExtractor.IsDirectory,
-                    loadedPlugins,
-                    logProcessingStatistics,
-                    pluginsExecutionResults,
-                    pluginsReceivedAnyData);
-            }
-        }
-
         private string GetProjectDescription()
         {
             var projectDescription = new StringBuilder();
             projectDescription.Append($"Generated from log set <b>'{_config.OriginalLocation}'</b> on {DateTime.Now:M/d/yy} by {Environment.UserName}.<br>");
             projectDescription.Append("<br>");
+            projectDescription.Append($"Original filename: {HttpUtility.HtmlEncode(_config.OriginalFileName)}");
+            projectDescription.Append("<br>");
             projectDescription.Append($" Plugins Requested: <b>{_config.RequestedPlugins}</b>");
             return projectDescription.ToString();
-        }
-
-        private static bool ProcessedAnyFiles(LogReadingResults logReadingResults)
-        {
-            return logReadingResults.LogProcessingStatistics.Any(pair => pair.Value.FilesProcessed > 0);
         }
 
         private static bool GeneratedAnyWorkbooks(IEnumerable<CompletedWorkbookInfo> completedWorkbooks)

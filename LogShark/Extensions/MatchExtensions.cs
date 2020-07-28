@@ -9,6 +9,12 @@ namespace LogShark.Extensions
         {
             return match.Groups[groupName].Value;
         }
+
+        public static string GetNullableString(this Match match, string groupName)
+        {
+            var value = match.GetString(groupName);
+            return string.IsNullOrEmpty(value) ? null : value;
+        }
         
         public static long? GetNullableLong(this Match match, string groupName)
         {

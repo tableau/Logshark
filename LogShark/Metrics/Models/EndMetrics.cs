@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using LogShark.Containers;
 
 namespace LogShark.Metrics.Models
 {
@@ -13,7 +14,8 @@ namespace LogShark.Metrics.Models
             public IEnumerable<CompletedWorkbookModel> CompletedWorkbooks { get; set; }
             public TimeSpan Elapsed { get; set; }
             public bool IsSuccess { get; set; }
-            public IEnumerable<string> LogReadingErrors { get; set; }
+            public string LogReadingError { get; set; }
+            public ExitReason? LogReadingExitReason { get; set; }
             public IEnumerable<LogProcessingStatistic> LogProcessingStatistics { get; set; }
             public long? FullLogSetSizeBytes { get; set; }
             public IEnumerable<PluginModel> LoadedPlugins { get; set; }

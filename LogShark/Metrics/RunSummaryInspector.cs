@@ -49,7 +49,7 @@ namespace LogShark.Metrics
 
         public long? GetFullLogSetSizeBytes()
         {
-            return GetMetric(() => _runSummary.LogReadingResults?.FullLogSetSizeBytes);
+            return GetMetric(() => _runSummary.ProcessLogSetResult?.FullLogSetSizeBytes);
         }
 
         public bool GetIsSuccess()
@@ -61,7 +61,7 @@ namespace LogShark.Metrics
         {
             return GetMetric(() =>
             {
-                var logProcessingStatistics = _runSummary.LogReadingResults?.LogProcessingStatistics?.Select(lps => new EndMetrics.ContextModel.LogProcessingStatistic()
+                var logProcessingStatistics = _runSummary.ProcessLogSetResult?.LogProcessingStatistics?.Select(lps => new EndMetrics.ContextModel.LogProcessingStatistic()
                 {
                     Elapsed = lps.Value.Elapsed,
                     FilesProcessed = lps.Value.FilesProcessed,
@@ -73,20 +73,25 @@ namespace LogShark.Metrics
             });
         }
 
-        public IEnumerable<string> GetLogReadingErrors()
+        public string GetLogReadingError()
         {
-            return GetMetric(() => _runSummary.LogReadingResults?.Errors);
+            return GetMetric(() => _runSummary.ProcessLogSetResult?.ErrorMessage);
+        }
+        
+        public ExitReason? GetLogReadingExitReason()
+        {
+            return GetMetric(() => _runSummary.ProcessLogSetResult?.ExitReason);
         }
 
         public IEnumerable<EndMetrics.ContextModel.PluginModel> GetLoadedPlugins()
         {
             return GetMetric(() =>
             {
-                var loadedPluginsData = _runSummary.LogReadingResults?.LoadedPlugins ?? Enumerable.Empty<string>();
+                var loadedPluginsData = _runSummary.ProcessLogSetResult?.LoadedPlugins ?? Enumerable.Empty<string>();
                 var loadedPlugins = loadedPluginsData.Select(plugin => new EndMetrics.ContextModel.PluginModel()
                 {
                     PluginName = plugin,
-                    ReceivedData = _runSummary.LogReadingResults.PluginsReceivedAnyData.Contains(plugin),
+                    ReceivedData = _runSummary.ProcessLogSetResult.PluginsReceivedAnyData.Contains(plugin),
                 }).ToList();
                 return loadedPlugins;
             });
@@ -216,7 +221,7 @@ namespace LogShark.Metrics
             {
                 if (_telemetryLevel == TelemetryLevel.Full)
                 {
-                    var dataSets = _runSummary.LogReadingResults?.PluginsExecutionResults?.GetWritersStatistics()?.DataSets;
+                    var dataSets = _runSummary.ProcessLogSetResult?.PluginsExecutionResults?.GetWritersStatistics()?.DataSets;
                     if (dataSets == null)
                     {
                         return Enumerable.Empty<EndMetrics.ContextModel.WriterStatisticModel>();

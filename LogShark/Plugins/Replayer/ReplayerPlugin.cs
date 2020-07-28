@@ -53,16 +53,16 @@ namespace LogShark.Plugins.Replayer
         private readonly List<Apache.ApacheEvent> _apacheEventCollection = new List<Apache.ApacheEvent>();
 
         // dictionary of vizqlserver session ids and list of (TimeStamp, command arguments, username)
-        private Dictionary<string, List<Tuple<DateTime, string, string>>> _beginCommandController = new Dictionary<string, List<Tuple<DateTime, string, string>>>();
+        private IDictionary<string, List<Tuple<DateTime, string, string>>> _beginCommandController = new Dictionary<string, List<Tuple<DateTime, string, string>>>();
 
         // set of (RequestId, SessionId) pairs in lock-session events
-        private Dictionary<string, List<string>> _lockSessionTuples = new Dictionary<string, List<string>>();
+        private IDictionary<string, List<string>> _lockSessionTuples = new Dictionary<string, List<string>>();
 
         // set of (v.request-info.rid, v.sid) pairs in server-telemetry events
-        private Dictionary<string, List<string>> _serverTelemetryTuples = new Dictionary<string, List<string>>();
+        private IDictionary<string, List<string>> _serverTelemetryTuples = new Dictionary<string, List<string>>();
 
         // set of (SessionId, v.new-session) pairs in server-telemetry events
-        private Dictionary<string, List<string>> _endBootstrapSessionTuples = new Dictionary<string, List<string>>();
+        private IDictionary<string, List<string>> _endBootstrapSessionTuples = new Dictionary<string, List<string>>();
 
         // time offset based on the timezone
         private TimeSpan _timeOffset;
@@ -155,7 +155,11 @@ namespace LogShark.Plugins.Replayer
             {
                 try
                 {
-                    browserSessions.Add(ProcessAccessRequest(result));
+                    var accessRequest = ProcessAccessRequest(result);
+                    if (accessRequest != null)
+                    {
+                        browserSessions.Add(accessRequest);
+                    }
                 }
                 catch (Exception ex)
                 {

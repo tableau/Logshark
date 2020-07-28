@@ -8,7 +8,7 @@ using Microsoft.Extensions.Logging;
 
 namespace LogShark.LogParser
 {
-    public class LogTypeDetails
+    public class LogTypeDetails : ILogTypeDetails
     {
         private readonly Dictionary<LogType, LogTypeInfo> _logFileInfoDictionary;
 
@@ -29,7 +29,7 @@ namespace LogShark.LogParser
             {
                 new LogTypeInfo(
                     logType: LogType.Apache,
-                    logReaderProvider: (stream, filePath) => new SimpleLinePerLineReader(stream, filePath, processingNotificationsCollector),
+                    logReaderProvider: (stream, filePath) => new SimpleLinePerLineReader(stream),
                     fileLocations: new List<Regex>
                     {
                         TabadminLog("httpd", "access"), // pre-TSM - httpd/access.*.log (access.2015_05_18_00_00_00.log)
@@ -72,12 +72,13 @@ namespace LogShark.LogParser
                     logReaderProvider: (stream, filePath) => new NativeJsonLogsReader(stream, filePath, processingNotificationsCollector),
                     fileLocations: new List<Regex>
                     {
-                        Regex(@"^[^/]*\.log$")
+                        Regex(@"^[^/]*\.log$"),
+                        Regex(@"^[^/]*\.txt$")
                     }),
                 
                 new LogTypeInfo(
                     logType: LogType.CrashPackageManifest,
-                    logReaderProvider: (stream, filePath) => new SimpleLinePerLineReader(stream, filePath, processingNotificationsCollector),
+                    logReaderProvider: (stream, filePath) => new SimpleLinePerLineReader(stream),
                     fileLocations: new List<Regex>
                     {
                         Regex(@"^[^/]*\.manifest$")
@@ -91,6 +92,16 @@ namespace LogShark.LogParser
                         TabadminNativeLog("dataserver"), // pre-TSM - vizqlserver\Logs\dataserver-0_2018_07_28_00_00_00.txt
                         TsmV0NativeLog("dataserver"), // TSMv0 - localhost\tabadminagent_0.20181.18.0404.16052600117725665315795\logs\dataserver\nativeapi_dataserver_1-0_2018_08_07_00_00_00.txt
                         TsmNativeLog("dataserver"), // TSM - node2\dataserver_0.20182.18.0627.22301765668120146669553\logs\nativeapi_dataserver_2-1_2018_08_08_00_00_00.txt
+                    }),
+                
+                new LogTypeInfo(
+                    logType: LogType.DataserverJava,
+                    logReaderProvider: (stream, _) => new MultilineJavaLogReader(stream),
+                    fileLocations: new List<Regex>
+                    {
+                        TabadminLog("dataserver"),
+                        TsmV0Log("dataserver"),
+                        TsmLog("dataserver")
                     }),
 
                 new LogTypeInfo(
@@ -115,7 +126,7 @@ namespace LogShark.LogParser
                 
                 new LogTypeInfo(
                     logType: LogType.NetstatLinux,
-                    logReaderProvider: (stream, filePath) => new SimpleLinePerLineReader(stream, filePath, processingNotificationsCollector),
+                    logReaderProvider: (stream, filePath) => new SimpleLinePerLineReader(stream),
                     fileLocations: new List<Regex>
                     {
                         Regex(@".+/netstat-anp\.txt$") // TSMv0 and TSM - (TSMv0 example: localhost\tabadminagent_0.20181.18.0510.1418770265691097820228\sysinfo\netstat-anp.txt)
@@ -179,7 +190,7 @@ namespace LogShark.LogParser
                 
                 new LogTypeInfo(
                     logType: LogType.TabsvcYml,
-                    logReaderProvider: (stream, filePath) => new YamlConfigLogReader(stream, filePath, processingNotificationsCollector),
+                    logReaderProvider: (stream, filePath) => new YamlConfigLogReader(stream),
                     fileLocations: new List<Regex>
                     {
                         Regex(@"^tabsvc\.yml$"), // pre-TSM - tabsvc.yml in the root of the archive
@@ -228,7 +239,7 @@ namespace LogShark.LogParser
                 
                 new LogTypeInfo(
                     logType: LogType.WorkgroupYml,
-                    logReaderProvider: (stream, filePath) => new YamlConfigLogReader(stream, filePath, processingNotificationsCollector),
+                    logReaderProvider: (stream, filePath) => new YamlConfigLogReader(stream),
                     fileLocations: new List<Regex>
                     {
                         Regex(@"config/workgroup\.yml$"), // pre-TSM & TSM. Pre TSM - config folder is at the root. TSM - node1\tabadminagent_0.20182.18.1001.21153436271280456730793\config\tabadminagent_0.20182.18.1001.2115\workgroup.yml

@@ -59,24 +59,22 @@ namespace LogShark.LogParser
                 {
                     return FileCanBeOpenedResult.Success();
                 }
-                
-                using (var zip = ZipFile.Open(path, ZipArchiveMode.Read))
+
+                using var zip = ZipFile.Open(path, ZipArchiveMode.Read);
+                var records = zip.Entries.ToList(); // This would fail if zip is corrupt or not a zip file at all
+                var firstFileEntry = records.FirstOrDefault(record => record.Name != ""); // Only files have names in ZipArchiveEntry (per https://stackoverflow.com/questions/40223451/how-to-tell-if-a-ziparchiveentry-is-directory)
+                if (firstFileEntry == null)
                 {
-                    var records = zip.Entries.ToList(); // This would fail if zip is corrupt or not a zip file at all
-                    var firstFileEntry = records.FirstOrDefault(record => record.Name != ""); // Only files have names in ZipArchiveEntry (per https://stackoverflow.com/questions/40223451/how-to-tell-if-a-ziparchiveentry-is-directory)
-                    if (firstFileEntry == null)
-                    {
-                        return FileCanBeOpenedResult.Failure("Zip file appears to not contain any files");
-                    }
-                    
-                    using (var stream = firstFileEntry.Open())
-                    {
-                        var reader = new SimpleLinePerLineReader(stream, null, null);
-                        var line = reader.ReadLines().FirstOrDefault(); // This would fail if zip is password protected 
-                    }
-                    
-                    return FileCanBeOpenedResult.Success();
+                    return FileCanBeOpenedResult.Failure("Zip file appears to not contain any files");
                 }
+                    
+                using (var stream = firstFileEntry.Open())
+                {
+                    var reader = new SimpleLinePerLineReader(stream);
+                    var line = reader.ReadLines().FirstOrDefault(); // This would fail if zip is password protected 
+                }
+                    
+                return FileCanBeOpenedResult.Success();
             }
             catch (Exception ex)
             {
@@ -121,44 +119,42 @@ namespace LogShark.LogParser
         {
             _logger.LogInformation("Looking for known nested zip files inside zip file '{logSetPath}'", zippedLogSetPath);
 
-            using (var zip = ZipFile.Open(zippedLogSetPath, ZipArchiveMode.Read))
+            using var zip = ZipFile.Open(zippedLogSetPath, ZipArchiveMode.Read);
+            var nestedZips = zip.Entries.Where(IsNestedZip).ToList();
+            var nestedZipFilesInfo = new List<LogSetInfo>();
+
+            if (nestedZips.Count == 0)
             {
-                var nestedZips = zip.Entries.Where(IsNestedZip).ToList();
-                var nestedZipFilesInfo = new List<LogSetInfo>();
-
-                if (nestedZips.Count == 0)
-                {
-                    _logger.LogInformation("No known nested zip files found in '{logSetPath}", zippedLogSetPath);
-                    return nestedZipFilesInfo;
-                }
-
-                var tempDir = Path.Combine(tempDirRoot, NestedZipTempDirName);
-                Directory.CreateDirectory(tempDir);
-                _tempFileTracker.AddDirectory(tempDir);
-
-                foreach (var nestedZip in nestedZips)
-                {
-                    var extractPath = Path.Combine(tempDir, nestedZip.Name);
-                    _logger.LogInformation("Extracting nested archive {nestedZipName} into '{nestedZipExtractPath}'", nestedZip.Name, extractPath);
-
-                    nestedZip.ExtractToFile(extractPath);
-                    _logger.LogInformation("Successfully extracted {nestedZipName} into '{nestedZipExtractPath}'", nestedZip.Name, extractPath);
-
-                    var checkResult = FileCanBeOpened(extractPath, _logger); 
-                    if (checkResult.FileCanBeOpened)
-                    {
-                        nestedZipFilesInfo.Add(new LogSetInfo(extractPath.NormalizeSeparatorsToUnix(), nestedZip.FullName.RemoveZipFromTail(), true, _rootPath));
-                    }
-                    else
-                    {
-                        var error = $"Nested zip \"{nestedZip.FullName}\" appears to be corrupt. It will not be processed. Underlying error: {checkResult.ErrorMessage ?? "(null)"}";
-                        processingNotificationsCollector.ReportError(error, nestedZip.FullName, 0, nameof(TableauLogsExtractor));
-                    }
-                }
-
-                _logger.LogInformation("Found and extracted {numberOfNestedZips} known nested zip files inside `{logSetPath}`", nestedZipFilesInfo.Count, zippedLogSetPath);
+                _logger.LogInformation("No known nested zip files found in '{logSetPath}", zippedLogSetPath);
                 return nestedZipFilesInfo;
             }
+
+            var tempDir = Path.Combine(tempDirRoot, NestedZipTempDirName);
+            Directory.CreateDirectory(tempDir);
+            _tempFileTracker.AddDirectory(tempDir);
+
+            foreach (var nestedZip in nestedZips)
+            {
+                var extractPath = Path.Combine(tempDir, nestedZip.Name);
+                _logger.LogInformation("Extracting nested archive {nestedZipName} into '{nestedZipExtractPath}'", nestedZip.Name, extractPath);
+
+                nestedZip.ExtractToFile(extractPath);
+                _logger.LogInformation("Successfully extracted {nestedZipName} into '{nestedZipExtractPath}'", nestedZip.Name, extractPath);
+
+                var checkResult = FileCanBeOpened(extractPath, _logger); 
+                if (checkResult.FileCanBeOpened)
+                {
+                    nestedZipFilesInfo.Add(new LogSetInfo(extractPath.NormalizeSeparatorsToUnix(), nestedZip.FullName.RemoveZipFromTail(), true, _rootPath));
+                }
+                else
+                {
+                    var error = $"Nested zip \"{nestedZip.FullName}\" appears to be corrupt. It will not be processed. Underlying error: {checkResult.ErrorMessage ?? "(null)"}";
+                    processingNotificationsCollector.ReportError(error, nestedZip.FullName, 0, nameof(TableauLogsExtractor));
+                }
+            }
+
+            _logger.LogInformation("Found and extracted {numberOfNestedZips} known nested zip files inside `{logSetPath}`", nestedZipFilesInfo.Count, zippedLogSetPath);
+            return nestedZipFilesInfo;
         }
 
         private IEnumerable<LogSetInfo> LookForZippedParts(string logSetDirectoryPath)
