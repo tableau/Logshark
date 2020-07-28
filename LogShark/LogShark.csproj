@@ -60,7 +60,7 @@
 
     <ItemGroup>
       <Reference Include="Tools.TableauServerRestApi">
-        <HintPath>..\thirdparty\thirdparty_Tools.TableauServerRestApi.dll</HintPath>
+        <HintPath>..\thirdparty\Tools.TableauServerRestApi.dll</HintPath>
       </Reference>
     </ItemGroup>    
 </Project>
