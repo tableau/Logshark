@@ -21,4 +21,5 @@ TestLogs/
 Properties/
 .terraform
 *.zip
+!/**/TestData/**/*.zip
 .vscode/
