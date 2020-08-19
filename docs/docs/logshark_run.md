@@ -57,4 +57,4 @@ For more information, see the [LogShark command options](logshark_cmds).
 
     ![]({{ site.baseurl }}/assets/SampleScreenshot.png)
 
-   For information about all the plugins and workbooks, see [LogShark Plugins and Generated Workbooks](LogShark_plugins)
+   For information about all the plugins and workbooks, see [LogShark Plugins and Generated Workbooks](logshark_plugins)
