@@ -40,7 +40,7 @@ LogShark logs.zip -p                                                  | Runs Log
 LogShark logs.zip -c CustomLogSharkConfig.json                        | Runs LogShark with a custom config file.
 ```
 
-For more information, see the [LogShark command options](LogShark_cmds).
+For more information, see the [LogShark command options](logshark_cmds).
 
 -----------------
 
