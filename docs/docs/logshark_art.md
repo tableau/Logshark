@@ -1,5 +1,5 @@
 ---
-title: LogShark Plugins: ART (Vizqlserver Activity and Resource Tracing)
+title: LogShark Workbook - ART (Vizqlserver Activity and Resource Tracing)
 ---
 
 In this section:
