@@ -1,5 +1,5 @@
 ---
-title: LogShark Workbook: DataServer
+title: LogShark Workbook - DataServer
 ---
 
 In this section:
