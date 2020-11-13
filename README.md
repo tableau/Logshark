@@ -25,7 +25,7 @@ Download and unzip the precompiled self-contained application from the following
 
 [![Download LogShark for macOS](https://img.shields.io/badge/Download%20LogShark%20for%20macOS-Version%204.2-blue.svg)](https://github.com/tableau/Logshark/releases/download/v4.2/LogShark.Mac.4.2.zip)
 
-[![Setup LogShark](https://img.shields.io/badge/Setup%20LogShark-Installation%20and%20User%20Guide-lightgrey.svg)](https://tableau.github.io/Logshark/)
+[![Setup LogShark](https://img.shields.io/badge/Setup%20LogShark-Installation%20and%20User%20Guide-brightgreen.svg)](https://tableau.github.io/Logshark/)
 
 Note that LogShark is configured by the LogSharkConfig.json file in the Config directory. If you are replacing an existing copy of LogShark, be mindful of any changes made to this configuration file.
 
