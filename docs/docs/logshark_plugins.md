@@ -30,6 +30,7 @@ To run a specific plugin, specify the name of the plugin with the LogShark **`--
 ```
      LogShark logs.zip --plugins Apache
      LogShark logs.zip --plugins "Apache;VizqlServer"
+```
             
    
  
