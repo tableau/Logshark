@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using LogShark.Containers;
 using LogShark.Extensions;
-using LogShark.Plugins.Shared;
 using LogShark.Plugins.VizqlDesktop.Model;
+using LogShark.Shared.LogReading.Containers;
 using LogShark.Writers;
 using LogShark.Writers.Containers;
 

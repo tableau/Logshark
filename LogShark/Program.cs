@@ -7,8 +7,9 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using LogShark.Metrics;
-using LogShark.Common;
 using LogShark.Plugins;
+using LogShark.Shared.Common;
+using EnvironmentController = LogShark.Common.EnvironmentController;
 
 namespace LogShark
 {
@@ -54,17 +55,20 @@ Usage Examples:
         [Option(Description = "Select type of output writer to use (i.e. \"csv\")")]
         public string Writer { get; set; }
 
-        [Option("--username", Description = "Tableau server username.")]
-        public string Username { get; set; }
+        [Option("--username", Description = "Tableau Server username.")]
+        public string TableauServerUsername { get; set; }
 
-        [Option("--password", Description = "Tableau server password.")]
-        public string Password { get; set; }
+        [Option("--password", Description = "Tableau Server password.")]
+        public string TableauServerPassword { get; set; }
+        
+        [Option("--ts-project-description-footer", Description = "Additional text (HTML allowed) to append to the description of the project created on Tableau Server")]
+        public string TableauServerProjectDescriptionFooterHtml { get; set; }
 
-        [Option("--site", Description = "Tableau server site name.")]
-        public string Site { get; set; }
+        [Option("--site", Description = "Tableau Server site name.")]
+        public string TableauServerSite { get; set; }
 
-        [Option("--url", Description = "Tableau server url.")]
-        public string Url { get; set; }
+        [Option("--url", Description = "Tableau Server url.")]
+        public string TableauServerUrl { get; set; }
 
         [Option("--workbookname", Description = "Custom workbook name to append to the end of each workbook generated.")]
         public string WorkbookNameSuffixOverride { get; set; }
@@ -94,7 +98,7 @@ Usage Examples:
             var exeDir = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
             var configuration = new ConfigurationBuilder()
                 .SetBasePath(exeDir)
-                .AddJsonFile(Config ?? "config/LogSharkConfig.json", optional: false, reloadOnChange: false)
+                .AddJsonFile(Config ?? "Config/LogSharkConfig.json", optional: false, reloadOnChange: false)
                 .Build();
 
             var loggerFactory = ConfigureLogging(configuration);
@@ -115,10 +119,11 @@ Usage Examples:
                 RequestedPlugins = RequestedPlugins,
                 UserProvidedRunId = RunId,
                 RequestedWriter = Writer,
-                TableauServerUsername = Username,
-                TableauServerPassword = Password,
-                TableauServerSite = Site,
-                TableauServerUrl = Url,
+                TableauServerUsername = TableauServerUsername,
+                TableauServerPassword = TableauServerPassword,
+                TableauServerSite = TableauServerSite,
+                TableauServerUrl = TableauServerUrl,
+                TableauServerProjectDescriptionFooterHtml = TableauServerProjectDescriptionFooterHtml,
                 WorkbookNameSuffixOverride = WorkbookNameSuffixOverride,
             };
             var config = new LogSharkConfiguration(clParameters, configuration, loggerFactory);
@@ -141,7 +146,7 @@ Usage Examples:
                 }
                 else if (string.IsNullOrWhiteSpace(LogSetLocation))
                 {
-                    Console.WriteLine("The LogSetLocation field is required.\nSpecify--help for a list of available options and commands.");
+                    Console.WriteLine("The LogSetLocation field is required.\nSpecify --help for a list of available options and commands.");
                     return EnvironmentController.SetExitCode(ExitCode.ERROR);
                 }
                 else

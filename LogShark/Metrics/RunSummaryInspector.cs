@@ -194,7 +194,8 @@ namespace LogShark.Metrics
                     var publishedWorkbooks = publishedWorkbooksInfo.Select(wpr => new EndMetrics.ContextModel.PublishedWorkbookModel()
                     {
                         ExceptionMessage = wpr.Exception?.Message,
-                        PublishedSuccessfully = wpr.PublishedSuccessfully,
+                        PublishedSuccessfully = wpr.PublishState == WorkbookPublishResult.WorkbookPublishState.Success,
+                        PublishState = wpr.PublishState.ToString(),
                         WorkbookName = wpr.PublishedWorkbookName,
                     }).ToList();
                     return publishedWorkbooks;

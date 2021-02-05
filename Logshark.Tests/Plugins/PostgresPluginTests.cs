@@ -1,12 +1,13 @@
 ﻿using FluentAssertions;
-using LogShark.Containers;
 using LogShark.Plugins.Postgres;
 using LogShark.Tests.Plugins.Helpers;
 using Microsoft.Extensions.Logging.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using LogShark.LogParser.Containers;
+using LogShark.Shared;
+using LogShark.Shared.LogReading;
+using LogShark.Shared.LogReading.Containers;
 using Xunit;
 
 namespace LogShark.Tests.Plugins

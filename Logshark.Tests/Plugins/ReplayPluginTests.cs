@@ -1,7 +1,4 @@
 using FluentAssertions;
-using LogShark.Containers;
-using LogShark.LogParser.Containers;
-using LogShark.Plugins.Shared;
 using LogShark.Tests.Plugins.Helpers;
 using Microsoft.Extensions.Logging.Abstractions;
 using Newtonsoft.Json;
@@ -10,6 +7,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using LogShark.Plugins.Replayer;
+using LogShark.Shared;
+using LogShark.Shared.LogReading.Containers;
 using Xunit;
 
 namespace LogShark.Tests.Plugins

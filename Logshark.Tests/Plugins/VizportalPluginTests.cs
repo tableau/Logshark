@@ -1,12 +1,12 @@
 ﻿using FluentAssertions;
-using LogShark.Containers;
 using LogShark.Plugins.Vizportal;
 using LogShark.Tests.Plugins.Helpers;
 using Microsoft.Extensions.Logging.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using LogShark.LogParser.Containers;
+using LogShark.Shared;
+using LogShark.Shared.LogReading.Containers;
 using Xunit;
 
 namespace LogShark.Tests.Plugins
@@ -57,10 +57,7 @@ namespace LogShark.Tests.Plugins
             }
 
             var expectedOutput = _testCases.Select(testCase => testCase.ExpectedOutput).ToList();
-            var testWriter = testWriterFactory.Writers.Values.First() as TestWriter<VizportalEvent>;
-
-            testWriterFactory.Writers.Count.Should().Be(1);
-            testWriter.WasDisposed.Should().Be(true);
+            var testWriter = testWriterFactory.GetOneWriterAndVerifyOthersAreEmptyAndDisposed<VizportalEvent>("VizportalEvents", 1);
             testWriter.ReceivedObjects.Should().BeEquivalentTo(expectedOutput);
         }
 
@@ -71,10 +68,10 @@ namespace LogShark.Tests.Plugins
                 LogContents = @"2018-07-12 17:13:42.835 -0700 (-,-,-,W0futr2lVgac7tY08X1vpwAAA90,0:-12ed38f9:16490d16613:-7fe1) catalina-exec-1 vizportal: INFO  com.tableausoftware.app.vizportal.LoggingInterceptor - Request received: /v1/getSessionInfo",
                 LogFileInfo = TestLogFileInfo,
                 LineNumber = 1,
-                ExpectedOutput = new VizportalEvent
+                ExpectedOutput = new
                 {
                     Class = "com.tableausoftware.app.vizportal.LoggingInterceptor",
-                    File = "vizportal-0.log",
+                    FileName = "vizportal-0.log",
                     FilePath = @"vizportal/vizportal-0.log",
                     LineNumber = 1,
                     Message = @"Request received: /v1/getSessionInfo",

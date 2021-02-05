@@ -2,6 +2,7 @@ using System;
 using LogShark.Containers;
 using LogShark.Extensions;
 using LogShark.Plugins.Shared;
+using LogShark.Shared.LogReading.Containers;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -59,30 +60,9 @@ namespace LogShark.Plugins.DataServer.Model
         public string TempTableAction { get; set; }
         public long? ValueSizeBytes { get; set; }
 
-        public DataServerEvent(
-            LogLine logLine,
-            DateTime timestamp,
-            string eventKey,
-            string requestId,
-            string sessionId,
-            string severity,
-            string site,
-            string threadId,
-            string user,
-            string message)
-            : base(
-                logLine,
-                timestamp,
-                eventKey,
-                null,
-                requestId,
-                sessionId,
-                severity,
-                site,
-                threadId,
-                user)
+        public DataServerEvent(LogLine logLine, JavaLineMatchResult javaLineMatchResult) : base(logLine, javaLineMatchResult)
         {
-            EventValue = message;
+            EventValue = javaLineMatchResult.Message;
         }
         
         public DataServerEvent(LogLine logLine, NativeJsonLogsBaseEvent baseEvent) : base(logLine, baseEvent)

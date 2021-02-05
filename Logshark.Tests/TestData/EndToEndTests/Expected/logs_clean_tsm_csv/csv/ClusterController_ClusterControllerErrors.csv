@@ -1,4 +1,4 @@
-Class,Message,Severity,File,FilePath,LineNumber,Timestamp,Worker
+Class,Message,Severity,FileName,FilePath,LineNumber,Timestamp,Worker
 com.tableausoftware.cluster.http.HttpServiceMonitor,"IOException connecting to HTTP server at http://localhost:80/favicon.ico
 org.apache.http.conn.HttpHostConnectException: Connect to localhost:80 [localhost/127.0.0.1, localhost/0:0:0:0:0:0:0:1] failed: Connection refused: connect
 	at org.apache.http.impl.conn.DefaultHttpClientConnectionOperator.connect(DefaultHttpClientConnectionOperator.java:159)

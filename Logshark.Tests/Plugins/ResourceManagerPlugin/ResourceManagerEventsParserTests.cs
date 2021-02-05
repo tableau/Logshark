@@ -1,13 +1,9 @@
 using System;
-using System.Collections.Generic;
 using FluentAssertions;
-using LogShark.Containers;
 using LogShark.Plugins.ResourceManager;
 using LogShark.Plugins.ResourceManager.Model;
-using LogShark.Plugins.Shared;
+using LogShark.Shared.LogReading.Containers;
 using LogShark.Tests.Plugins.Helpers;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
 
 namespace LogShark.Tests.Plugins.ResourceManagerPlugin
@@ -124,28 +120,32 @@ namespace LogShark.Tests.Plugins.ResourceManagerPlugin
 
         [Theory]
         [InlineData("Resource Manager: Exceeded foo",
-            false, false, null, false, null, false, null)]
+            false, false, null, false, null, null, false, null)]
         [InlineData("Resource Manager: Exceeded sustained high CPU threshold above 75% for 1200 seconds.  This process has the highest usage of 94%",
-            true, true, 94, false, null, false, null)]
+            true, true, 94, false, null, null, false, null)]
         [InlineData("Resource Manager: Exceeded sustained high CPU threshold above 75% for 1200 seconds.  This process has the highest usage of 94% ... or 95%", // This is not a real log line
-            true, true, 95, false, null, false, null)]
+            true, true, 95, false, null, null, false, null)]
         [InlineData("Resource Manager: Exceeded sustained high CPU threshold above 75% for 1200 seconds.  This process has the highest usage of AAA%",
-            false, false, null, false, null, false, null)]
+            false, false, null, false, null, null, false, null)]
         [InlineData("Resource Manager: Exceeded sustained high CPU threshold foo",
-            false, false, null, false, null, false, null)]
+            false, false, null, false, null, null, false, null)]
         [InlineData("Resource Manager: Exceeded allowed memory usage per process. 47,413,526,528 bytes",
-            true, false, null, true, 47413526528, false, null)]
+            true, false, null, true, 47413526528, null, false, null)]
         [InlineData("Resource Manager: Exceeded allowed memory usage per process. 47413526528 bytes",
-            true, false, null, true, 47413526528, false, null)]
+            true, false, null, true, 47413526528, null, false, null)]
         [InlineData("Resource Manager: Exceeded allowed memory usage per process. foo bytes",
-            false, false, null, false, null, false, null)]
+            false, false, null, false, null, null, false, null)]
         [InlineData("Resource Manager: Exceeded allowed memory usage across all processes. Memory info: 33,424,805,888 bytes (current process);56,026,918,912 bytes (Tableau total); 62,919,499,776 bytes (total of all processes); 17 (info count)",
-            true, false, null, false, null, true, 33424805888)]
-        [InlineData("Resource Manager: Exceeded allowed memory usage across all processes. Memory info: 33424805888 bytes (current process);56,026,918,912 bytes (Tableau total); 62,919,499,776 bytes (total of all processes); 17 (info count)",
-            true, false, null, false, null, true, 33424805888)]
-        [InlineData("Resource Manager: Exceeded allowed memory usage across all processes. Memory info: foo bytes (current process);56,026,918,912 bytes (Tableau total); 62,919,499,776 bytes (total of all processes); 17 (info count)",
-            false, false, null, false, null, false, null)]
-        public void ActionEvent(string payload, bool expectEvent, bool isCpuTermination, int? cpuValue, bool isProcessMemoryTermination, long? processMemoryValue, bool isTotalMemoryTermincation, long? totalMemoryValue)
+            true, false, null, false, 33424805888, 56026918912, true, 62919499776)]
+        [InlineData("Resource Manager: Exceeded allowed memory usage across all processes. Memory info: 33424805888 bytes (current process);56026918912 bytes (Tableau total); 62919499776 bytes (total of all processes); 17 (info count)",
+            true, false, null, false, 33424805888, 56026918912, true, 62919499776)]
+        [InlineData("Resource Manager: Exceeded allowed memory usage across all processes. Memory info: 33,424,805,888 bytes (current process);bar bytes (Tableau total); 65,419,499,776 bytes (total of all processes); 17 (info count)",
+            true, false, null, false, 33424805888, null, true, 65419499776)]
+        [InlineData("Resource Manager: Exceeded allowed memory usage across all processes. Memory info: foo bytes (current process);bar bytes (Tableau total); 62,919,499,776 bytes (total of all processes); 17 (info count)",
+            true, false, null, false, null, null, true, 62919499776)]
+        [InlineData("Resource Manager: Exceeded allowed memory usage across all processes. Memory info: foo bytes (current process);bar bytes (Tableau total); foo bytes (total of all processes); 17 (info count)",
+            false, false, null, false, null, null, false, null)]
+        public void ActionEvent(string payload, bool expectEvent, bool isCpuTermination, int? cpuValue, bool isProcessMemoryTermination, long? processMemoryValue, long? tableauTotalMemoryValue, bool isTotalMemoryTermination, long? totalMemoryValue)
         {
             var processingNotificationsCollector = new ProcessingNotificationsCollector(10);
             using (var eventProcessor = new ResourceManagerEventsProcessor(_testWriterFactory, processingNotificationsCollector))
@@ -175,7 +175,8 @@ namespace LogShark.Tests.Plugins.ResourceManagerPlugin
                         CpuUtil = cpuValue,
                         ProcessMemoryUtilTermination = isProcessMemoryTermination,
                         ProcessMemoryUtil = processMemoryValue,
-                        TotalMemoryUtilTermination = isTotalMemoryTermincation,
+                        TableauTotalMemoryUtil = tableauTotalMemoryValue,
+                        TotalMemoryUtilTermination = isTotalMemoryTermination,
                         TotalMemoryUtil = totalMemoryValue,
                     };
                 memorySampleWriter.ReceivedObjects[0].Should().BeEquivalentTo(expectedRecord);

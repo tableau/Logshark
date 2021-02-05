@@ -4,6 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Flurl.Http;
 using LogShark.Metrics.Models;
+using LogShark.Shared;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 

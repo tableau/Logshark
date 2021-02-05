@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using LogShark.Containers;
 using LogShark.Plugins.Hyper.Model;
-using LogShark.Plugins.Shared;
+using LogShark.Shared;
+using LogShark.Shared.LogReading.Containers;
 using LogShark.Writers;
 using LogShark.Writers.Containers;
 using Microsoft.Extensions.Configuration;
@@ -49,8 +49,16 @@ namespace LogShark.Plugins.Hyper
                 return;
             }
 
-            WriteHyperErrorIfMatch(logLine, baseEvent);
-            WriteHyperQueryIfMatch(logLine, baseEvent);
+            try
+            {
+
+                WriteHyperErrorIfMatch(logLine, baseEvent);
+                WriteHyperQueryIfMatch(logLine, baseEvent);
+            }
+            catch (Exception)
+            {
+                _processingNotificationsCollector.ReportError("Failed to parse line", logLine, nameof(HyperPlugin));
+            }
         }
 
         private void WriteHyperErrorIfMatch(LogLine logLine, NativeJsonLogsBaseEvent jsonEvent)
@@ -118,8 +126,8 @@ namespace LogShark.Plugins.Hyper
                     return;
                 }
             }
-            
-            
+
+
             var hyperQuery = new HyperEvent()
             {
                 FileName = logLine.LogFileInfo.FileName,
@@ -139,7 +147,7 @@ namespace LogShark.Plugins.Hyper
 
                 // log-rate-limit-reached
                 SubKey = payload["key"]?.ToString(),
-                CurrentCount = payload["current-count"]?.ToObject<int>() ?? default(int?),
+                CurrentCount = payload["current-count"]?.ToObject<long>() ?? default(long?),
                 RemainingIntervalSeconds = payload["remaining-interval-seconds"]?.ToObject<double>() ?? default(double?),
 
                 // asio-continuation-slow
@@ -150,9 +158,9 @@ namespace LogShark.Plugins.Hyper
 
                 // query-end, query-end-cancelled
                 ClientSessionId = jsonEvent.ContextMetrics?.ClientSessionId ?? payload["client-session-id"]?.ToString(),
-                ClientRequestId = jsonEvent.ContextMetrics?.ClientRequestId, 
+                ClientRequestId = jsonEvent.ContextMetrics?.ClientRequestId,
                 Columns = payload["cols"]?.ToObject<double>() ?? default(double?),
-                CopyDataSize = payload["copydata-size"]?.ToObject<int>() ?? default(int?),
+                CopyDataSize = payload["copydata-size"]?.ToObject<long>() ?? default(long?),
                 CopyDataTime = payload["copydata-time"]?.ToObject<double>() ?? default(double?),
                 ExclusiveExecution = payload["ExclusiveExecution"]?.ToObject<bool>() ?? default(bool?),
                 LockAcquisitionTime = payload["lock-acquisition-time"]?.ToObject<double>() ?? default(double?),
@@ -184,10 +192,10 @@ namespace LogShark.Plugins.Hyper
                 ExecThreadsWaitTime = payload["exec-threads"]?["wait-time"]?.ToObject<double>() ?? default(double?),
                 ExecThreadsTotalTime = payload["exec-threads"]?["total-time"]?.ToObject<double>() ?? default(double?),
                 StorageAccessTime = payload["exec-threads"]?["storage"]?["access-time"]?.ToObject<double>() ?? default(double?),
-                StorageAccessCount = payload["exec-threads"]?["storage"]?["access-count"]?.ToObject<int>() ?? default(int?),
+                StorageAccessCount = payload["exec-threads"]?["storage"]?["access-count"]?.ToObject<long>() ?? default(long?),
                 StorageAccessBytes = payload["exec-threads"]?["storage"]?["access-bytes"]?.ToObject<long>() ?? default(long?),
                 StorageWriteTime = payload["exec-threads"]?["storage"]?["write-time"]?.ToObject<double>() ?? default(double?),
-                StorageWriteCount = payload["exec-threads"]?["storage"]?["write-count"]?.ToObject<int>() ?? default(int?),
+                StorageWriteCount = payload["exec-threads"]?["storage"]?["write-count"]?.ToObject<long>() ?? default(long?),
                 StorageWriteBytes = payload["exec-threads"]?["storage"]?["write-bytes"]?.ToObject<long>() ?? default(long?),
 
                 // connection-startup-begin
@@ -210,7 +218,7 @@ namespace LogShark.Plugins.Hyper
                 Reason = payload["reason"]?.ToString(),
 
                 // dbregistry-*
-                NewRefCount = payload["new-ref-count"]?.ToObject<int>() ?? default(int?),
+                NewRefCount = payload["new-ref-count"]?.ToObject<long>() ?? default(long?),
                 Error = payload["error"]?.ToString(),
 
                 // dbregistry-load
@@ -248,10 +256,10 @@ namespace LogShark.Plugins.Hyper
                 BuildVersion = payload["build-version"]?.ToString(),
                 BuildType = payload["build-type"]?.ToString(),
                 BuildCpuFeatures = payload["build-cpu-features"]?.ToString(),
-                NetworkThreads = payload["network-threads"]?.ToObject<int>() ?? default(int?),
-                ParentPid = payload["parent-pid"]?.ToObject<int>() ?? default(int?),
-                MinProtocolVersion = payload["min-protocol-version"]?.ToObject<int>() ?? default(int?),
-                MaxProtocolVersion = payload["max-protocol-version"]?.ToObject<int>() ?? default(int?),
+                NetworkThreads = payload["network-threads"]?.ToObject<long>() ?? default(long?),
+                ParentPid = payload["parent-pid"]?.ToObject<long>() ?? default(long?),
+                MinProtocolVersion = payload["min-protocol-version"]?.ToObject<long>() ?? default(long?),
+                MaxProtocolVersion = payload["max-protocol-version"]?.ToObject<long>() ?? default(long?),
 
                 // resource-stats
                 VirtualTotalMb = payload["memory"]?["virtual"]?["total-mb"]?.ToObject<long>() ?? default(long?),

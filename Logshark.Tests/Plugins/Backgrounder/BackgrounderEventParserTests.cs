@@ -2,11 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
-using LogShark.Containers;
 using LogShark.Plugins.Backgrounder;
 using LogShark.Plugins.Backgrounder.Model;
+using LogShark.Shared;
+using LogShark.Shared.LogReading.Containers;
 using LogShark.Tests.Plugins.Helpers;
-using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using Xunit;
 

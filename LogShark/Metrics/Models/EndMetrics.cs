@@ -66,6 +66,7 @@ namespace LogShark.Metrics.Models
             {
                 public string ExceptionMessage { get; set; }
                 public bool PublishedSuccessfully { get; set; }
+                public string PublishState { get; set; }
                 public string WorkbookName { get; set; }
             }
 

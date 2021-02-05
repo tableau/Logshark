@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using LogShark.Containers;
+using LogShark.Shared;
+using LogShark.Shared.LogReading.Containers;
 
 namespace LogShark
 {
@@ -50,6 +52,11 @@ namespace LogShark
         {
             ReportError(message, logLine.LogFileInfo.FilePath, logLine.LineNumber, reportedBy);
         }
+        
+        public void ReportError(string message, string reportedBy)
+        {
+            ReportError(message, "N/A", 0, reportedBy);
+        }
 
         public void ReportWarning(string message, string filePath, int lineNumber, string reportedBy)
         {
@@ -73,6 +80,11 @@ namespace LogShark
         public void ReportWarning(string message, LogLine logLine, string reportedBy)
         {
             ReportWarning(message, logLine.LogFileInfo.FilePath, logLine.LineNumber, reportedBy);
+        }
+        
+        public void ReportWarning(string message, string reportedBy)
+        {
+            ReportWarning(message, "N/A", 0, reportedBy);
         }
     }
 }

@@ -1,8 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Text.RegularExpressions;
-using LogShark.Containers;
-using LogShark.Plugins.Shared;
+﻿using LogShark.Plugins.Shared;
+using LogShark.Shared.LogReading.Containers;
 
 namespace LogShark.Plugins.ResourceManager.Model
 {

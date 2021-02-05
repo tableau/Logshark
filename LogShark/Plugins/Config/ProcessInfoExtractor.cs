@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using LogShark.Extensions;
 using LogShark.Plugins.Config.Models;
-using Microsoft.Extensions.Logging;
+using LogShark.Shared;
 
 namespace LogShark.Plugins.Config
 {
@@ -29,7 +29,7 @@ namespace LogShark.Plugins.Config
             if (_workgroupYml == null || _hostnameMap.Count == 0)
             {
                 const string error = "Config file is null or hostname map is empty. Cannot generate process info records";
-                _processingNotificationsCollector.ReportError(error, "N/A", 0, nameof(ConfigPlugin));
+                _processingNotificationsCollector.ReportError(error, nameof(ConfigPlugin));
                 return new List<ConfigProcessInfo>();
             }
             
@@ -40,9 +40,8 @@ namespace LogShark.Plugins.Config
                 processInfoRecords.AddRange(GetWorkerDetails(workerIndex));
             }
 
-            // Add process info records that work differenntly than other processes
+            // Add process info records that work differently than other processes
             processInfoRecords.AddRange(GetPostgresProcessDetails());
-            processInfoRecords.AddRange(GetCacheServerProcessDetails());
 
             return processInfoRecords;
         }
@@ -52,7 +51,7 @@ namespace LogShark.Plugins.Config
             if (configFile == null || !configFile.Values.ContainsKey(ConfigKeyWithHostMapping))
             {
                 var error = $"Config file is null or doesn't contain {ConfigKeyWithHostMapping} key. Cannot generate hostname map for workers";
-                processingNotificationsCollector.ReportError(error, "N/A", 0, nameof(ConfigPlugin));
+                processingNotificationsCollector.ReportError(error, nameof(ConfigPlugin));
                 return new Dictionary<int, string>();
             }
 
@@ -82,17 +81,29 @@ namespace LogShark.Plugins.Config
             foreach (var processName in processNames)
             {
                 var processCount = GetProcessCount(workerIndex, processName);
-                var processPort = GetPort(workerIndex, processName);
 
-                if (!processCount.HasValue || !processPort.HasValue)
+                if (!processCount.HasValue)
                 {
                     continue;
                 }
 
                 for (var i = 0; i < processCount; i++)
                 {
-                    var configProcessInfo = new ConfigProcessInfo(_workgroupYml.LogFileInfo.LastModifiedUtc, _hostnameMap[workerIndex], processPort.Value + i, processName, workerIndex);
-                    workerDetails.Add(configProcessInfo);
+                    var processPort = GetPort(workerIndex, processName);
+                    if (processPort == null)
+                    {
+                        processPort = GetPort(workerIndex, $"{processName}_{i}");
+                    }
+                    else
+                    {
+                        processPort += i;
+                    }
+
+                    if (processPort.HasValue)
+                    {
+                        var configProcessInfo = new ConfigProcessInfo(_workgroupYml.LogFileInfo.LastModifiedUtc, _hostnameMap[workerIndex], processPort.Value, processName, workerIndex);
+                        workerDetails.Add(configProcessInfo);
+                    }
                 }
             }
 
@@ -132,42 +143,7 @@ namespace LogShark.Plugins.Config
 
             return postgresProcessInfo;
         }
-
-        private IEnumerable<ConfigProcessInfo> GetCacheServerProcessDetails()
-        {
-            const string cacheServerProcessName = "cacheserver";
-            var cacheServerProcessInfo = new List<ConfigProcessInfo>();
-            var workerCount = _hostnameMap.Count;
-
-            for (int workerIndex = 0; workerIndex < workerCount; workerIndex++)
-            {
-                var processCount = GetProcessCount(workerIndex, cacheServerProcessName);
-                if (!processCount.HasValue || processCount == 0)
-                {
-                    continue;
-                }
-
-                for (int processIndex = 0; processIndex < processCount; processIndex++)
-                {
-                    string cacheServerPortKey = $"worker{workerIndex}.{cacheServerProcessName}_{processIndex}.port";
-                    var port = _workgroupYml.Values.GetIntValueOrNull(cacheServerPortKey);
-                    if (port == null)
-                    {
-                        continue;
-                    }
-
-                    cacheServerProcessInfo.Add(new ConfigProcessInfo(
-                        _workgroupYml.LogFileInfo.LastModifiedUtc,
-                        _hostnameMap[workerIndex],
-                        port ?? -1,
-                        cacheServerProcessName,
-                        workerIndex));
-                }
-            }
-
-            return cacheServerProcessInfo;
-        }
-        
+                
         private int? GetProcessCount(int workerIndex, string processName)
         {
             var processKeyPrefix = $"worker{workerIndex}.{processName}".ToLowerInvariant();

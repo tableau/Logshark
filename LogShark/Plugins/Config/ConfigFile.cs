@@ -1,5 +1,6 @@
 using System.Collections.Generic;
-using LogShark.Containers;
+using LogShark.Shared;
+using LogShark.Shared.LogReading.Containers;
 
 namespace LogShark.Plugins.Config
 {

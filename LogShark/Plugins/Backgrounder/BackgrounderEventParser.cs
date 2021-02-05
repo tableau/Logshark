@@ -1,11 +1,12 @@
-using System;
-using LogShark.Containers;
 using LogShark.Plugins.Backgrounder.Model;
 using LogShark.Plugins.Shared;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using LogShark.Extensions;
+using LogShark.Shared;
+using LogShark.Shared.Extensions;
+using LogShark.Shared.LogReading.Containers;
 
 namespace LogShark.Plugins.Backgrounder
 {

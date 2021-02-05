@@ -1,5 +1,4 @@
-﻿using LogShark.Containers;
-using LogShark.Plugins.Shared;
+﻿using LogShark.Shared.LogReading.Containers;
 
 namespace LogShark.Plugins.ResourceManager.Model
 {
@@ -9,6 +8,7 @@ namespace LogShark.Plugins.ResourceManager.Model
         public int? CpuUtil { get; }
         public bool ProcessMemoryUtilTermination { get; }
         public long? ProcessMemoryUtil { get; }
+        public long? TableauTotalMemoryUtil { get; }
         public bool TotalMemoryUtilTermination { get; }
         public long? TotalMemoryUtil { get; }
 
@@ -20,6 +20,7 @@ namespace LogShark.Plugins.ResourceManager.Model
             int? cpuUtil,
             bool processMemoryUtilTermination,
             long? processMemoryUtil,
+            long? tableauTotalMemoryUtil,
             bool totalMemoryUtilTermination,
             long? totalMemoryUtil
             ) : base(baseEvent, logLine, processName)
@@ -28,6 +29,7 @@ namespace LogShark.Plugins.ResourceManager.Model
             CpuUtil = cpuUtil;
             ProcessMemoryUtilTermination = processMemoryUtilTermination;
             ProcessMemoryUtil = processMemoryUtil;
+            TableauTotalMemoryUtil = tableauTotalMemoryUtil;
             TotalMemoryUtilTermination = totalMemoryUtilTermination;
             TotalMemoryUtil = totalMemoryUtil;
         }
@@ -40,7 +42,7 @@ namespace LogShark.Plugins.ResourceManager.Model
         {
             return cpuUtil == null
                 ? null 
-                : new ResourceManagerAction(baseEvent, logLine, processName, true, cpuUtil, false, null, false, null);
+                : new ResourceManagerAction(baseEvent, logLine, processName, true, cpuUtil, false, null, null, false, null);
         }
         
         public static ResourceManagerAction GetProcessMemoryTerminationEvent(
@@ -51,18 +53,20 @@ namespace LogShark.Plugins.ResourceManager.Model
         {
             return processMemoryUtil == null
                 ? null
-                : new ResourceManagerAction(baseEvent, logLine, processName, false, null, true, processMemoryUtil, false, null);
+                : new ResourceManagerAction(baseEvent, logLine, processName, false, null, true, processMemoryUtil, null, false, null);
         }
         
         public static ResourceManagerAction GetTotalMemoryTerminationEvent(
             NativeJsonLogsBaseEvent baseEvent,
             LogLine logLine,
             string processName,
+            long? processMemoryUtil,
+            long? tableauTotalMemoryUtil,
             long? totalMemoryUtil)
         {
             return totalMemoryUtil == null
                 ? null
-                : new ResourceManagerAction(baseEvent, logLine, processName, false, null, false, null, true, totalMemoryUtil);
+                : new ResourceManagerAction(baseEvent, logLine, processName, false, null, false, processMemoryUtil, tableauTotalMemoryUtil, true, totalMemoryUtil);
         }
     }
 }

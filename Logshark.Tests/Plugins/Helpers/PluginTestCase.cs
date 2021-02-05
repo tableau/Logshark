@@ -1,8 +1,5 @@
-using LogShark.Containers;
-using LogShark.LogParser.Containers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using LogShark.Shared;
+using LogShark.Shared.LogReading.Containers;
 
 namespace LogShark.Tests.Plugins.Helpers
 {

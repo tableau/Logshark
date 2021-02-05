@@ -2,7 +2,8 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using LogShark.Containers;
 using LogShark.Extensions;
-using LogShark.Plugins.Shared;
+using LogShark.Shared;
+using LogShark.Shared.LogReading.Containers;
 using LogShark.Writers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -39,14 +40,14 @@ namespace LogShark.Plugins.Filestore
 
         public void ProcessLogLine(LogLine logLine, LogType logType)
         {
-            var @event = ParseEvent(logLine);
-            
-            if (@event == null)
+            var javaLineMatchResult = logLine.LineContents.MatchJavaLine(_regex);
+            if (!javaLineMatchResult.SuccessfulMatch)
             {
-                _processingNotificationsCollector.ReportError("Failed to parse Filestore event from log line", logLine, nameof(FilestorePlugin));
+                _processingNotificationsCollector.ReportError($"Failed to parse Filestore event from log line", logLine, nameof(FilestorePlugin));
                 return;
             }
             
+            var @event = new FilestoreEvent(logLine, javaLineMatchResult);
             _writer.AddLine(@event);
         }
 
@@ -59,23 +60,6 @@ namespace LogShark.Plugins.Filestore
         public void Dispose()
         {
             _writer?.Dispose();
-        }
-
-        private FilestoreEvent ParseEvent(LogLine logLine)
-        {
-            var match = logLine.LineContents.CastToStringAndRegexMatch(_regex);
-            if (match == null || !match.Success)
-            {
-                return null;
-            }
-            
-            return new FilestoreEvent(
-                logLine: logLine,
-                timestamp: TimestampParsers.ParseJavaLogsTimestamp(match.GetString("ts")), 
-                severity: match.GetString("sev"),
-                message: match.GetString("message"),
-                @class: match.GetString("class")
-            );
         }
     }
 }

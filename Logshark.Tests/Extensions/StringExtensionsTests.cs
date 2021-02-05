@@ -1,8 +1,8 @@
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text.RegularExpressions;
 using FluentAssertions;
-using LogShark.Extensions;
+using LogShark.Shared.Extensions;
 using Xunit;
 
 namespace LogShark.Tests.Extensions
@@ -101,6 +101,34 @@ namespace LogShark.Tests.Extensions
         {
             var actual = input.CleanControlCharacters();
             actual.Should().Be(expected);
+        }
+        
+        [Theory]
+        [InlineData(null, null)]
+        [InlineData("", "")]
+        [InlineData(" ", " ")]
+        [InlineData("C:\\ProgramData\\Tableau\\TableauServer\\data\\tabsvc\\testdir1\\ACDD1FFD58514749A3FE3E37415AEB48.test\\vizqlserver-test.log.2", "vizqlserver-test.log.2")]
+        [InlineData("tabsvc\\testdir1\\ACDD1FFD58514749A3FE3E37415AEB48.test\\vizqlserver-test.log.2", "vizqlserver-test.log.2")]
+        [InlineData("\\\\tabsvc\\testdir1\\ACDD1FFD58514749A3FE3E37415AEB48.test\\vizqlserver-test.log.2", "vizqlserver-test.log.2")]
+        [InlineData("tabsvc/testdir1/ACDD1FFD58514749A3FE3E37415AEB48.test/vizqlserver-test.log.2", "vizqlserver-test.log.2")]
+        [InlineData("/tabsvc/testdir1/ACDD1FFD58514749A3FE3E37415AEB48.test/vizqlserver-test.log.2", "vizqlserver-test.log.2")]
+        [InlineData("vizqlserver-test.log.2", "vizqlserver-test.log.2")]
+        public void ExtractFileName(string input, string expected)
+        {
+            input.ExtractFileName().Should().Be(expected);
+        }
+        
+        [Theory]
+        [InlineData("C:\\ProgramData\\Tableau\\TableauServer\\")]
+        [InlineData("Tableau\\TableauServer\\")]
+        [InlineData("TableauServer\\")]
+        [InlineData("/Tableau/TableauServer/")]
+        [InlineData("Tableau/TableauServer/")]
+        [InlineData("TableauServer/")]
+        public void ExtractFileNameCauseException(string input)
+        {
+            Action action = () => input.ExtractFileName();
+            action.Should().Throw<ArgumentException>();
         }
     }
 }

@@ -2,11 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
-using LogShark.LogParser;
-using LogShark.LogParser.Containers;
-using LogShark.LogParser.LogReaders;
-using LogShark.Plugins.Shared;
-using Microsoft.Extensions.Logging.Abstractions;
+using LogShark.Shared.LogReading.Containers;
+using LogShark.Shared.LogReading.Readers;
 using Newtonsoft.Json.Linq;
 using Xunit;
 

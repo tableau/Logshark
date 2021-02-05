@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
-using LogShark.Containers;
-using LogShark.LogParser.Containers;
 using LogShark.Plugins.Netstat;
+using LogShark.Shared;
+using LogShark.Shared.LogReading.Containers;
 using LogShark.Tests.Plugins.Helpers;
 using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;

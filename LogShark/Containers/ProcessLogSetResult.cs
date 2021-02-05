@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using LogShark.Shared;
 
 namespace LogShark.Containers
 {

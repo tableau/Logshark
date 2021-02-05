@@ -2,18 +2,24 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using FluentAssertions;
-using LogShark.LogParser;
-using LogShark.LogParser.Containers;
+using LogShark.Shared.LogReading;
+using LogShark.Shared.LogReading.Containers;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
 
 namespace LogShark.Tests.LogParser
 {
+    [Collection("Tests accessing files in TestData dir")]
     public class TableauLogsExtractorTests : InvariantCultureTestsBase, IDisposable
     {
+        private const string EmptyZip = "TestData/Empty.zip";
+        public const string InvalidZip = "TestData/NotAZip.zip";
+        private const string NonExistingTestSet = "IDoNotExist.zip";
         private const string UnzippedTestSet = "TestData/TableauLogsExtractorTest";
-        private const string ZippedTestSet = "TestData/TableauLogsExtractorTest.zip";
+        public const string ZippedTestSet = "TestData/TableauLogsExtractorTest.zip";
+        public const string ZipWithEmptyLog = "TestData/ZipWithEmptyLog.zip";
+        
         private const string TempDir = "TestTemp";
 
         private readonly ILogger _logger = new NullLoggerFactory().CreateLogger<TableauLogsExtractor>();
@@ -74,13 +80,41 @@ namespace LogShark.Tests.LogParser
         [Fact]
         public void FileOrDirDoNotExist()
         {
-            const string badFileName = "IDoNotExist.zip";
-            File.Exists(badFileName).Should().Be(false);
+            File.Exists(NonExistingTestSet).Should().Be(false);
             
-            Action testAction = () => new TableauLogsExtractor(badFileName, TempDir, _processingNotificationsCollector, _logger);
+            Action testAction = () => new TableauLogsExtractor(NonExistingTestSet, TempDir, _processingNotificationsCollector, _logger);
 
             testAction.Should().Throw<ArgumentException>();
             _processingNotificationsCollector.TotalErrorsReported.Should().Be(0);
+        }
+
+        [Theory]
+        [InlineData(EmptyZip, false)]
+        [InlineData(NonExistingTestSet, false)]
+        [InlineData(InvalidZip, false)]
+        [InlineData(UnzippedTestSet, true)]
+        [InlineData(ZippedTestSet, true)]
+        [InlineData(ZipWithEmptyLog, true)]
+        public void FileCanBeOpenedTests(string testPath, bool expectSuccess)
+        {
+            var result = TableauLogsExtractor.FileCanBeOpened(testPath, new NullLogger<TableauLogsExtractor>());
+            result.FileCanBeOpened.Should().Be(expectSuccess);
+            string.IsNullOrWhiteSpace(result.ErrorMessage).Should().Be(expectSuccess);
+        }
+        
+        [Theory]
+        [InlineData(EmptyZip, false, false)]
+        [InlineData(NonExistingTestSet, false, false)]
+        [InlineData(InvalidZip, false, false)]
+        [InlineData(UnzippedTestSet, false, false)]
+        [InlineData(ZippedTestSet, true, false)]
+        [InlineData(ZipWithEmptyLog, true, true)]
+        public void FileIsAZipWithLogsTests(string testPath, bool validZip, bool containsLogs)
+        {
+            var result = TableauLogsExtractor.FileIsAZipWithLogs(testPath, new NullLogger<TableauLogsExtractor>());
+            result.ValidZip.Should().Be(validZip);
+            result.ContainsLogFiles.Should().Be(containsLogs);
+            string.IsNullOrWhiteSpace(result.ErrorMessage).Should().Be(validZip);
         }
         
         public void Dispose()

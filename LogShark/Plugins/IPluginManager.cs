@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using LogShark.Shared;
 using LogShark.Writers;
 
 namespace LogShark.Plugins

@@ -2,6 +2,8 @@ using LogShark.Containers;
 using LogShark.Extensions;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using LogShark.Shared.Extensions;
+using LogShark.Shared.LogReading.Containers;
 
 namespace LogShark.Plugins.Shared
 {

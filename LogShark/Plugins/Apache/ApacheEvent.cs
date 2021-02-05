@@ -1,5 +1,5 @@
-using LogShark.Containers;
 using System;
+using LogShark.Shared.LogReading.Containers;
 
 namespace LogShark.Plugins.Apache
 {

@@ -1,33 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using LogShark.Containers;
+using LogShark.Shared.LogReading.Containers;
 
 namespace LogShark.Plugins.Vizportal
 {
-    public class VizportalEvent
+    public class VizportalEvent : BaseEvent
     {
-        public string RequestId { get; set; }
+        public string RequestId { get; }
+        public string User { get; }
+        public string SessionId { get; }
+        public string Site { get; }
+        public string Severity { get; }
+        public string Class { get; }
+        public string Message { get; }
 
-        public DateTime Timestamp { get; set; }
-
-        public string User { get; set; }
-
-        public string SessionId { get; set; }
-
-        public string Site { get; set; }
-
-        public string Severity { get; set; }
-
-        public string Class { get; set; }
-
-        public string Message { get; set; }
-
-        public string Worker { get; set; }
-
-        public string FilePath { get; set; }
-
-        public string File { get; set; }
-
-        public int LineNumber { get; set; }
+        public VizportalEvent(LogLine logLine, JavaLineMatchResult javaLineMatchResult)
+        : base(logLine, javaLineMatchResult.Timestamp)
+        {
+            Class = javaLineMatchResult.Class;
+            Message = javaLineMatchResult.Message;
+            RequestId = javaLineMatchResult.RequestId;
+            SessionId = javaLineMatchResult.SessionId;
+            Severity = javaLineMatchResult.Severity;
+            Site = javaLineMatchResult.Site;
+            User = javaLineMatchResult.User;
+        }
     }
 }
