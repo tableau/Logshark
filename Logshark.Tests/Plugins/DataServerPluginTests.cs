@@ -2,12 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
-using LogShark.Containers;
 using LogShark.Exceptions;
-using LogShark.LogParser.Containers;
 using LogShark.Plugins.DataServer;
 using LogShark.Plugins.DataServer.Model;
-using LogShark.Plugins.Shared;
+using LogShark.Shared;
+using LogShark.Shared.LogReading.Containers;
 using LogShark.Tests.Extensions;
 using LogShark.Tests.Plugins.Helpers;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -20,8 +19,7 @@ namespace LogShark.Tests.Plugins
     {
         private static readonly LogFileInfo CppTestLogFileInfo = new LogFileInfo("testCpp.log", @"folder1/testCpp.log", "node1", DateTime.MinValue);
         private static readonly LogFileInfo JavaTestLogFileInfo = new LogFileInfo("testJava.log", @"folder1/testJava.log", "node1", DateTime.MinValue);
-        private static readonly DateTime TestDateTime = new DateTime(2020, 5,13, 15, 10, 11);
-        
+
         private readonly ProcessingNotificationsCollector _processingNotificationsCollector;
 
         public DataServerPluginTests()

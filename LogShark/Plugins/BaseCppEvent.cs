@@ -1,6 +1,6 @@
 using System;
 using LogShark.Containers;
-using LogShark.Plugins.Shared;
+using LogShark.Shared.LogReading.Containers;
 
 namespace LogShark.Plugins
 {
@@ -29,25 +29,17 @@ namespace LogShark.Plugins
 
         public BaseCppEvent(
             LogLine logLine,
-            DateTime timestamp,
-            string eventKey,
-            int? processId,
-            string requestId,
-            string sessionId,
-            string severity,
-            string site,
-            string threadId,
-            string user) 
-            : base(logLine, timestamp)
+            JavaLineMatchResult javaLineMatchResult) 
+            : base(logLine, javaLineMatchResult.Timestamp)
         {
-            EventKey = eventKey;
-            ProcessId = processId;
-            RequestId = requestId;
-            SessionId = sessionId;
-            Severity = severity;
-            Site = site;
-            ThreadId = threadId;
-            User = user;
+            EventKey = javaLineMatchResult.Class;
+            ProcessId = javaLineMatchResult.ProcessId;
+            RequestId = javaLineMatchResult.RequestId;
+            SessionId = javaLineMatchResult.SessionId;
+            Severity = javaLineMatchResult.Severity;
+            Site = javaLineMatchResult.Site;
+            ThreadId = javaLineMatchResult.Thread;
+            User = javaLineMatchResult.User;
         }
     }
 }

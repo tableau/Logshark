@@ -26,9 +26,10 @@ namespace LogShark.Tests.E2E
         {
             var configValues = new Dictionary<string, string>()
             {
-                ["EnvironmentConfig:TempDir"] = "Temp",
+                ["EnvironmentConfig:NumberOfErrorDetailsToKeep"] = "10",
                 ["EnvironmentConfig:OutputDir"] = "Output",
                 ["EnvironmentConfig:OutputDirMaxResults"] = "1",
+                ["EnvironmentConfig:TempDir"] = "Temp",
                 ["EnvironmentConfig:WorkbookTemplatesDir"] = "Workbooks",
                 ["PluginsConfiguration:Apache:IncludeGatewayChecks"] = "true",
                 ["PluginsConfiguration:VizqlDesktop:MaxQueryLength"] = "10000",

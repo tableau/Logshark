@@ -49,7 +49,7 @@ namespace LogShark.Writers.Hyper
 
         public IWorkbookPublisher GetWorkbookPublisher(PublisherSettings publisherSettings)
         {
-            return new WorkbookPublisher(publisherSettings, _loggerFactory);
+            return new WorkbookPublisher(_config, publisherSettings, _loggerFactory);
         }
 
         public IWriter<T> GetWriter<T>(DataSetInfo dataSetInfo)

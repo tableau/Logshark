@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
 using FluentAssertions;
-using LogShark.LogParser.Containers;
-using LogShark.LogParser.LogReaders;
+using LogShark.Shared;
+using LogShark.Shared.LogReading.Containers;
+using LogShark.Shared.LogReading.Readers;
 using Xunit;
 
 namespace LogShark.Tests.LogParser

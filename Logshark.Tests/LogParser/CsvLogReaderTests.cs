@@ -1,11 +1,10 @@
 ﻿using CsvHelper.Configuration.Attributes;
 using FluentAssertions;
-using LogShark.LogParser;
-using LogShark.LogParser.Containers;
-using LogShark.LogParser.LogReaders;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using LogShark.Shared.LogReading.Containers;
+using LogShark.Shared.LogReading.Readers;
 using Xunit;
 
 namespace LogShark.Tests.LogParser

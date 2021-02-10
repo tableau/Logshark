@@ -1,5 +1,5 @@
-using System;
 using LogShark.Containers;
+using LogShark.Shared.LogReading.Containers;
 
 namespace LogShark.Plugins.Filestore
 {
@@ -11,15 +11,12 @@ namespace LogShark.Plugins.Filestore
 
         public FilestoreEvent(
             LogLine logLine,
-            DateTime timestamp,
-            string @class,
-            string message,
-            string severity            
-            ) : base(logLine, timestamp)
+            JavaLineMatchResult javaLineMatchResult) 
+            : base(logLine, javaLineMatchResult.Timestamp)
         {
-            Severity = severity;
-            Message = message;
-            Class = @class;
+            Severity = javaLineMatchResult.Severity;
+            Message = javaLineMatchResult.Message;
+            Class = javaLineMatchResult.Class;
         }
     }
 }

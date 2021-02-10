@@ -1,16 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.1169
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29020.237
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogShark", "LogShark\LogShark.csproj", "{EA705079-65E2-4E68-8FEB-91542F3503E3}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogShark.Tests", "LogShark.Tests\LogShark.Tests.csproj", "{245D8915-8292-4D99-88F7-1701ABB97E68}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{49B2B0D8-EA50-417B-A2C9-4FDA7B9D3809}"
-	ProjectSection(SolutionItems) = preProject
-		.gitlab-ci.yml = .gitlab-ci.yml
-	EndProjectSection
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogShark.Shared", "LogShark.Shared\LogShark.Shared.csproj", "{0022639E-6916-49AA-B265-E8BA078C366F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -26,6 +23,10 @@ Global
 		{245D8915-8292-4D99-88F7-1701ABB97E68}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{245D8915-8292-4D99-88F7-1701ABB97E68}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{245D8915-8292-4D99-88F7-1701ABB97E68}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0022639E-6916-49AA-B265-E8BA078C366F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0022639E-6916-49AA-B265-E8BA078C366F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0022639E-6916-49AA-B265-E8BA078C366F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0022639E-6916-49AA-B265-E8BA078C366F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

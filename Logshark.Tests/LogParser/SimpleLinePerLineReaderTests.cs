@@ -1,9 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
-using LogShark.LogParser;
-using LogShark.LogParser.Containers;
-using LogShark.LogParser.LogReaders;
+using LogShark.Shared.LogReading.Containers;
+using LogShark.Shared.LogReading.Readers;
 using Xunit;
 
 namespace LogShark.Tests.LogParser

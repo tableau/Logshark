@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using LogShark.Containers;
 using LogShark.Plugins.Config.Models;
+using LogShark.Shared;
+using LogShark.Shared.LogReading.Containers;
 using LogShark.Writers;
 using LogShark.Writers.Containers;
 using Microsoft.Extensions.Configuration;
@@ -76,7 +78,7 @@ namespace LogShark.Plugins.Config
                     "Uncaught exception occurred while processing topology entries. Results might be incomplete or empty. " +
                     "This most likely means that configuration yml files (workgroup.yml, tabsvc.yml) were corrupt or in a wrong format. " +
                     $"Exception message: {ex.Message}";
-                _processingNotificationsCollector.ReportError(error, "N/A", 0, nameof(ConfigPlugin));
+                _processingNotificationsCollector.ReportError(error, nameof(ConfigPlugin));
             }
             
             var writersLineCounts = new List<WriterLineCounts>

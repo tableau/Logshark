@@ -17,7 +17,7 @@ namespace LogShark.Writers.Csv
             _logger = logger;
         }
 
-        public Task<PublisherResults> PublishWorkbooks(string projectName, string projectDescription, IEnumerable<CompletedWorkbookInfo> completedWorkbooks, IEnumerable<string> workbookTags)
+        public Task<PublisherResults> PublishWorkbooks(string projectName, IEnumerable<CompletedWorkbookInfo> completedWorkbooks, IEnumerable<string> workbookTags)
         {
             throw new System.NotImplementedException();
         }

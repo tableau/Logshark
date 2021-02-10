@@ -1,30 +1,22 @@
-﻿using LogShark.Containers;
-using System;
-using System.Globalization;
+﻿using System;
+using LogShark.Containers;
+using LogShark.Shared.LogReading.Containers;
 
 namespace LogShark.Plugins.ClusterController
 {
-    public abstract class BaseClusterControllerEvent
+   public class ClusterControllerDiskSpaceSample : BaseEvent
     {
-        public BaseClusterControllerEvent(LogLine logLine, string timestamp)
-        {
-            Timestamp = DateTime.ParseExact(timestamp, "yyyy-MM-dd HH:mm:ss.fff", CultureInfo.InvariantCulture);
-            Worker = logLine.LogFileInfo.Worker;
-            FilePath = logLine.LogFileInfo.FilePath;
-            File = logLine.LogFileInfo.FileName;
-            LineNumber = logLine.LineNumber;
-        }
+        public ClusterControllerDiskSpaceSample(LogLine logLine, DateTime timestamp)
+            : base(logLine, timestamp) { }
 
-        public string File { get; set; }
-        public string FilePath { get; set; }
-        public int LineNumber { get; set; }
-        public DateTime Timestamp { get; set; }
-        public string Worker { get; set; }
+        public string Disk { get; set; }
+        public long? TotalSpace { get; set; }
+        public long? UsedSpace { get; set; }
     }
 
-    public class ClusterControllerDiskIoSample : BaseClusterControllerEvent
+    public class ClusterControllerDiskIoSample : BaseEvent
     {
-        public ClusterControllerDiskIoSample(LogLine logLine, string timestamp)
+        public ClusterControllerDiskIoSample(LogLine logLine, DateTime timestamp)
             : base(logLine, timestamp) { }
 
         public string Device { get; set; }
@@ -35,37 +27,47 @@ namespace LogShark.Plugins.ClusterController
         public double? WritesPerSec { get; set; }
     }
 
-    public class ClusterControllerError : BaseClusterControllerEvent
+    public class ClusterControllerError : BaseEvent
     {
-        public ClusterControllerError(LogLine logLine, string timestamp)
-            : base(logLine, timestamp) { }
+        public string Class { get; }
+        public string Message { get; }
+        public string Severity { get; }
 
-        public string Class { get; set; }
-        public string Message { get; set; }
-        public string Severity { get; set; }
+        public ClusterControllerError(LogLine logLine, JavaLineMatchResult javaLineMatchResult)
+            : base(logLine, javaLineMatchResult.Timestamp)
+        {
+            Class = javaLineMatchResult.Class;
+            Message = javaLineMatchResult.Message;
+            Severity = javaLineMatchResult.Severity;
+        }
     }
 
-    public class ClusterControllerPostgresAction : BaseClusterControllerEvent
+    public class ClusterControllerPostgresAction : BaseEvent
     {
-        public ClusterControllerPostgresAction(LogLine logLine, string timestamp)
+        public ClusterControllerPostgresAction(LogLine logLine, DateTime timestamp)
             : base(logLine, timestamp) { }
 
         public string Action { get; set; }
     }
 
-    public class ZookeeperError : BaseClusterControllerEvent
+    public class ZookeeperError : BaseEvent
     {
-        public ZookeeperError(LogLine logLine, string timestamp)
-            : base(logLine, timestamp) { }
+        public string Class { get; }
+        public string Message { get; }
+        public string Severity { get; }
 
-        public string Class { get; set; }
-        public string Message { get; set; }
-        public string Severity { get; set; }
+        public ZookeeperError(LogLine logLine, JavaLineMatchResult javaLineMatchResult)
+            : base(logLine, javaLineMatchResult.Timestamp)
+        {
+            Class = javaLineMatchResult.Class;
+            Message = javaLineMatchResult.Message;
+            Severity = javaLineMatchResult.Severity;
+        }
     }
 
-    public class ZookeeperFsyncLatency : BaseClusterControllerEvent
+    public class ZookeeperFsyncLatency : BaseEvent
     {
-        public ZookeeperFsyncLatency(LogLine logLine, string timestamp)
+        public ZookeeperFsyncLatency(LogLine logLine, DateTime timestamp)
             : base(logLine, timestamp) { }
 
         public int? FsyncLatencyMs { get; set; }

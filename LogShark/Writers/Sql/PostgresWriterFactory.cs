@@ -179,7 +179,7 @@ namespace LogShark.Writers.Sql
 
         public IWorkbookPublisher GetWorkbookPublisher(PublisherSettings publisherSettings)
         {
-            return new WorkbookPublisher(publisherSettings, _dbCreds, _loggerFactory);
+            return new WorkbookPublisher(_config, publisherSettings, _dbCreds, _loggerFactory);
         }
     }
 }

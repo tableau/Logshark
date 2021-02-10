@@ -1,0 +1,32 @@
+namespace LogShark.Shared
+{
+    public enum LogType
+    {
+        Apache,
+        BackgrounderCpp,
+        BackgrounderJava,
+        ClusterController,
+        ControlLogsJava,
+        CrashPackageLog,
+        CrashPackageManifest,
+        DataserverCpp,
+        DataserverJava,
+        Filestore,
+        Hyper,
+        NetstatLinux,
+        NetstatWindows,
+        PostgresCsv,
+        ProtocolServer,
+        SearchServer,
+        Tabadmin,
+        TabadminAgentJava,
+        TabadminControllerJava,
+        TabsvcYml,
+        VizportalCpp,
+        VizportalJava,
+        VizqlserverCpp,
+        VizqlDesktop,
+        WorkgroupYml,
+        Zookeeper
+    }
+}

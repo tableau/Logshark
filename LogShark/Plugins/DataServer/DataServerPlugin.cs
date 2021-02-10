@@ -4,9 +4,13 @@ using LogShark.Exceptions;
 using LogShark.Extensions;
 using LogShark.Plugins.DataServer.Model;
 using LogShark.Plugins.Shared;
+using LogShark.Shared;
+using LogShark.Shared.Extensions;
+using LogShark.Shared.LogReading.Containers;
 using LogShark.Writers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace LogShark.Plugins.DataServer
@@ -71,9 +75,17 @@ namespace LogShark.Plugins.DataServer
             {
                 return;
             }
-
-            var @event = new DataServerEvent(logLine, baseEvent);
-            _writer.AddLine(@event);
+            
+            try
+            {
+                var @event = new DataServerEvent(logLine, baseEvent);
+                _writer.AddLine(@event);
+            }
+            catch (JsonException ex)
+            {
+                var message = $"Exception occurred while parsing log line. Most likely - something is wrong with JSON format. Event type: `{baseEvent?.EventType ?? "(null)"}`. Exception message: `{ex.Message}`";
+                _processingNotificationsCollector.ReportError(message, logLine, nameof(DataServerPlugin));
+            }
         }
         
         private static bool ShouldSkip(NativeJsonLogsBaseEvent baseEvent)
@@ -95,24 +107,14 @@ namespace LogShark.Plugins.DataServer
 
         private void ProcessJavaLine(LogLine logLine)
         {
-            var match = logLine.LineContents.CastToStringAndRegexMatch(SharedRegex.JavaLogLineRegex);
-            if (match == null || !match.Success)
+            var javaLineMatchResult = logLine.LineContents.MatchJavaLineWithSessionInfo(SharedRegex.JavaLogLineRegex);
+            if (!javaLineMatchResult.SuccessfulMatch)
             {
                 _processingNotificationsCollector.ReportError("Failed to parse Data Server Java event from log line", logLine, nameof(DataServerPlugin));
                 return;
             }
             
-            var @event = new DataServerEvent(
-                logLine,
-                TimestampParsers.ParseJavaLogsTimestamp(match.GetString("ts")),
-                match.GetString("class"),
-                match.GetNullableString("req"),
-                match.GetNullableString("sess"),
-                match.GetString("sev"),
-                match.GetNullableString("site"),
-                match.GetString("thread"),
-                match.GetNullableString("user"),
-                match.GetString("message"));
+            var @event = new DataServerEvent(logLine, javaLineMatchResult);
             _writer.AddLine(@event);
         }
     }

@@ -1,13 +1,11 @@
-﻿using LogShark.Containers;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using LogShark.Containers;
+using LogShark.Shared.Common;
 
 namespace LogShark.Common
 {
     public static class EnvironmentController
     {
-        public static int SetExitCode(RunSummary runSummary, bool suppressNontransientErrors)
+        public static int SetExitCode(RunSummary runSummary, bool suppressNonTransientErrors)
         {
             if (runSummary.IsSuccess)
             {
@@ -19,8 +17,7 @@ namespace LogShark.Common
                 case true:
                     return SetExitCode(ExitCode.ERROR_TRANSIENT);
                 case false:
-                    return SetExitCode(suppressNontransientErrors ? ExitCode.OK : ExitCode.ERROR);
-                case null:
+                    return SetExitCode(suppressNonTransientErrors ? ExitCode.OK : ExitCode.ERROR);
                 default:
                     return SetExitCode(ExitCode.ERROR_UNKNOWN);
             }
@@ -28,9 +25,7 @@ namespace LogShark.Common
 
         public static int SetExitCode(ExitCode exitCode)
         {
-
-            Environment.ExitCode = (int)exitCode;
-            return Environment.ExitCode;
+            return EnvironmentControllerBase.SetExitCode(exitCode);
         }
     }
 }

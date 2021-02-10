@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using LogShark.Containers;
 using LogShark.Plugins;
+using LogShark.Shared;
+using LogShark.Shared.LogReading.Containers;
 using LogShark.Writers;
 using LogShark.Writers.Containers;
 using Microsoft.Extensions.Configuration;

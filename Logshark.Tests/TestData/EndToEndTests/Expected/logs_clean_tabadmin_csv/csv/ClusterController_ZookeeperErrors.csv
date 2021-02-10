@@ -1,4 +1,4 @@
-Class,Message,Severity,File,FilePath,LineNumber,Timestamp,Worker
+Class,Message,Severity,FileName,FilePath,LineNumber,Timestamp,Worker
 org.apache.zookeeper.server.quorum.QuorumPeerConfig,"Invalid configuration, only one server specified (ignoring)",ERROR,zookeeper-0.log,zookeeper/zookeeper-0.log,3,08/12/2019 20:37:11,worker0
 org.apache.zookeeper.server.quorum.QuorumPeerConfig,"Invalid configuration, only one server specified (ignoring)",ERROR,zookeeper-0.log,zookeeper/zookeeper-0.log,11,08/12/2019 20:37:11,worker0
 org.apache.zookeeper.server.quorum.QuorumPeerConfig,"Invalid configuration, only one server specified (ignoring)",ERROR,zookeeper-0.log,zookeeper/zookeeper-0.log,49,08/12/2019 21:16:03,worker0

@@ -13,7 +13,7 @@ namespace LogShark.Plugins.Hyper.Model
 
         // Log Line Shared
         public string Key { get; set; }
-        public int ProcessId { get; set; }
+        public long ProcessId { get; set; }
         public string RequestId { get; set; }
         public string SessionId { get; set; }
         public string Severity { get; set; }
@@ -25,7 +25,7 @@ namespace LogShark.Plugins.Hyper.Model
 
         //log-rate-limit-reached
         public string SubKey { get; set; }
-        public int? CurrentCount { get; set; }
+        public long? CurrentCount { get; set; }
         public double? RemainingIntervalSeconds { get; set; }
 
         //asio-continuation-slow
@@ -56,15 +56,15 @@ namespace LogShark.Plugins.Hyper.Model
         public string TransactionId { get; set; }
         public string TransactionVisibleId { get; set; }
         public double? CopyDataTime { get; set; }
-        public int? CopyDataSize { get; set; }
+        public long? CopyDataSize { get; set; }
         public double? ExecThreadsCpuTime { get; set; }
         public double? ExecThreadsWaitTime { get; set; }
         public double? ExecThreadsTotalTime { get; set; }
         public double? StorageAccessTime { get; set; }
-        public int? StorageAccessCount { get; set; }
+        public long? StorageAccessCount { get; set; }
         public long? StorageAccessBytes { get; set; }
         public double? StorageWriteTime { get; set; }
-        public int? StorageWriteCount { get; set; }
+        public long? StorageWriteCount { get; set; }
         public long? StorageWriteBytes { get; set; }
 
         // connection-startup-begin
@@ -86,7 +86,7 @@ namespace LogShark.Plugins.Hyper.Model
         public string Reason { get; set; }
 
         // dbregistry-*
-        public int? NewRefCount { get; set; }
+        public long? NewRefCount { get; set; }
         public string Error { get; set; }
 
         // dbregistry-load
@@ -124,10 +124,10 @@ namespace LogShark.Plugins.Hyper.Model
         public string BuildVersion { get; set; }
         public string BuildType { get; set; }
         public string BuildCpuFeatures { get; set; }
-        public int? NetworkThreads { get; set; }
-        public int? ParentPid { get; set; }
-        public int? MinProtocolVersion { get; set; }
-        public int? MaxProtocolVersion { get; set; }
+        public long? NetworkThreads { get; set; }
+        public long? ParentPid { get; set; }
+        public long? MinProtocolVersion { get; set; }
+        public long? MaxProtocolVersion { get; set; }
 
         // resource-stats
         public long? VirtualTotalMb { get; set; }

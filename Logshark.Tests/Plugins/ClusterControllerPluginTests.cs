@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
 using LogShark.Containers;
-using LogShark.LogParser.Containers;
 using LogShark.Plugins.ClusterController;
+using LogShark.Shared;
+using LogShark.Shared.LogReading.Containers;
 using LogShark.Tests.Plugins.Helpers;
 using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
@@ -15,7 +16,8 @@ namespace LogShark.Tests.Plugins
     {
         private readonly LogFileInfo _testClusterControllerLogFileInfo = new LogFileInfo("clustercontroller.log", @"folder1/clustercontroller.log", "worker1", new DateTime(2019, 04, 12, 13, 33, 31));
         private readonly LogFileInfo _testZookeeperLogFileInfo = new LogFileInfo("appzookeeper_node1-0.log", @"folder1/appzookeeper_node1-0.log", "worker1", new DateTime(2019, 04, 12, 13, 33, 31));
-        
+        private readonly int _testWriterCount = 6;
+
         [Fact]
         public void BadInput()
         {
@@ -40,8 +42,8 @@ namespace LogShark.Tests.Plugins
                 plugin.ProcessLogLine(zkIncorrectString, LogType.Zookeeper);
             }
 
-            testWriterFactory.AssertAllWritersAreDisposedAndEmpty(5);
-            processingNotificationsCollector.TotalErrorsReported.Should().Be(6);
+            testWriterFactory.AssertAllWritersAreDisposedAndEmpty(_testWriterCount);
+            processingNotificationsCollector.TotalErrorsReported.Should().Be(_testWriterCount);
         }
         
         [Fact]
@@ -57,7 +59,7 @@ namespace LogShark.Tests.Plugins
                     LineNumber = 10,
                     ExpectedOutput = new
                     {
-                        File = "clustercontroller.log",
+                        FileName = "clustercontroller.log",
                         FilePath =  @"folder1/clustercontroller.log",
                         LineNumber = 10,
                         Timestamp = new DateTime(2018, 08, 08, 11, 10, 12, 705),
@@ -85,7 +87,7 @@ namespace LogShark.Tests.Plugins
             var cceDs = new DataSetInfo("ClusterController", "ClusterControllerErrors");
             var testWriter = testWriterFactory.Writers[cceDs] as TestWriter<ClusterControllerError>;
 
-            testWriterFactory.Writers.Count.Should().Be(5);
+            testWriterFactory.Writers.Count.Should().Be(_testWriterCount);
             testWriter.WasDisposed.Should().Be(true);
             testWriter.ReceivedObjects.Should().BeEquivalentTo(expectedOutput);
         }
@@ -103,7 +105,7 @@ namespace LogShark.Tests.Plugins
                     LineNumber = 101,
                     ExpectedOutput = new
                     {
-                        File = _testClusterControllerLogFileInfo.FileName,
+                        FileName = _testClusterControllerLogFileInfo.FileName,
                         FilePath =  _testClusterControllerLogFileInfo.FilePath,
                         LineNumber = 101,
                         Timestamp = new DateTime(2018, 08, 08, 15, 04, 51, 901),
@@ -129,7 +131,71 @@ namespace LogShark.Tests.Plugins
             var ccpaDs = new DataSetInfo("ClusterController", "ClusterControllerPostgresActions");
             var testWriter = testWriterFactory.Writers[ccpaDs] as TestWriter<ClusterControllerPostgresAction>;
 
-            testWriterFactory.Writers.Count.Should().Be(5);
+            testWriterFactory.Writers.Count.Should().Be(_testWriterCount);
+            testWriter.WasDisposed.Should().Be(true);
+            testWriter.ReceivedObjects.Should().BeEquivalentTo(expectedOutput);
+        }
+
+        [Fact]
+        public void ClusterControllerPluginDiskSpaceSamplesTest()
+        {
+            var testCases = new List<PluginTestCase>
+            {
+                new PluginTestCase // missing disk with total in disk spot
+                {
+                    LogType = LogType.ClusterController,
+                    LogContents = "2020-09-20 17:08:40.163 +0000 pool-37-thread-1   INFO  : com.tableausoftware.cluster.storage.DiskSpaceMonitor - disk 428901134336: total space=217610723328 used space={}",
+                    LogFileInfo = _testClusterControllerLogFileInfo,
+                    LineNumber = 262,
+                    ExpectedOutput = new
+                    {
+                        FileName = _testClusterControllerLogFileInfo.FileName,
+                        FilePath =  _testClusterControllerLogFileInfo.FilePath,
+                        LineNumber = 262,
+                        Timestamp = new DateTime(2020, 09, 20, 17, 08, 40, 163),
+                        Worker = _testClusterControllerLogFileInfo.Worker,
+                        Disk = (string)null,
+                        TotalSpace = 428901134336,
+                        UsedSpace = 217610723328,
+                    }
+                },
+                new PluginTestCase // correct format
+                {
+                    LogType = LogType.ClusterController,
+                    LogContents = "2020-09-20 17:08:40.164 +0000 pool-37-thread-1   INFO  : com.tableausoftware.cluster.storage.DiskSpaceMonitor - disk SomeDiskString: total space=428901134336 used space=217610723328",
+                    LogFileInfo = _testClusterControllerLogFileInfo,
+                    LineNumber = 5,
+                    ExpectedOutput = new
+                    {
+                        FileName = _testClusterControllerLogFileInfo.FileName,
+                        FilePath =  _testClusterControllerLogFileInfo.FilePath,
+                        LineNumber = 5,
+                        Timestamp = new DateTime(2020, 09, 20, 17, 08, 40, 164),
+                        Worker = _testClusterControllerLogFileInfo.Worker,
+                        Disk = "SomeDiskString",
+                        TotalSpace = 428901134336,
+                        UsedSpace = 217610723328,
+                    }
+                },
+            };
+
+            var testWriterFactory = new TestWriterFactory();
+            using (var plugin = new ClusterControllerPlugin())
+            {
+                plugin.Configure(testWriterFactory, null, null, new NullLoggerFactory());
+
+                foreach (var testCase in testCases)
+                {
+                    var logLine = testCase.GetLogLine();
+                    plugin.ProcessLogLine(logLine, testCase.LogType);
+                }
+            }
+
+            var expectedOutput = testCases.Select(testCase => testCase.ExpectedOutput).ToList();
+            var ccDiskSpaceDs = new DataSetInfo("ClusterController", "ClusterControllerDiskSpaceSamples");
+            var testWriter = testWriterFactory.Writers[ccDiskSpaceDs] as TestWriter<ClusterControllerDiskSpaceSample>;
+
+            testWriterFactory.Writers.Count.Should().Be(_testWriterCount);
             testWriter.WasDisposed.Should().Be(true);
             testWriter.ReceivedObjects.Should().BeEquivalentTo(expectedOutput);
         }
@@ -147,7 +213,7 @@ namespace LogShark.Tests.Plugins
                     LineNumber = 262,
                     ExpectedOutput = new
                     {
-                        File = _testClusterControllerLogFileInfo.FileName,
+                        FileName = _testClusterControllerLogFileInfo.FileName,
                         FilePath =  _testClusterControllerLogFileInfo.FilePath,
                         LineNumber = 262,
                         Timestamp = new DateTime(2018, 08, 08, 12, 11, 23, 531),
@@ -168,7 +234,7 @@ namespace LogShark.Tests.Plugins
                     LineNumber = 5,
                     ExpectedOutput = new
                     {
-                        File = _testClusterControllerLogFileInfo.FileName,
+                        FileName = _testClusterControllerLogFileInfo.FileName,
                         FilePath =  _testClusterControllerLogFileInfo.FilePath,
                         LineNumber = 5,
                         Timestamp = new DateTime(2018, 10, 03, 00, 02, 46, 613),
@@ -189,7 +255,7 @@ namespace LogShark.Tests.Plugins
                     LineNumber = 12,
                     ExpectedOutput = new
                     {
-                        File = _testClusterControllerLogFileInfo.FileName,
+                        FileName = _testClusterControllerLogFileInfo.FileName,
                         FilePath =  _testClusterControllerLogFileInfo.FilePath,
                         LineNumber = 12,
                         Timestamp = new DateTime(2019, 06, 28, 2, 5, 2, 555),
@@ -220,7 +286,7 @@ namespace LogShark.Tests.Plugins
             var ccpaDs = new DataSetInfo("ClusterController", "ClusterControllerDiskIoSamples");
             var testWriter = testWriterFactory.Writers[ccpaDs] as TestWriter<ClusterControllerDiskIoSample>;
 
-            testWriterFactory.Writers.Count.Should().Be(5);
+            testWriterFactory.Writers.Count.Should().Be(_testWriterCount);
             testWriter.WasDisposed.Should().Be(true);
             testWriter.ReceivedObjects.Should().BeEquivalentTo(expectedOutput);
         }
@@ -238,7 +304,7 @@ namespace LogShark.Tests.Plugins
                     LineNumber = 1,
                     ExpectedOutput = new
                     {
-                        File = _testZookeeperLogFileInfo.FileName,
+                        FileName = _testZookeeperLogFileInfo.FileName,
                         FilePath =  _testZookeeperLogFileInfo.FilePath,
                         LineNumber = 1,
                         Timestamp = new DateTime(2018, 08, 08, 11, 01, 48, 490),
@@ -266,7 +332,7 @@ namespace LogShark.Tests.Plugins
             var zkDs = new DataSetInfo("ClusterController", "ZookeeperErrors");
             var testWriter = testWriterFactory.Writers[zkDs] as TestWriter<ZookeeperError>;
 
-            testWriterFactory.Writers.Count.Should().Be(5);
+            testWriterFactory.Writers.Count.Should().Be(_testWriterCount);
             testWriter.WasDisposed.Should().Be(true);
             testWriter.ReceivedObjects.Should().BeEquivalentTo(expectedOutput);
         }
@@ -284,7 +350,7 @@ namespace LogShark.Tests.Plugins
                     LineNumber = 1725,
                     ExpectedOutput = new
                     {
-                        File = _testZookeeperLogFileInfo.FileName,
+                        FileName = _testZookeeperLogFileInfo.FileName,
                         FilePath =  _testZookeeperLogFileInfo.FilePath,
                         LineNumber = 1725,
                         Timestamp = new DateTime(2018, 10, 02, 22, 09, 01, 927),
@@ -310,7 +376,7 @@ namespace LogShark.Tests.Plugins
             var zkDs = new DataSetInfo("ClusterController", "ZookeeperFsyncLatencies");
             var testWriter = testWriterFactory.Writers[zkDs] as TestWriter<ZookeeperFsyncLatency>;
 
-            testWriterFactory.Writers.Count.Should().Be(5);
+            testWriterFactory.Writers.Count.Should().Be(_testWriterCount);
             testWriter.WasDisposed.Should().Be(true);
             testWriter.ReceivedObjects.Should().BeEquivalentTo(expectedOutput);
         }

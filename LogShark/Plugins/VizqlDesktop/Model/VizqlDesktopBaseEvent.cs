@@ -1,5 +1,4 @@
-using LogShark.Containers;
-using LogShark.Plugins.Shared;
+using LogShark.Shared.LogReading.Containers;
 
 namespace LogShark.Plugins.VizqlDesktop.Model
 {

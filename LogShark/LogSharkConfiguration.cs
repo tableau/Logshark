@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using LogShark.Shared.Extensions;
 
 namespace LogShark
 {
@@ -122,10 +123,13 @@ namespace LogShark
         public string RequestedWriter => _parameters.RequestedWriter ?? _config.GetValue<string>("EnvironmentConfig:DefaultWriter");
 
         public string TableauServerPassword => _parameters.TableauServerPassword ?? _config.GetValueAndThrowAtNull<string>("TableauServer:Password");
+        
+        public string TableauServerProjectDescriptionFooterHtml => _parameters.TableauServerProjectDescriptionFooterHtml ?? _config.GetValue<string>("TableauServer:ProjectDescriptionFooterHtml");
 
         public string TableauServerSite => _parameters.TableauServerSite ?? _config.GetValueAndThrowAtNull<string>("TableauServer:Site");
 
         public int TableauServerTimeout => _config.GetValueAndThrowAtNull<int>("TableauServer:Timeout");
+        public int TableauServerPublishingTimeout => _config.GetValueAndThrowAtNull<int>("TableauServer:PublishingTimeout");
 
         public string TableauServerUrl => _parameters.TableauServerUrl ?? _config.GetValueAndThrowAtNull<string>("TableauServer:Url");
 

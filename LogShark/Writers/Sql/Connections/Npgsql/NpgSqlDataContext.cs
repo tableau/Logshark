@@ -7,6 +7,7 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using LogShark.Exceptions;
+using LogShark.Shared;
 
 namespace LogShark.Writers.Sql.Connections.Npgsql
 {

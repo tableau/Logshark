@@ -10,7 +10,6 @@ namespace LogShark
         public string AppendTo { get; set; }
         public string DatabaseConnectionString { get; set; }
         public string DatabaseHost { get; set; }
-        public string DatabasePort { get; set; }
         public string DatabaseName { get; set; }
         public string DatabasePassword { get; set; }
         public string DatabaseUsername { get; set; }
@@ -36,6 +35,7 @@ namespace LogShark
         public string UserProvidedRunId { get; set; }
         public string TableauServerUsername { get; set; }
         public string TableauServerPassword { get; set; }
+        public string TableauServerProjectDescriptionFooterHtml { get; set; }
         public string TableauServerSite { get; set; }
         public string TableauServerUrl { get; set; }
         public string WorkbookNameSuffixOverride { get; set; }

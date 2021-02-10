@@ -2,11 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
-using LogShark.Containers;
 using LogShark.Plugins.Config;
 using LogShark.Plugins.Config.Models;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
+using LogShark.Shared;
+using LogShark.Shared.LogReading.Containers;
 using Xunit;
 
 namespace LogShark.Tests.Plugins.ConfigPlugin
@@ -174,6 +173,9 @@ namespace LogShark.Tests.Plugins.ConfigPlugin
         private readonly IDictionary<string, string> _singleMachineWorkgroupYmlValues = new Dictionary<string, string>
         {
             { "worker.hosts", MachineOneName },
+            { "worker0.vizportal_0.port", "7717" },
+            { "worker0.vizportal_1.port", "7737" },
+            { "worker0.vizportal.procs", "2" },
             { "worker0.backgrounder.port", "8250" },
             { "worker0.backgrounder.procs", "1" },
             { "dataengine.port", "27042" }, // Data engine uses "global" port settings
@@ -227,6 +229,8 @@ namespace LogShark.Tests.Plugins.ConfigPlugin
         
         private readonly ISet<dynamic> _expectedResultsForSingleMachine = new HashSet<dynamic>
         {
+            ConfigPluginTests.ExpectedProcessInfoEntry(MachineOneName, 7717, "vizportal", 0, WorkgroupYmlLogFileInfo.LastModifiedUtc),
+            ConfigPluginTests.ExpectedProcessInfoEntry(MachineOneName, 7737, "vizportal", 0, WorkgroupYmlLogFileInfo.LastModifiedUtc),
             ConfigPluginTests.ExpectedProcessInfoEntry(MachineOneName, 8250, "backgrounder", 0, WorkgroupYmlLogFileInfo.LastModifiedUtc),
             ConfigPluginTests.ExpectedProcessInfoEntry(MachineOneName, 27042, "dataengine", 0, WorkgroupYmlLogFileInfo.LastModifiedUtc),
             ConfigPluginTests.ExpectedProcessInfoEntry(MachineOneName, 9700, "dataserver", 0, WorkgroupYmlLogFileInfo.LastModifiedUtc),

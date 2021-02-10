@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using LogShark.Containers;
 using LogShark.Plugins.ResourceManager.Model;
-using LogShark.Plugins.Shared;
+using LogShark.Shared;
+using LogShark.Shared.LogReading.Containers;
 using LogShark.Writers;
 using LogShark.Writers.Containers;
-using Microsoft.Extensions.Logging;
 
 namespace LogShark.Plugins.ResourceManager
 {
@@ -170,7 +170,7 @@ namespace LogShark.Plugins.ResourceManager
         }
         
         // Extract an optionally comma-separated numeric total memory byte count value (and optional process memory byte count) from the end of a static Resource Manager string
-        private static readonly Regex TotalMemoryUsageExceededRegex = new Regex(@"Resource Manager: Exceeded allowed memory usage across all processes\D+\s(?<total_usage>[\d,]+?)\s(\D+\s(?<process_usage>[\d,]+?)\s)?", RegexOptions.Compiled | RegexOptions.ExplicitCapture);
+        private static readonly Regex TotalMemoryUsageExceededRegex = new Regex(@"Resource Manager: Exceeded allowed memory usage across all processes\D+\s(?<process_usage>[\d,]+?)?\s?bytes\s\(current process\)\D+(?<tableau_usage>[\d,]+?)?\sbytes\s\(Tableau total\)\D+(?<total_usage>[\d,]+?)\sbytes\s\(total of all processes\)", RegexOptions.Compiled | RegexOptions.ExplicitCapture);
         // Extract an optionally comma-separated numeric process memory byte count value from the end of a static Resource Manager string
         private static readonly Regex ProcessMemoryUsageExceededRegex = new Regex(@"^Resource Manager: Exceeded allowed memory usage per process.\s(?<process_usage>[\d,]+?)\s.*", RegexOptions.Compiled | RegexOptions.ExplicitCapture);
         private static readonly Regex CpuUsageExceededRegex = new Regex(@"^Resource Manager: Exceeded sustained high CPU threshold above\s(?<cpu_threshold>\d+?)%.*\s(?<duration>\d+?)\s.*\s(?<process_cpu_util>\d+?)%", RegexOptions.Compiled | RegexOptions.ExplicitCapture);
@@ -207,6 +207,8 @@ namespace LogShark.Plugins.ResourceManager
                     baseEvent,
                     logLine,
                     processName,
+                    TryParseLongWithLogging(totalMemoryUsageMatch, "process_usage", logLine, true),
+                    TryParseLongWithLogging(totalMemoryUsageMatch, "tableau_usage", logLine, true),
                     TryParseLongWithLogging(totalMemoryUsageMatch, "total_usage", logLine)
                 );
             }
@@ -314,13 +316,13 @@ namespace LogShark.Plugins.ResourceManager
             return parseSuccess ? parsedValue : (int?) null;
         }
         
-        private long? TryParseLongWithLogging(Match match, string groupName, LogLine logLine)
+        private long? TryParseLongWithLogging(Match match, string groupName, LogLine logLine, bool optional = false)
         {
             var rawValue = match.Groups[groupName].Value;
             var rawValueWithoutCommas = rawValue.Replace(",", "");
             var parseSuccess = long.TryParse(rawValueWithoutCommas, out var parsedValue);
 
-            if (!parseSuccess)
+            if (!parseSuccess && !optional)
             {
                 var errorMessage = $"Failed to parse value `{rawValue}` of match group `{groupName}` as long integer";
                 _processingNotificationsCollector.ReportError(errorMessage, logLine, nameof(ResourceManagerPlugin));

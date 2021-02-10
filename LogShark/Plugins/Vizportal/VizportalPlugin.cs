@@ -2,6 +2,9 @@ using System.Collections.Generic;
 using LogShark.Containers;
 using LogShark.Extensions;
 using LogShark.Plugins.Shared;
+using LogShark.Shared;
+using LogShark.Shared.Extensions;
+using LogShark.Shared.LogReading.Containers;
 using LogShark.Writers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -28,28 +31,14 @@ namespace LogShark.Plugins.Vizportal
 
         public void ProcessLogLine(LogLine logLine, LogType logType)
         {
-            var match = logLine.LineContents.CastToStringAndRegexMatch(SharedRegex.JavaLogLineRegex);
-            if (match == null || !match.Success)
+            var javaLineMatchResult = logLine.LineContents.MatchJavaLineWithSessionInfo(SharedRegex.JavaLogLineRegex);
+            if (!javaLineMatchResult.SuccessfulMatch)
             {
                 _processingNotificationsCollector.ReportError("Failed to parse Vizportal Java event from log line", logLine, nameof(VizportalPlugin));
                 return;
             }
 
-            var @event = new VizportalEvent()
-            {
-                Class = match.GetString("class"),
-                File = logLine.LogFileInfo.FileName,
-                FilePath = logLine.LogFileInfo.FilePath,
-                LineNumber = logLine.LineNumber,
-                Message = match.GetString("message"),
-                RequestId = match.GetString("req"),
-                SessionId = match.GetString("sess"),
-                Severity = match.GetString("sev"),
-                Site = match.GetNullableString("site"),
-                Timestamp = TimestampParsers.ParseJavaLogsTimestamp(match.GetString("ts")),
-                User = match.GetString("user"),
-                Worker = logLine.LogFileInfo.Worker,
-            };
+            var @event = new VizportalEvent(logLine, javaLineMatchResult);
             _writer.AddLine(@event);
         }
 

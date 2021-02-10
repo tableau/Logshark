@@ -10,7 +10,6 @@ namespace LogShark.Writers
     {
         Task<PublisherResults> PublishWorkbooks(
             string projectName,
-            string projectDescription,
             IEnumerable<CompletedWorkbookInfo> completedWorkbooks,
             IEnumerable<string> workbookTags);
     }

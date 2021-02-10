@@ -1,15 +1,14 @@
 ﻿using FluentAssertions;
-using LogShark.Containers;
-using LogShark.LogParser.Containers;
 using LogShark.Plugins.Hyper;
 using LogShark.Plugins.Hyper.Model;
-using LogShark.Plugins.Shared;
 using LogShark.Tests.Plugins.Helpers;
 using Microsoft.Extensions.Logging.Abstractions;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using LogShark.Shared;
+using LogShark.Shared.LogReading.Containers;
 using Xunit;
 
 namespace LogShark.Tests.Plugins

@@ -1,16 +1,13 @@
 ﻿using FluentAssertions;
-using LogShark.Containers;
 using LogShark.Plugins.Tabadmin;
 using LogShark.Plugins.Tabadmin.Model;
-using LogShark.Plugins.Vizportal;
 using LogShark.Tests.Plugins.Helpers;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using LogShark.LogParser.Containers;
+using LogShark.Shared;
+using LogShark.Shared.LogReading.Containers;
 using Xunit;
 
 namespace LogShark.Tests.Plugins

@@ -1,11 +1,12 @@
 using LogShark.Containers;
-using LogShark.Plugins.Shared;
 using LogShark.Writers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using LogShark.Shared;
+using LogShark.Shared.LogReading.Containers;
 using LogShark.Writers.Containers;
 
 namespace LogShark.Plugins.ServerTelemetry

@@ -1,6 +1,7 @@
 packages/*
 .vs/*
 .idea/*
+*.user
 
 # Build results
 [Dd]ebug/

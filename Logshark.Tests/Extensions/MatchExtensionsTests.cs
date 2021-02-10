@@ -1,7 +1,6 @@
-using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using FluentAssertions;
-using LogShark.Extensions;
+using LogShark.Shared.Extensions;
 using Xunit;
 
 namespace LogShark.Tests.Extensions

@@ -1,9 +1,10 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using LogShark.Containers;
+using LogShark.Shared.Extensions;
 using LogShark.Writers.Containers;
 
 namespace LogShark.Extensions
@@ -57,7 +58,7 @@ namespace LogShark.Extensions
                    runSummary.WorkbookGeneratorResults.CompletedWorkbooks.Any(result => !result.GeneratedSuccessfully);
         }
         
-        public static bool HasWorkbookPublisherErrors(this RunSummary runSummary)
+        public static bool HasNonSuccessfulPublishingResults(this RunSummary runSummary)
         {
             if (runSummary.PublisherResults == null)
             {
@@ -65,7 +66,7 @@ namespace LogShark.Extensions
             }
             
             var hasErrorsForIndividualWorkbooks = runSummary.PublisherResults.PublishedWorkbooksInfo != null &&
-                                                  runSummary.PublisherResults.PublishedWorkbooksInfo.Any(result => !result.PublishedSuccessfully);
+                                                  runSummary.PublisherResults.PublishedWorkbooksInfo.Any(result => result.PublishState != WorkbookPublishResult.WorkbookPublishState.Success);
             
             return !runSummary.PublisherResults.CreatedProjectSuccessfully ||
                    hasErrorsForIndividualWorkbooks;
@@ -128,7 +129,7 @@ namespace LogShark.Extensions
 
         public static string WorkbookPublisherErrorsReport(this RunSummary runSummary)
         {
-            if (!runSummary.HasWorkbookPublisherErrors())
+            if (!runSummary.HasNonSuccessfulPublishingResults())
             {
                 return "All workbooks were published successfully";
             }
@@ -139,18 +140,37 @@ namespace LogShark.Extensions
             }
             
             var sb = new StringBuilder();
-            sb.AppendLine("Workbooks failed to publish:");
             var failedWorkbooks = runSummary.PublisherResults.PublishedWorkbooksInfo
-                .Where(result => !result.PublishedSuccessfully)
-                .OrderBy(result => result.PublishedWorkbookName ?? "null")
-                .Select(result => $"Failed to publish workbook `{result.PublishedWorkbookName ?? "(null)"}`. Exception: {result.Exception?.Message ?? "(null)"}");
-            sb.AppendLine(string.Join(Environment.NewLine, failedWorkbooks));
+                .Where(result => result.PublishState == WorkbookPublishResult.WorkbookPublishState.Fail)
+                .OrderBy(result => result.OriginalWorkbookName ?? "null")
+                .Select(result => $"Failed to publish workbook `{result.OriginalWorkbookName ?? "(null)"}`. Exception: {result.Exception?.Message ?? "(null)"}")
+                .ToList();
+            if (failedWorkbooks.Count > 0)
+            {
+                sb.AppendLine("Workbooks failed to publish:");
+                sb.AppendLine(string.Join(Environment.NewLine, failedWorkbooks));
+            }
+            
+            var timedOutWorkbooks = runSummary.PublisherResults.PublishedWorkbooksInfo
+                .Where(result => result.PublishState == WorkbookPublishResult.WorkbookPublishState.Timeout)
+                .Select(result => result.OriginalWorkbookName)
+                .OrderBy(result => result)
+                .ToList();
+            if (timedOutWorkbooks.Count > 0)
+            {
+                sb.AppendLine();
+                sb.AppendLine("Workbook(s) that timed out while publishing:");
+                sb.AppendLine(string.Join("; ", timedOutWorkbooks));
+                sb.AppendLine("Publishing timeout often happens if workbook is too large and Tableau Server takes a long time to generate thumbnails. In this case workbook will finish publishing on its own and should be available on Tableau Server after some time.");
+            }
+
             return sb.ToString();
         }
 
         private static void GenerateSummarySection(StringBuilder sb, RunSummary runSummary)
         {
             sb.AppendLine(GenerateTitle("Summary"));
+            
             if (runSummary.IsSuccess)
             {
                 sb.AppendLine($"Run ID {runSummary.RunId} completed successfully in {runSummary.Elapsed}");
@@ -174,6 +194,9 @@ namespace LogShark.Extensions
                 }                
                 sb.AppendLine("Information below might contain more details on what exactly failed");
             }
+            
+            var buildInfo = Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "(null)";
+            sb.AppendLine($"LogShark version: {buildInfo}");
         }
 
         private static void GenerateProcessingErrorsSection(StringBuilder sb, RunSummary runSummary)
@@ -189,13 +212,13 @@ namespace LogShark.Extensions
             sb.AppendLine($"Used {publisherResults.TableauServerSite} site on {publisherResults.TableauServerUrl}");
             sb.AppendLine($"Link to the published project: {publisherResults.PublishedProjectUrl ?? "N/A"}");
             
-            if (runSummary.HasWorkbookPublisherErrors())
+            if (runSummary.HasNonSuccessfulPublishingResults())
             {
                 sb.AppendLine(runSummary.WorkbookPublisherErrorsReport());
             }
             
             var successfullyPublishedWorkbooks = publisherResults.PublishedWorkbooksInfo?
-                .Where(result => result.PublishedSuccessfully)
+                .Where(result => result.PublishState == WorkbookPublishResult.WorkbookPublishState.Success)
                 .Select(result => result.PublishedWorkbookName)
                 .OrderBy(workbookName => workbookName)
                 .ToList();

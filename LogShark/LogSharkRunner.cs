@@ -4,14 +4,13 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using System.Web;
 using LogShark.Containers;
 using LogShark.Extensions;
-using LogShark.LogParser;
 using LogShark.Metrics;
 using LogShark.Plugins;
+using LogShark.Shared.Extensions;
+using LogShark.Shared.LogReading;
 using LogShark.Writers;
 using LogShark.Writers.Containers;
 using LogShark.Writers.Csv;
@@ -19,7 +18,6 @@ using LogShark.Writers.Hyper;
 using LogShark.Writers.Sql;
 using LogShark.Writers.Sql.Models;
 using Microsoft.Extensions.Logging;
-using Tools.TableauServerRestApi.Containers;
 
 namespace LogShark
 {
@@ -47,19 +45,9 @@ namespace LogShark
 
             if (_config.PublishWorkbooks)
             {
-                var tableauServerInfo = new TableauServerInfo(
-                    _config.TableauServerUrl,
-                    _config.TableauServerSite,
-                    _config.TableauServerUsername,
-                    _config.TableauServerPassword,
-                    _config.TableauServerTimeout);
-                _publisherSettings = new PublisherSettings(
-                    tableauServerInfo,
-                    _config.GroupsToProvideWithDefaultPermissions,
-                    _config.ApplyPluginProvidedTagsToWorkbooks,
-                    _config.ParentProjectId,
-                    _config.ParentProjectName);
+                _publisherSettings = config.GetPublisherSettings();
             }
+            
             _metricsModule = metricsModule;
         }
 
@@ -149,12 +137,10 @@ namespace LogShark
                 PublisherResults publisherResults = null;
                 if (_config.PublishWorkbooks)
                 {
-                    var projectDescription = GetProjectDescription();
                     var workbookPublisher = writerFactory.GetWorkbookPublisher(_publisherSettings);
                     
                     publisherResults = await workbookPublisher.PublishWorkbooks(
                         runId,
-                        projectDescription,
                         generatorResults.CompletedWorkbooks,
                         logSetProcessingResults.PluginsExecutionResults.GetSortedTagsFromAllPlugins());
                     if (!publisherResults.CreatedProjectSuccessfully)
@@ -219,17 +205,6 @@ namespace LogShark
                     _logger.LogError(message);
                     throw new ArgumentException(message);
             }
-        }
-
-        private string GetProjectDescription()
-        {
-            var projectDescription = new StringBuilder();
-            projectDescription.Append($"Generated from log set <b>'{_config.OriginalLocation}'</b> on {DateTime.Now:M/d/yy} by {Environment.UserName}.<br>");
-            projectDescription.Append("<br>");
-            projectDescription.Append($"Original filename: {HttpUtility.HtmlEncode(_config.OriginalFileName)}");
-            projectDescription.Append("<br>");
-            projectDescription.Append($" Plugins Requested: <b>{_config.RequestedPlugins}</b>");
-            return projectDescription.ToString();
         }
 
         private static bool GeneratedAnyWorkbooks(IEnumerable<CompletedWorkbookInfo> completedWorkbooks)

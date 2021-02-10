@@ -10,7 +10,7 @@ namespace LogShark.Plugins.Hyper.Model
         public string FilePath { get; set; }
         public string Key { get; set; }
         public int Line { get; set; }
-        public int ProcessId { get; set; }
+        public long ProcessId { get; set; }
         public string RequestId { get; set; }
         public string SessionId { get; set; }
         public string Severity { get; set; }
