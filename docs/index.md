@@ -39,6 +39,9 @@ In this section:
 - [LogShark Command Options](docs/logshark_cmds.md)
 - [LogShark Plugins and Generated Workbooks](docs/logshark_plugins.md)
 - [LogShark ART Plugin](docs/logshark_art.md)
+- [LogShark DataServer Plugin](docs/logshark_dataserver.md)
+- [LogShark TabadminController Plugin](docs/logshark_tabadmincontroller.md)
+
 
 
 
