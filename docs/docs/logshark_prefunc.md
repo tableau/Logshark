@@ -12,18 +12,22 @@ Before you install and run LogShark on your computer, you'll need to make sure y
 System Requirements
 -------------------
 **For Windows**:
--   A computer running a 64-bit version of Windows (2008 R2 or later).
-
+-   A computer running a 64-bit version of Windows (2008 R2 or later)
 -   An account with local administrator permissions on the computer where you will be installing LogShark.
+-   Tableau Desktop version 10.5 (or later) to view workbooks. You can download Tableau from: [http://www.tableau.com/products/desktop](http://www.tableau.com/products/desktop){:target="_blank"}
 
 -   Hyper API for C++. If Hyper requirements are not met on the machine, LogShark will fail. The simplest way to meet Hyper requirements is to install Tableau Desktop on your machine. 
     - If you don't have Tableau Desktop installed, you will need Visual C++ Redistributables. Download x64 version of "Visual Studio 2015, 2017 and 2019" package from [https://support.microsoft.com/en-us/help/2977003/the-latest-supported-visual-c-downloads](https://support.microsoft.com/en-us/help/2977003/the-latest-supported-visual-c-downloads){:target="_blank"}
 
 -   For best performance, use a computer with the latest hardware and software available. The ability of LogShark to process log files improves as the performance of the computer's CPU, Memory, and Disk I/O increases.
 
+**For Linux:** 
+- To run LogShark on Linux machine you need to build it yourself, here are the instructions on how to do that: [https://github.com/tableau/Logshark#compile-it-yourself](https://github.com/tableau/Logshark#compile-it-yourself){:target="_blank"}
 -   Tableau Desktop version 10.5 (or later) to view workbooks. You can download Tableau from: [http://www.tableau.com/products/desktop](http://www.tableau.com/products/desktop){:target="_blank"}
 
+
 **For macOS:** 
+-   Tableau Desktop version 10.5 (or later) to view workbooks. You can download Tableau from: [http://www.tableau.com/products/desktop](http://www.tableau.com/products/desktop){:target="_blank"}
 - LogShark runs on macOS versions 10.12 "Sierra", 10.13 "High Sierra, and 10.14 "Mojave". 
 - Please note that 10.15 "Catalina" implemented new security features that are currently interfering with LogShark.
 
