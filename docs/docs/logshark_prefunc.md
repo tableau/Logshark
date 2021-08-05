@@ -23,13 +23,13 @@ System Requirements
 
 **For Linux:** 
 - To run LogShark on Linux machine you need to build it yourself, here are the instructions on how to do that: [https://github.com/tableau/Logshark#compile-it-yourself](https://github.com/tableau/Logshark#compile-it-yourself){:target="_blank"}
--   Tableau Desktop version 10.5 (or later) to view workbooks. You can download Tableau from: [http://www.tableau.com/products/desktop](http://www.tableau.com/products/desktop){:target="_blank"}
+- Please note that LogShark generates Tableau workbooks and to view them, you will need to have access to a machine with Tableau Desktop version 10.5 (or later) or Tableau Online. You can download Tableau from: [http://www.tableau.com/products/desktop](http://www.tableau.com/products/desktop){:target="_blank"}
 
 
 **For macOS:** 
--   Tableau Desktop version 10.5 (or later) to view workbooks. You can download Tableau from: [http://www.tableau.com/products/desktop](http://www.tableau.com/products/desktop){:target="_blank"}
 - LogShark runs on macOS versions 10.12 "Sierra", 10.13 "High Sierra, and 10.14 "Mojave". 
-- Please note that 10.15 "Catalina" implemented new security features that are currently interfering with LogShark.
+- For macOS 10.15 or later, you will need to run LogShark in Docker, here are the instructions on how to do that: [https://github.com/tableau/Logshark#build-and-run-it-using-docker](https://github.com/tableau/Logshark#build-and-run-it-using-docker){:target="_blank"}
+- Tableau Desktop version 10.5 (or later) to view workbooks. You can download Tableau from: [http://www.tableau.com/products/desktop](http://www.tableau.com/products/desktop){:target="_blank"}
 
 
 Tableau Log Requirements
