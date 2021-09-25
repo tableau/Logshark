@@ -11,7 +11,7 @@ LogShark can help you:
 
 See the [releases page](https://github.com/tableau/Logshark/releases/latest) for a full list of updates.
   
-![Sample Apache Workbook Screenshot](/assets/SampleScreenshot.png)
+![Sample Apache Workbook Screenshot](/docs/assets/SampleScreenshot.png)
 
 ## Getting Started
 
