@@ -141,21 +141,20 @@ namespace LogShark.Plugins.VizqlDesktop
 
             public void RegisterSession(string filePath, string sessionId)
             {
-                if (_fileToSessionIdMap.ContainsKey(filePath))
+                lock (_fileToSessionIdMap)
                 {
                     _fileToSessionIdMap[filePath] = sessionId;
-                }
-                else
-                {
-                    _fileToSessionIdMap.Add(filePath, sessionId);
                 }
             }
             
             public string GetSessionId(string filePath)
             {
-                return _fileToSessionIdMap.ContainsKey(filePath)
-                    ? _fileToSessionIdMap[filePath]
-                    : null;
+                lock (_fileToSessionIdMap)
+                {
+                    return _fileToSessionIdMap.ContainsKey(filePath)
+                        ? _fileToSessionIdMap[filePath]
+                        : null;
+                }
             }
         }
     }

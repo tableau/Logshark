@@ -22,6 +22,34 @@ namespace LogShark.Tests.LogParser
         
         private const string TempDir = "TestTemp";
 
+        private readonly List<string> _unzippedDirFilePaths = new List<string>
+        {
+            UnzippedTestSet + Path.DirectorySeparatorChar + "worker1.zip",
+            UnzippedTestSet + Path.DirectorySeparatorChar + "plainLog.log",
+            UnzippedTestSet + Path.DirectorySeparatorChar + "unknownZip.zip",
+            UnzippedTestSet + Path.DirectorySeparatorChar + "localhost" + Path.DirectorySeparatorChar + "nestedLog.txt",
+            UnzippedTestSet + Path.DirectorySeparatorChar + "localhost" + Path.DirectorySeparatorChar + "tabadminagent_0.20181.18.0404.16052600117725665315795.zip",
+            UnzippedTestSet + Path.DirectorySeparatorChar + "folder" + Path.DirectorySeparatorChar + "nestedLog.txt",
+        };
+        
+        private readonly List<string> _zippedDirFilePaths = new List<string>
+        {
+            "folder/",
+            "folder/nestedLog.txt",
+            "localhost/",
+            "localhost/nestedLog.txt",
+            "localhost/tabadminagent_0.20181.18.0404.16052600117725665315795.zip",
+            "plainLog.log",
+            "unknownZip.zip",
+            "worker1.zip"
+        };
+        
+        private readonly List<string> _nestedZipFilePaths = new List<string>
+        {
+            "New folder/",
+            "New folder/New Text Document.txt"
+        };
+
         private readonly ILogger _logger = new NullLoggerFactory().CreateLogger<TableauLogsExtractor>();
         private readonly ProcessingNotificationsCollector _processingNotificationsCollector;
 
@@ -35,14 +63,14 @@ namespace LogShark.Tests.LogParser
         public void EvaluateUnzipped()
         {
             Directory.Exists(TempDir).Should().Be(false);
-
+        
             using (var extractor = new TableauLogsExtractor(UnzippedTestSet, TempDir, _processingNotificationsCollector, _logger))
             {
                 var expectedParts = new HashSet<LogSetInfo>
                 {
-                    new LogSetInfo(UnzippedTestSet, string.Empty, false, UnzippedTestSet),
-                    new LogSetInfo($"{UnzippedTestSet}/worker1.zip", "worker1", true, UnzippedTestSet),
-                    new LogSetInfo($"{UnzippedTestSet}/localhost/tabadminagent_0.20181.18.0404.16052600117725665315795.zip", "localhost/tabadminagent_0.20181.18.0404.16052600117725665315795", true, UnzippedTestSet)
+                    new LogSetInfo(_unzippedDirFilePaths, UnzippedTestSet, string.Empty, false, UnzippedTestSet),
+                    new LogSetInfo(_nestedZipFilePaths, $"{UnzippedTestSet}/worker1.zip", "worker1", true, UnzippedTestSet),
+                    new LogSetInfo(_nestedZipFilePaths, $"{UnzippedTestSet}/localhost/tabadminagent_0.20181.18.0404.16052600117725665315795.zip", "localhost/tabadminagent_0.20181.18.0404.16052600117725665315795", true, UnzippedTestSet)
                 };
 
                 extractor.LogSetParts.Should().BeEquivalentTo(expectedParts);
@@ -50,7 +78,7 @@ namespace LogShark.Tests.LogParser
             }
             _processingNotificationsCollector.TotalErrorsReported.Should().Be(0);
         }
-
+        
         [Fact]
         public void EvaluateZipped()
         {
@@ -60,18 +88,18 @@ namespace LogShark.Tests.LogParser
             {
                 var expectedParts = new HashSet<LogSetInfo>
                 {
-                    new LogSetInfo(ZippedTestSet, string.Empty, true, ZippedTestSet),
-                    new LogSetInfo($"{TempDir}/NestedZipFiles/worker1.zip", "worker1", true, ZippedTestSet),
-                    new LogSetInfo($"{TempDir}/NestedZipFiles/tabadminagent_0.20181.18.0404.16052600117725665315795.zip", "localhost/tabadminagent_0.20181.18.0404.16052600117725665315795", true, ZippedTestSet)
+                    new LogSetInfo(_zippedDirFilePaths, ZippedTestSet, string.Empty, true, ZippedTestSet),
+                    new LogSetInfo(_nestedZipFilePaths, $"{TempDir}/NestedZipFiles/worker1.zip", "worker1", true, ZippedTestSet),
+                    new LogSetInfo(_nestedZipFilePaths, $"{TempDir}/NestedZipFiles/tabadminagent_0.20181.18.0404.16052600117725665315795.zip", "localhost/tabadminagent_0.20181.18.0404.16052600117725665315795", true, ZippedTestSet)
                 };
-
+        
                 extractor.LogSetParts.Should().BeEquivalentTo(expectedParts);
                 Directory.Exists(TempDir).Should().Be(true);
                 
                 File.Exists($"{TempDir}/NestedZipFiles/worker1.zip").Should().Be(true);
                 File.Exists($"{TempDir}/NestedZipFiles/tabadminagent_0.20181.18.0404.16052600117725665315795.zip").Should().Be(true);
             }
-
+        
             Directory.Exists($"{TempDir}/NestedZipFiles").Should().Be(false);
             Directory.Exists(TempDir).Should().Be(true);
             _processingNotificationsCollector.TotalErrorsReported.Should().Be(0);

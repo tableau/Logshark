@@ -29,12 +29,13 @@ namespace LogShark.Plugins.TabadminController
             
             if (javaLineMatchResult.IsWarningPriorityOrHigher())
             {
-                return new TabadminControllerEvent("Error - Tabadmin Controller", logLine, javaLineMatchResult, _buildTracker);
+                return new TabadminControllerEvent("Error - Tabadmin Controller", logLine, javaLineMatchResult);
             }
 
             if (javaLineMatchResult.Class.Equals("com.tableausoftware.tabadmin.configuration.builder.AppConfigurationBuilder", StringComparison.InvariantCulture))
             {
-                return ParseVersionInfo(logLine, javaLineMatchResult);
+                AddBuildInfoToTracker(logLine, javaLineMatchResult);
+                return null;
             }
 
             if (javaLineMatchResult.Class.StartsWith("com.tableausoftware.tabadmin.webapp.asyncjobs.", StringComparison.InvariantCulture))
@@ -57,12 +58,12 @@ namespace LogShark.Plugins.TabadminController
 
         // Example - Loading topology settings from C:\ProgramData\Tableau\Tableau Server\data\tabsvc\config\tabadmincontroller_0.20192.19.0718.1543\topology.yml
         private static readonly Regex LoadingTopologyLine = new Regex(@"^Loading topology settings from .+tabadmincontroller_(?<build>[\d\.]+)[\\\/]topology.yml$", RegexOptions.Compiled | RegexOptions.ExplicitCapture);
-        private TabadminControllerEvent ParseVersionInfo(LogLine logLine, JavaLineMatchResult javaLineMatchResult)
+        private void AddBuildInfoToTracker(LogLine logLine, JavaLineMatchResult javaLineMatchResult)
         {
             var match = LoadingTopologyLine.Match(javaLineMatchResult.Message);
             if (!match.Success)
             {
-                return null;
+                return;
             }
             
             var rawBuild = match.GetNullableString("build");
@@ -70,7 +71,7 @@ namespace LogShark.Plugins.TabadminController
             if (string.IsNullOrWhiteSpace(rawBuild))
             {
                 _processingNotificationsCollector.ReportError("Line looks like a loading topology settings, but build string cannot be parsed", logLine, nameof(TabadminControllerEventParser));
-                return null;
+                return;
             }
             
             var build = rawBuild.StartsWith("0.")
@@ -78,8 +79,6 @@ namespace LogShark.Plugins.TabadminController
                 : rawBuild;
 
             _buildTracker.AddBuild(javaLineMatchResult.Timestamp, build);
-            
-            return new TabadminControllerEvent("Loading Topology", logLine, javaLineMatchResult, _buildTracker);
         }
 
         private TabadminControllerEvent ParseAsyncJobServiceMessages(LogLine logLine, JavaLineMatchResult javaLineMatchResult)
@@ -112,7 +111,7 @@ namespace LogShark.Plugins.TabadminController
                 return null;
             }
 
-            return new TabadminControllerEvent("Job Start", logLine, javaLineMatchResult, _buildTracker)
+            return new TabadminControllerEvent("Job Start", logLine, javaLineMatchResult)
             {
                 JobId = match.GetNullableLong("jobId"),
                 JobType = match.GetNullableString("jobType")
@@ -129,7 +128,7 @@ namespace LogShark.Plugins.TabadminController
                 return null;
             }
 
-            return new TabadminControllerEvent("Job Status Update", logLine, javaLineMatchResult, _buildTracker)
+            return new TabadminControllerEvent("Job Status Update", logLine, javaLineMatchResult)
             {
                 JobId = match.GetNullableLong("jobId"),
                 JobStatus = match.GetNullableString("jobStatus"),
@@ -147,7 +146,7 @@ namespace LogShark.Plugins.TabadminController
                 return null;
             }
             
-            return new TabadminControllerEvent("Job Progress Update", logLine, javaLineMatchResult, _buildTracker)
+            return new TabadminControllerEvent("Job Progress Update", logLine, javaLineMatchResult)
             {
                 JobId = match.GetNullableLong("jobId"),
                 JobType = match.GetNullableString("jobType"),
@@ -193,7 +192,7 @@ namespace LogShark.Plugins.TabadminController
                 return null;
             }
             
-            return new TabadminControllerEvent("Password-less Login Request", logLine, javaLineMatchResult, _buildTracker)
+            return new TabadminControllerEvent("Password-less Login Request", logLine, javaLineMatchResult)
             {
                 LoginUserId = match.GetNullableString("userId"),
                 LoginUsername = match.GetNullableString("username")
@@ -211,7 +210,7 @@ namespace LogShark.Plugins.TabadminController
                 return null;
             }
 
-            return new TabadminControllerEvent("Password-less Login Success", logLine, javaLineMatchResult, _buildTracker)
+            return new TabadminControllerEvent("Password-less Login Success", logLine, javaLineMatchResult)
             {
                 LoginUserId = match.GetNullableString("userId"),
                 LoginUsername = match.GetNullableString("username")
@@ -228,7 +227,7 @@ namespace LogShark.Plugins.TabadminController
                 return null;
             }
 
-            return new TabadminControllerEvent("Login Request From Client", logLine, javaLineMatchResult, _buildTracker)
+            return new TabadminControllerEvent("Login Request From Client", logLine, javaLineMatchResult)
             {
                 LoginClientId = match.GetNullableString("clientId"),
                 LoginClientIp = match.GetNullableString("clientIp"),
@@ -246,7 +245,7 @@ namespace LogShark.Plugins.TabadminController
                 return null;
             }
             
-            return new TabadminControllerEvent("Login From Client Success", logLine, javaLineMatchResult, _buildTracker)
+            return new TabadminControllerEvent("Login From Client Success", logLine, javaLineMatchResult)
             {
                 LoginUsername = match.GetNullableString("username")
             };
@@ -272,7 +271,7 @@ namespace LogShark.Plugins.TabadminController
                 return null;
             }
             
-            return new TabadminControllerEvent("Cold Config Changes Found", logLine, javaLineMatchResult, _buildTracker)
+            return new TabadminControllerEvent("Cold Config Changes Found", logLine, javaLineMatchResult)
             {
                 ConfigParametersChanging = match.GetNullableString("configParametersList")
             };

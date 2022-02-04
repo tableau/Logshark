@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using FluentAssertions;
 using LogShark.Plugins.Apache;
 using LogShark.Shared;
@@ -8,6 +5,9 @@ using LogShark.Shared.LogReading.Containers;
 using LogShark.Tests.Plugins.Helpers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging.Abstractions;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using Xunit;
 
 namespace LogShark.Tests.Plugins
@@ -95,7 +95,136 @@ namespace LogShark.Tests.Plugins
 
         private readonly IList<PluginTestCase> _testCases = new List<PluginTestCase>
         {
-             new PluginTestCase { // 2020.1+ with tableau error code line
+            new PluginTestCase { // 2021.3+ w/refer stub
+                LogContents = "localhost 10.55.555.555 - 2021-07-07T00:00:00.246 \"-0700\" 80 \"POST /vizportal/api/web/v1/getSessionInfo HTTP/1.1\" \"-\" 200 5502 \"39\" 36348 YNul@aDcsiH97so8z7I@CAAAAMU - - - - \"-\" \"http://referer/\" 10.44.44.444 - 200",
+                LogFileInfo = TestLogFileInfo,
+                LineNumber = 124,
+                ExpectedOutput = new
+                {
+                    ContentLength = 39L,
+                    FileName = TestLogFileInfo.FileName,
+                    FilePath = TestLogFileInfo.FilePath,
+                    LineNumber = 124,
+                    Port = 80,
+                    RequestBody = "/vizportal/api/web/v1/getSessionInfo",
+                    Requester = "10.55.555.555",
+                    RequestId = "YNul@aDcsiH97so8z7I@CAAAAMU",
+                    RequestIp = "localhost",
+                    RequestMethod = "POST",
+                    RequestTimeMS = 36348L,
+                    StatusCode = 200,
+                    Timestamp = new DateTime(2021, 7, 7, 0, 0, 0, 246),
+                    TimestampOffset = "-0700",
+                    Worker = TestLogFileInfo.Worker,
+                    XForwardedFor = "-",
+                    TableauErrorSource = "-",
+                    TableauErrorCode = "-",
+                    TableauServiceName = "-",
+                    TableauStatusCode = (int?)null,
+                    TableauTrace = "-",
+                    RefererStub = "http://referer/",
+                    RemoteLogName = "-",
+                    LocalIp = "10.44.44.444",
+                    OriginalRequestStatus = 200
+                }
+            },
+
+            new PluginTestCase { // 2021.3+ w/error code
+                LogContents = "localhost 10.55.555.555 - 2021-07-07T00:00:00.245 \"Pacific Daylight Time\" 80 \"POST /dataserver/create.xml HTTP/1.1\" \"-\" 500 924 \"848\" 1704011 YOXsVVEy5E7ZXYVMqlbvawAAA5U Configuration 3 0xA73B8869 dataserver \"-\" \"\" 10.44.44.444 - 500",
+                LogFileInfo = TestLogFileInfo,
+                LineNumber = 124,
+                ExpectedOutput = new
+                {
+                    ContentLength = 848L,
+                    FileName = TestLogFileInfo.FileName,
+                    FilePath = TestLogFileInfo.FilePath,
+                    LineNumber = 124,
+                    Port = 80,
+                    RequestBody = "/dataserver/create.xml",
+                    Requester = "10.55.555.555",
+                    RequestId = "YOXsVVEy5E7ZXYVMqlbvawAAA5U",
+                    RequestIp = "localhost",
+                    RequestMethod = "POST",
+                    RequestTimeMS = 1704011L,
+                    StatusCode = 500,
+                    Timestamp = new DateTime(2021, 7, 7, 0, 0, 0, 245),
+                    TimestampOffset = "Pacific Daylight Time",
+                    Worker = TestLogFileInfo.Worker,
+                    XForwardedFor = "-",
+                    TableauErrorSource = "Configuration",
+                    TableauErrorCode = "0xA73B8869",
+                    TableauServiceName = "dataserver",
+                    TableauStatusCode = 3,
+                    TableauTrace = "-",
+                    RefererStub = "",
+                    RemoteLogName = "-",
+                    LocalIp = "10.44.44.444",
+                    OriginalRequestStatus = 500
+                }
+            },
+            new PluginTestCase { // 2021.3+ w/no error code
+                LogContents = "localhost 10.55.555.555 - 2021-07-07T00:00:00.244 \"Pacific Daylight Time\" 80 \"POST /server/d/Queue/EEEFFFAAABBBCCCDDDEEEFFF11122233-7:1/test.xml HTTP/1.1\" \"-\" 202 4708 \"16541\" 669974 YOVQ8FEy5E7ZXYVMqlbvdgAAArg - - - - \"-\" \"\" 10.44.44.444 - 202",
+                LogFileInfo = TestLogFileInfo,
+                LineNumber = 124,
+                ExpectedOutput = new
+                {
+                    ContentLength = 16541L,
+                    FileName = TestLogFileInfo.FileName,
+                    FilePath = TestLogFileInfo.FilePath,
+                    LineNumber = 124,
+                    Port = 80,
+                    RequestBody = "/server/d/Queue/EEEFFFAAABBBCCCDDDEEEFFF11122233-7:1/test.xml",
+                    Requester = "10.55.555.555",
+                    RequestId = "YOVQ8FEy5E7ZXYVMqlbvdgAAArg",
+                    RequestIp = "localhost",
+                    RequestMethod = "POST",
+                    RequestTimeMS = 669974L,
+                    StatusCode = 202,
+                    Timestamp = new DateTime(2021, 7, 7, 0, 0, 0, 244),
+                    TimestampOffset = "Pacific Daylight Time",
+                    Worker = TestLogFileInfo.Worker,
+                    XForwardedFor = "-",
+                    TableauErrorSource = "-",
+                    TableauErrorCode = "-",
+                    TableauServiceName = "-",
+                    TableauStatusCode = (int?)null,
+                    TableauTrace = "-",
+                    RefererStub = "",
+                    RemoteLogName = "-",
+                    LocalIp = "10.44.44.444",
+                    OriginalRequestStatus = 202
+                }
+            },
+
+            new PluginTestCase { // Format between the format above and below that included tableau trace but nothing else from above
+                LogContents = "localhost ::1 - 2019-10-03T22:25:32.975 \"Pacific Daylight Time\" 80 \"POST /dataserver/create.xml HTTP/1.1\" \"-\" 500 395 \"803\" 215505 XZbXzBPVoXiKAmfcaR4JPAAAAUM System 4 0x640D9F85 dataserver \"-\"",
+                LogFileInfo = TestLogFileInfo,
+                LineNumber = 124,
+                ExpectedOutput = new {
+                    ContentLength = 803L,
+                    FileName = TestLogFileInfo.FileName,
+                    FilePath = TestLogFileInfo.FilePath,
+                    LineNumber = 124,
+                    Port = 80,
+                    RequestBody = "/dataserver/create.xml",
+                    Requester = "::1",
+                    RequestId = "XZbXzBPVoXiKAmfcaR4JPAAAAUM",
+                    RequestIp = "localhost",
+                    RequestMethod = "POST",
+                    RequestTimeMS = 215505L,
+                    StatusCode = 500,
+                    Timestamp = new DateTime(2019, 10, 3, 22, 25, 32, 975),
+                    TimestampOffset = "Pacific Daylight Time",
+                    Worker = TestLogFileInfo.Worker,
+                    XForwardedFor = "-",
+                    TableauErrorSource = "System",
+                    TableauErrorCode = "0x640D9F85",
+                    TableauServiceName = "dataserver",
+                    TableauStatusCode = 4,
+                }
+            },
+
+            new PluginTestCase { // 2020.1+ with tableau error code line
                 LogContents = "localhost ::1 - 2019-10-03T22:25:32.975 \"Pacific Daylight Time\" 80 \"POST /dataserver/create.xml HTTP/1.1\" \"-\" 500 395 \"803\" 215505 XZbXzBPVoXiKAmfcaR4JPAAAAUM System 4 0x640D9F85 dataserver",
                 LogFileInfo = TestLogFileInfo,
                 LineNumber = 124,

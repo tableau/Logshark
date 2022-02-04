@@ -117,6 +117,12 @@ namespace LogShark.Writers
                     new WorkbookPublishingException($"Workbook {completedWorkbookInfo.OriginalWorkbookName} was not generated successfully. Skipping publishing", completedWorkbookInfo.Exception));
             }
 
+            if (!completedWorkbookInfo.HasAnyData && _config.SkipPublishingEmptyWorkbooks)
+            {
+                _logger.LogInformation("Skipping publishing workbook {skippedWorkbookName} because it has no data", completedWorkbookInfo.OriginalWorkbookName);
+                return WorkbookPublishResult.SkippedEmpty(completedWorkbookInfo.OriginalWorkbookName);
+            }
+
             var publishWorkbookRequest = new PublishWorkbookRequest(
                 completedWorkbookInfo.WorkbookPath,
                 projectId,

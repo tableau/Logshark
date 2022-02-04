@@ -71,24 +71,28 @@ namespace LogShark.Shared.Extensions
             return "worker0"; // Tabadmin primary or Desktop
         }
 
-        public static Match GetRegexMatchAndMoveCorrectRegexUpFront(this string lineToMatch, IList<Regex> regexList)
+        // Lock is needed because this logic can reshuffle the list. This could cause race conditions between threads.
+        public static Match GetRegexMatchAndMoveCorrectRegexUpFront(this string lineToMatch, IList<Regex> regexList, object regexListLockObject)
         {
             if (regexList == null)
             {
                 return null;
             }
-            
-            for (var i = 0; i < regexList.Count; ++i)
+
+            lock (regexListLockObject)
             {
-                var match = regexList[i].Match(lineToMatch);
-                if (match.Success)
+                for (var i = 0; i < regexList.Count; ++i)
                 {
-                    regexList.MoveToFront(i);
-                    return match;
+                    var match = regexList[i].Match(lineToMatch);
+                    if (match.Success)
+                    {
+                        regexList.MoveToFront(i);
+                        return match;
+                    }
                 }
+
+                return null;
             }
-            
-            return null;
         }
 
         public static string TrimSurroundingDoubleQuotes(this string original)

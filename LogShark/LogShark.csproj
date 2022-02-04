@@ -57,11 +57,10 @@
 
     <ItemGroup>
       <ProjectReference Include="..\LogShark.Shared\LogShark.Shared.csproj" />
-    </ItemGroup>
-
+    </ItemGroup>    
     <ItemGroup>
-        <Reference Include="Tools.TableauServerRestApi">
-            <HintPath>..\thirdparty\Tools.TableauServerRestApi.dll</HintPath>
-        </Reference>
-    </ItemGroup>
+      <Reference Include="Tools.TableauServerRestApi">
+	    <HintPath>..\thirdparty\Tools.TableauServerRestApi.dll</HintPath>
+	  </Reference>
+    </ItemGroup>  	
 </Project>

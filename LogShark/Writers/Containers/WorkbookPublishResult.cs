@@ -40,10 +40,16 @@ namespace LogShark.Writers.Containers
             return new WorkbookPublishResult(WorkbookPublishState.Success, originalWorkbookName, workbookInfo.Id, workbookInfo.Name);
         }
 
+        public static WorkbookPublishResult SkippedEmpty(string originalWorkbookName)
+        {
+            return new WorkbookPublishResult(WorkbookPublishState.SkippedEmpty, originalWorkbookName);
+        }
+
         public enum WorkbookPublishState
         {
             Fail,
             Success,
+            SkippedEmpty,
             Timeout
         }
     }

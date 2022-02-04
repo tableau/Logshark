@@ -226,6 +226,16 @@ namespace LogShark.Extensions
             {
                 sb.AppendLine($"Successfully published workbooks: {GenerateHorizontalList(successfullyPublishedWorkbooks)}");
             }
+
+            var skippedWorkbooks = publisherResults.PublishedWorkbooksInfo?
+                .Where(result => result.PublishState == WorkbookPublishResult.WorkbookPublishState.SkippedEmpty)
+                .Select(result => result.OriginalWorkbookName)
+                .OrderBy(workbookName => workbookName)
+                .ToList();
+            if (skippedWorkbooks?.Count > 0)
+            {
+                sb.AppendLine($"Skipped publishing empty workbooks: {GenerateHorizontalList(skippedWorkbooks)}");
+            }
         }
 
         private static void GenerateWorkbookGeneratorResultsSection(StringBuilder sb, RunSummary runSummary)

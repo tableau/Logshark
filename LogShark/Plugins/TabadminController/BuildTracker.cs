@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using LogShark.Shared;
 
 namespace LogShark.Plugins.TabadminController
@@ -7,12 +9,12 @@ namespace LogShark.Plugins.TabadminController
     public class BuildTracker : IBuildTracker
     {
         private readonly IProcessingNotificationsCollector _processingNotificationsCollector;
-        private readonly Dictionary<long, string> _timestampsForBuilds;
+        private readonly ConcurrentDictionary<long, string> _timestampsForBuilds;
 
         public BuildTracker(IProcessingNotificationsCollector processingNotificationsCollector)
         {
             _processingNotificationsCollector = processingNotificationsCollector;
-            _timestampsForBuilds = new Dictionary<long, string>();
+            _timestampsForBuilds = new ConcurrentDictionary<long, string>();
         }
 
         public void AddBuild(DateTime timestamp, string build)
@@ -26,11 +28,11 @@ namespace LogShark.Plugins.TabadminController
             AddBuildRecordSafely(roundedTimestamp - 60, build, timestamp); // -1 minute
         }
         
-        public string GetBuild(DateTime timestamp)
+        public IEnumerable<TabadminControllerBuildRecord> GetBuildRecords()
         {
-            var roundedTimestamp = GetTimestampRoundedDownToMinute(timestamp);
-            var recordFound = _timestampsForBuilds.TryGetValue(roundedTimestamp, out var build);
-            return recordFound ? build : null;
+            return _timestampsForBuilds.Select(kvp => new TabadminControllerBuildRecord(
+                DateTimeOffset.FromUnixTimeSeconds(kvp.Key),
+                kvp.Value));
         }
 
         private static long GetTimestampRoundedDownToMinute(DateTime dateTime)
@@ -41,17 +43,16 @@ namespace LogShark.Plugins.TabadminController
 
         private void AddBuildRecordSafely(long roundedTimestamp, string build, DateTime originalTimestamp)
         {
-            if (_timestampsForBuilds.ContainsKey(roundedTimestamp) )
+            _timestampsForBuilds.AddOrUpdate(roundedTimestamp, build, (_, currentValue) =>
             {
-                if (_timestampsForBuilds[roundedTimestamp] != build)
+                if (currentValue != build)
                 {
                     _processingNotificationsCollector.ReportError($"Timestamp `{originalTimestamp}` contains reference for build `{build}`, however another build - `{_timestampsForBuilds[roundedTimestamp]}` - is registered within two minutes of this event. Build output around this time could be inconsistent.", nameof(BuildTracker));
+                    return currentValue;
                 }
-
-                return;
-            }
-            
-            _timestampsForBuilds.Add(roundedTimestamp, build);
+                
+                return build;
+            });   
         }
     }
 }

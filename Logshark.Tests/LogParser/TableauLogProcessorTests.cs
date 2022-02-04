@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using FluentAssertions;
 using LogShark.Containers;
 using LogShark.Plugins;
@@ -52,12 +53,12 @@ namespace LogShark.Tests.LogParser
         [Theory]
         [InlineData(UnZippedTestSet)]
         [InlineData(ZippedTestSet)]
-        public void RunTestWithTwoPluginsOnALogSet(string logSetPath)
+        public async Task RunTestWithTwoPluginsOnALogSet(string logSetPath)
         {
             var config = GetConfig(logSetPath);
-            var logsProcessor = new TableauLogsProcessor(config, _pluginManager.Object, _writerFactory, _logTypeDetailsMock.Object, null, new NullLoggerFactory());
+            using var logsProcessor = new TableauLogsProcessor(config, _pluginManager.Object, _writerFactory, _logTypeDetailsMock.Object, null, new NullLoggerFactory());
             
-            var results = logsProcessor.ProcessLogSet();
+            var results = await logsProcessor.ProcessLogSet();
             
             results.LogProcessingStatistics.Count.Should().Be(1);
             results.IsSuccessful.Should().BeTrue();
@@ -80,7 +81,7 @@ namespace LogShark.Tests.LogParser
         }
         
         [Fact]
-        public void NoLogsFound()
+        public async Task NoLogsFound()
         {
             const string emptyDirName = "empty_dir";
             if (Directory.Exists(emptyDirName))
@@ -90,11 +91,11 @@ namespace LogShark.Tests.LogParser
             Directory.CreateDirectory(emptyDirName);
             
             var config = GetConfig(emptyDirName);
-            var logsProcessor = new TableauLogsProcessor(config, _pluginManager.Object, _writerFactory, _logTypeDetailsMock.Object, null, new NullLoggerFactory());
+            using var logsProcessor = new TableauLogsProcessor(config, _pluginManager.Object, _writerFactory, _logTypeDetailsMock.Object, null, new NullLoggerFactory());
             
-            var results = logsProcessor.ProcessLogSet();
+            var results = await logsProcessor.ProcessLogSet();
             
-            results.LogProcessingStatistics.Count.Should().Be(1);
+            results.LogProcessingStatistics.Count.Should().Be(0);
             results.IsSuccessful.Should().BeFalse();
             results.ExitReason.Should().Be(ExitReason.LogSetDoesNotContainRelevantLogs);
             results.ErrorMessage.Should().Contain("Did not find any Tableau log files associated with requested plugins");
@@ -106,16 +107,16 @@ namespace LogShark.Tests.LogParser
         }
         
         [Fact]
-        public void BadPluginConfig()
+        public async Task BadPluginConfig()
         {
             var badPluginNames = (IEnumerable<string>) new List<string> {"badPlugin1", "badPlugin2"};
             _pluginManager
                 .Setup(m => m.IsValidPluginConfiguration(out badPluginNames))
                 .Returns(false);
             var config = GetConfig(UnZippedTestSet);
-            var logsProcessor = new TableauLogsProcessor(config, _pluginManager.Object, _writerFactory, _logTypeDetailsMock.Object, null, new NullLoggerFactory());
+            using var logsProcessor = new TableauLogsProcessor(config, _pluginManager.Object, _writerFactory, _logTypeDetailsMock.Object, null, new NullLoggerFactory());
             
-            var results = logsProcessor.ProcessLogSet();
+            var results = await logsProcessor.ProcessLogSet();
             
             results.IsSuccessful.Should().BeFalse();
             results.ExitReason.Should().Be(ExitReason.IncorrectConfiguration);
@@ -132,15 +133,15 @@ namespace LogShark.Tests.LogParser
         }
         
         [Fact]
-        public void OomException()
+        public async Task OomException()
         {
             _plugin1.Mock
                 .Setup(m => m.ProcessLogLine(It.IsAny<LogLine>(), It.IsAny<LogType>()))
                 .Throws<OutOfMemoryException>();
             var config = GetConfig(UnZippedTestSet);
-            var logsProcessor = new TableauLogsProcessor(config, _pluginManager.Object, _writerFactory, _logTypeDetailsMock.Object, null, new NullLoggerFactory());
+            using var logsProcessor = new TableauLogsProcessor(config, _pluginManager.Object, _writerFactory, _logTypeDetailsMock.Object, null, new NullLoggerFactory());
             
-            var results = logsProcessor.ProcessLogSet();
+            var results = await logsProcessor.ProcessLogSet();
             
             results.IsSuccessful.Should().BeFalse();
             results.ExitReason.Should().Be(ExitReason.OutOfMemory);
@@ -161,19 +162,19 @@ namespace LogShark.Tests.LogParser
         }
         
         [Fact]
-        public void GenericException()
+        public async Task GenericException()
         {
             _plugin1.Mock
                 .Setup(m => m.ProcessLogLine(It.IsAny<LogLine>(), It.IsAny<LogType>()))
                 .Throws<Exception>();
             var config = GetConfig(UnZippedTestSet);
-            var logsProcessor = new TableauLogsProcessor(config, _pluginManager.Object, _writerFactory, _logTypeDetailsMock.Object, null, new NullLoggerFactory());
+            using var logsProcessor = new TableauLogsProcessor(config, _pluginManager.Object, _writerFactory, _logTypeDetailsMock.Object, null, new NullLoggerFactory());
             
-            var results = logsProcessor.ProcessLogSet();
+            var results = await logsProcessor.ProcessLogSet();
             
             results.IsSuccessful.Should().BeFalse();
             results.ExitReason.Should().Be(ExitReason.UnclassifiedError);
-            results.ErrorMessage.Should().Contain("Unhandled exception occurred while processing log type");
+            results.ErrorMessage.Should().Contain("Unhandled exception occurred while processing file stream from file");
 
             _pluginManager.Verify(
                 m => m.SendCompleteProcessingSignalToPlugins(true),
@@ -223,9 +224,12 @@ namespace LogShark.Tests.LogParser
             return pluginManagerMock;
         }
 
-        private static LogSharkConfiguration GetConfig(string logLocation)
+        private static LogSharkConfiguration GetConfig(string logLocation, int numberOfThreads = 1)
         {
-            var iConfig = ConfigGenerator.GetConfigFromDictionary(new Dictionary<string, string>());
+            var iConfig = ConfigGenerator.GetConfigFromDictionary(new Dictionary<string, string>
+            {
+                {"EnvironmentConfig:NumberOfProcessingThreads", numberOfThreads.ToString()}
+            });
             var @params = new LogSharkCommandLineParameters
             {
                 LogSetLocation = logLocation

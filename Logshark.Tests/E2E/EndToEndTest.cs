@@ -114,9 +114,9 @@ namespace LogShark.Tests.E2E
             
             var expectedSet = allExpectedLines.ToHashSet(); // Turning to sets, so order of the items is not compared. We do not provide guarantee on the order of processing
             var actualSet = allActualLines.ToHashSet();
-
+            
             // Using this weird pattern instead of .Should().BeEquivalentTo() because the latter takes forever in CI and times out eventually 
-            var actualNotInExpected = allActualLines.Except(expectedSet).ToList();
+            var actualNotInExpected = actualSet.Except(expectedSet).ToList();
             actualNotInExpected.Should().BeEquivalentTo(Enumerable.Empty<string>(), $"expected file {expectedRelativePath} should match actual");
 
             var expectedNotInActual = expectedSet.Except(actualSet).ToList();

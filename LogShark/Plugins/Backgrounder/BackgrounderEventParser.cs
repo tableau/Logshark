@@ -12,9 +12,11 @@ namespace LogShark.Plugins.Backgrounder
 {
     public class BackgrounderEventParser
     {
-        private readonly Dictionary<string, int?> _backgrounderIds = new Dictionary<string, int?>();
+        private readonly Dictionary<string, int?> _backgrounderIds;
         private readonly IBackgrounderEventPersister _backgrounderEventPersister;
         private readonly IProcessingNotificationsCollector _processingNotificationsCollector;
+
+        private readonly object _getBackgrounderIdLock;
 
         #region Regex
 
@@ -47,6 +49,7 @@ namespace LogShark.Plugins.Backgrounder
                             \s-\s(?<message>.*)",
                RegexOptions.ExplicitCapture | RegexOptions.IgnorePatternWhitespace | RegexOptions.Singleline | RegexOptions.Compiled);
 
+        private static readonly object StartMessageRegexListLock = new object();
         private static readonly List<Regex> StartMessageRegexList = new List<Regex>() {
             // Running job of type UpdateVerticaKeychains; no timeout; priority: 0; id: null; args: []
             // --------------job_type_long---------------  -timeout--            ^      -id-        args
@@ -101,8 +104,11 @@ namespace LogShark.Plugins.Backgrounder
 
         public BackgrounderEventParser(IBackgrounderEventPersister backgrounderEventPersister, IProcessingNotificationsCollector processingNotificationsCollector)
         {
+            _backgrounderIds = new Dictionary<string, int?>();
             _backgrounderEventPersister = backgrounderEventPersister;
             _processingNotificationsCollector = processingNotificationsCollector;
+
+            _getBackgrounderIdLock = new object();
         }
 
         public void ParseAndPersistLine(LogLine logLine, string logLineText)
@@ -165,25 +171,30 @@ namespace LogShark.Plugins.Backgrounder
 
         private int? GetBackgrounderId(LogLine logLine)
         {
-            if (_backgrounderIds.ContainsKey(logLine.LogFileInfo.FilePath))
+            lock (_getBackgrounderIdLock)
             {
-                return _backgrounderIds[logLine.LogFileInfo.FilePath];
+                if (_backgrounderIds.ContainsKey(logLine.LogFileInfo.FilePath))
+                {
+                    return _backgrounderIds[logLine.LogFileInfo.FilePath];
+                }
+
+                var backgrounderIdMatch = BackgrounderIdFromFileNameRegex.Match(logLine.LogFileInfo.FileName);
+                var backgrounderIdValue = backgrounderIdMatch.Success &&
+                                          int.TryParse(backgrounderIdMatch.Groups["backgrounder_id"].Value,
+                                              out var parsedBackgrounderId)
+                    ? parsedBackgrounderId
+                    : (int?) null;
+
+                if (backgrounderIdValue == null)
+                {
+                    const string message =
+                        "Failed to parse backgrounderId from filename. All events from this file will have null id";
+                    _processingNotificationsCollector.ReportError(message, logLine, nameof(BackgrounderPlugin));
+                }
+
+                _backgrounderIds.Add(logLine.LogFileInfo.FilePath, backgrounderIdValue);
+                return backgrounderIdValue;
             }
-
-            var backgrounderIdMatch = BackgrounderIdFromFileNameRegex.Match(logLine.LogFileInfo.FileName);
-            var backgrounderIdValue = backgrounderIdMatch.Success &&
-                                      int.TryParse(backgrounderIdMatch.Groups["backgrounder_id"].Value, out var parsedBackgrounderId)
-                ? parsedBackgrounderId
-                : (int?)null;
-
-            if (backgrounderIdValue == null)
-            {
-                const string message = "Failed to parse backgrounderId from filename. All events from this file will have null id";
-                _processingNotificationsCollector.ReportError(message, logLine, nameof(BackgrounderPlugin));
-            }
-
-            _backgrounderIds.Add(logLine.LogFileInfo.FilePath, backgrounderIdValue);
-            return backgrounderIdValue;
         }
 
         private static BackgrounderJobError ParseErrorMessage(Match lineMatch, LogLine logLine)
@@ -210,7 +221,7 @@ namespace LogShark.Plugins.Backgrounder
         private static BackgrounderJob TryMatchStartMessage(Match lineMatch, LogLine logLine, int? backgrounderId, long jobId)
         {
             var message = lineMatch.Groups["message"].Value;
-            var startMessageMatch = message?.GetRegexMatchAndMoveCorrectRegexUpFront(StartMessageRegexList);
+            var startMessageMatch = message?.GetRegexMatchAndMoveCorrectRegexUpFront(StartMessageRegexList, StartMessageRegexListLock);
 
             if (startMessageMatch == null || !startMessageMatch.Success)
             {

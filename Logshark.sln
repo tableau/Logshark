@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogShark", "LogShark\LogSha
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogShark.Tests", "LogShark.Tests\LogShark.Tests.csproj", "{245D8915-8292-4D99-88F7-1701ABB97E68}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogShark.Shared", "LogShark.Shared\LogShark.Shared.csproj", "{0022639E-6916-49AA-B265-E8BA078C366F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogShark.Shared", "LogShark.Shared\LogShark.Shared.csproj", "{0022639E-6916-49AA-B265-E8BA078C366F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

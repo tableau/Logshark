@@ -36,56 +36,73 @@ namespace LogShark.Plugins.Backgrounder
 
         public void AddStartEvent(BackgrounderJob startEvent)
         {
-            if (_events.ContainsKey(startEvent.JobId))
+            lock (_events)
             {
-                var existingEvent = _events[startEvent.JobId];
-                existingEvent.StartEvent = startEvent;
+                if (_events.ContainsKey(startEvent.JobId))
+                {
+                    var existingEvent = _events[startEvent.JobId];
+                    existingEvent.StartEvent = startEvent;
+                }
+                else
+                {
+                    _events.Add(startEvent.JobId, new BackgrounderEvent {StartEvent = startEvent});
+                }
             }
-            else
+
+            lock (_latestStartEvents)
             {
-                _events.Add(startEvent.JobId, new BackgrounderEvent{ StartEvent = startEvent });
+                _latestStartEvents.AddWatermark(startEvent);
             }
-            
-            _latestStartEvents.AddWatermark(startEvent);
         }
 
         public void AddEndEvent(BackgrounderJob endEvent)
         {
-            if (_events.ContainsKey(endEvent.JobId))
+            lock (_events)
             {
-                var existingEvent = _events[endEvent.JobId];
-                existingEvent.EndEvent = endEvent;
-                PersistEventIfItIsComplete(existingEvent);
-            }
-            else
-            {
-                _events.Add(endEvent.JobId, new BackgrounderEvent{ EndEvent = endEvent });
+                if (_events.ContainsKey(endEvent.JobId))
+                {
+                    var existingEvent = _events[endEvent.JobId];
+                    existingEvent.EndEvent = endEvent;
+                    PersistEventIfItIsComplete(existingEvent);
+                }
+                else
+                {
+                    _events.Add(endEvent.JobId, new BackgrounderEvent {EndEvent = endEvent});
+                }
             }
         }
         
         public void AddExtractJobDetails(BackgrounderExtractJobDetail extractJobDetail)
         {
-            if (_events.ContainsKey(extractJobDetail.BackgrounderJobId))
+            lock (_events)
             {
-                _events[extractJobDetail.BackgrounderJobId].ExtractJobDetails = extractJobDetail;
-            }
-            else
-            {
-                _events.Add(extractJobDetail.BackgrounderJobId, new BackgrounderEvent{ ExtractJobDetails = extractJobDetail });
+                if (_events.ContainsKey(extractJobDetail.BackgrounderJobId))
+                {
+                    _events[extractJobDetail.BackgrounderJobId].ExtractJobDetails = extractJobDetail;
+                }
+                else
+                {
+                    _events.Add(extractJobDetail.BackgrounderJobId,
+                        new BackgrounderEvent {ExtractJobDetails = extractJobDetail});
+                }
             }
         }
         
         public void AddSubscriptionJobDetails(BackgrounderSubscriptionJobDetail subscriptionJobDetail)
         {
-            if (_events.ContainsKey(subscriptionJobDetail.BackgrounderJobId))
+            lock (_events)
             {
-                var existingEvent = _events[subscriptionJobDetail.BackgrounderJobId];
-                existingEvent.AddSubscriptionDetail(subscriptionJobDetail);
-                
-            }
-            else
-            {
-                _events.Add(subscriptionJobDetail.BackgrounderJobId, new BackgrounderEvent{ SubscriptionJobDetails = subscriptionJobDetail });
+                if (_events.ContainsKey(subscriptionJobDetail.BackgrounderJobId))
+                {
+                    var existingEvent = _events[subscriptionJobDetail.BackgrounderJobId];
+                    existingEvent.AddSubscriptionDetail(subscriptionJobDetail);
+
+                }
+                else
+                {
+                    _events.Add(subscriptionJobDetail.BackgrounderJobId,
+                        new BackgrounderEvent {SubscriptionJobDetails = subscriptionJobDetail});
+                }
             }
         }
 
@@ -96,21 +113,24 @@ namespace LogShark.Plugins.Backgrounder
 
         public IEnumerable<WriterLineCounts> DrainEvents()
         {
-            foreach (var (_, @event) in _events)
+            lock (_events)
             {
-                if (@event.StartEvent != null)
+                foreach (var (_, @event) in _events)
                 {
-                    PersistEvent(@event, false);
+                    if (@event.StartEvent != null)
+                    {
+                        PersistEvent(@event, false);
+                    }
                 }
-            }
 
-            return new List<WriterLineCounts>
-            {
-                _jobWriter.Close(),
-                _jobErrorWriter.Close(),
-                _extractJobDetailWriter.Close(),
-                _subscriptionJobDetailWriter.Close()
-            };
+                return new List<WriterLineCounts>
+                {
+                    _jobWriter.Close(),
+                    _jobErrorWriter.Close(),
+                    _extractJobDetailWriter.Close(),
+                    _subscriptionJobDetailWriter.Close()
+                };
+            }
         }
         
         public void Dispose()

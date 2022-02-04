@@ -39,7 +39,7 @@ namespace LogShark.Tests.Plugins.TabadminControllerPlugin
                 plugin.CompleteProcessing();
             }
 
-            testWriterFactory.AssertAllWritersAreDisposedAndEmpty(1);
+            testWriterFactory.AssertAllWritersAreDisposedAndEmpty(2);
             _processingNotificationsCollectorMock.Verify(m => m.ReportError(
                 It.IsAny<string>(),
                 logLine,
@@ -65,7 +65,7 @@ namespace LogShark.Tests.Plugins.TabadminControllerPlugin
                 plugin.CompleteProcessing();
             }
 
-            testWriterFactory.AssertAllWritersAreDisposedAndEmpty(1);
+            testWriterFactory.AssertAllWritersAreDisposedAndEmpty(2);
             _processingNotificationsCollectorMock.VerifyNoOtherCalls();
         }
         
@@ -87,22 +87,53 @@ namespace LogShark.Tests.Plugins.TabadminControllerPlugin
             
             processingResults.AdditionalTags.Should().BeEmpty();
             processingResults.HasAdditionalTags.Should().BeFalse();
-            processingResults.WritersStatistics.Count.Should().Be(1);
+            processingResults.WritersStatistics.Count.Should().Be(2);
 
             if (nonNullProps == null)
             {
-                testWriterFactory.AssertAllWritersAreDisposedAndEmpty(1);
-                processingResults.WritersStatistics[0].LinesPersisted.Should().Be(0);
+                testWriterFactory.AssertAllWritersAreDisposedAndEmpty(2);
+                processingResults.WritersStatistics.All(stats => stats.LinesPersisted == 0).Should().BeTrue();
                 return;
             }
-
-            processingResults.WritersStatistics[0].LinesPersisted.Should().Be(1);
-            var testWriter = testWriterFactory.GetOneWriterAndVerifyOthersAreEmptyAndDisposed<TabadminControllerEvent>("TabadminControllerEvents", 1);
+            
+            processingResults.WritersStatistics.Sum(stats => stats.LinesPersisted).Should().Be(1);
+            var testWriter = testWriterFactory.GetOneWriterAndVerifyOthersAreEmptyAndDisposed<TabadminControllerEvent>("TabadminControllerEvents", 2);
             testWriter.ReceivedObjects.Count.Should().Be(1);
             var result = testWriter.ReceivedObjects.FirstOrDefault() as TabadminControllerEvent;
             result.Should().NotBeNull();
             AssertMethods.AssertThatAllClassOwnPropsAreAtDefaultExpectFor(result, nonNullProps, testName);
             result.VerifyBaseEventProperties(timestamp, logLine);
+        }
+        
+        [Fact]
+        public void BuildNumberTest()
+        {
+            var logLineText = "2020-09-30 18:24:15.172 +0000  qtp762863421-34 : INFO  com.tableausoftware.tabadmin.configuration.builder.AppConfigurationBuilder - Loading topology settings from C:\\ProgramData\\Tableau\\Tableau Server\\data\\tabsvc\\config\\tabadmincontroller_0.20192.19.0718.1543\\topology.yml"; 
+            var testWriterFactory = new TestWriterFactory();
+            var logLine = new LogLine(new ReadLogLineResult(123, logLineText), TestLogFileInfo);
+            SinglePluginExecutionResults processingResults;
+            using (var plugin = new LogShark.Plugins.TabadminController.TabadminControllerPlugin())
+            {
+                plugin.Configure(testWriterFactory, null, _processingNotificationsCollectorMock.Object, new NullLoggerFactory());
+                plugin.ProcessLogLine(logLine, LogType.TabadminControllerJava);
+                processingResults = plugin.CompleteProcessing();
+            }
+
+            _processingNotificationsCollectorMock.VerifyNoOtherCalls();
+            
+            processingResults.AdditionalTags.Should().BeEmpty();
+            processingResults.HasAdditionalTags.Should().BeFalse();
+            processingResults.WritersStatistics.Count.Should().Be(2);
+
+            processingResults.WritersStatistics.Sum(stats => stats.LinesPersisted).Should().Be(3);
+            var testWriter = testWriterFactory.GetOneWriterAndVerifyOthersAreEmptyAndDisposed<TabadminControllerBuildRecord>("TabadminControllerBuildRecords", 2);
+            testWriter.ReceivedObjects.Count.Should().Be(3);
+            testWriter.ReceivedObjects.Should().BeEquivalentTo(new object[]
+            {
+                new { Build = "20192.19.0718.1543", RoundedTimestamp = new DateTimeOffset(2020, 9, 30, 18, 25, 0, TimeSpan.Zero)},
+                new { Build = "20192.19.0718.1543", RoundedTimestamp = new DateTimeOffset(2020, 9, 30, 18, 24, 0, TimeSpan.Zero)},
+                new { Build = "20192.19.0718.1543", RoundedTimestamp = new DateTimeOffset(2020, 9, 30, 18, 23, 0, TimeSpan.Zero)}
+            });
         }
 
         public static IEnumerable<object[]> TestCases => new List<object[]>
@@ -133,24 +164,66 @@ namespace LogShark.Tests.Plugins.TabadminControllerPlugin
                     { "Severity", "INFO" },
                 }
             },
-            
+
             new object[]
             {
-                "Loading topology event - Good",
-                "2020-09-30 18:24:15.172 +0000  qtp762863421-34 : INFO  com.tableausoftware.tabadmin.configuration.builder.AppConfigurationBuilder - Loading topology settings from C:\\ProgramData\\Tableau\\Tableau Server\\data\\tabsvc\\config\\tabadmincontroller_0.20192.19.0718.1543\\topology.yml",
-                new DateTime(2020, 9, 30, 18, 24, 15, 172), 
-                LogType.TabadminControllerJava,
+                "Service status event - Good",
+                "2020-09-27 20:00:19.351 -0400  StatusRequestDispatcher-3 : INFO  com.tableausoftware.tabadmin.agent.status.ServiceStatusRequestRunner - Posting status update for hyper_0: ACTIVE.",
+                new DateTime(2020, 9, 27, 20, 0, 19, 351),
+                LogType.TabadminAgentJava,
                 new Dictionary<string, object>
                 {
-                    { "Build", "20192.19.0718.1543"},
-                    { "Class", "com.tableausoftware.tabadmin.configuration.builder.AppConfigurationBuilder"},
-                    { "EventType", "Loading Topology"},
-                    { "Message", "Loading topology settings from C:\\ProgramData\\Tableau\\Tableau Server\\data\\tabsvc\\config\\tabadmincontroller_0.20192.19.0718.1543\\topology.yml" },
-                    { "Thread", "qtp762863421-34" },
+                    { "Class", "com.tableausoftware.tabadmin.agent.status.ServiceStatusRequestRunner"},
+                    { "EventType", "Process Status Update"},
+                    { "Message", "Posting status update for hyper_0: ACTIVE." },
                     { "Severity", "INFO" },
+                    { "Thread", "StatusRequestDispatcher-3" },
+                    { "StatusProcess", "hyper_0" },
+                    { "StatusMessage", "ACTIVE" },
                 }
             },
             
+            new object[]
+            {
+                "Service status event - Down",
+                "2021-09-21 09:00:20.123 -0401  StatusRequestDispatcher-3 : INFO  com.tableausoftware.tabadmin.agent.status.ServiceStatusRequestRunner - Posting status update for nlp_0: DOWN, detail message: Connection refused: connect",
+                new DateTime(2021, 9, 21, 09, 0, 20, 123),
+                LogType.TabadminAgentJava,
+                new Dictionary<string, object>
+                {
+                    { "Class", "com.tableausoftware.tabadmin.agent.status.ServiceStatusRequestRunner"},
+                    { "EventType", "Process Status Update"},
+                    { "Message", "Posting status update for nlp_0: DOWN, detail message: Connection refused: connect" },
+                    { "Severity", "INFO" },
+                    { "Thread", "StatusRequestDispatcher-3" },
+                    { "StatusProcess", "nlp_0" },
+                    { "StatusMessage", "DOWN" },
+                    { "DetailMessage", "Connection refused: connect"},
+                }
+            }
+            
+            ,
+
+            new object[]
+            {
+                "Service status event - STATUS_UNAVAILABLE",
+                "2021-09-21 09:00:20.124 -0402  StatusRequestDispatcher-3 : INFO  com.tableausoftware.tabadmin.agent.status.ServiceStatusRequestRunner - Posting status update for backuprestore_0: STATUS_UNAVAILABLE, detail message: java.net.ConnectException: Connection refused: connect",
+                new DateTime(2021, 9, 21, 09, 0, 20, 124),
+                LogType.TabadminAgentJava,
+                new Dictionary<string, object>
+                {
+                    { "Class", "com.tableausoftware.tabadmin.agent.status.ServiceStatusRequestRunner"},
+                    { "EventType", "Process Status Update"},
+                    { "Message", "Posting status update for backuprestore_0: STATUS_UNAVAILABLE, detail message: java.net.ConnectException: Connection refused: connect" },
+                    { "Severity", "INFO" },
+                    { "Thread", "StatusRequestDispatcher-3" },
+                    { "StatusProcess", "backuprestore_0" },
+                    { "StatusMessage", "STATUS_UNAVAILABLE" },
+                    { "DetailMessage", "java.net.ConnectException: Connection refused: connect"},
+                }
+            }
+            ,
+
             new object[]
             {
                 "Job end message - Good",

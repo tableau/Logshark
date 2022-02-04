@@ -91,7 +91,7 @@ namespace LogShark.Metrics
                 var loadedPlugins = loadedPluginsData.Select(plugin => new EndMetrics.ContextModel.PluginModel()
                 {
                     PluginName = plugin,
-                    ReceivedData = _runSummary.ProcessLogSetResult.PluginsReceivedAnyData.Contains(plugin),
+                    ReceivedData = _runSummary?.ProcessLogSetResult?.PluginsReceivedAnyData?.Contains(plugin) ?? false,
                 }).ToList();
                 return loadedPlugins;
             });
