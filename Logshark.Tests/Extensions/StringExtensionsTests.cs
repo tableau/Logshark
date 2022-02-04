@@ -60,8 +60,9 @@ namespace LogShark.Tests.Extensions
             var expectedRegexList = wereSwapped
                 ? new List<Regex> { regex2, regex1 }
                 : new List<Regex> { regex1, regex2 };
+            var testLockObject = new object();
 
-            var match = input?.GetRegexMatchAndMoveCorrectRegexUpFront(regexList);
+            var match = input?.GetRegexMatchAndMoveCorrectRegexUpFront(regexList, testLockObject);
 
             if (isNull)
             {

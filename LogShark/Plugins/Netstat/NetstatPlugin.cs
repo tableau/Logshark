@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using LogShark.Containers;
 using LogShark.Writers;
 using Microsoft.Extensions.Configuration;
@@ -12,7 +13,7 @@ namespace LogShark.Plugins.Netstat
 {
     public class NetstatPlugin : IPlugin
     {
-        private readonly HashSet<string> _skipRemainingInput = new HashSet<string>();
+        private readonly ConcurrentQueue<string> _skipRemainingInput = new ConcurrentQueue<string>();
         private IWriter<NetstatActiveConnection> _writer;
         private IProcessingNotificationsCollector _processingNotificationsCollector;
 
@@ -66,7 +67,7 @@ namespace LogShark.Plugins.Netstat
             // starts in Active Internet connections mode, then moves to Active UNIX domain sockets, which we dont care about
             if (logString.StartsWith("Active UNIX domain sockets"))
             {
-                _skipRemainingInput.Add(worker);
+                _skipRemainingInput.Enqueue(worker);
                 return;
             }
 

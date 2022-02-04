@@ -55,14 +55,13 @@ namespace LogShark.Tests.Plugins.TabadminControllerPlugin
 
             var result = _eventParser.ParseEvent(_testLogLine, testLine);
 
-            result.Should().NotBeNull();
+            result.Should().BeNull();
             _buildTrackerMock.Verify(m => m.AddBuild(Timestamp, buildNumber), Times.Once);
-            _buildTrackerMock.Verify(m => m.GetBuild(Timestamp), Times.Once);
             _buildTrackerMock.VerifyNoOtherCalls();
         }
 
         [Theory]
-        [MemberData(nameof(TestCases))]
+        [MemberData(nameof(EventTestCases))]
         public void TestDifferentEvents(string testName, string @class, string message, string severity, IDictionary<string, object> nonNullProps)
         {
             var testLine = GetTestLine(@class, message, severity);
@@ -79,10 +78,26 @@ namespace LogShark.Tests.Plugins.TabadminControllerPlugin
             var expectedPropValues = AddFixedPropValues(nonNullProps, @class, message, severity);
             AssertMethods.AssertThatAllClassOwnPropsAreAtDefaultExpectFor(result, expectedPropValues, testName);
             result.VerifyBaseEventProperties(Timestamp, _testLogLine);
-            _buildTrackerMock.Verify(m => m.GetBuild(Timestamp), Times.Once);
+        }
+        
+        [Theory]
+        [MemberData(nameof(BuildTestCases))]
+        public void TestBuildEvents(string message, string expectedBuild)
+        {
+            var testLine = GetTestLine("com.tableausoftware.tabadmin.configuration.builder.AppConfigurationBuilder", message, "INFO");
+
+            var result = _eventParser.ParseEvent(_testLogLine, testLine);
+            result.Should().BeNull();
+
+            if (expectedBuild != null)
+            {
+                _buildTrackerMock.Verify(m => m.AddBuild(Timestamp, expectedBuild));
+            }
+            
+            _buildTrackerMock.VerifyNoOtherCalls();
         }
 
-        public static IEnumerable<object[]> TestCases => new List<object[]>
+        public static IEnumerable<object[]> EventTestCases => new List<object[]>
         {
             new object[]
             {
@@ -101,29 +116,7 @@ namespace LogShark.Tests.Plugins.TabadminControllerPlugin
                 "INFO",
                 null
             },
-            
-            new object[]
-            {
-                "Parse Version info - Good",
-                "com.tableausoftware.tabadmin.configuration.builder.AppConfigurationBuilder",
-                @"Loading topology settings from C:\ProgramData\Tableau\Tableau Server\data\tabsvc\config\tabadmincontroller_0.20192.19.0718.1543\topology.yml",
-                "INFO",
-                new Dictionary<string, object>
-                {
-                    //{ "Build", "20192.19.0718.154" }, -- Mock is not enabled to return build and even build event itself relies on build tracker
-                    { "EventType", "Loading Topology" }
-                }
-            },
 
-            new object[]
-            {
-                "Parse Version info - Bad Build",
-                "com.tableausoftware.tabadmin.configuration.builder.AppConfigurationBuilder",
-                @"Loading topology settings from C:\ProgramData\Tableau\Tableau Server\data\tabsvc\config\tabadmincontroller_test\topology.yml",
-                "INFO",
-                null
-            },
-            
             new object[]
             {
                 "Start Job Event - Good",
@@ -473,6 +466,23 @@ namespace LogShark.Tests.Plugins.TabadminControllerPlugin
                 {
                     { "EventType", "Error - Tabadmin Controller" },
                 }
+            },
+        };
+
+        public static IEnumerable<object[]> BuildTestCases => new List<object[]>
+        {
+            new object[]
+            {
+                // Parse Version info - Good
+                @"Loading topology settings from C:\ProgramData\Tableau\Tableau Server\data\tabsvc\config\tabadmincontroller_0.20192.19.0718.1543\topology.yml",
+                "20192.19.0718.1543"
+            },
+
+            new object[]
+            {
+                // Parse Version info - Bad Build
+                @"Loading topology settings from C:\ProgramData\Tableau\Tableau Server\data\tabsvc\config\tabadmincontroller_test\topology.yml",
+                null
             },
         };
 

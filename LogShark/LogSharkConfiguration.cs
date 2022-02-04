@@ -62,7 +62,7 @@ namespace LogShark
 
         public List<string> GroupsToProvideWithDefaultPermissions => _config.GetSection("TableauServer:GroupsToProvideWithDefaultPermissions").Get<string[]>()?.ToList();
 
-        public string HydraTopicArn => _config.GetValue<string>("HydraTopicArn");
+        public string FoghornTopicArn => _config.GetValue<string>("FoghornTopicArn");
 
         public string HyperLogDir => Path.GetDirectoryName(_config.GetValue<string>("Logging:PathFormat", "Logs/"));
 
@@ -77,6 +77,8 @@ namespace LogShark
         public string NotificationFallbackNotificationEmail => _config.GetValue<string>("NotificationSettings:FallbackNotificationEmail");
 
         public int NumberOfErrorDetailsToKeep => _config.GetValueAndThrowAtNull<int>("EnvironmentConfig:NumberOfErrorDetailsToKeep");
+
+        public int NumberOfParallelThreads => _parameters.NumberOfParallelThreads ?? _config.GetConfigurationValueOrDefault("EnvironmentConfig:NumberOfProcessingThreads", 2, _logger);
 
         public string OriginalFileName => _parameters.OriginalFileName;
 
@@ -121,6 +123,8 @@ namespace LogShark
         public string RequestedPlugins => _parameters.RequestedPlugins;
 
         public string RequestedWriter => _parameters.RequestedWriter ?? _config.GetValue<string>("EnvironmentConfig:DefaultWriter");
+
+        public bool SkipPublishingEmptyWorkbooks => _config.GetConfigurationValueOrDefault("TableauServer:SkipPublishingEmptyWorkbooks", true, _logger);
 
         public string TableauServerPassword => _parameters.TableauServerPassword ?? _config.GetValueAndThrowAtNull<string>("TableauServer:Password");
         

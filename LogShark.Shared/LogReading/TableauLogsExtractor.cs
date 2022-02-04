@@ -71,7 +71,7 @@ namespace LogShark.Shared.LogReading
                     var reader = new SimpleLinePerLineReader(stream);
                     var line = reader.ReadLines().FirstOrDefault(); // This would fail if zip is password protected 
                 }
-                    
+                
                 return FileCanBeOpenedResult.Success();
             }
             catch (Exception ex)
@@ -134,11 +134,12 @@ namespace LogShark.Shared.LogReading
             IsDirectory = IsPathADirectory(logSetPath);
             _logger.LogInformation("Provided log set appears to be {logSetType}", IsDirectory ? "directory" : "zip file");
 
-            var rootSetInfo = new LogSetInfo(logSetPath, string.Empty, !IsDirectory, _rootPath);
+            var rootFilePaths = GetFilePaths(logSetPath, IsDirectory);
+            var rootSetInfo = new LogSetInfo(rootFilePaths, logSetPath, string.Empty, !IsDirectory, _rootPath);
             var zipInfoList = new List<LogSetInfo> {rootSetInfo};
 
             zipInfoList.AddRange(IsDirectory
-                ? LookForZippedParts(logSetPath)
+                ? LookForZippedPartsInDirectory(logSetPath)
                 : HandleNestedZips(logSetPath, tempDirRoot, processingNotificationsCollector)
             );
 
@@ -178,7 +179,8 @@ namespace LogShark.Shared.LogReading
                 var checkResult = FileCanBeOpened(extractPath, _logger); 
                 if (checkResult.FileCanBeOpened)
                 {
-                    nestedZipFilesInfo.Add(new LogSetInfo(extractPath.NormalizeSeparatorsToUnix(), nestedZip.FullName.RemoveZipFromTail(), true, _rootPath));
+                    var filePaths = GetFilePaths(extractPath, false);
+                    nestedZipFilesInfo.Add(new LogSetInfo(filePaths, extractPath.NormalizeSeparatorsToUnix(), nestedZip.FullName.RemoveZipFromTail(), true, _rootPath));
                 }
                 else
                 {
@@ -191,14 +193,18 @@ namespace LogShark.Shared.LogReading
             return nestedZipFilesInfo;
         }
 
-        private IEnumerable<LogSetInfo> LookForZippedParts(string logSetDirectoryPath)
+        private IEnumerable<LogSetInfo> LookForZippedPartsInDirectory(string logSetDirectoryPath)
         {
             _logger.LogInformation("Looking for typical zip files inside '{logSetPath}' folder", logSetDirectoryPath);
 
             var allFiles = Directory.EnumerateFiles(logSetDirectoryPath, "*", SearchOption.AllDirectories);
             var allKnownZips = allFiles
                 .Where(path => IsNestedZip(path, true))
-                .Select(path => new LogSetInfo(path.NormalizeSeparatorsToUnix(), path.NormalizePath(_rootPath).RemoveZipFromTail(), true, _rootPath))
+                .Select(path =>
+                {
+                    var filePaths = GetFilePaths(path, false);
+                    return new LogSetInfo(filePaths, path.NormalizeSeparatorsToUnix(), path.NormalizePath(_rootPath).RemoveZipFromTail(), true, _rootPath);
+                })
                 .ToList();
 
             if (allKnownZips.Count > 0)
@@ -232,6 +238,21 @@ namespace LogShark.Shared.LogReading
             return new DirectoryInfo(path)
                 .GetFiles("*", SearchOption.AllDirectories)
                 .Sum(fileInfo => fileInfo.Length);
+        }
+
+        private static List<string> GetFilePaths(string path, bool isDirectory)
+        {
+            if (isDirectory)
+            {
+                return Directory
+                    .EnumerateFiles(path, "*", SearchOption.AllDirectories)
+                    .ToList();
+            }
+            
+            using var zipArchive = ZipFile.Open(path, ZipArchiveMode.Read);
+            return zipArchive.Entries
+                .Select(entry => entry.FullName)
+                .ToList();
         }
     }
 }

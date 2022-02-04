@@ -12,6 +12,7 @@ namespace LogShark.Writers
         
         private readonly DataSetInfo _dataSetInfo;
         private readonly string _writerName;
+        private readonly object _writeLock;
         
         private long _linesPersisted = 0;
         private long _nullLinesIgnored = 0;
@@ -22,6 +23,7 @@ namespace LogShark.Writers
             _dataSetInfo = dataSetInfo;
             Logger = logger;
             _writerName = writerName;
+            _writeLock = new object();
         }
         
         protected abstract void InsertNonNullLineLogic(T objectToWrite);
@@ -57,9 +59,12 @@ namespace LogShark.Writers
                 ++_nullLinesIgnored;
                 return;
             }
-            
-            InsertNonNullLineLogic(objectToWrite);
-            ++_linesPersisted;
+
+            lock (_writeLock)
+            {
+                InsertNonNullLineLogic(objectToWrite);
+                ++_linesPersisted;
+            }
         }
 
         public void AddLines(IEnumerable<T> objectsToWrite)
@@ -75,8 +80,11 @@ namespace LogShark.Writers
                 return;
             }
 
-            var linesInserted = InsertMultipleLinesLogic(objectsToWrite);
-            _linesPersisted += linesInserted;
+            lock (_writeLock)
+            {
+                var linesInserted = InsertMultipleLinesLogic(objectsToWrite);
+                _linesPersisted += linesInserted;
+            }
         }
 
         public WriterLineCounts Close()

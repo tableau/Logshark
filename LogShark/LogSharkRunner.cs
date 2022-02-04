@@ -108,8 +108,8 @@ namespace LogShark
                 using (var pluginManager = new PluginManager(_config, _loggerFactory))
                 {
                     var logTypeDetails = new LogTypeDetails(_processingNotificationsCollector);
-                    var tableauLogsReader = new TableauLogsProcessor(_config, pluginManager, writerFactory, logTypeDetails, _processingNotificationsCollector, _loggerFactory);
-                    logSetProcessingResults = tableauLogsReader.ProcessLogSet();
+                    using var tableauLogsReader = new TableauLogsProcessor(_config, pluginManager, writerFactory, logTypeDetails, _processingNotificationsCollector, _loggerFactory);
+                    logSetProcessingResults = await tableauLogsReader.ProcessLogSet();
                 }
 
                 if (logSetProcessingResults.IsSuccessful)

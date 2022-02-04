@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Text.RegularExpressions;
 using LogShark.Containers;
 using LogShark.Exceptions;
 using LogShark.Extensions;
@@ -8,13 +6,15 @@ using LogShark.Shared.LogReading.Containers;
 using LogShark.Writers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace LogShark.Plugins.TabadminController
 {
     public class TabadminControllerPlugin : IPlugin
     {
-        private static readonly DataSetInfo OutputInfo =
-            new DataSetInfo("TabadminController", "TabadminControllerEvents");
+        private static readonly DataSetInfo BuildsInfo = new DataSetInfo("TabadminController", "TabadminControllerBuildRecords");
+        private static readonly DataSetInfo EventsInfo = new DataSetInfo("TabadminController", "TabadminControllerEvents");
 
         public IList<LogType> ConsumedLogTypes => new List<LogType>
         {
@@ -25,9 +25,13 @@ namespace LogShark.Plugins.TabadminController
 
         public string Name => "TabadminController";
 
+        private IBuildTracker _buildTracker;
         private IProcessingNotificationsCollector _processingNotificationsCollector;
         private TabadminControllerEventParser _tabadminControllerEventParser;
-        private IWriter<TabadminControllerEvent> _writer;
+        private TabadminAgentEventParser _tabadminAgentEventParser;
+        
+        private IWriter<TabadminControllerBuildRecord> _buildsWriter;
+        private IWriter<TabadminControllerEvent> _eventsWriter;
 
         #region Regex
 
@@ -53,10 +57,13 @@ namespace LogShark.Plugins.TabadminController
         public void Configure(IWriterFactory writerFactory, IConfiguration pluginConfig, IProcessingNotificationsCollector processingNotificationsCollector, ILoggerFactory loggerFactory)
         {
             _processingNotificationsCollector = processingNotificationsCollector;
-            _tabadminControllerEventParser = new TabadminControllerEventParser(
-                new BuildTracker(processingNotificationsCollector),
-                _processingNotificationsCollector);
-            _writer = writerFactory.GetWriter<TabadminControllerEvent>(OutputInfo);
+            _buildTracker = new BuildTracker(processingNotificationsCollector);
+
+            _tabadminControllerEventParser = new TabadminControllerEventParser(_buildTracker, _processingNotificationsCollector);
+            _tabadminAgentEventParser = new TabadminAgentEventParser(_processingNotificationsCollector);
+
+            _buildsWriter = writerFactory.GetWriter<TabadminControllerBuildRecord>(BuildsInfo);
+            _eventsWriter = writerFactory.GetWriter<TabadminControllerEvent>(EventsInfo);
         }
 
         public void ProcessLogLine(LogLine logLine, LogType logType)
@@ -71,7 +78,7 @@ namespace LogShark.Plugins.TabadminController
             var parsedEvent = logType switch
             {
                 LogType.ControlLogsJava => ParseError(logLine, javaLineMatchResult, "Error - Control Logs"),
-                LogType.TabadminAgentJava => ParseError(logLine, javaLineMatchResult, "Error - Tabadmin Agent"),
+                LogType.TabadminAgentJava => _tabadminAgentEventParser.ParseEvent(logLine, javaLineMatchResult),
                 LogType.TabadminControllerJava => _tabadminControllerEventParser.ParseEvent(logLine,
                     javaLineMatchResult),
                 _ => throw new LogSharkProgramLogicException(
@@ -80,19 +87,25 @@ namespace LogShark.Plugins.TabadminController
 
             if (parsedEvent != null)
             {
-                _writer.AddLine(parsedEvent);
+                _eventsWriter.AddLine(parsedEvent);
             }
         }
 
         public SinglePluginExecutionResults CompleteProcessing()
         {
-            var writerStatistics = _writer.Close();
-            return new SinglePluginExecutionResults(writerStatistics);
+            _buildsWriter.AddLines(_buildTracker.GetBuildRecords());
+
+            return new SinglePluginExecutionResults(new[]
+            {
+                _buildsWriter.Close(),
+                _eventsWriter.Close()
+            });
         }
 
         public void Dispose()
         {
-            _writer?.Dispose();
+            _buildsWriter?.Dispose();
+            _eventsWriter?.Dispose();
         }
 
         private static TabadminControllerEvent ParseError(LogLine logLine, JavaLineMatchResult javaLineMatchResult,

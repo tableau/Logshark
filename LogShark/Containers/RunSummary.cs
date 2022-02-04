@@ -82,11 +82,13 @@ namespace LogShark.Containers
             {
                 case ExitReason.BadLogSet:
                 case ExitReason.IncorrectConfiguration:
+                case ExitReason.LogLineTooLong:
                 case ExitReason.LogSetDoesNotContainRelevantLogs:
                 case ExitReason.OutOfMemory:
                     return false;
                 case ExitReason.CompletedSuccessfully:
                 case ExitReason.UnclassifiedError:
+                case ExitReason.TaskCancelled:
                 default:
                     return null;
             }
@@ -98,8 +100,11 @@ namespace LogShark.Containers
         BadLogSet,
         CompletedSuccessfully,
         IncorrectConfiguration,
+        LogLineTooLong,
         LogSetDoesNotContainRelevantLogs,
         OutOfMemory,
-        UnclassifiedError
+        TaskCancelled,
+        UnclassifiedError,
+        MultipleExitReasonsOnDifferentThreads
     }
 }

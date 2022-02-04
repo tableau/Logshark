@@ -1,16 +1,4 @@
 CpuLimit,PerProcessMemoryLimit,TotalMemoryLimit,ProcessName,ProcessIndex,ProcessId,FileName,FilePath,LineNumber,Timestamp,Worker
-95,,,vizqlserver,0,6184,vizqlserver_0-0_2019_08_12_21_21_58.txt,vizqlserver/Logs/vizqlserver_0-0_2019_08_12_21_21_58.txt,380,08/12/2019 21:22:03,worker0
-,23788739788,,vizqlserver,0,6184,vizqlserver_0-0_2019_08_12_21_21_58.txt,vizqlserver/Logs/vizqlserver_0-0_2019_08_12_21_21_58.txt,381,08/12/2019 21:22:03,worker0
-,,32284718284,vizqlserver,0,6184,vizqlserver_0-0_2019_08_12_21_21_58.txt,vizqlserver/Logs/vizqlserver_0-0_2019_08_12_21_21_58.txt,382,08/12/2019 21:22:03,worker0
-95,,,vizqlserver,0,8556,vizqlserver_0-0_2019_08_12_22_20_04.txt,vizqlserver/Logs/vizqlserver_0-0_2019_08_12_22_20_04.txt,380,08/12/2019 22:20:10,worker0
-,23788739788,,vizqlserver,0,8556,vizqlserver_0-0_2019_08_12_22_20_04.txt,vizqlserver/Logs/vizqlserver_0-0_2019_08_12_22_20_04.txt,381,08/12/2019 22:20:10,worker0
-,,32284718284,vizqlserver,0,8556,vizqlserver_0-0_2019_08_12_22_20_04.txt,vizqlserver/Logs/vizqlserver_0-0_2019_08_12_22_20_04.txt,382,08/12/2019 22:20:10,worker0
-95,,,vizqlserver,1,6168,vizqlserver_0-1_2019_08_12_21_21_57.txt,vizqlserver/Logs/vizqlserver_0-1_2019_08_12_21_21_57.txt,381,08/12/2019 21:22:02,worker0
-,23788739788,,vizqlserver,1,6168,vizqlserver_0-1_2019_08_12_21_21_57.txt,vizqlserver/Logs/vizqlserver_0-1_2019_08_12_21_21_57.txt,382,08/12/2019 21:22:02,worker0
-,,32284718284,vizqlserver,1,6168,vizqlserver_0-1_2019_08_12_21_21_57.txt,vizqlserver/Logs/vizqlserver_0-1_2019_08_12_21_21_57.txt,383,08/12/2019 21:22:02,worker0
-95,,,vizqlserver,1,8540,vizqlserver_0-1_2019_08_12_22_19_56.txt,vizqlserver/Logs/vizqlserver_0-1_2019_08_12_22_19_56.txt,380,08/12/2019 22:20:04,worker0
-,23788739788,,vizqlserver,1,8540,vizqlserver_0-1_2019_08_12_22_19_56.txt,vizqlserver/Logs/vizqlserver_0-1_2019_08_12_22_19_56.txt,381,08/12/2019 22:20:04,worker0
-,,32284718284,vizqlserver,1,8540,vizqlserver_0-1_2019_08_12_22_19_56.txt,vizqlserver/Logs/vizqlserver_0-1_2019_08_12_22_19_56.txt,382,08/12/2019 22:20:04,worker0
 95,,,backgrounder,0,976,backgrounder_0-0_2019_08_12_21_21_54.txt,vizqlserver/Logs/backgrounder_0-0_2019_08_12_21_21_54.txt,379,08/12/2019 21:22:02,worker0
 ,23788739788,,backgrounder,0,976,backgrounder_0-0_2019_08_12_21_21_54.txt,vizqlserver/Logs/backgrounder_0-0_2019_08_12_21_21_54.txt,380,08/12/2019 21:22:02,worker0
 ,,32284718284,backgrounder,0,976,backgrounder_0-0_2019_08_12_21_21_54.txt,vizqlserver/Logs/backgrounder_0-0_2019_08_12_21_21_54.txt,381,08/12/2019 21:22:02,worker0
@@ -35,6 +23,18 @@ CpuLimit,PerProcessMemoryLimit,TotalMemoryLimit,ProcessName,ProcessIndex,Process
 95,,,dataserver,1,9340,dataserver_0-1_2019_08_12_22_19_53.txt,vizqlserver/Logs/dataserver_0-1_2019_08_12_22_19_53.txt,379,08/12/2019 22:20:04,worker0
 ,23788739788,,dataserver,1,9340,dataserver_0-1_2019_08_12_22_19_53.txt,vizqlserver/Logs/dataserver_0-1_2019_08_12_22_19_53.txt,380,08/12/2019 22:20:04,worker0
 ,,32284718284,dataserver,1,9340,dataserver_0-1_2019_08_12_22_19_53.txt,vizqlserver/Logs/dataserver_0-1_2019_08_12_22_19_53.txt,381,08/12/2019 22:20:04,worker0
+95,,,vizqlserver,0,6184,vizqlserver_0-0_2019_08_12_21_21_58.txt,vizqlserver/Logs/vizqlserver_0-0_2019_08_12_21_21_58.txt,380,08/12/2019 21:22:03,worker0
+,23788739788,,vizqlserver,0,6184,vizqlserver_0-0_2019_08_12_21_21_58.txt,vizqlserver/Logs/vizqlserver_0-0_2019_08_12_21_21_58.txt,381,08/12/2019 21:22:03,worker0
+,,32284718284,vizqlserver,0,6184,vizqlserver_0-0_2019_08_12_21_21_58.txt,vizqlserver/Logs/vizqlserver_0-0_2019_08_12_21_21_58.txt,382,08/12/2019 21:22:03,worker0
+95,,,vizqlserver,0,8556,vizqlserver_0-0_2019_08_12_22_20_04.txt,vizqlserver/Logs/vizqlserver_0-0_2019_08_12_22_20_04.txt,380,08/12/2019 22:20:10,worker0
+,23788739788,,vizqlserver,0,8556,vizqlserver_0-0_2019_08_12_22_20_04.txt,vizqlserver/Logs/vizqlserver_0-0_2019_08_12_22_20_04.txt,381,08/12/2019 22:20:10,worker0
+,,32284718284,vizqlserver,0,8556,vizqlserver_0-0_2019_08_12_22_20_04.txt,vizqlserver/Logs/vizqlserver_0-0_2019_08_12_22_20_04.txt,382,08/12/2019 22:20:10,worker0
+95,,,vizqlserver,1,6168,vizqlserver_0-1_2019_08_12_21_21_57.txt,vizqlserver/Logs/vizqlserver_0-1_2019_08_12_21_21_57.txt,381,08/12/2019 21:22:02,worker0
+,23788739788,,vizqlserver,1,6168,vizqlserver_0-1_2019_08_12_21_21_57.txt,vizqlserver/Logs/vizqlserver_0-1_2019_08_12_21_21_57.txt,382,08/12/2019 21:22:02,worker0
+,,32284718284,vizqlserver,1,6168,vizqlserver_0-1_2019_08_12_21_21_57.txt,vizqlserver/Logs/vizqlserver_0-1_2019_08_12_21_21_57.txt,383,08/12/2019 21:22:02,worker0
+95,,,vizqlserver,1,8540,vizqlserver_0-1_2019_08_12_22_19_56.txt,vizqlserver/Logs/vizqlserver_0-1_2019_08_12_22_19_56.txt,380,08/12/2019 22:20:04,worker0
+,23788739788,,vizqlserver,1,8540,vizqlserver_0-1_2019_08_12_22_19_56.txt,vizqlserver/Logs/vizqlserver_0-1_2019_08_12_22_19_56.txt,381,08/12/2019 22:20:04,worker0
+,,32284718284,vizqlserver,1,8540,vizqlserver_0-1_2019_08_12_22_19_56.txt,vizqlserver/Logs/vizqlserver_0-1_2019_08_12_22_19_56.txt,382,08/12/2019 22:20:04,worker0
 75,,,hyper,,3728,hyper_2019_08_12_21_19_30.log,worker1/hyper/hyper_2019_08_12_21_19_30.log,12,08/12/2019 21:19:30,worker1
 ,28546487745,,hyper,,3728,hyper_2019_08_12_21_19_30.log,worker1/hyper/hyper_2019_08_12_21_19_30.log,13,08/12/2019 21:19:30,worker1
 ,,32284718284,hyper,,3728,hyper_2019_08_12_21_19_30.log,worker1/hyper/hyper_2019_08_12_21_19_30.log,14,08/12/2019 21:19:30,worker1

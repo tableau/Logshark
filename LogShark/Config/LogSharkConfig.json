@@ -13,6 +13,7 @@
     }
   },
   "EnvironmentConfig": {
+    "NumberOfProcessingThreads": 2,
     "TempDirOverride": null,
     "OutputDir": "Output",
     "OutputDirMaxResults": null,
@@ -60,7 +61,8 @@
       "Id": "",
       "Name": ""
     },
-    "ProjectDescriptionFooterHtml": ""
+    "ProjectDescriptionFooterHtml": "",
+    "SkipPublishingEmptyWorkbooks": true
   },
   "PluginsConfiguration": {
     "DefaultPluginSet": {
@@ -85,5 +87,5 @@
     "VizqlDesktop": {
       "MaxQueryLength": 10000
     }
-  }
+  }    
 }

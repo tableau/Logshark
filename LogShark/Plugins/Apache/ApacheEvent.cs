@@ -20,7 +20,11 @@ namespace LogShark.Plugins.Apache
         public int? TableauStatusCode { get; }
         public string TableauErrorCode { get; }
         public string TableauServiceName { get; }
-
+        public string TableauTrace { get; set; }
+        public string RefererStub { get; set; }
+        public string LocalIp { get; set; }
+        public string RemoteLogName { get; set; }
+        public int? OriginalRequestStatus { get; set; }
         public ApacheEvent(
             LogLine logLine,
             DateTime timestamp,
@@ -38,7 +42,12 @@ namespace LogShark.Plugins.Apache
             string tableauErrorSource,
             int? tableauStatusCode,
             string tableauErrorCode,
-            string tableauServiceName
+            string tableauServiceName,
+            string tableauTrace,
+            string refererStub,
+            string localIp,
+            string remoteLogName,
+            int? originalRequestStatus
             ) : base(logLine, timestamp)
         {
             ContentLength = contentLength;
@@ -56,6 +65,11 @@ namespace LogShark.Plugins.Apache
             TableauErrorCode = tableauErrorCode;
             TableauServiceName = tableauServiceName;
             TableauStatusCode = tableauStatusCode;
+            TableauTrace = tableauTrace;
+            RefererStub = refererStub;
+            LocalIp = localIp;
+            RemoteLogName = remoteLogName;
+            OriginalRequestStatus = originalRequestStatus;
         }
     }
 }

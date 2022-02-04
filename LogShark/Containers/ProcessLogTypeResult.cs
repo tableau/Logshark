@@ -23,14 +23,9 @@ namespace LogShark.Containers
             LinesProcessed = 0;
         }
 
-        public void AddProcessingInfo(TimeSpan elapsed, long filesSizeBytes, ProcessFileResult processFileResult, int filesProcessed = 1)
+        public void AddProcessFileResults(ProcessFileResult processFileResult)
         {
-            AddProcessingInfo(elapsed, filesSizeBytes, processFileResult.LinesProcessed, filesProcessed, processFileResult.ErrorMessage, processFileResult.ExitReason);
-        }
-        
-        public void AddNumbersFrom(ProcessLogTypeResult otherResult)
-        {
-            AddProcessingInfo(otherResult.Elapsed, otherResult.FilesSizeBytes, otherResult.LinesProcessed, otherResult.FilesProcessed, otherResult.ErrorMessage, otherResult.ExitReason);
+            AddProcessingInfo(processFileResult.Elapsed, processFileResult.FileSizeBytes, processFileResult.LinesProcessed, 1, processFileResult.ErrorMessage, processFileResult.ExitReason);
         }
 
         public override string ToString()
@@ -39,29 +34,28 @@ namespace LogShark.Containers
             var mbPerSecond = Elapsed.TotalSeconds > 0
                 ? fileSizeMb / Elapsed.TotalSeconds
                 : fileSizeMb;
-            
+
             return $"Processed {FilesProcessed} files in {Elapsed}. Elapsed: {Elapsed}. Total size: {fileSizeMb} MB. Processing at {mbPerSecond:0.00} MB/sec";
         }
-        
+
         private void AddProcessingInfo(TimeSpan elapsed, long filesSizeBytes, long linesProcessed, int filesProcessed, string errorMessage, ExitReason exitReason)
         {
-            Elapsed += elapsed;
+            Elapsed = new TimeSpan(Math.Max(Elapsed.Ticks, elapsed.Ticks)); // Take the larger of the two timespans since log parts are processed in parallel
             FilesSizeBytes += filesSizeBytes;
             LinesProcessed += linesProcessed;
             FilesProcessed += filesProcessed;
 
-            if (errorMessage != null)
+            if (errorMessage != null && exitReason != ExitReason.TaskCancelled)
             {
                 ErrorMessage = ErrorMessage == null
                     ? errorMessage
-                    : throw new LogSharkProgramLogicException($"{nameof(ProcessLogTypeResult)} already contains error and code is trying to push in another one. Why did not we stop at the first error? Previous error: `{ErrorMessage}`. New error: `{errorMessage}`");
+                    : ErrorMessage + $"\n\nAdditional error message from another thread: {errorMessage}"; 
             }
 
-            if (exitReason != ExitReason.CompletedSuccessfully)
+            if (exitReason != ExitReason.CompletedSuccessfully && exitReason != ExitReason.TaskCancelled)
             {
-                ExitReason = ExitReason == ExitReason.CompletedSuccessfully
-                    ? exitReason
-                    : throw new LogSharkConfigurationException($"{nameof(ProcessLogTypeResult)} already contains non-successful exit reason and code is trying to push in another one. Why did not we stop at the first error? Previous exit reason: `{ExitReason}`. New exit reason: `{exitReason}`");
+                ExitReason = ExitReason == ExitReason.CompletedSuccessfully || ExitReason == exitReason
+                    ? exitReason : ExitReason.MultipleExitReasonsOnDifferentThreads;
             }
         }
     }
