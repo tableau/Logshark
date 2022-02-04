@@ -47,6 +47,11 @@ namespace LogShark.Writers.Hyper
             inserter.Add(new Timestamp(value.Year, value.Month, value.Day, value.Hour, value.Minute, value.Second, value.Millisecond * 1000));
         }
 
+        public static void SetDateTimeOffset(Inserter inserter, DateTimeOffset value)
+        {
+            SetDateTime(inserter, value.DateTime);
+        }
+
         public static void SetNullableBoolean(Inserter inserter, bool? value)
         {
             if (value.HasValue)
@@ -118,6 +123,11 @@ namespace LogShark.Writers.Hyper
             {
                 inserter.AddNull();
             }
+        }
+        
+        public static void SetNullableDateTimeOffset(Inserter inserter, DateTimeOffset? value)
+        {
+            SetNullableDateTime(inserter, value?.DateTime);
         }
     }
 }

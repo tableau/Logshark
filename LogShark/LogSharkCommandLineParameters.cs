@@ -16,6 +16,7 @@ namespace LogShark
         public bool EmbedCredentialsOnPublish { get; set; }
         public bool ForceRunId { get; set; }
         public string LogSetLocation { get; set; }
+        public int? NumberOfParallelThreads { get; set; }
 
         public string OriginalFileName
         {

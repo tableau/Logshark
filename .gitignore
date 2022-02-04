@@ -19,8 +19,10 @@ Temp/
 
 # Test data
 TestLogs/
-Properties/
 .terraform
 *.zip
-!/**/TestData/**/*.zip
 .vscode/
+
+# code coverage
+coverage.json
+coverage.cobertura.xml

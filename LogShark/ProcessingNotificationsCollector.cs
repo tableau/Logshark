@@ -17,6 +17,9 @@ namespace LogShark
         public IList<ProcessingNotification> ProcessingWarningsDetails { get; }
         public int TotalWarningsReported { get; private set; }
 
+        private readonly object _errorLock;
+        private readonly object _warningLock;
+
         public ProcessingNotificationsCollector(int maxErrorsWithDetails)
         {
             ErrorCountByReporter = new Dictionary<string, int>();
@@ -27,24 +30,30 @@ namespace LogShark
             WarningCountByReporter = new Dictionary<string, int>();
             ProcessingWarningsDetails = new List<ProcessingNotification>(MaxErrorsWithDetails);
             TotalWarningsReported = 0;
+
+            _errorLock = new object();
+            _warningLock = new object();
         }
 
         public void ReportError(string message, string filePath, int lineNumber, string reportedBy)
         {
-            if (TotalErrorsReported < MaxErrorsWithDetails)
+            lock (_errorLock)
             {
-                ProcessingErrorsDetails.Add(new ProcessingNotification(message, filePath, lineNumber, reportedBy));
-            }
+                if (TotalErrorsReported < MaxErrorsWithDetails)
+                {
+                    ProcessingErrorsDetails.Add(new ProcessingNotification(message, filePath, lineNumber, reportedBy));
+                }
 
-            ++TotalErrorsReported;
+                ++TotalErrorsReported;
 
-            if (ErrorCountByReporter.ContainsKey(reportedBy))
-            {
-                ErrorCountByReporter[reportedBy] += 1;
-            }
-            else
-            {
-                ErrorCountByReporter.Add(reportedBy, 1);
+                if (ErrorCountByReporter.ContainsKey(reportedBy))
+                {
+                    ErrorCountByReporter[reportedBy] += 1;
+                }
+                else
+                {
+                    ErrorCountByReporter.Add(reportedBy, 1);
+                }
             }
         }
 
@@ -60,20 +69,24 @@ namespace LogShark
 
         public void ReportWarning(string message, string filePath, int lineNumber, string reportedBy)
         {
-            if (TotalWarningsReported < MaxErrorsWithDetails)
+            lock (_warningLock)
             {
-                ProcessingWarningsDetails.Add(new ProcessingNotification(message, filePath, lineNumber, reportedBy));
-            }
+                if (TotalWarningsReported < MaxErrorsWithDetails)
+                {
+                    ProcessingWarningsDetails.Add(new ProcessingNotification(message, filePath, lineNumber,
+                        reportedBy));
+                }
 
-            ++TotalWarningsReported;
+                ++TotalWarningsReported;
 
-            if (WarningCountByReporter.ContainsKey(reportedBy))
-            {
-                WarningCountByReporter[reportedBy] += 1;
-            }
-            else
-            {
-                WarningCountByReporter.Add(reportedBy, 1);
+                if (WarningCountByReporter.ContainsKey(reportedBy))
+                {
+                    WarningCountByReporter[reportedBy] += 1;
+                }
+                else
+                {
+                    WarningCountByReporter.Add(reportedBy, 1);
+                }
             }
         }
 

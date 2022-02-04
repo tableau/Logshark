@@ -90,6 +90,9 @@ Usage Examples:
 
         [Option("--pg-embed-creds", Description = "Embed credentials in workbook on publish")]
         public bool SqlEmbedCreds { get; set; }
+        
+        [Option("-t|--threads", Description = "Number of processing threads to run in parallel")]
+        public int? NumberOfThreads { get; set; }
 
         #endregion Command Line Arguments
 
@@ -115,6 +118,7 @@ Usage Examples:
                 EmbedCredentialsOnPublish = SqlEmbedCreds,
                 ForceRunId = ForceRunId,
                 LogSetLocation = LogSetLocation,
+                NumberOfParallelThreads = NumberOfThreads,
                 PublishWorkbooks = PublishWorkbooks,
                 RequestedPlugins = RequestedPlugins,
                 UserProvidedRunId = RunId,

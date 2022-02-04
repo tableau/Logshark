@@ -16,6 +16,7 @@ namespace LogShark.Plugins.Tabadmin
 {
     public class TabadminPlugin : IPlugin
     {
+        private readonly object _logLineRegexesLock = new object();
         private readonly IList<Regex> _logLineRegexes = new List<Regex>
         {
             // logs\ style.
@@ -77,7 +78,7 @@ namespace LogShark.Plugins.Tabadmin
                 return;
             }
             
-            var logLineMatch = logLineAsString.GetRegexMatchAndMoveCorrectRegexUpFront(_logLineRegexes);
+            var logLineMatch = logLineAsString.GetRegexMatchAndMoveCorrectRegexUpFront(_logLineRegexes, _logLineRegexesLock);
             if (logLineMatch == null || !logLineMatch.Success)
             {
                 _processingNotificationsCollector.ReportError("Failed to parse log line as Tabadmin event", logLine, nameof(TabadminPlugin));

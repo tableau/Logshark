@@ -26,6 +26,7 @@ namespace LogShark.Shared
         VizportalJava,
         VizqlserverCpp,
         VizqlDesktop,
+        UnknownLogTypeForErrors,
         WorkgroupYml,
         Zookeeper
     }

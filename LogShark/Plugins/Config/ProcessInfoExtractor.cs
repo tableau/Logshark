@@ -126,6 +126,7 @@ namespace LogShark.Plugins.Config
                 var hostname = workerCount == 1
                     ? _hostnameMap[0] // Single node deployments don't store out the pgsqlX.host key, but we can safely assume that postgres lives on the -only- hostname.
                     : _workgroupYml.Values.GetStringValueOrNull(pgsqlHostKey) // If workgroup.yml has a pgsqlX.host entry, use it.
+                      ?? _workgroupYml.Values.GetStringValueOrNull("pgsql.host") // otherwise, for a multi node server with only one pg process, "pgsql.host"
                       ?? _tabsvcYml?.Values.GetStringValueOrNull("pgsql.host") // Otherwise try to get pgsql.host from tabsvc.yml.  We have to do this when multiple nodes are used and no failover node is specified.
                       ?? "(Unknown)";
                 

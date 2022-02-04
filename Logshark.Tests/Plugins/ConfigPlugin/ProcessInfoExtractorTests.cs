@@ -28,12 +28,27 @@ namespace LogShark.Tests.Plugins.ConfigPlugin
             
             results.Should().BeEquivalentTo(_expectedResultsForSingleMachine);
         }
-        
+
         [Fact]
         public void TwoWorkersHosts_OnePostgres()
         {
             var workgroupYml = new ConfigFile(WorkgroupYmlLogFileInfo, GetTwoMachinesWorkgroupYmlValues(), LogType.WorkgroupYml);
-            
+
+            var extractor = new ProcessInfoExtractor(workgroupYml, null, null);
+            var results = extractor.GenerateProcessInfoRecords();
+
+            var expectedResults = _expectedResultsForSingleMachine;
+            expectedResults.UnionWith(_expectedResultsForSecondMachine);
+
+            results.Should().BeEquivalentTo(expectedResults);
+        }
+
+        [Fact]
+        public void TwoWorkersHosts_OnePostgres_Alternate()
+        {
+            var workgroupValues = GetTwoMachinesWorkgroupYmlValues_ReplaceWithSinglePostgresProcessConfig();
+            var workgroupYml = new ConfigFile(WorkgroupYmlLogFileInfo, workgroupValues, LogType.WorkgroupYml);
+
             var extractor = new ProcessInfoExtractor(workgroupYml, null, null);
             var results = extractor.GenerateProcessInfoRecords();
 
@@ -226,7 +241,16 @@ namespace LogShark.Tests.Plugins.ConfigPlugin
                 .Where(pair => !(pair.Key.StartsWith("pgsql") && pair.Key.EndsWith("host")))
                 .ToDictionary(pair => pair.Key, pair => pair.Value);
         }
-        
+        private IDictionary<string, string> GetTwoMachinesWorkgroupYmlValues_ReplaceWithSinglePostgresProcessConfig()
+        {
+            var configValues = GetTwoMachinesWorkgroupYmlValues();
+            var config = configValues
+                .Where(pair => !(pair.Key.StartsWith("pgsql") && pair.Key.EndsWith("host")))
+                .ToDictionary(pair => pair.Key, pair => pair.Value);
+            config.Add("pgsql.host", "machine1");
+            return config;
+        }
+
         private readonly ISet<dynamic> _expectedResultsForSingleMachine = new HashSet<dynamic>
         {
             ConfigPluginTests.ExpectedProcessInfoEntry(MachineOneName, 7717, "vizportal", 0, WorkgroupYmlLogFileInfo.LastModifiedUtc),
@@ -239,7 +263,7 @@ namespace LogShark.Tests.Plugins.ConfigPlugin
             ConfigPluginTests.ExpectedProcessInfoEntry(MachineOneName, 80, "gateway", 0, WorkgroupYmlLogFileInfo.LastModifiedUtc),
             ConfigPluginTests.ExpectedProcessInfoEntry(MachineOneName, 8060, "pgsql", 0, WorkgroupYmlLogFileInfo.LastModifiedUtc),
         };
-        
+
         private readonly ISet<dynamic> _expectedResultsForSecondMachine = new HashSet<dynamic>
         {
             ConfigPluginTests.ExpectedProcessInfoEntry(MachineTwoName, 8600, "vizportal", 1, WorkgroupYmlLogFileInfo.LastModifiedUtc),

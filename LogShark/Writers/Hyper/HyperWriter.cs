@@ -16,13 +16,14 @@ namespace LogShark.Writers.Hyper
     {
         private static readonly Dictionary<Type, Func<PropertyInfo, bool, Column>> _columnSwitch = new Dictionary<Type, Func<PropertyInfo, bool, Column>>
             {
-                { typeof(bool),       (p, nullable) => new Column(p.Name, SqlType.Bool(), Nullability.Nullable) },
-                { typeof(int),        (p, nullable) => new Column(p.Name, SqlType.Int(), Nullability.Nullable) },
-                { typeof(short),      (p, nullable) => new Column(p.Name, SqlType.SmallInt(), Nullability.Nullable) },
-                { typeof(long),       (p, nullable) => new Column(p.Name, SqlType.BigInt(), Nullability.Nullable) },
-                { typeof(double),     (p, nullable) => new Column(p.Name, SqlType.Double(), Nullability.Nullable) },
-                { typeof(string),     (p, nullable) => new Column(p.Name, SqlType.Text(), Nullability.Nullable) },
-                { typeof(DateTime),   (p, nullable) => new Column(p.Name, SqlType.Timestamp(), Nullability.Nullable) }
+                { typeof(bool),             (p, nullable) => new Column(p.Name, SqlType.Bool(), Nullability.Nullable) },
+                { typeof(int),              (p, nullable) => new Column(p.Name, SqlType.Int(), Nullability.Nullable) },
+                { typeof(short),            (p, nullable) => new Column(p.Name, SqlType.SmallInt(), Nullability.Nullable) },
+                { typeof(long),             (p, nullable) => new Column(p.Name, SqlType.BigInt(), Nullability.Nullable) },
+                { typeof(double),           (p, nullable) => new Column(p.Name, SqlType.Double(), Nullability.Nullable) },
+                { typeof(string),           (p, nullable) => new Column(p.Name, SqlType.Text(), Nullability.Nullable) },
+                { typeof(DateTime),         (p, nullable) => new Column(p.Name, SqlType.Timestamp(), Nullability.Nullable) },
+                { typeof(DateTimeOffset),   (p, nullable) => new Column(p.Name, SqlType.Timestamp(), Nullability.Nullable) }
             };
 
         private readonly string _dbPath;

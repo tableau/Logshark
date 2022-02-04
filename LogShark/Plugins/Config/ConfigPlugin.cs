@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using LogShark.Containers;
@@ -24,7 +25,7 @@ namespace LogShark.Plugins.Config
 
         private IWriter<ConfigEntry> _configEntriesWriter;
         private IWriter<ConfigProcessInfo> _processTopologyWriter;
-        private IList<ConfigFile> _processedConfigFiles;
+        private ConcurrentQueue<ConfigFile> _processedConfigFiles;
         private ILogger _logger;
         private IProcessingNotificationsCollector _processingNotificationsCollector;
 
@@ -32,12 +33,12 @@ namespace LogShark.Plugins.Config
         {
             _configEntriesWriter = writerFactory.GetWriter<ConfigEntry>(ConfigEntriesOutputInfo);
             _processTopologyWriter = writerFactory.GetWriter<ConfigProcessInfo>(ProcessTopologyOutputInfo);
-            _processedConfigFiles = new List<ConfigFile>();
+            _processedConfigFiles = new ConcurrentQueue<ConfigFile>();
             _logger = loggerFactory.CreateLogger<ConfigPlugin>();
             _processingNotificationsCollector = processingNotificationsCollector;
         }
 
-        // This plugin is a little special, as it does part of its work at dispose.
+        // This plugin is a little special, as it does part of its work at CompleteProcessing phase.
         // It writes all config entries as it encounters them, but also keeps cache of all processed config files inside Dictionary. This works fine because config files are fairly small.
         // Then on Dispose it analyzes collected files to generate and write Process Topology information
         public void ProcessLogLine(LogLine logLine, LogType logType)
@@ -49,7 +50,7 @@ namespace LogShark.Plugins.Config
                 
                 if (configEntriesWritten > 0)
                 {
-                    _processedConfigFiles.Add(configFile);
+                    _processedConfigFiles.Enqueue(configFile);
                     _logger.LogInformation("{configEntriesWritten} config entries processed and written", configEntriesWritten);
                 }
             }

@@ -22,6 +22,7 @@ namespace LogShark.Plugins.Replayer
     /// <summary>
     /// Replayer helps in replaying browser sessions using apache and vizqlserver logs
     /// </summary>
+    // TODO - This needs updates to be thread safe
     public class ReplayerPlugin : IPlugin
     {
         private static ILogger<ReplayerPlugin> _logger;
