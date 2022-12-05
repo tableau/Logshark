@@ -5,12 +5,12 @@ namespace LogShark.Plugins.Backgrounder.Model
     public class BackgrounderJob
     {
         public string Args { get; set; }
-        public int? BackgrounderId { get; set; }
+        public string BackgrounderId { get; set; }
         public string EndFile { get; set; }
         public int? EndLine { get; set; }
         public DateTime? EndTime { get; set; }
         public string ErrorMessage { get; set; }
-        public long JobId { get; set; }
+        public string JobId { get; set; }
         public string JobType { get; set; }
         public string Notes { get; set; }
         public int Priority { get; set; }
@@ -35,12 +35,12 @@ namespace LogShark.Plugins.Backgrounder.Model
             TotalTime = endEvent.TotalTime;
         }
 
-        public void MarkAsTimedOut()
+        public void MarkAsInvalidEnd()
         {
             Success = false;
             EndTime = null;
             EndLine = null;
-            ErrorMessage = "TimeoutExceptionReached";
+            ErrorMessage = "There is no end event for this job in the logs, but a different job was processed later by the same backgrounder. This could be caused by a number of different problems: job was crashed, job was cancelled by other component, or log files are incomplete/corrupt";
         }
 
         public void MarkAsUnknown()

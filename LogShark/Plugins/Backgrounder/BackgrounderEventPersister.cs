@@ -10,7 +10,7 @@ namespace LogShark.Plugins.Backgrounder
 {
     public class BackgrounderEventPersister : IBackgrounderEventPersister
     {
-        private readonly Dictionary<long, BackgrounderEvent> _events = new Dictionary<long, BackgrounderEvent>();
+        private readonly Dictionary<string, SortedList<DateTime, BackgrounderEvent>>  _events = new Dictionary<string, SortedList<DateTime, BackgrounderEvent>> ();
         private readonly LatestStartEvents _latestStartEvents = new LatestStartEvents();
         
         private static readonly DataSetInfo JobsDsi = new DataSetInfo("Backgrounder", "BackgrounderJobs");
@@ -38,14 +38,22 @@ namespace LogShark.Plugins.Backgrounder
         {
             lock (_events)
             {
+                var dateTimeKey = startEvent.StartTime;
                 if (_events.ContainsKey(startEvent.JobId))
                 {
-                    var existingEvent = _events[startEvent.JobId];
-                    existingEvent.StartEvent = startEvent;
+                    var existingDateTimeEvents = _events[startEvent.JobId];
+                    while (existingDateTimeEvents.ContainsKey(dateTimeKey))
+                    {
+                        dateTimeKey = dateTimeKey.AddTicks(1);
+                    }
+
+                    existingDateTimeEvents.Add(dateTimeKey, new BackgrounderEvent { StartEvent = startEvent });
                 }
                 else
                 {
-                    _events.Add(startEvent.JobId, new BackgrounderEvent {StartEvent = startEvent});
+                    var dateTimeEvents = new SortedList<DateTime, BackgrounderEvent>();
+                    dateTimeEvents.Add(startEvent.StartTime, new BackgrounderEvent { StartEvent = startEvent });
+                    _events.Add(startEvent.JobId, dateTimeEvents);
                 }
             }
 
@@ -59,15 +67,22 @@ namespace LogShark.Plugins.Backgrounder
         {
             lock (_events)
             {
+                var dateTimeKey = (DateTime)endEvent.EndTime;
                 if (_events.ContainsKey(endEvent.JobId))
                 {
-                    var existingEvent = _events[endEvent.JobId];
-                    existingEvent.EndEvent = endEvent;
-                    PersistEventIfItIsComplete(existingEvent);
+                    var existingDateTimeEvent = _events[endEvent.JobId];
+                    while (existingDateTimeEvent.ContainsKey(dateTimeKey))
+                    {
+                        dateTimeKey = dateTimeKey.AddTicks(1);
+                    }
+                    existingDateTimeEvent.Add(dateTimeKey, new BackgrounderEvent { EndEvent = endEvent });
                 }
                 else
                 {
-                    _events.Add(endEvent.JobId, new BackgrounderEvent {EndEvent = endEvent});
+                    var dateTimeEvents = new SortedList<DateTime, BackgrounderEvent>();
+                    dateTimeEvents.Add(dateTimeKey, new BackgrounderEvent { EndEvent = endEvent });
+
+                    _events.Add(endEvent.JobId, dateTimeEvents);
                 }
             }
         }
@@ -76,14 +91,22 @@ namespace LogShark.Plugins.Backgrounder
         {
             lock (_events)
             {
+                var dateTimeKey = extractJobDetail.Timestamp;
                 if (_events.ContainsKey(extractJobDetail.BackgrounderJobId))
                 {
-                    _events[extractJobDetail.BackgrounderJobId].ExtractJobDetails = extractJobDetail;
+                    var existingDateTimeEvent = _events[extractJobDetail.BackgrounderJobId];
+                    while (existingDateTimeEvent.ContainsKey(dateTimeKey))
+                    {
+                        dateTimeKey = dateTimeKey.AddTicks(1);
+                    }
+                    existingDateTimeEvent.Add(dateTimeKey, new BackgrounderEvent { ExtractJobDetails = extractJobDetail });
                 }
                 else
                 {
-                    _events.Add(extractJobDetail.BackgrounderJobId,
-                        new BackgrounderEvent {ExtractJobDetails = extractJobDetail});
+                    var dateTimeEvents = new SortedList<DateTime, BackgrounderEvent>();
+                    dateTimeEvents.Add(extractJobDetail.Timestamp, new BackgrounderEvent { ExtractJobDetails = extractJobDetail });
+
+                    _events.Add(extractJobDetail.BackgrounderJobId, dateTimeEvents);
                 }
             }
         }
@@ -92,16 +115,23 @@ namespace LogShark.Plugins.Backgrounder
         {
             lock (_events)
             {
+                var dateTimeKey = subscriptionJobDetail.Timestamp;
                 if (_events.ContainsKey(subscriptionJobDetail.BackgrounderJobId))
                 {
-                    var existingEvent = _events[subscriptionJobDetail.BackgrounderJobId];
-                    existingEvent.AddSubscriptionDetail(subscriptionJobDetail);
+                    var existingDateTimeEvent = _events[subscriptionJobDetail.BackgrounderJobId];
+                    while (existingDateTimeEvent.ContainsKey(dateTimeKey))
+                    {
+                        dateTimeKey = dateTimeKey.AddTicks(1);
+                    }
+                    existingDateTimeEvent.Add(dateTimeKey, new BackgrounderEvent { SubscriptionJobDetails = subscriptionJobDetail });
 
                 }
                 else
                 {
-                    _events.Add(subscriptionJobDetail.BackgrounderJobId,
-                        new BackgrounderEvent {SubscriptionJobDetails = subscriptionJobDetail});
+                    var dateTimeEvents = new SortedList<DateTime, BackgrounderEvent>();
+                    dateTimeEvents.Add(subscriptionJobDetail.Timestamp, new BackgrounderEvent { SubscriptionJobDetails = subscriptionJobDetail });
+
+                    _events.Add(subscriptionJobDetail.BackgrounderJobId, dateTimeEvents);
                 }
             }
         }
@@ -113,40 +143,15 @@ namespace LogShark.Plugins.Backgrounder
 
         public IEnumerable<WriterLineCounts> DrainEvents()
         {
-            lock (_events)
-            {
-                foreach (var (_, @event) in _events)
-                {
-                    if (@event.StartEvent != null)
-                    {
-                        PersistEvent(@event, false);
-                    }
-                }
-
-                return new List<WriterLineCounts>
-                {
-                    _jobWriter.Close(),
-                    _jobErrorWriter.Close(),
-                    _extractJobDetailWriter.Close(),
-                    _subscriptionJobDetailWriter.Close()
-                };
-            }
+            return DrainAllEvents();
         }
-        
+
         public void Dispose()
         {
             _jobWriter?.Dispose();
             _jobErrorWriter?.Dispose();
             _extractJobDetailWriter?.Dispose();
             _subscriptionJobDetailWriter?.Dispose();
-        }
-
-        private void PersistEventIfItIsComplete(BackgrounderEvent @event)
-        {
-            if (@event.CanBeMergedNow()) 
-            {
-                PersistEvent(@event);
-            }
         }
 
         private void PersistEvent(BackgrounderEvent @event, bool deleteFromDictionary = true)
@@ -204,26 +209,84 @@ namespace LogShark.Plugins.Backgrounder
 
             if (_latestStartEvents.StartedBeforeLatestStartEvent(finalEvent))
             {
-                finalEvent.MarkAsTimedOut();
+                finalEvent.MarkAsInvalidEnd();
                 return finalEvent;
             }
 
             finalEvent.MarkAsUnknown();
             return finalEvent;
         }
-        
+
+        private IEnumerable<WriterLineCounts> DrainAllEvents()
+        {
+            lock (_events)
+            {
+                foreach (var (jobId, @event) in _events)
+                {
+                    int requeueExtension = 0;
+                    BackgrounderEvent newEvent = new BackgrounderEvent();
+                    foreach (var e in @event.Values)
+                    {
+                        if(e.StartEvent != null)
+                        {
+                            if(requeueExtension != 0)
+                            {
+                                PersistEvent(newEvent, false);
+                                newEvent = new BackgrounderEvent(requeueExtension++);
+                            } 
+                            else
+                            {
+                                requeueExtension++;
+                            }
+
+                            newEvent.SetStartEvent(e.StartEvent);
+                        }
+                        if(e.EndEvent != null && newEvent.StartEvent != null)
+                        {
+                            newEvent.SetEndEvent(e.EndEvent);
+                        }
+                        if (e.SubscriptionJobDetails != null && newEvent.StartEvent != null)
+                        {
+                            newEvent.AddSubscriptionDetail(e.SubscriptionJobDetails);
+                        }
+                        if (e.ExtractJobDetails != null && newEvent.StartEvent != null)
+                        {
+                            newEvent.SetExtractJobDetail(e.ExtractJobDetails);
+                        }
+                    }
+
+                    if (newEvent.StartEvent != null)
+                    {
+                        PersistEvent(newEvent, false);
+                    }
+                }
+
+                return new List<WriterLineCounts>
+                {
+                    _jobWriter.Close(),
+                    _jobErrorWriter.Close(),
+                    _extractJobDetailWriter.Close(),
+                    _subscriptionJobDetailWriter.Close()
+                };
+            }
+        }
+
         private class BackgrounderEvent
         {
+            public BackgrounderEvent(int requeueExten = 0) => RequeueExten = requeueExten;
             public BackgrounderJob StartEvent { get; set; }
             public BackgrounderJob EndEvent { get; set; }
             public BackgrounderExtractJobDetail ExtractJobDetails { get; set; }
             public BackgrounderSubscriptionJobDetail SubscriptionJobDetails { get; set; }
+            public int RequeueExten { get; set; }
 
             public void AddSubscriptionDetail(BackgrounderSubscriptionJobDetail newDetail)
             {
                 if (SubscriptionJobDetails == null)
                 {
                     SubscriptionJobDetails = newDetail;
+                    if (RequeueExten != 0)
+                        SubscriptionJobDetails.BackgrounderJobId = newDetail.BackgrounderJobId + "-requeue-" + RequeueExten;
                 }
                 else
                 {
@@ -231,15 +294,30 @@ namespace LogShark.Plugins.Backgrounder
                 }
             }
 
-            public bool CanBeMergedNow()
-            {
-                return IsComplete() && 
-                       StartEvent.StartFile == EndEvent.EndFile; // If both lines are NOT in the same file, we don't have guarantee that we processed all lines after "start" event yet 
-            }
-
             public bool IsComplete()
             {
                 return (StartEvent != null && EndEvent != null);
+            }
+
+            public void SetStartEvent(BackgrounderJob job)
+            {
+                StartEvent = job;
+                if(RequeueExten != 0)
+                    StartEvent.JobId = StartEvent.JobId + "-requeue-" + RequeueExten;
+            }
+
+            public void SetEndEvent(BackgrounderJob job)
+            {
+                EndEvent = job;
+                if (RequeueExten != 0)
+                    EndEvent.JobId = EndEvent.JobId + "-requeue-" + RequeueExten;
+            }
+
+            public void SetExtractJobDetail(BackgrounderExtractJobDetail extractDetail)
+            {
+                ExtractJobDetails = extractDetail;
+                if (RequeueExten != 0)
+                    ExtractJobDetails.BackgrounderJobId = extractDetail.BackgrounderJobId + "-requeue-" + RequeueExten;
             }
         }
 
@@ -270,7 +348,7 @@ namespace LogShark.Plugins.Backgrounder
                 return _latestStartEvents.ContainsKey(key) && _latestStartEvents[key] > startEvent.StartTime;
             }
             
-            private static string GetKeyForWorkerAndBackgrounder(string workerId, int? backgrounderId)
+            private static string GetKeyForWorkerAndBackgrounder(string workerId, string backgrounderId)
             {
                 var backgrounderIdStr = backgrounderId == null ? "(null)" : backgrounderId.ToString(); 
                 return $"{workerId}___{backgrounderIdStr}";

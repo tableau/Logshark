@@ -165,7 +165,12 @@ namespace LogShark.Shared.LogReading
                         TsmV0Log("pgsql", "postgresql", "csv"), // TSMv0 - localhost\tabadminagent_0.20181.18.0510.1418770265691097820228\logs\pgsql\postgresql-Mon.csv
                         TsmLog("pgsql", "postgresql", "csv"), // TSM - node2\pgsql_0.20182.18.0627.22303045353787439845635\logs\postgresql-Wed.csv
                     }),
-                
+
+                new LogTypeInfo(
+                    logType: LogType.Prep,
+                    logReaderProvider: (stream, filePath) => new PrepLogReader(stream, filePath, processingNotificationsCollector),
+                    fileLocations: PrepLogReader.PrepLogTypeMap.Keys.Select(x => new Regex(x)).ToList()),
+
                 new LogTypeInfo(
                     logType: LogType.ProtocolServer,
                     logReaderProvider: (stream, filePath) => new NativeJsonLogsReader(stream, filePath, processingNotificationsCollector),

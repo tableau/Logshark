@@ -62,7 +62,7 @@ namespace LogShark.Tests.Plugins.Backgrounder
         {
             var output = new List<BackgrounderJobError>();
             _persisterMock.Setup(m => m.AddErrorEvent(It.IsAny<BackgrounderJobError>())).Callback<BackgrounderJobError>(job => output.Add(job));
-            
+
             RunTestCasesAndAssertOutput(_errorTestCases, output, _persisterMock.Object);
 
             _persisterMock.Verify(m => m.AddErrorEvent(It.IsAny<BackgrounderJobError>()), Times.Exactly(_errorTestCases.Count));
@@ -74,7 +74,7 @@ namespace LogShark.Tests.Plugins.Backgrounder
         {
             var output = new List<BackgrounderJob>();
             _persisterMock.Setup(m => m.AddStartEvent(It.IsAny<BackgrounderJob>())).Callback<BackgrounderJob>(job => output.Add(job));
-            
+
             RunTestCasesAndAssertOutput(_startTestCases, output, _persisterMock.Object);
 
             _persisterMock.Verify(m => m.AddStartEvent(It.IsAny<BackgrounderJob>()), Times.Exactly(_startTestCases.Count));
@@ -86,31 +86,31 @@ namespace LogShark.Tests.Plugins.Backgrounder
         {
             var output = new List<BackgrounderJob>();
             _persisterMock.Setup(m => m.AddEndEvent(It.IsAny<BackgrounderJob>())).Callback<BackgrounderJob>(job => output.Add(job));
-            
+
             RunTestCasesAndAssertOutput(_endTestCases, output, _persisterMock.Object);
 
             _persisterMock.Verify(m => m.AddEndEvent(It.IsAny<BackgrounderJob>()), Times.Exactly(_endTestCases.Count));
             _persisterMock.VerifyNoOtherCalls();
         }
-        
+
         [Fact]
         public void ExtractJobDetailsEvents()
         {
             var output = new List<BackgrounderExtractJobDetail>();
             _persisterMock.Setup(m => m.AddExtractJobDetails(It.IsAny<BackgrounderExtractJobDetail>())).Callback<BackgrounderExtractJobDetail>(job => output.Add(job));
-            
+
             RunTestCasesAndAssertOutput(_extractJobDetailTestCases, output, _persisterMock.Object);
 
             _persisterMock.Verify(m => m.AddExtractJobDetails(It.IsAny<BackgrounderExtractJobDetail>()), Times.Exactly(_extractJobDetailTestCases.Count));
             _persisterMock.VerifyNoOtherCalls();
         }
-        
+
         [Fact]
         public void SubscriptionJobDetailsEvents()
         {
             var output = new List<BackgrounderSubscriptionJobDetail>();
             _persisterMock.Setup(m => m.AddSubscriptionJobDetails(It.IsAny<BackgrounderSubscriptionJobDetail>())).Callback<BackgrounderSubscriptionJobDetail>(job => output.Add(job));
-            
+
             RunTestCasesAndAssertOutput(_subscriptionJobDetailTestCases, output, _persisterMock.Object);
 
             _persisterMock.Verify(m => m.AddSubscriptionJobDetails(It.IsAny<BackgrounderSubscriptionJobDetail>()), Times.Exactly(_subscriptionJobDetailTestCases.Count));
@@ -125,7 +125,7 @@ namespace LogShark.Tests.Plugins.Backgrounder
             {
                 parser.ParseAndPersistLine(testCase.GetLogLine(), testCase.LogContents.ToString());
             }
-            
+
             var expectedOutput = testCases.Select(testCase => testCase.ExpectedOutput).ToList();
             outputList.Should().BeEquivalentTo(expectedOutput);
         }
@@ -140,7 +140,7 @@ namespace LogShark.Tests.Plugins.Backgrounder
                 LineNumber = 123,
                 ExpectedOutput = new
                 {
-                    BackgrounderJobId = 1369448,
+                    BackgrounderJobId = "1369448",
                     Class = "com.tableausoftware.core.configuration.ConfigurationSupportService",
                     File = TestLogFileInfo.FileName,
                     Line = 123,
@@ -150,7 +150,7 @@ namespace LogShark.Tests.Plugins.Backgrounder
                     Thread = "pool-4-thread-1",
                     Timestamp = new DateTime(2018, 7, 12, 23, 37, 17, 201)
                 }},
-            
+
             new PluginTestCase
             {
                 LogContents = "2018-07-12 23:37:17.201 -0700 (Default,,,,1369448,:refresh_extracts,-) pool-4-thread-1 backgrounder: FATAL com.tableausoftware.core.configuration.ConfigurationSupportService - unable to convert site id string:  to integer for extract refresh time out overrides list skipping this site, will continue with the remainder.",
@@ -159,7 +159,7 @@ namespace LogShark.Tests.Plugins.Backgrounder
                 LineNumber = 124,
                 ExpectedOutput = new
                 {
-                    BackgrounderJobId = 1369448,
+                    BackgrounderJobId = "1369448",
                     Class = "com.tableausoftware.core.configuration.ConfigurationSupportService",
                     File = TestLogFileInfo.FileName,
                     Line = 124,
@@ -169,7 +169,7 @@ namespace LogShark.Tests.Plugins.Backgrounder
                     Thread = "pool-4-thread-1",
                     Timestamp = new DateTime(2018, 7, 12, 23, 37, 17, 201)
                 }},
-            
+
             new PluginTestCase
             {
                 LogContents = "2018-07-12 23:37:17.201 -0700 (Default,,,,,:refresh_extracts,-) pool-4-thread-1 backgrounder: FATAL com.tableausoftware.core.configuration.ConfigurationSupportService - unable to convert site id string:  to integer for extract refresh time out overrides list skipping this site, will continue with the remainder.",
@@ -178,7 +178,7 @@ namespace LogShark.Tests.Plugins.Backgrounder
                 LineNumber = 125,
                 ExpectedOutput = new
                 {
-                    BackgrounderJobId = (int?) null,
+                    BackgrounderJobId = (string) null,
                     Class = "com.tableausoftware.core.configuration.ConfigurationSupportService",
                     File = TestLogFileInfo.FileName,
                     Line = 125,
@@ -202,12 +202,12 @@ namespace LogShark.Tests.Plugins.Backgrounder
                 ExpectedOutput = new
                 {
                     Args = (string) null,
-                    BackgrounderId = 1,
+                    BackgrounderId = "1",
                     EndFile = (string) null,
                     EndLine = (int?) null,
                     EndTime = (DateTime?) null,
                     ErrorMessage = (string) null,
-                    JobId = 9,
+                    JobId = "9",
                     JobType = "purge_expired_wgsessions",
                     Notes = (string) null,
                     Priority = 0,
@@ -232,12 +232,12 @@ namespace LogShark.Tests.Plugins.Backgrounder
                 ExpectedOutput = new
                 {
                     Args = (string) null,
-                    BackgrounderId = 1,
+                    BackgrounderId = "1",
                     EndFile = (string) null,
                     EndLine = (int?) null,
                     EndTime = (DateTime?) null,
                     ErrorMessage = (string) null,
-                    JobId = 326,
+                    JobId = "326",
                     JobType = "enqueue_data_alerts",
                     Notes = (string) null,
                     Priority = 10,
@@ -262,12 +262,12 @@ namespace LogShark.Tests.Plugins.Backgrounder
                 ExpectedOutput = new
                 {
                     Args = "test1 test2",
-                    BackgrounderId = 1,
+                    BackgrounderId = "1",
                     EndFile = (string) null,
                     EndLine = (int?) null,
                     EndTime = (DateTime?) null,
                     ErrorMessage = (string) null,
-                    JobId = 327,
+                    JobId = "327",
                     JobType = "enqueue_data_alerts",
                     Notes = (string) null,
                     Priority = 10,
@@ -293,12 +293,12 @@ namespace LogShark.Tests.Plugins.Backgrounder
                 ExpectedOutput = new
                 {
                     Args = "Workbook, 9, Test COSMOS, 243, null",
-                    BackgrounderId = 1,
+                    BackgrounderId = "1",
                     EndFile = (string) null,
                     EndLine = (int?) null,
                     EndTime = (DateTime?) null,
                     ErrorMessage = (string) null,
-                    JobId = 1968280,
+                    JobId = "1968280",
                     JobType = "refresh_extracts",
                     Notes = (string) null,
                     Priority = 0,
@@ -326,12 +326,12 @@ namespace LogShark.Tests.Plugins.Backgrounder
                 ExpectedOutput = new
                 {
                     Args = (string) null,
-                    BackgrounderId = (int?) null,
+                    BackgrounderId = (string) null,
                     EndFile = TestLogFileInfo.FileName,
                     EndLine = 123,
                     EndTime = new DateTime(2018, 8, 8, 11, 17, 13, 402),
                     ErrorMessage = (string) null,
-                    JobId = 7,
+                    JobId = "7",
                     JobType = (string) null,
                     Notes = (string) null,
                     Priority = 0,
@@ -356,12 +356,12 @@ namespace LogShark.Tests.Plugins.Backgrounder
                 ExpectedOutput = new
                 {
                     Args = (string) null,
-                    BackgrounderId = (int?) null,
+                    BackgrounderId = (string) null,
                     EndFile = TestLogFileInfo.FileName,
                     EndLine = 124,
                     EndTime = new DateTime(2018, 8, 8, 11, 17, 13, 402),
                     ErrorMessage = (string) null,
-                    JobId = 7,
+                    JobId = "7",
                     JobType = (string) null,
                     Notes = "test note here",
                     Priority = 0,
@@ -386,13 +386,13 @@ namespace LogShark.Tests.Plugins.Backgrounder
                 ExpectedOutput = new
                 {
                     Args = (string) null,
-                    BackgrounderId = (int?) null,
+                    BackgrounderId = (string) null,
                     EndFile = TestLogFileInfo.FileName,
                     EndLine = 125,
                     EndTime = new DateTime(2018, 8, 8, 11, 16, 32, 386),
                     ErrorMessage =
                         "Job finished: ERROR; name: Sanitize Data Server Workbooks; type :sanitize_dataserver_workbooks; id: 2; notes: null; total time: 598 sec; run time: 0 sec",
-                    JobId = 2,
+                    JobId = "2",
                     JobType = (string) null,
                     Notes = (string) null,
                     Priority = 0,
@@ -417,12 +417,12 @@ namespace LogShark.Tests.Plugins.Backgrounder
                 ExpectedOutput = new
                 {
                     Args = (string) null,
-                    BackgrounderId = (int?) null,
+                    BackgrounderId = (string) null,
                     EndFile = TestLogFileInfo.FileName,
                     EndLine = 123,
                     EndTime = new DateTime(2020, 05, 13, 19, 00, 46, 479),
                     ErrorMessage = (string) null,
-                    JobId = 5470253L,
+                    JobId = "5470253",
                     JobType = (string) null,
                     Notes = (string) null,
                     Priority = 0,
@@ -438,7 +438,7 @@ namespace LogShark.Tests.Plugins.Backgrounder
             },
 
         };
-        
+
         private readonly List<PluginTestCase> _extractJobDetailTestCases = new List<PluginTestCase>
         {
             new PluginTestCase // old format
@@ -449,7 +449,7 @@ namespace LogShark.Tests.Plugins.Backgrounder
                 LineNumber = 123,
                 ExpectedOutput = new
                 {
-                    BackgrounderJobId = 1369448,
+                    BackgrounderJobId = "1369448",
                     ExtractGuid = "5EEC2CCA-6F82-4EFF-9DBC-FDB471269B06",
                     ExtractId =  "bd5c5cc4-1c35-443f-bac7-3a4acac54a4b",
                     ExtractSize = 1048641536L,
@@ -463,7 +463,7 @@ namespace LogShark.Tests.Plugins.Backgrounder
                     TwbSize = 71878L,
                     VizqlSessionId = "D7A2D1F664E5466B87C4637ABBC31D63",
                 }},
-            
+
             new PluginTestCase // new format
             {
                 LogContents = "2019-08-09 21:50:17.641 +0000 (Default,,,,201,:refresh_extracts,ee6dd62e-f472-4252-a931-caf4dfb0009f) pool-12-thread-1 backgrounder: INFO  com.tableausoftware.model.workgroup.workers.RefreshExtractsWorker - |status=ExtractTimingSuccess|jobId=201|jobLuid=ee6dd62e-f472-4252-a931-caf4dfb0009f|siteName=\"Default\"|workbookName=\"Large1\"|refreshedAt=\"2019-08-09T21:50:17.638Z\"|sessionId=F7162DFF82CB48D386850188BD5B190A-1:1|scheduleName=\"Weekday early mornings\"|scheduleType=\"FullRefresh\"|jobName=\"Refresh Extracts\"|jobType=\"RefreshExtracts\"|totalTimeSeconds=48|runTimeSeconds=46|queuedTime=\"2019-08-09T21:49:29.076Z\"|startedTime=\"2019-08-09T21:49:31.262Z\"|endTime=\"2019-08-09T21:50:17.638Z\"|correlationId=65|priority=0|serialId=null|extractsSizeBytes=57016320|jobNotes=\"Finished refresh of extracts (new extract id:{78C1FCC2-E70E-4B25-BFFE-7B7F0096A4FE}) for Workbook 'Large1' \"",
@@ -472,7 +472,7 @@ namespace LogShark.Tests.Plugins.Backgrounder
                 LineNumber = 123,
                 ExpectedOutput = new
                 {
-                    BackgrounderJobId = 201,
+                    BackgrounderJobId = "201",
                     ExtractGuid = (string) null,
                     ExtractId =  "78C1FCC2-E70E-4B25-BFFE-7B7F0096A4FE",
                     ExtractSize = 57016320,
@@ -486,7 +486,7 @@ namespace LogShark.Tests.Plugins.Backgrounder
                     TwbSize = (long?) null,
                     VizqlSessionId = "F7162DFF82CB48D386850188BD5B190A-1:1",
                 }},
-            
+
             new PluginTestCase // new format for data source
             {
                 LogContents = "2019-08-09 21:50:17.641 +0000 (Default,,,,201,:refresh_extracts,ee6dd62e-f472-4252-a931-caf4dfb0009f) pool-12-thread-1 backgrounder: INFO  com.tableausoftware.model.workgroup.workers.RefreshExtractsWorker - |status=ExtractTimingSuccess|jobId=201|jobLuid=ee6dd62e-f472-4252-a931-caf4dfb0009f|siteName=\"Sales\"|datasourceName=\"Sales data\"|refreshedAt=\"2019-08-09T21:50:17.638Z\"|sessionId=F7162DFF82CB48D386850188BD5B190A-1:1|scheduleName=\"Weekday early mornings\"|scheduleType=\"FullRefresh\"|jobName=\"Refresh Extracts\"|jobType=\"RefreshExtracts\"|totalTimeSeconds=48|runTimeSeconds=46|queuedTime=\"2019-08-09T21:49:29.076Z\"|startedTime=\"2019-08-09T21:49:31.262Z\"|endTime=\"2019-08-09T21:50:17.638Z\"|correlationId=65|priority=0|serialId=null|extractsSizeBytes=57016320|jobNotes=\"Finished refresh of extracts (new extract id:{1811744A-39A0-47AA-9234-594A7891DCBE}) for Data Source 'Sales data' \"",
@@ -495,7 +495,7 @@ namespace LogShark.Tests.Plugins.Backgrounder
                 LineNumber = 123,
                 ExpectedOutput = new
                 {
-                    BackgrounderJobId = 201,
+                    BackgrounderJobId = "201",
                     ExtractGuid = (string) null,
                     ExtractId =  "1811744A-39A0-47AA-9234-594A7891DCBE",
                     ExtractSize = 57016320,
@@ -518,7 +518,7 @@ namespace LogShark.Tests.Plugins.Backgrounder
                 LineNumber = 123,
                 ExpectedOutput = new
                 {
-                    BackgrounderJobId = 201,
+                    BackgrounderJobId = "201",
                     ExtractGuid = (string) null,
                     ExtractId =  (string) null,
                     ExtractSize = (long?) null,
@@ -533,7 +533,7 @@ namespace LogShark.Tests.Plugins.Backgrounder
                     VizqlSessionId = (string) null
                 }},
         };
-        
+
         private readonly List<PluginTestCase> _subscriptionJobDetailTestCases = new List<PluginTestCase>
         {
             new PluginTestCase
@@ -544,14 +544,14 @@ namespace LogShark.Tests.Plugins.Backgrounder
                 LineNumber = 123,
                 ExpectedOutput = new
                 {
-                    BackgrounderJobId = 1367091,
+                    BackgrounderJobId = "1367091",
                     RecipientEmail = (string) null,
                     SenderEmail = (string) null,
                     SmtpServer = (string) null,
                     SubscriptionName = (string) null,
                     VizqlSessionId = "FA88A9BC626A40A29228ECE09F04A76B",
                 }},
-            
+
             new PluginTestCase
             {
                 LogContents = "2018-07-11 16:00:53.445 -0700 (Default,john.doe,,,1367091,:single_subscription_notify,-) pool-4-thread-1 backgrounder: INFO  com.tableausoftware.model.workgroup.service.subscriptions.SubscriptionRunner - Starting subscription Id 66 for User John.Smith \"Weekly Report\"",
@@ -560,7 +560,7 @@ namespace LogShark.Tests.Plugins.Backgrounder
                 LineNumber = 124,
                 ExpectedOutput = new
                 {
-                    BackgrounderJobId = 1367091,
+                    BackgrounderJobId = "1367091",
                     RecipientEmail = (string) null,
                     SenderEmail = (string) null,
                     SmtpServer = (string) null,
@@ -576,7 +576,7 @@ namespace LogShark.Tests.Plugins.Backgrounder
                 LineNumber = 124,
                 ExpectedOutput = new
                 {
-                    BackgrounderJobId = 1993727,
+                    BackgrounderJobId = "1993727",
                     RecipientEmail = (string) null,
                     SenderEmail = (string) null,
                     SmtpServer = (string) null,
@@ -592,7 +592,7 @@ namespace LogShark.Tests.Plugins.Backgrounder
                 LineNumber = 124,
                 ExpectedOutput = new
                 {
-                    BackgrounderJobId = 1367091,
+                    BackgrounderJobId = "1367091",
                     RecipientEmail = (string) null,
                     SenderEmail = (string) null,
                     SmtpServer = (string) null,
@@ -608,7 +608,7 @@ namespace LogShark.Tests.Plugins.Backgrounder
                 LineNumber = 124,
                 ExpectedOutput = new
                 {
-                    BackgrounderJobId = 1253164,
+                    BackgrounderJobId = "1253164",
                     RecipientEmail = (string) null,
                     SenderEmail = (string) null,
                     SmtpServer = (string) null,
@@ -624,14 +624,14 @@ namespace LogShark.Tests.Plugins.Backgrounder
                 LineNumber = 125,
                 ExpectedOutput = new
                 {
-                    BackgrounderJobId = 1367091,
+                    BackgrounderJobId = "1367091",
                     RecipientEmail = "john.doe@test.com",
                     SenderEmail = "tableau@test.com",
                     SmtpServer = "mail.test.com",
                     SubscriptionName = (string) null,
                     VizqlSessionId = (string) null,
                 }},
-            
+
             new PluginTestCase
             {
                 LogContents = "2018-07-12 16:01:00.629 -0700 (Default,john.doe,,,1367091,:single_subscription_notify,-) pool-4-thread-1 backgrounder: INFO  com.tableausoftware.model.workgroup.util.EmailHelper - Sending email from  to null from server smtp.testmailserver.com",
@@ -640,7 +640,7 @@ namespace LogShark.Tests.Plugins.Backgrounder
                 LineNumber = 126,
                 ExpectedOutput = new
                 {
-                    BackgrounderJobId = 1367091,
+                    BackgrounderJobId = "1367091",
                     RecipientEmail = "null",
                     SenderEmail = string.Empty,
                     SmtpServer = "smtp.testmailserver.com",

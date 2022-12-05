@@ -7,6 +7,7 @@ using LogShark.Extensions;
 using LogShark.Shared;
 using LogShark.Shared.Extensions;
 using LogShark.Shared.LogReading.Containers;
+using System;
 
 namespace LogShark.Plugins.Backgrounder
 {
@@ -135,12 +136,13 @@ namespace LogShark.Plugins.Backgrounder
                 return;
             }
 
-            if (!int.TryParse(lineMatch.Groups["job_id"].Value, out var jobId))
+            if (!int.TryParse(lineMatch.Groups["job_id"].Value, out var jobIdInt))
             {
                 return; // We only allow error messages to not have job id
             }
 
-            var startEvent = TryMatchStartMessage(lineMatch, logLine, backgrounderId, jobId);
+            string jobId = jobIdInt.ToString();
+            var startEvent = TryMatchStartMessage(lineMatch, logLine, backgrounderId.ToString(), jobId);
             if (startEvent != null)
             {
                 _backgrounderEventPersister.AddStartEvent(startEvent);
@@ -204,9 +206,10 @@ namespace LogShark.Plugins.Backgrounder
                 return null;
             }
 
+            long? backgrounderJobIdLong = long.TryParse(lineMatch.Groups["job_id"].Value, out var jobId) ? jobId : default(long?);
             return new BackgrounderJobError
             {
-                BackgrounderJobId = long.TryParse(lineMatch.Groups["job_id"].Value, out var jobId) ? jobId : default(long?),
+                BackgrounderJobId = backgrounderJobIdLong == null ? null : backgrounderJobIdLong.ToString(),
                 Class = lineMatch.Groups["class"].Value,
                 File = logLine.LogFileInfo.FileName,
                 Line = logLine.LineNumber,
@@ -218,7 +221,7 @@ namespace LogShark.Plugins.Backgrounder
             };
         }
 
-        private static BackgrounderJob TryMatchStartMessage(Match lineMatch, LogLine logLine, int? backgrounderId, long jobId)
+        private static BackgrounderJob TryMatchStartMessage(Match lineMatch, LogLine logLine, string backgrounderId, string jobId)
         {
             var message = lineMatch.Groups["message"].Value;
             var startMessageMatch = message?.GetRegexMatchAndMoveCorrectRegexUpFront(StartMessageRegexList, StartMessageRegexListLock);
@@ -248,7 +251,7 @@ namespace LogShark.Plugins.Backgrounder
             };
         }
 
-        private static BackgrounderJob TryMatchEndMessage(Match lineMatch, LogLine logLine, int jobId)
+        private static BackgrounderJob TryMatchEndMessage(Match lineMatch, LogLine logLine, string jobId)
         {
             var message = lineMatch.Groups["message"].Value;
             if (!message.StartsWith("Job finished:") && !message.StartsWith("Error executing backgroundjob:"))
@@ -287,16 +290,17 @@ namespace LogShark.Plugins.Backgrounder
             return endEvent;
         }
 
-        private BackgrounderExtractJobDetail TryMatchExtractJobDetails(Match lineMatch, int jobId, LogLine logLine)
+        private BackgrounderExtractJobDetail TryMatchExtractJobDetails(Match lineMatch, string jobId, LogLine logLine)
         {
             var eventClass = lineMatch.Groups["class"].Value;
             var message = lineMatch.Groups["message"].Value;
+            var timestamp = TimestampParsers.ParseJavaLogsTimestamp(lineMatch.Groups["ts"].Value);
             switch (eventClass)
             {
                 case "com.tableausoftware.model.workgroup.service.VqlSessionService":
-                    return TryMatchOlderFormatOfExtractJobDetails(message, jobId, lineMatch.Groups["vql_sess_id"].Value);
+                    return TryMatchOlderFormatOfExtractJobDetails(message, jobId, lineMatch.Groups["vql_sess_id"].Value, timestamp);
                 case "com.tableausoftware.model.workgroup.workers.RefreshExtractsWorker":
-                    return TryMatchNewFormatOfExtractJobDetails(message, jobId, logLine);
+                    return TryMatchNewFormatOfExtractJobDetails(message, jobId, logLine, timestamp);
                 default:
                     return null;
             }
@@ -316,7 +320,7 @@ namespace LogShark.Plugins.Backgrounder
                         =\s(?<total_size>\d+?)$",
                 RegexOptions.ExplicitCapture | RegexOptions.IgnorePatternWhitespace | RegexOptions.Compiled);
 
-        private static BackgrounderExtractJobDetail TryMatchOlderFormatOfExtractJobDetails(string message, int jobId, string vizqlSessionId)
+        private static BackgrounderExtractJobDetail TryMatchOlderFormatOfExtractJobDetails(string message, string jobId, string vizqlSessionId, DateTime timestamp)
         {
             var extractMatch = VqlSessionExtractDetailsRegex.Match(message);
             if (!extractMatch.Success)
@@ -336,7 +340,8 @@ namespace LogShark.Plugins.Backgrounder
                 Site = null, // Not available in the old format
                 TotalSize = long.TryParse(extractMatch.Groups["total_size"].Value, out var totalSize) ? totalSize : default(long?),
                 TwbSize = long.TryParse(extractMatch.Groups["twb_size"].Value, out var twbSize) ? twbSize : default(long?),
-                VizqlSessionId = vizqlSessionId
+                VizqlSessionId = vizqlSessionId,
+                Timestamp = timestamp
             };
         }
 
@@ -346,7 +351,7 @@ namespace LogShark.Plugins.Backgrounder
         private static readonly Regex ExtractIdNewFormat = new Regex(
             @"Finished refresh of extracts \(new extract id:{(?<extractGuid>[^\}]+)}\)",
             RegexOptions.Compiled);
-        private BackgrounderExtractJobDetail TryMatchNewFormatOfExtractJobDetails(string message, int jobId, LogLine logLine)
+        private BackgrounderExtractJobDetail TryMatchNewFormatOfExtractJobDetails(string message, string jobId, LogLine logLine, DateTime timestamp)
         {
             if (!message.StartsWith('|'))
             {
@@ -374,14 +379,16 @@ namespace LogShark.Plugins.Backgrounder
                 Site = messageParts.GetStringValueOrNull("siteName").TrimSurroundingDoubleQuotes(),
                 TotalSize = null, // Not available in the new format
                 TwbSize = null, // Not available in the new format
-                VizqlSessionId = messageParts.GetStringValueOrNull("sessionId").TrimSurroundingDoubleQuotes()
+                VizqlSessionId = messageParts.GetStringValueOrNull("sessionId").TrimSurroundingDoubleQuotes(),
+                Timestamp = timestamp
             };
         }
 
-        private static BackgrounderSubscriptionJobDetail TryMatchSubscriptionJobDetails(Match lineMatch, int jobId)
+        private static BackgrounderSubscriptionJobDetail TryMatchSubscriptionJobDetails(Match lineMatch, string jobId)
         {
             var message = lineMatch.Groups["message"].Value;
             var @class = lineMatch.Groups["class"].Value;
+            var timestamp = TimestampParsers.ParseJavaLogsTimestamp(lineMatch.Groups["ts"].Value);
 
             switch (@class)
             {
@@ -389,7 +396,8 @@ namespace LogShark.Plugins.Backgrounder
                     return new BackgrounderSubscriptionJobDetail
                     {
                         BackgrounderJobId = jobId,
-                        VizqlSessionId = message.Split(':')[1]
+                        VizqlSessionId = message.Split(':')[1],
+                        Timestamp = timestamp
                     };
 
                 case "com.tableausoftware.domain.subscription.SubscriptionRunner" when message.StartsWith("Starting subscription", System.StringComparison.InvariantCultureIgnoreCase):
@@ -398,7 +406,8 @@ namespace LogShark.Plugins.Backgrounder
                     return new BackgrounderSubscriptionJobDetail
                     {
                         BackgrounderJobId = jobId,
-                        SubscriptionName = subscriptionMatch.Groups["subscription_name"].Value
+                        SubscriptionName = subscriptionMatch.Groups["subscription_name"].Value,
+                        Timestamp = timestamp
                     };
                 case "com.tableausoftware.model.workgroup.util.EmailHelper" when message.StartsWith("Sending email from"):
                     {
@@ -409,6 +418,7 @@ namespace LogShark.Plugins.Backgrounder
                             SenderEmail = emailMatch.Groups["sender_email"].Value,
                             RecipientEmail = emailMatch.Groups["recipient_email"].Value,
                             SmtpServer = emailMatch.Groups["smtp_server"].Value,
+                            Timestamp = timestamp
                         };
                     }
                 default:

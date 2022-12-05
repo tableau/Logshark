@@ -104,6 +104,7 @@ namespace LogShark.Containers
         LogSetDoesNotContainRelevantLogs,
         OutOfMemory,
         TaskCancelled,
+        InserterDisposed,
         UnclassifiedError,
         MultipleExitReasonsOnDifferentThreads
     }

@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29020.237
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33122.133
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogShark", "LogShark\LogShark.csproj", "{EA705079-65E2-4E68-8FEB-91542F3503E3}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogShark.Tests", "LogShark.Tests\LogShark.Tests.csproj", "{245D8915-8292-4D99-88F7-1701ABB97E68}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{49B2B0D8-EA50-417B-A2C9-4FDA7B9D3809}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogShark.Shared", "LogShark.Shared\LogShark.Shared.csproj", "{0022639E-6916-49AA-B265-E8BA078C366F}"
 EndProject

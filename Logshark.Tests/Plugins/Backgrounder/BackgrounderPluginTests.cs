@@ -14,8 +14,8 @@ namespace LogShark.Tests.Plugins.Backgrounder
 {
     public class BackgrounderPluginTests : InvariantCultureTestsBase
     {
-        private  static readonly LogFileInfo TestLogFileInfo = new LogFileInfo("backgrounder-1.log.2018-07-11", @"folder1/backgrounder-1.log.2018-07-11", "worker0", DateTime.MinValue);
-        
+        private static readonly LogFileInfo TestLogFileInfo = new LogFileInfo("backgrounder-1.log.2018-07-11", @"folder1/backgrounder-1.log.2018-07-11", "worker0", DateTime.MinValue);
+
         [Fact]
         public void BadOrNoOpInput()
         {
@@ -24,7 +24,7 @@ namespace LogShark.Tests.Plugins.Backgrounder
             using (var plugin = new BackgrounderPlugin())
             {
                 plugin.Configure(testWriterFactory, null, processingNotificationsCollector, new NullLoggerFactory());
-                
+
                 var wrongContentFormat = new LogLine(new ReadLogLineResult(123, 456), TestLogFileInfo);
                 var nullContent = new LogLine(new ReadLogLineResult(123, null), TestLogFileInfo);
 
@@ -49,7 +49,7 @@ namespace LogShark.Tests.Plugins.Backgrounder
                     var logLine = testCase.GetLogLine();
                     plugin.ProcessLogLine(logLine, testCase.LogType);
                 }
-                
+
                 plugin.CompleteProcessing();
             }
 
@@ -82,12 +82,12 @@ namespace LogShark.Tests.Plugins.Backgrounder
                 ExpectedOutput = new
                 {
                     Args = (string) null,
-                    BackgrounderId = 1,
+                    BackgrounderId = "1",
                     EndFile = TestLogFileInfo.FileName,
                     EndLine = 124,
                     EndTime = new DateTime(2018, 8, 8, 11, 17, 13, 518),
                     ErrorMessage = (string) null,
-                    JobId = 9,
+                    JobId = "9",
                     JobType = "purge_expired_wgsessions",
                     Notes = (string) null,
                     Priority = 0,
@@ -112,12 +112,12 @@ namespace LogShark.Tests.Plugins.Backgrounder
                 ExpectedOutput = new
                 {
                     Args = (string) null,
-                    BackgrounderId = 1,
+                    BackgrounderId = "1",
                     EndFile = (string) null,
                     EndLine = (int?) null,
                     EndTime = (DateTime?) null,
-                    ErrorMessage = "TimeoutExceptionReached",
-                    JobId = 326,
+                    ErrorMessage = "There is no end event for this job in the logs, but a different job was processed later by the same backgrounder. This could be caused by a number of different problems: job was crashed, job was cancelled by other component, or log files are incomplete/corrupt",
+                    JobId = "326",
                     JobType = "enqueue_data_alerts",
                     Notes = (string) null,
                     Priority = 10,
@@ -142,12 +142,12 @@ namespace LogShark.Tests.Plugins.Backgrounder
                 ExpectedOutput = new
                 {
                     Args = (string) null,
-                    BackgrounderId = 1,
+                    BackgrounderId = "1",
                     EndFile = (string) null,
                     EndLine = (int?) null,
                     EndTime = (DateTime?) null,
                     ErrorMessage = "Job end event seems to be outside of the time covered by logs",
-                    JobId = 327,
+                    JobId = "327",
                     JobType = "enqueue_data_alerts",
                     Notes = (string) null,
                     Priority = 10,

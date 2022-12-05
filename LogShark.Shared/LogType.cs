@@ -16,6 +16,7 @@ namespace LogShark.Shared
         NetstatLinux,
         NetstatWindows,
         PostgresCsv,
+        Prep,
         ProtocolServer,
         SearchServer,
         Tabadmin,
