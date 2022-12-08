@@ -226,7 +226,7 @@ namespace LogShark.Plugins.ClusterController
         // disk 428901134336: total space=217610723328 used space={}
         // disk 1: total space=428901134336 used space=217610723328
         private static readonly Regex _diskSpaceMessageRegex = new Regex(@"
-            disk\s(?<disk>[^:]+):\s
+            disk(\s(?<disk>[^:]+))?:\s
             total\sspace=(?<totalSpace>[0-9]+|\{\})\s
             used\sspace=(?<usedSpace>[0-9]+|\{\})",
             RegexOptions.ExplicitCapture | RegexOptions.IgnorePatternWhitespace | RegexOptions.Compiled);

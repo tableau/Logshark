@@ -1,4 +1,4 @@
-BackgrounderJobId,ExtractGuid,ExtractId,ExtractSize,ExtractUrl,JobNotes,ResourceName,ResourceType,ScheduleName,Site,TotalSize,TwbSize,VizqlSessionId
+BackgrounderJobId,ExtractGuid,ExtractId,ExtractSize,ExtractUrl,JobNotes,ResourceName,ResourceType,ScheduleName,Site,TotalSize,TwbSize,VizqlSessionId,Timestamp
 199,,,0,Large1,"The directory is missing or has been moved: C:/Users/Administrator/Desktop/autotel-shared-car-locations
 
 ""
@@ -46,5 +46,5 @@ com.tableausoftware.nativeapi.exceptions.DataSourceException: The directory is m
 	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
-	at java.lang.Thread.run(Thread.java:748)",Large1,Workbook,Weekday early mornings,Default,,,CEBA7C505B3045DEB24C271FC6B25B21-1:1
-201,,78C1FCC2-E70E-4B25-BFFE-7B7F0096A4FE,57016320,Large1,"Finished refresh of extracts (new extract id:{78C1FCC2-E70E-4B25-BFFE-7B7F0096A4FE}) for Workbook 'Large1' ",Large1,Workbook,Weekday early mornings,Default,,,F7162DFF82CB48D386850188BD5B190A-1:1
+	at java.lang.Thread.run(Thread.java:748)",Large1,Workbook,Weekday early mornings,Default,,,CEBA7C505B3045DEB24C271FC6B25B21-1:1,08/09/2019 21:46:10
+201,,78C1FCC2-E70E-4B25-BFFE-7B7F0096A4FE,57016320,Large1,"Finished refresh of extracts (new extract id:{78C1FCC2-E70E-4B25-BFFE-7B7F0096A4FE}) for Workbook 'Large1' ",Large1,Workbook,Weekday early mornings,Default,,,F7162DFF82CB48D386850188BD5B190A-1:1,08/09/2019 21:50:17

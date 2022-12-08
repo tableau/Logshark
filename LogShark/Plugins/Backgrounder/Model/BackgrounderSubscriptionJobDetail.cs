@@ -1,13 +1,16 @@
+using System;
+
 namespace LogShark.Plugins.Backgrounder.Model
 {
     public class BackgrounderSubscriptionJobDetail
     {
-        public long BackgrounderJobId { get; set; }
+        public string BackgrounderJobId { get; set; }
         public string RecipientEmail { get; set; }
         public string SenderEmail { get; set; }
         public string SmtpServer { get; set; }
         public string SubscriptionName { get; set; }
         public string VizqlSessionId { get; set; }
+        public DateTime Timestamp { get; set; }
 
         public void MergeInfo(BackgrounderSubscriptionJobDetail otherEvent)
         {

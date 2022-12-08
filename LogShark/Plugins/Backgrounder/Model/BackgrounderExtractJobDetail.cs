@@ -1,8 +1,10 @@
+using System;
+
 namespace LogShark.Plugins.Backgrounder.Model
 {
     public class BackgrounderExtractJobDetail
     {
-        public long BackgrounderJobId { get; set; }
+        public string BackgrounderJobId { get; set; }
         public string ExtractGuid { get; set; }
         public string ExtractId { get; set; }
         public long? ExtractSize { get; set; }
@@ -15,5 +17,6 @@ namespace LogShark.Plugins.Backgrounder.Model
         public long? TotalSize { get; set; }
         public long? TwbSize { get; set; }
         public string VizqlSessionId { get; set; }
+        public DateTime Timestamp { get; set; }
     }
 }

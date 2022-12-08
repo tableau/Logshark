@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "LogShark": {
-      "commandName": "Project",
-      "commandLineArgs": "\"D:\\testLog\\logs_clean_tsm.zip\""
-    }
-  }
-}

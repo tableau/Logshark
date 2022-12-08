@@ -26,3 +26,6 @@ TestLogs/
 # code coverage
 coverage.json
 coverage.cobertura.xml
+
+#Other
+*.bak

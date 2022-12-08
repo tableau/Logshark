@@ -69,5 +69,8 @@ namespace LogShark.Shared.LogReading.Containers
 
         [JsonProperty(PropertyName = "wb")]
         public string Workbook { get; set; }
+
+        [JsonProperty(PropertyName = "trace-id")]
+        public string TraceId { get; set; }
     }
 }

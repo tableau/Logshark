@@ -295,6 +295,13 @@ namespace LogShark
                 _logger.LogInformation(argumentOutOfRangeException, errorMessage);
                 return new ProcessStreamResult(linesProcessed, errorMessage, ExitReason.LogLineTooLong);
             }
+            catch (ObjectDisposedException objectDisposedException)
+                when (objectDisposedException.ObjectName == "inserter")
+            {
+                var errorMessage = $"Failed to use Hyper writer as it has been disposed.  This is likely due to an error on another thread.  Logshark will attempt to resume processing for other plugins.";
+                _logger.LogInformation(objectDisposedException, errorMessage);
+                return new ProcessStreamResult(linesProcessed, errorMessage, ExitReason.InserterDisposed);
+            }
             catch (Exception ex)
             {
                 var errorMessage = $"Unhandled exception occurred while processing file stream from file `{logFileInfo.FilePath}`. Aborting processing.";

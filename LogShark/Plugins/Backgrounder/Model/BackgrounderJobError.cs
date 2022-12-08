@@ -4,7 +4,7 @@ namespace LogShark.Plugins.Backgrounder.Model
 {
     public class BackgrounderJobError
     {
-        public long? BackgrounderJobId { get; set; }
+        public string BackgrounderJobId { get; set; }
         public string Class { get; set; }
         public string File { get; set; }
         public int Line { get; set; }

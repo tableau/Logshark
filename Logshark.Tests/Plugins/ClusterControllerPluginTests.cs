@@ -177,6 +177,24 @@ namespace LogShark.Tests.Plugins
                         UsedSpace = 217610723328,
                     }
                 },
+                new PluginTestCase // correct format with no disk number
+                {
+                    LogType = LogType.ClusterController,
+                    LogContents = "2020-09-20 17:08:40.164 +0000 pool-37-thread-1 INFO : com.tableausoftware.cluster.storage.DiskSpaceMonitor - disk: total space=428901134336 used space=217610723328",
+                    LogFileInfo = _testClusterControllerLogFileInfo,
+                    LineNumber = 5,
+                    ExpectedOutput = new
+                    {
+                        FileName = _testClusterControllerLogFileInfo.FileName,
+                        FilePath =  _testClusterControllerLogFileInfo.FilePath,
+                        LineNumber = 5,
+                        Timestamp = new DateTime(2020, 09, 20, 17, 08, 40, 164),
+                        Worker = _testClusterControllerLogFileInfo.Worker,
+                        Disk = "",
+                        TotalSpace = 428901134336,
+                        UsedSpace = 217610723328,
+                    }
+                },
             };
 
             var testWriterFactory = new TestWriterFactory();
