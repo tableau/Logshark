@@ -22,7 +22,6 @@
       <PackageReference Include="Npgsql" Version="4.1.3.1" />
       <PackageReference Include="Serilog.Extensions.Logging.File" Version="1.1.0" />
       <PackageReference Include="Tableau.HyperAPI.NET" Version="0.0.9746" />
-      <PackageReference Include="Tools.TableauServerRestApi" Version="1.3.1.1983268" />
     </ItemGroup>
 
     <ItemGroup>
@@ -58,5 +57,10 @@
 
     <ItemGroup>
       <ProjectReference Include="..\LogShark.Shared\LogShark.Shared.csproj" />
-    </ItemGroup>    
+    </ItemGroup>
+    <ItemGroup>
+      <Reference Include="Tools.TableauServerRestApi">
+	      <HintPath>..\thirdparty\Tools.TableauServerRestApi.dll</HintPath>
+	    </Reference>
+    </ItemGroup>  
 </Project>
