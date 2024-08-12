@@ -15,9 +15,11 @@ namespace LogShark.Plugins.SearchServer
         private IWriter<SearchServerEvent> _writer;
         private IProcessingNotificationsCollector _processingNotificationsCollector;
 
+        // 2024.2 added optional "pid" to match 2024.2
         private readonly Regex _regex = new Regex(@"^
             (?<ts>\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}.\d{3})\s
             (?<ts_offset>.+?)\s
+            ?(?<pid>\d+)?\s
             \((?<site>.*?), (?<user>.*?), (?<sess>.*?), (?<req>.*?)\)\s
             (?<thread>.*?)\s
             :\s

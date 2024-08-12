@@ -37,9 +37,11 @@ namespace LogShark.Plugins.Backgrounder
         private static readonly Regex NewBackgrounderRegex =
             // 10.4+
             // 10.4 added "job type" and 10.5 added "local request id", either of which may be empty and thus are marked optional here
+            // 2024.2 added optional "pid" to match 2024.2, and made ts_offset more exclusionary
             new Regex(@"^
                             (?<ts>\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}.\d{3})
-                            \s(?<ts_offset>[^\s]+)
+                            \s(?<ts_offset>[-|+]\d+?)
+                            \s?(?<pid>\d+)?
                             \s\((?<site>[^,]*), (?<user>[^,]*), (?<data_sess_id>[^,]*), (?<vql_sess_id>[^,]*), (?<job_id>[^,]*), :?(?<job_type>[^,]*) ,(?<local_req_id>[^\s]*)\)
                             \s?(?<module>[^\s]*)?
                             \s(?<thread>[^\s]*)
