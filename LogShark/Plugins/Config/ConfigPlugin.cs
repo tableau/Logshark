@@ -2,6 +2,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using Flurl.Util;
 using LogShark.Containers;
 using LogShark.Plugins.Config.Models;
 using LogShark.Shared;
@@ -17,6 +18,7 @@ namespace LogShark.Plugins.Config
     {
         private static readonly DataSetInfo ConfigEntriesOutputInfo = new DataSetInfo("Config", "ConfigEntries");
         private static readonly DataSetInfo ProcessTopologyOutputInfo = new DataSetInfo("Config", "ProcessTopology");
+        private static readonly Dictionary<string,string> HostnameNodeMapping = new Dictionary<string,string>();
 
         private static readonly List<LogType> ConsumedLogTypesStatic = new List<LogType> {LogType.TabsvcYml, LogType.WorkgroupYml};
 
@@ -43,6 +45,7 @@ namespace LogShark.Plugins.Config
         // Then on Dispose it analyzes collected files to generate and write Process Topology information
         public void ProcessLogLine(LogLine logLine, LogType logType)
         {
+         
             if (logLine.LineContents is Dictionary<string, string> configContents)
             {
                 var configFile = new ConfigFile(logLine.LogFileInfo, configContents, logType);
@@ -53,12 +56,44 @@ namespace LogShark.Plugins.Config
                     _processedConfigFiles.Enqueue(configFile);
                     _logger.LogInformation("{configEntriesWritten} config entries processed and written", configEntriesWritten);
                 }
+                if (logType.ToString() == "WorkgroupYml")
+                {
+                    // get hostname and node mapping only 
+                    int NodeMapping = GetNodeAndHostNameMapping(configFile);
+                    if( NodeMapping == 0)
+                    {
+                        _logger.LogInformation("Unable to find any host in " + configFile.LogFileInfo.FilePath + ". This might result in incorrect Host and Node mapping");
+                    }
+                }
             }
             else
             {
                 const string error = "Failed to interpret input as Dictionary<string, string>. Either log set contains empty/corrupt yaml config files or incorrect log reader is used for the plugin";
                 _processingNotificationsCollector.ReportError(error, logLine, nameof(ConfigPlugin));
             }
+        }
+
+        private int GetNodeAndHostNameMapping(ConfigFile configFile)
+        {
+            try
+            {
+                var HostNameEntries = configFile.Values.Where(pair => pair.Key == "host").ToList();
+                if (HostNameEntries.Count == 0)
+                {
+                    return 0;
+                }
+                string Hostname = HostNameEntries[0].Value.ToString();
+                if (!HostnameNodeMapping.ContainsValue(Hostname))
+                {
+                    HostnameNodeMapping.Add(Hostname, configFile.LogFileInfo.Worker);
+                }
+                return HostNameEntries.Count;
+            }
+            catch (Exception ex) {//Don't throw exception if host is missing from config file
+                return 0;
+            }
+
+          
         }
 
         public SinglePluginExecutionResults CompleteProcessing()
@@ -128,7 +163,7 @@ namespace LogShark.Plugins.Config
             var workgroupYmlFile = _processedConfigFiles.FirstOrDefault(config => config.LogType == LogType.WorkgroupYml);
             var tabsvcYmlFile = _processedConfigFiles.FirstOrDefault(config => config.LogType == LogType.TabsvcYml);
 
-            var processInfoParser = new ProcessInfoExtractor(workgroupYmlFile, tabsvcYmlFile, _processingNotificationsCollector);
+            var processInfoParser = new ProcessInfoExtractor(workgroupYmlFile, tabsvcYmlFile, HostnameNodeMapping, _processingNotificationsCollector);
             var processInfoRecords = processInfoParser.GenerateProcessInfoRecords();
             _processTopologyWriter.AddLines(processInfoRecords);
             _logger.LogInformation($"{processInfoRecords.Count} process info records processed and written");

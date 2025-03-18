@@ -58,6 +58,67 @@ namespace LogShark.Shared.LogReading.Readers
                     _processingNotificationsCollector.ReportWarning("Invalid Json found and repaired", _filePath, originalEvent.LineNumber, nameof(NativeJsonLogsReader));
                     return new ReadLogLineResult(originalEvent.LineNumber, deserializedObject);
                 }
+
+            }
+            catch (JsonException ex) when (lineString.Contains("truncated"))
+            {
+                //query too long and complicated to fix, so just remove the whole query and leave a warning message
+                if (lineString.Contains("query-compiled"))
+                {
+                    string lookfor = "query-compiled\":";
+                    int startIndex = lineString.IndexOf(lookfor) + lookfor.Length;
+                    var repairedLineString = lineString.Remove(startIndex).Insert(startIndex, "\"Query is too long to parse\"}]}]}}");
+                    var deserializedObject = JsonConvert.DeserializeObject<NativeJsonLogsBaseEvent>(repairedLineString, _serializerSettings);
+                    _processingNotificationsCollector.ReportWarning("Long query removed - " + ex.Message, _filePath, originalEvent.LineNumber, nameof(NativeJsonLogsReader));
+                    return new ReadLogLineResult(originalEvent.LineNumber, deserializedObject);
+                }
+                else if (lineString.Contains("logical-operator"))
+                {
+                    string lookfor = "\"v\":";
+                    int startIndex = lineString.IndexOf(lookfor) + lookfor.Length;
+                    var repairedLineString = lineString.Remove(startIndex).Insert(startIndex, "\"Logical Query is too long to parse\"}");
+                    var deserializedObject = JsonConvert.DeserializeObject<NativeJsonLogsBaseEvent>(repairedLineString, _serializerSettings);
+                    _processingNotificationsCollector.ReportWarning("Long logical query removed - " + ex.Message, _filePath, originalEvent.LineNumber, nameof(NativeJsonLogsReader));
+                    return new ReadLogLineResult(originalEvent.LineNumber, deserializedObject);
+                }
+                else if(lineString.Contains("\"query\":"))
+                {
+                    string lookfor = "query\":";
+                    int startIndex = lineString.IndexOf(lookfor) + lookfor.Length;
+                    var repairedLineString = lineString.Remove(startIndex).Insert(startIndex, "\"Query is too long to parse\"}}");
+                    var deserializedObject = JsonConvert.DeserializeObject<NativeJsonLogsBaseEvent>(repairedLineString, _serializerSettings);
+                    _processingNotificationsCollector.ReportWarning("Long query removed - " + ex.Message, _filePath, originalEvent.LineNumber, nameof(NativeJsonLogsReader));
+                    return new ReadLogLineResult(originalEvent.LineNumber, deserializedObject);
+
+                }
+                else if(lineString.Contains("sample-compute"))
+                {
+                   
+                    string lookfor = "\"sample-domain-sizes\":";
+                    int startIndex = lineString.IndexOf(lookfor) + lookfor.Length;
+                    var repairedLineString = lineString.Remove(startIndex).Insert(startIndex, "\"Sample is too long to parse\"}}");
+                    var deserializedObject = JsonConvert.DeserializeObject<NativeJsonLogsBaseEvent>(repairedLineString, _serializerSettings);
+                    _processingNotificationsCollector.ReportWarning("Long sample removed - " + ex.Message, _filePath, originalEvent.LineNumber, nameof(NativeJsonLogsReader));
+                    return new ReadLogLineResult(originalEvent.LineNumber, deserializedObject);
+                }
+                else if (lineString.Contains("query-plan"))
+                {
+
+                    string lookfor = "\"v\":";
+                    int startIndex = lineString.IndexOf(lookfor) + lookfor.Length;
+                    var repairedLineString = lineString.Remove(startIndex).Insert(startIndex, "\"Query plan is too long to parse\"}");
+                    var deserializedObject = JsonConvert.DeserializeObject<NativeJsonLogsBaseEvent>(repairedLineString, _serializerSettings);
+                    _processingNotificationsCollector.ReportWarning("Long query plan removed - " + ex.Message, _filePath, originalEvent.LineNumber, nameof(NativeJsonLogsReader));
+                    return new ReadLogLineResult(originalEvent.LineNumber, deserializedObject);
+                }
+                else
+                {
+                    _processingNotificationsCollector.ReportWarning(ex.Message, _filePath, originalEvent.LineNumber, nameof(NativeJsonLogsReader));
+                    return new ReadLogLineResult(originalEvent.LineNumber, null);
+                }
+               
+               
+            
             }
             catch (JsonException ex)
             {

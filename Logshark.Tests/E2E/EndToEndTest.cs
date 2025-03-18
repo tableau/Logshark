@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Castle.Core.Logging;
 using FluentAssertions;
 using LogShark.Containers;
 using LogShark.Metrics;
@@ -16,7 +17,7 @@ namespace LogShark.Tests.E2E
 {
     public class EndToEndTest
     {
-        private readonly ILoggerFactory _loggerFactory = new LoggerFactory(new ILoggerProvider[] { new TestLoggerProvider() }, new LoggerFilterOptions());
+        private readonly Microsoft.Extensions.Logging.ILoggerFactory _loggerFactory = new LoggerFactory(new ILoggerProvider[] { new TestLoggerProvider() }, new LoggerFilterOptions());
 
         private readonly LogSharkConfiguration _config;
         private readonly IDictionary<string, int> _expectedProcessingErrorsCount;
@@ -33,7 +34,11 @@ namespace LogShark.Tests.E2E
                 ["EnvironmentConfig:WorkbookTemplatesDir"] = "Workbooks",
                 ["PluginsConfiguration:Apache:IncludeGatewayChecks"] = "true",
                 ["PluginsConfiguration:VizqlDesktop:MaxQueryLength"] = "10000",
-                ["PluginsConfiguration:DefaultPluginSet:PluginsToExcludeFromDefaultSet"] = "Replayer"
+                ["PluginsConfiguration:DefaultPluginSet:PluginsToExcludeFromDefaultSet"] = "Replayer",
+                ["Starfish:ArtifactUrl"] = "https://beta.artifacts.starfish.tsi.lan",
+                ["Starfish:IssueUrl"] = "https://report-issue.dev.tabint.net",
+                ["Starfish:PublishGbThreshold"] = "0",
+                ["Starfish:PublishWorkbooksToStarfish"] = "false"
             };
 
             if (configOverrides != null)

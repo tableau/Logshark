@@ -21,6 +21,8 @@ namespace LogShark.Plugins.ResourceManager
             LogType.ProtocolServer,
             LogType.VizportalCpp,
             LogType.VizqlserverCpp,
+            LogType.flowprocessorCpp,
+            LogType.VizdataCpp
         };
 
         public IList<LogType> ConsumedLogTypes => ConsumedLogTypesStatic;
@@ -48,10 +50,12 @@ namespace LogShark.Plugins.ResourceManager
             {
                 return;
             }
-
+            
             var message = GetSrmMessage(baseEvent, logType, logLine);
             var processName = ProcessInfoParser.GetProcessName(logType);
             _eventsProcessor.ProcessEvent(baseEvent, message, logLine, processName);
+
+           
         }
 
         public SinglePluginExecutionResults CompleteProcessing()
@@ -74,7 +78,11 @@ namespace LogShark.Plugins.ResourceManager
             var hyperLogAndMeetsRequirements = logType == LogType.Hyper
                                                && baseEvent.EventType == "srm-internal";
 
-            return vizqlLogAndMeetsRequirements || hyperLogAndMeetsRequirements;
+            var prepLogAndMeetsRequirements = logType == LogType.flowprocessorCpp 
+                                                && baseEvent.EventType == "qp-minerva-service" 
+                                                && baseEvent.EventPayload.Type == JTokenType.String;
+
+            return vizqlLogAndMeetsRequirements || hyperLogAndMeetsRequirements || prepLogAndMeetsRequirements;
         }
 
         private string GetSrmMessage(NativeJsonLogsBaseEvent baseEvent, LogType logType, LogLine logLine)

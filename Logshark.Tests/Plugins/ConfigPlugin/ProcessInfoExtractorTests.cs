@@ -14,7 +14,11 @@ namespace LogShark.Tests.Plugins.ConfigPlugin
     {
         private const string MachineOneName = "machine1";
         private const string MachineTwoName = "machine2";
-        
+        private readonly Dictionary<string, string> _hostnameNodeMapping = new Dictionary<string, string>()
+        {
+            [MachineOneName] = "node1",
+            [MachineTwoName] = "node2",
+        };
         private static readonly LogFileInfo TabsvcYmlLogFileInfo = new LogFileInfo("tabsvc.yml", "tabsvc.yml", "worker0", DateTime.Now);
         private static readonly LogFileInfo WorkgroupYmlLogFileInfo = new LogFileInfo("workgroup.yml", "config/workgrpup.yml", "worker0", DateTime.Now);
         
@@ -23,7 +27,7 @@ namespace LogShark.Tests.Plugins.ConfigPlugin
         {
             var workgroupYml = new ConfigFile(WorkgroupYmlLogFileInfo, _singleMachineWorkgroupYmlValues, LogType.WorkgroupYml);
             
-            var extractor = new ProcessInfoExtractor(workgroupYml, null, null);
+            var extractor = new ProcessInfoExtractor(workgroupYml, null,_hostnameNodeMapping, null);
             var results = extractor.GenerateProcessInfoRecords();
             
             results.Should().BeEquivalentTo(_expectedResultsForSingleMachine);
@@ -34,7 +38,7 @@ namespace LogShark.Tests.Plugins.ConfigPlugin
         {
             var workgroupYml = new ConfigFile(WorkgroupYmlLogFileInfo, GetTwoMachinesWorkgroupYmlValues(), LogType.WorkgroupYml);
 
-            var extractor = new ProcessInfoExtractor(workgroupYml, null, null);
+            var extractor = new ProcessInfoExtractor(workgroupYml, null,_hostnameNodeMapping, null);
             var results = extractor.GenerateProcessInfoRecords();
 
             var expectedResults = _expectedResultsForSingleMachine;
@@ -49,7 +53,7 @@ namespace LogShark.Tests.Plugins.ConfigPlugin
             var workgroupValues = GetTwoMachinesWorkgroupYmlValues_ReplaceWithSinglePostgresProcessConfig();
             var workgroupYml = new ConfigFile(WorkgroupYmlLogFileInfo, workgroupValues, LogType.WorkgroupYml);
 
-            var extractor = new ProcessInfoExtractor(workgroupYml, null, null);
+            var extractor = new ProcessInfoExtractor(workgroupYml, null, _hostnameNodeMapping, null);
             var results = extractor.GenerateProcessInfoRecords();
 
             var expectedResults = _expectedResultsForSingleMachine;
@@ -68,8 +72,8 @@ namespace LogShark.Tests.Plugins.ConfigPlugin
             values.Add("pgsql1.port", portValue);
             values.Add("pgsql1.host", hostValue);
             var workgroupYml = new ConfigFile(WorkgroupYmlLogFileInfo, values, LogType.WorkgroupYml);
-            
-            var extractor = new ProcessInfoExtractor(workgroupYml, null, null);
+           
+            var extractor = new ProcessInfoExtractor(workgroupYml, null,_hostnameNodeMapping, null);
             var results = extractor.GenerateProcessInfoRecords();
 
             var expectedResults = _expectedResultsForSingleMachine;
@@ -77,7 +81,7 @@ namespace LogShark.Tests.Plugins.ConfigPlugin
             if (expectObjectCreated)
             {
                 var port = int.Parse(portValue);
-                expectedResults.Add(new ConfigProcessInfo(WorkgroupYmlLogFileInfo.LastModifiedUtc, hostValue, port, "pgsql", 1));
+                expectedResults.Add(new ConfigProcessInfo(WorkgroupYmlLogFileInfo.LastModifiedUtc, hostValue, port, "pgsql", "node2"));
             }
 
             results.Should().BeEquivalentTo(expectedResults);
@@ -91,7 +95,7 @@ namespace LogShark.Tests.Plugins.ConfigPlugin
             values["pgsql0.host"] = MachineOneName;
             var workgroupYml = new ConfigFile(WorkgroupYmlLogFileInfo, values, LogType.WorkgroupYml);
             
-            var extractor = new ProcessInfoExtractor(workgroupYml, null, null);
+            var extractor = new ProcessInfoExtractor(workgroupYml, null, _hostnameNodeMapping, null);
             var results = extractor.GenerateProcessInfoRecords();
 
             results.Should().BeEquivalentTo(_expectedResultsForSingleMachine);
@@ -104,7 +108,7 @@ namespace LogShark.Tests.Plugins.ConfigPlugin
             values["worker.hosts"] = MachineOneName;
             var workgroupYml = new ConfigFile(WorkgroupYmlLogFileInfo, values, LogType.WorkgroupYml);
             
-            var extractor = new ProcessInfoExtractor(workgroupYml, null, null);
+            var extractor = new ProcessInfoExtractor(workgroupYml, null, _hostnameNodeMapping, null);
             var results = extractor.GenerateProcessInfoRecords();
 
             results.Should().BeEquivalentTo(_expectedResultsForSingleMachine);
@@ -121,7 +125,7 @@ namespace LogShark.Tests.Plugins.ConfigPlugin
                 .ToDictionary(pair => pair.Key, pair => pair.Value);
             var workgroupYml = new ConfigFile(WorkgroupYmlLogFileInfo, values, LogType.WorkgroupYml);
             
-            var extractor = new ProcessInfoExtractor(workgroupYml, null, null);
+            var extractor = new ProcessInfoExtractor(workgroupYml, null, _hostnameNodeMapping, null);
             var results = extractor.GenerateProcessInfoRecords();
 
             results.Should().BeEquivalentTo(_expectedResultsForSingleMachine);
@@ -140,13 +144,13 @@ namespace LogShark.Tests.Plugins.ConfigPlugin
             };
             var tabsvcYml = new ConfigFile(TabsvcYmlLogFileInfo, tabsvcValues, LogType.TabsvcYml);
             
-            var extractor = new ProcessInfoExtractor(workgroupYml, tabsvcYml, null);
+            var extractor = new ProcessInfoExtractor(workgroupYml, tabsvcYml, _hostnameNodeMapping, null);
             var results = extractor.GenerateProcessInfoRecords();
             
             var expectedResults = _expectedResultsForSingleMachine;
             expectedResults.UnionWith(_expectedResultsForSecondMachine);
 
-            results.Should().BeEquivalentTo(expectedResults.Where(processInfo => !(processInfo.Process == "pgsql" && processInfo.Worker == 1)));
+            results.Should().BeEquivalentTo(expectedResults.Where(processInfo => !(processInfo.Process == "pgsql" && processInfo.Worker == "1")));
         }
         
         [Fact]
@@ -161,7 +165,7 @@ namespace LogShark.Tests.Plugins.ConfigPlugin
             };
             var tabsvcYml = new ConfigFile(TabsvcYmlLogFileInfo, tabsvcValues, LogType.TabsvcYml);
             
-            var extractor = new ProcessInfoExtractor(workgroupYml, tabsvcYml, null);
+            var extractor = new ProcessInfoExtractor(workgroupYml, tabsvcYml, _hostnameNodeMapping, null);
             var results = extractor.GenerateProcessInfoRecords();
             
             var expectedResults = _expectedResultsForSingleMachine;
@@ -176,7 +180,7 @@ namespace LogShark.Tests.Plugins.ConfigPlugin
             var workgroupValues = GetTwoMachinesWorkgroupYmlValues_StripPostgresHosts();
             var workgroupYml = new ConfigFile(WorkgroupYmlLogFileInfo, workgroupValues, LogType.WorkgroupYml);
             
-            var extractor = new ProcessInfoExtractor(workgroupYml, null, null);
+            var extractor = new ProcessInfoExtractor(workgroupYml, null, _hostnameNodeMapping, null);
             var results = extractor.GenerateProcessInfoRecords();
             
             var expectedResults = _expectedResultsForSingleMachine;
@@ -253,26 +257,26 @@ namespace LogShark.Tests.Plugins.ConfigPlugin
 
         private readonly ISet<dynamic> _expectedResultsForSingleMachine = new HashSet<dynamic>
         {
-            ConfigPluginTests.ExpectedProcessInfoEntry(MachineOneName, 7717, "vizportal", 0, WorkgroupYmlLogFileInfo.LastModifiedUtc),
-            ConfigPluginTests.ExpectedProcessInfoEntry(MachineOneName, 7737, "vizportal", 0, WorkgroupYmlLogFileInfo.LastModifiedUtc),
-            ConfigPluginTests.ExpectedProcessInfoEntry(MachineOneName, 8250, "backgrounder", 0, WorkgroupYmlLogFileInfo.LastModifiedUtc),
-            ConfigPluginTests.ExpectedProcessInfoEntry(MachineOneName, 27042, "dataengine", 0, WorkgroupYmlLogFileInfo.LastModifiedUtc),
-            ConfigPluginTests.ExpectedProcessInfoEntry(MachineOneName, 9700, "dataserver", 0, WorkgroupYmlLogFileInfo.LastModifiedUtc),
-            ConfigPluginTests.ExpectedProcessInfoEntry(MachineOneName, 9701, "dataserver", 0, WorkgroupYmlLogFileInfo.LastModifiedUtc),
-            ConfigPluginTests.ExpectedProcessInfoEntry(MachineOneName, 9345, "filestore", 0, WorkgroupYmlLogFileInfo.LastModifiedUtc),
-            ConfigPluginTests.ExpectedProcessInfoEntry(MachineOneName, 80, "gateway", 0, WorkgroupYmlLogFileInfo.LastModifiedUtc),
-            ConfigPluginTests.ExpectedProcessInfoEntry(MachineOneName, 8060, "pgsql", 0, WorkgroupYmlLogFileInfo.LastModifiedUtc),
+            ConfigPluginTests.ExpectedProcessInfoEntry(MachineOneName, 7717, "vizportal", "node1", WorkgroupYmlLogFileInfo.LastModifiedUtc),
+            ConfigPluginTests.ExpectedProcessInfoEntry(MachineOneName, 7737, "vizportal", "node1", WorkgroupYmlLogFileInfo.LastModifiedUtc),
+            ConfigPluginTests.ExpectedProcessInfoEntry(MachineOneName, 8250, "backgrounder", "node1", WorkgroupYmlLogFileInfo.LastModifiedUtc),
+            ConfigPluginTests.ExpectedProcessInfoEntry(MachineOneName, 27042, "dataengine", "node1", WorkgroupYmlLogFileInfo.LastModifiedUtc),
+            ConfigPluginTests.ExpectedProcessInfoEntry(MachineOneName, 9700, "dataserver", "node1", WorkgroupYmlLogFileInfo.LastModifiedUtc),
+            ConfigPluginTests.ExpectedProcessInfoEntry(MachineOneName, 9701, "dataserver", "node1", WorkgroupYmlLogFileInfo.LastModifiedUtc),
+            ConfigPluginTests.ExpectedProcessInfoEntry(MachineOneName, 9345, "filestore", "node1", WorkgroupYmlLogFileInfo.LastModifiedUtc),
+            ConfigPluginTests.ExpectedProcessInfoEntry(MachineOneName, 80, "gateway", "node1", WorkgroupYmlLogFileInfo.LastModifiedUtc),
+            ConfigPluginTests.ExpectedProcessInfoEntry(MachineOneName, 8060, "pgsql", "node1"  , WorkgroupYmlLogFileInfo.LastModifiedUtc),
         };
 
         private readonly ISet<dynamic> _expectedResultsForSecondMachine = new HashSet<dynamic>
         {
-            ConfigPluginTests.ExpectedProcessInfoEntry(MachineTwoName, 8600, "vizportal", 1, WorkgroupYmlLogFileInfo.LastModifiedUtc),
-            ConfigPluginTests.ExpectedProcessInfoEntry(MachineTwoName, 9700, "dataserver", 1, WorkgroupYmlLogFileInfo.LastModifiedUtc),
-            ConfigPluginTests.ExpectedProcessInfoEntry(MachineTwoName, 9701, "dataserver", 1, WorkgroupYmlLogFileInfo.LastModifiedUtc),
-            ConfigPluginTests.ExpectedProcessInfoEntry(MachineTwoName, 8859, "searchserver", 1, WorkgroupYmlLogFileInfo.LastModifiedUtc),
-            ConfigPluginTests.ExpectedProcessInfoEntry(MachineTwoName, 8360, "hyper", 1, WorkgroupYmlLogFileInfo.LastModifiedUtc),
-            ConfigPluginTests.ExpectedProcessInfoEntry(MachineTwoName, 9345, "filestore", 1, WorkgroupYmlLogFileInfo.LastModifiedUtc),
-            ConfigPluginTests.ExpectedProcessInfoEntry(MachineTwoName, 8000, "gateway", 1, WorkgroupYmlLogFileInfo.LastModifiedUtc),
+            ConfigPluginTests.ExpectedProcessInfoEntry(MachineTwoName, 8600, "vizportal", "node2", WorkgroupYmlLogFileInfo.LastModifiedUtc),
+            ConfigPluginTests.ExpectedProcessInfoEntry(MachineTwoName, 9700, "dataserver", "node2", WorkgroupYmlLogFileInfo.LastModifiedUtc),
+            ConfigPluginTests.ExpectedProcessInfoEntry(MachineTwoName, 9701, "dataserver", "node2", WorkgroupYmlLogFileInfo.LastModifiedUtc),
+            ConfigPluginTests.ExpectedProcessInfoEntry(MachineTwoName, 8859, "searchserver", "node2", WorkgroupYmlLogFileInfo.LastModifiedUtc),
+            ConfigPluginTests.ExpectedProcessInfoEntry(MachineTwoName, 8360, "hyper", "node2", WorkgroupYmlLogFileInfo.LastModifiedUtc),
+            ConfigPluginTests.ExpectedProcessInfoEntry(MachineTwoName, 9345, "filestore", "node2", WorkgroupYmlLogFileInfo.LastModifiedUtc),
+            ConfigPluginTests.ExpectedProcessInfoEntry(MachineTwoName, 8000, "gateway", "node2", WorkgroupYmlLogFileInfo.LastModifiedUtc),
         };
     }
 }

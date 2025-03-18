@@ -171,16 +171,17 @@ namespace LogShark.Writers.Sql.Connections.Npgsql
                     5,
                     10);
             }
-            catch (NpgsqlException ex)
-            {
-                LogError(ex, filePath, memberName, lineNumber);
-                throw;
-            }
             catch (NpgsqlOperationInProgressException ex)
             {
                 LogError(ex, filePath, memberName, lineNumber);
                 throw;
             }
+            catch (NpgsqlException ex)
+            {
+                LogError(ex, filePath, memberName, lineNumber);
+                throw;
+            }
+           
         }
         
         private void LogError(Exception ex, string filePath, string memberName, int lineNumber)

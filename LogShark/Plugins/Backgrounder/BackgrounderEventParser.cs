@@ -37,9 +37,11 @@ namespace LogShark.Plugins.Backgrounder
         private static readonly Regex NewBackgrounderRegex =
             // 10.4+
             // 10.4 added "job type" and 10.5 added "local request id", either of which may be empty and thus are marked optional here
+            // 2024.2 added "pid", marked optional to handle previous versions that do not have pid
             new Regex(@"^
                             (?<ts>\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}.\d{3})
                             \s(?<ts_offset>[^\s]+)
+                            \s?(?<pid>[^\s]*)
                             \s\((?<site>[^,]*), (?<user>[^,]*), (?<data_sess_id>[^,]*), (?<vql_sess_id>[^,]*), (?<job_id>[^,]*), :?(?<job_type>[^,]*) ,(?<local_req_id>[^\s]*)\)
                             \s?(?<module>[^\s]*)?
                             \s(?<thread>[^\s]*)
@@ -60,9 +62,8 @@ namespace LogShark.Plugins.Backgrounder
                 RegexOptions.ExplicitCapture | RegexOptions.IgnorePatternWhitespace | RegexOptions.Compiled),
 
 
-            new Regex(
-                @"^activity=(?<activity>[^\s]*)\sjob_id=(?<job_id>[^\s]*)\sjob_type=(?<job_type_long>[^\s]*)\srequest_id=(?<request_id>[^\s]*)\sargs=""?\[?(?<args>.*?)\]?""?\ssite=(?<site>.*?)\stimeout=(?<timeout>.*)$",
-                RegexOptions.ExplicitCapture | RegexOptions.IgnorePatternWhitespace | RegexOptions.Compiled),
+            new Regex(@"^activity=(?<activity>[^\s]*)\sjob_id=(?<job_id>[^\s]*)\sjob_type=(?<job_type_long>[^\s]*)\srequest_id=(?<request_id>[^\s]*)\s(args="")?(?<args>[^""]*)""?\s(user=)?(?<user>.*?)\s?(site="")?(?<site>[^""]*)?""?\s?(site_id=)?(?<site_id>[^\s]*)?\s?(guest=)?(?<guest>[^\s])?\s?(wg_session_id=)?(?<wg_session_id>.*?)?\s?timeout=(?<timeout>.*)$",
+            RegexOptions.ExplicitCapture | RegexOptions.IgnorePatternWhitespace | RegexOptions.Compiled)
         };
 
 

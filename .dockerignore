@@ -1,3 +1,5 @@
 .git/
 */bin/
 */obj/
+LogShark/Hyper/win-x64/
+LogShark/Hyper/osx-x64/

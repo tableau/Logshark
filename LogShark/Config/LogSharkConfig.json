@@ -82,10 +82,10 @@
       "ReplayFileName": "",
       "ReplayerTimeZonesDictionary": "Resources/ReplayerTimeZonesDictionary.txt",
       "RelevantVizqlServerEvents": [ "server-telemetry", "lock-session", "end-bootstrap-session", "end-bootstrap-session-action.bootstrap-session", "command-pre", "begin-commands-controller.invoke-command" ],
-      "SkippableCommands": ["tabdoc:refresh-data-server", "tabdoc:get-world-update", "tabdoc:geographic-search-load-data", "tabdoc:highlight", "tabdoc:filter-targets", "tabdoc:navigate-to-sheet", "tabdoc:get-marks-color-uber-effects", "tabdoc:update-selection-delta", "tabdoc:get-flipboard-nav", "tabdoc:set-auto-update-server", "tabdoc:get-flipboard", "tabdoc:hit-test-scene", "tabdoc:show-detailed-error-dialog", "tabdoc:non-blocking-checkpoint-workbook-xml", "tabdoc:get-button-object-pres-model",  "tabdoc:get-schema-viewer-pres-model", "tabsrv:refresh-data-server", "tabsrv:get-world-update", "tabsrv:geographic-search-load-data", "tabsrv:highlight", "tabsrv:filter-targets", "tabsrv:navigate-to-sheet", "tabsrv:get-marks-color-uber-effects", "tabsrv:update-selection-delta", "tabsrv:get-flipboard-nav", "tabsrv:set-auto-update-server", "tabsrv:get-flipboard", "tabsrv:hit-test-scene", "tabsrv:show-detailed-error-dialog", "tabsrv:non-blocking-checkpoint-workbook-xml"]
+      "SkippableCommands": [ "tabdoc:refresh-data-server", "tabdoc:get-world-update", "tabdoc:geographic-search-load-data", "tabdoc:highlight", "tabdoc:filter-targets", "tabdoc:navigate-to-sheet", "tabdoc:get-marks-color-uber-effects", "tabdoc:update-selection-delta", "tabdoc:get-flipboard-nav", "tabdoc:set-auto-update-server", "tabdoc:get-flipboard", "tabdoc:hit-test-scene", "tabdoc:show-detailed-error-dialog", "tabdoc:non-blocking-checkpoint-workbook-xml", "tabdoc:get-button-object-pres-model", "tabdoc:get-schema-viewer-pres-model", "tabsrv:refresh-data-server", "tabsrv:get-world-update", "tabsrv:geographic-search-load-data", "tabsrv:highlight", "tabsrv:filter-targets", "tabsrv:navigate-to-sheet", "tabsrv:get-marks-color-uber-effects", "tabsrv:update-selection-delta", "tabsrv:get-flipboard-nav", "tabsrv:set-auto-update-server", "tabsrv:get-flipboard", "tabsrv:hit-test-scene", "tabsrv:show-detailed-error-dialog", "tabsrv:non-blocking-checkpoint-workbook-xml" ]
     },
     "VizqlDesktop": {
       "MaxQueryLength": 10000
     }
-  }  
+  }
 }

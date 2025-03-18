@@ -8,9 +8,9 @@ namespace LogShark.Plugins.Config.Models
         public string Hostname { get; }
         public int Port { get; }
         public string Process { get; }
-        public int Worker { get; }
+        public string Worker { get; }
 
-        public ConfigProcessInfo(DateTime fileLastModifiedUtc, string hostname, int port, string process, int worker)
+        public ConfigProcessInfo(DateTime fileLastModifiedUtc, string hostname, int port, string process, string worker)
         {
             FileLastModifiedUtc = fileLastModifiedUtc;
             Hostname = hostname;

@@ -146,7 +146,8 @@ namespace LogShark.Tests.Plugins.ConfigPlugin
                     { "worker0.backgrounder.port", "8250" },
                     { "worker0.backgrounder.procs", "2" },
                     { "worker1.vizportal.port", "8600" },
-                    { "worker1.vizportal.procs", "1" }
+                    { "worker1.vizportal.procs", "1" },
+                    {"host","machine1" }
                 }
             },
 
@@ -183,21 +184,23 @@ namespace LogShark.Tests.Plugins.ConfigPlugin
             ExpectedConfigEntry(TestWorkgroupYmlInfo, "lineWithoutDot", "lineWithoutDot", "value1"),
             ExpectedConfigEntry(TestWorkgroupYmlInfo, "line.WithDot", "line", "value2"),
             ExpectedConfigEntry(TestWorkgroupYmlInfo, "line.With.Dots", "line", "value3"),
+            ExpectedConfigEntry(TestWorkgroupYmlInfo, "host","host", "machine1"),
             ExpectedConfigEntry(TestWorkgroupYmlInfo, "worker.hosts", "worker", "machine1, machine2"),
             ExpectedConfigEntry(TestWorkgroupYmlInfo, "worker0.backgrounder.port", "worker0", "8250"),
             ExpectedConfigEntry(TestWorkgroupYmlInfo, "worker0.backgrounder.procs", "worker0", "2"),
             ExpectedConfigEntry(TestWorkgroupYmlInfo, "worker1.vizportal.port", "worker1", "8600"),
             ExpectedConfigEntry(TestWorkgroupYmlInfo, "worker1.vizportal.procs", "worker1", "1"),
             
+
             ExpectedConfigEntry(TestTabsvcYmlInfo, "tabsvcLine1", "tabsvcLine1", "value1"),
             ExpectedConfigEntry(TestTabsvcYmlInfo, "worker0.backgrounder.port", "worker0", "9999"),
         };
 
         private readonly ISet<dynamic> _expectedProcessInfoRecords = new HashSet<dynamic>
         {
-            ExpectedProcessInfoEntry("machine1", 8250, "backgrounder", 0),
-            ExpectedProcessInfoEntry("machine1", 8251, "backgrounder", 0),
-            ExpectedProcessInfoEntry("machine2", 8600, "vizportal", 1),
+            ExpectedProcessInfoEntry("machine1", 8250, "backgrounder", "node1"),
+            ExpectedProcessInfoEntry("machine1", 8251, "backgrounder", "node1"),
+            ExpectedProcessInfoEntry("machine2", 8600, "vizportal", "worker1"),
         };
 
         private static dynamic ExpectedConfigEntry(LogFileInfo logFileInfo, string key, string rootKey, string value)
@@ -214,7 +217,7 @@ namespace LogShark.Tests.Plugins.ConfigPlugin
             };
         }
 
-        public static dynamic ExpectedProcessInfoEntry(string hostname, int port, string process, int worker, DateTime? lastModified = null)
+        public static dynamic ExpectedProcessInfoEntry(string hostname, int port, string process, string worker, DateTime? lastModified = null)
         {
             return new
             {

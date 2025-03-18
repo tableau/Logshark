@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Flurl.Util;
 using LogShark.Extensions;
 using LogShark.Plugins.Config.Models;
 using LogShark.Shared;
@@ -13,13 +14,15 @@ namespace LogShark.Plugins.Config
 
         private readonly ConfigFile _workgroupYml;
         private readonly ConfigFile _tabsvcYml;
+        private readonly IDictionary<string, string> _hostnameNodeMapping;
         private readonly IDictionary<int, string> _hostnameMap;
         private readonly IProcessingNotificationsCollector _processingNotificationsCollector;
 
-        public ProcessInfoExtractor(ConfigFile workgroupYml, ConfigFile tabsvcYml, IProcessingNotificationsCollector processingNotificationsCollector)
+        public ProcessInfoExtractor(ConfigFile workgroupYml, ConfigFile tabsvcYml,Dictionary<string,string> HostnameNodeMapping, IProcessingNotificationsCollector processingNotificationsCollector)
         {
             _workgroupYml = workgroupYml;
             _tabsvcYml = tabsvcYml;
+            _hostnameNodeMapping = HostnameNodeMapping;
             _hostnameMap = GetWorkerHostnameMap(workgroupYml, processingNotificationsCollector);
             _processingNotificationsCollector = processingNotificationsCollector;
         }
@@ -56,6 +59,7 @@ namespace LogShark.Plugins.Config
             }
 
             var workerHostsLine = configFile.Values[ConfigKeyWithHostMapping];
+            
             return workerHostsLine
                 .Split(',')
                 .Select((hostName, ind) => new
@@ -65,12 +69,23 @@ namespace LogShark.Plugins.Config
                 })
                 .ToDictionary(obj => obj.Index, obj => obj.HostName);
         }
-        
+
         private IEnumerable<ConfigProcessInfo> GetWorkerDetails(int workerIndex)
         {
             var workerDetails = new List<ConfigProcessInfo>();
             var workerKeyRoot = $"worker{workerIndex}.";
-            var workerKeys = _workgroupYml.Values.Keys.Where(key => key.StartsWith(workerKeyRoot, StringComparison.InvariantCultureIgnoreCase)); 
+            var workerKeys = _workgroupYml.Values.Keys.Where(key => key.StartsWith(workerKeyRoot, StringComparison.InvariantCultureIgnoreCase));
+            var hostName = _hostnameMap[workerIndex];
+            var node = "node0"; // Node0 doesn't ever exist so this is a default value
+
+                if (_hostnameNodeMapping!=null && _hostnameNodeMapping.TryGetValue(hostName, out node))
+                {
+                    node = _hostnameNodeMapping[hostName].ToKeyValuePairs().First().Key;
+                }
+                else
+                { // Provide worker index if node number cannot be found. It can still be indentified as its will be just a number with no leading "node"
+                    node = "worker"+workerIndex.ToString();
+                }
 
             var processNames = workerKeys
                 .Select(key => key.Substring(workerKeyRoot.Length))
@@ -101,7 +116,7 @@ namespace LogShark.Plugins.Config
 
                     if (processPort.HasValue)
                     {
-                        var configProcessInfo = new ConfigProcessInfo(_workgroupYml.LogFileInfo.LastModifiedUtc, _hostnameMap[workerIndex], processPort.Value, processName, workerIndex);
+                        var configProcessInfo = new ConfigProcessInfo(_workgroupYml.LogFileInfo.LastModifiedUtc, _hostnameMap[workerIndex], processPort.Value, processName, node);
                         workerDetails.Add(configProcessInfo);
                     }
                 }
@@ -115,7 +130,7 @@ namespace LogShark.Plugins.Config
             const string pgsqlProcessName = "pgsql";
             var postgresProcessInfo = new List<ConfigProcessInfo>();
             var workerCount = _hostnameMap.Count;
-
+            
             for (var postgresProcessIndex = 0; postgresProcessIndex < workerCount; postgresProcessIndex++)
             {
                 var pgsqlHostKey = $"{pgsqlProcessName}{postgresProcessIndex}.host";
@@ -135,10 +150,22 @@ namespace LogShark.Plugins.Config
                     .Select(pair => pair.Key)
                     .Cast<int?>()
                     .FirstOrDefault();
+                
+              
+                var node = "node0"; // Node0 doesn't ever exist so this is a default value
+
+                    if (_hostnameNodeMapping!=null && _hostnameNodeMapping.TryGetValue(hostname, out node))
+                    {
+                        node = _hostnameNodeMapping[hostname].ToKeyValuePairs().First().Key;
+                    }
+                    else
+                    { // Provide worker index if node number cannot be found. It can still be indentified as its will be just a number with no leading "node"
+                    node = "worker" + workerIndex.ToString();
+                }
 
                 if (port.HasValue && workerIndex.HasValue)
                 {
-                    postgresProcessInfo.Add(new ConfigProcessInfo(_workgroupYml.LogFileInfo.LastModifiedUtc, hostname, port ?? -1, pgsqlProcessName, workerIndex ?? -1)); // These -1 are not used as we check "HasValue" above. They only needed to shut up compiler
+                    postgresProcessInfo.Add(new ConfigProcessInfo(_workgroupYml.LogFileInfo.LastModifiedUtc, hostname, port ?? -1, pgsqlProcessName, node )); // These -1 are not used as we check "HasValue" above. They only needed to shut up compiler
                 }
             }
 
