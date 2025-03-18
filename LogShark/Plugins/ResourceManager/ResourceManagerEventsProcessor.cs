@@ -148,7 +148,7 @@ namespace LogShark.Plugins.ResourceManager
         }
         
         // Gets byte counts for current & total utilization by greedily capturing numeric sequences (composed of digits and comma separators) from between the ":" & "bytes" and ";" & "bytes" token pairs.
-        private static readonly Regex CurrentAndTotalMemoryUtilRegex = new Regex(@".*: (?<current_process_util>[\d,]+?) bytes.*; (?<tableau_total_util>[\d,]+?) bytes", RegexOptions.Compiled | RegexOptions.ExplicitCapture);
+        private static readonly Regex CurrentAndTotalMemoryUtilRegex = new Regex(@".*: (?<current_process_util>[\d,]+?) bytes.*;(?<tableau_total_util>[\d,]+?) bytes.*; (?<total_util>[\d,]+?) bytes", RegexOptions.Compiled | RegexOptions.ExplicitCapture);
         private void AddMemorySampleEvent(NativeJsonLogsBaseEvent baseEvent, string message, LogLine logLine, string processName)
         {
             var currentAndTotalMatch = CurrentAndTotalMemoryUtilRegex.Match(message);
@@ -159,7 +159,8 @@ namespace LogShark.Plugins.ResourceManager
                     logLine,
                     processName,
                     TryParseLongWithLogging(currentAndTotalMatch, "current_process_util", logLine),
-                    TryParseLongWithLogging(currentAndTotalMatch, "tableau_total_util", logLine)
+                    TryParseLongWithLogging(currentAndTotalMatch, "tableau_total_util", logLine),
+                    TryParseLongWithLogging(currentAndTotalMatch, "total_util", logLine)
                 );
 
                 _memorySamplesWriter.AddLine(record);

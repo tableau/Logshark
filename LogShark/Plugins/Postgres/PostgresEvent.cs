@@ -22,5 +22,12 @@ namespace LogShark.Plugins.Postgres
         public string File { get; set; }
 
         public int LineNumber { get; set; }
+
+        public string CommandTag { get; set; }
+        public string Client { get; set; }
+        public string ApplicationName { get; set; }
+        public string Username { get; set; }
+
+        public string UserQueryLedToError { get; set; }
     }
 }

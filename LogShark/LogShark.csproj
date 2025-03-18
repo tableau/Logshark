@@ -1,66 +1,56 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
-    <PropertyGroup>
-        <OutputType>Exe</OutputType>
-        <TargetFramework>netcoreapp3.1</TargetFramework>
-        <TargetLatestRuntimePatch>true</TargetLatestRuntimePatch>
-        <Company>Tableau Software</Company>
-        <Authors>Customer Data Platform</Authors>
-        <Product>LogShark</Product>
-        <Description>Application used to process Tableau logs to gather useful information about errors</Description>
-        <Copyright>Copyright © 2020</Copyright>
-        <LangVersion>latest</LangVersion>
-    </PropertyGroup>
-
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <TargetLatestRuntimePatch>true</TargetLatestRuntimePatch>
+    <Company>Tableau Software</Company>
+    <Authors>Customer Data Platform</Authors>
+    <Product>LogShark</Product>
+    <Description>Application used to process Tableau logs to gather useful information about errors</Description>
+    <Copyright>Copyright © 2020</Copyright>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
   <ItemGroup>
-      <PackageReference Include="Flurl.Http" Version="2.4.2" />
-      <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="3.0.0" />
-      <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.1.8" />
-      <PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.4" />
-      <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="3.1.4" />
-      <PackageReference Include="Microsoft.Packaging.Tools.Trimming" Version="1.1.0-preview1-26619-01" />
-      <PackageReference Include="Npgsql" Version="4.1.3.1" />
-      <PackageReference Include="Serilog.Extensions.Logging.File" Version="1.1.0" />
-      <PackageReference Include="Tableau.HyperAPI.NET" Version="0.0.9746" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <None Update="Config\**">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </None>
-      <None Update="Resources\**">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </None>
-      <None Update="Workbooks\**">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </None>
-      <None Remove="Output\**" />
-      <None Remove="Logs\**" />
-      <None Remove="TestLogs\**" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Compile Remove="Output\**" />
-      <Compile Remove="Logs\**" />
-      <Compile Remove="TestLogs\**" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <EmbeddedResource Remove="Output\**" />
-      <EmbeddedResource Remove="Logs\**" />
-      <EmbeddedResource Remove="TestLogs\**" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Workbooks" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="..\LogShark.Shared\LogShark.Shared.csproj" />
-    </ItemGroup>
-    <ItemGroup>
-      <Reference Include="Tools.TableauServerRestApi">
-	      <HintPath>..\thirdparty\Tools.TableauServerRestApi.dll</HintPath>
-	    </Reference>
-    </ItemGroup>  
+    <PackageReference Include="Flurl.Http" Version="2.4.2" />
+    <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="3.0.0" />
+    <PackageReference Include="Npgsql" Version="8.0.5" />
+    <PackageReference Include="Serilog.Extensions.Logging.File" Version="1.1.0" />
+    <PackageReference Include="Tableau.HyperAPI.NET" Version="0.0.17971" />
+    <Reference Include="Tools.TableauServerRestApi">
+		<HintPath>..\thirdparty\Tools.TableauServerRestApi.dll</HintPath>
+	</Reference>
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="8.0.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="Config\**">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Resources\**">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Workbooks\**">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Remove="Output\**" />
+    <None Remove="Logs\**" />
+    <None Remove="TestLogs\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="Output\**" />
+    <Compile Remove="Logs\**" />
+    <Compile Remove="TestLogs\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Remove="Output\**" />
+    <EmbeddedResource Remove="Logs\**" />
+    <EmbeddedResource Remove="TestLogs\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Workbooks" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\LogShark.Shared\LogShark.Shared.csproj" />
+  </ItemGroup>
 </Project>

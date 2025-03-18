@@ -68,13 +68,13 @@ namespace LogShark.Tests.Plugins
                 LogContents = new PostgresCsvMapping()
                 {
                     Timestamp = DateTime.Parse("2018-07-13 04:50:35.406 GMT"),
-                    Username = string.Empty,
+                    Username = "rails",
                     DatabaseName = string.Empty,
                     Pid = 5576,
-                    Client = string.Empty,
+                    Client = "172.23.144.78:65071",
                     SessionId = "5b47e189.15c8",
                     PerSessionLineNumber = "3",
-                    CommandTag = string.Empty,
+                    CommandTag = "DROP",
                     SessionStartTime = "2018-07-12 23:17:29 GMT",
                     VirtualTransactionId = string.Empty,
                     RegularTransactionId = "0",
@@ -86,10 +86,10 @@ namespace LogShark.Tests.Plugins
                     InternalQueryLedToError = string.Empty,
                     InternalQueryErrorPosition = string.Empty,
                     ErrorContext = string.Empty,
-                    UserQueryLedToError = string.Empty,
+                    UserQueryLedToError = "COMMIT",
                     UserQueryErrorPosition = string.Empty,
                     ErrorLocationInPostgresSource = string.Empty,
-                    ApplicationName = string.Empty,
+                    ApplicationName = "backgrounder_0",
                 },
                 LogFileInfo = TestLogFileInfo,
                 LineNumber = 1,
@@ -104,6 +104,11 @@ namespace LogShark.Tests.Plugins
                     Severity = "LOG",
                     Timestamp = DateTime.Parse("2018-07-13 04:50:35.406 GMT").ToUniversalTime(),
                     Worker = "node1",
+                    ApplicationName = "backgrounder_0",
+                    Username = "rails",
+                    Client = "172.23.144.78:65071",
+                    CommandTag = "DROP",
+                    UserQueryLedToError = "COMMIT"
                 }
             },
             new PluginTestCase() // random line with duration
@@ -147,6 +152,11 @@ namespace LogShark.Tests.Plugins
                     Severity = "LOG",
                     Timestamp = DateTime.Parse("2018-07-13 12:45:18.545 GMT").ToUniversalTime(),
                     Worker = "node1",
+                     ApplicationName = "",
+                    Username = "rails",
+                    Client = "127.0.0.1:56274",
+                    CommandTag = "COMMIT",
+                    UserQueryLedToError = ""
                 }
             }
         };

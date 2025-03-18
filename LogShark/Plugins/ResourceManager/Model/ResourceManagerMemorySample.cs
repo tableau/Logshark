@@ -5,6 +5,7 @@ namespace LogShark.Plugins.ResourceManager.Model
     public class ResourceManagerMemorySample : ResourceManagerEvent
     {
         public long ProcessMemoryUtil { get; }
+        public long TableauTotalMemoryUtil { get; }
         public long TotalMemoryUtil { get; }
 
         public ResourceManagerMemorySample(
@@ -12,10 +13,12 @@ namespace LogShark.Plugins.ResourceManager.Model
             LogLine logLine,
             string processName,
             long processMemoryUtil,
+            long tableautotalMemoryUtil,
             long totalMemoryUtil
             ) : base(baseEvent, logLine, processName)
         {
             ProcessMemoryUtil = processMemoryUtil;
+            TableauTotalMemoryUtil = tableautotalMemoryUtil;
             TotalMemoryUtil = totalMemoryUtil;
         }
         
@@ -24,11 +27,12 @@ namespace LogShark.Plugins.ResourceManager.Model
             LogLine logLine,
             string processName,
             long? processMemoryUtil,
+            long? tableautotalMemoryUtil,
             long? totalMemoryUtil)
         {
-            return processMemoryUtil == null || totalMemoryUtil == null 
+            return processMemoryUtil == null || totalMemoryUtil == null || tableautotalMemoryUtil == null
                 ? null 
-                : new ResourceManagerMemorySample(baseEvent, logLine, processName, processMemoryUtil.Value, totalMemoryUtil.Value);
+                : new ResourceManagerMemorySample(baseEvent, logLine, processName, processMemoryUtil.Value,tableautotalMemoryUtil.Value ,totalMemoryUtil.Value);
         }
     }
 }

@@ -16,10 +16,10 @@ namespace LogShark.Tests.E2E
         private const string TabadminLogSetPath = "./TestData/EndToEndTests/logs_clean_tabadmin.zip";
         private const string TabadminLogSetPathApacheOnly = "./TestData/EndToEndTests/logs_clean_tabadmin_apache_only.zip";
 
-        private const string UnzipDir = "./TestData/EndToEndTests/logs_clean_tsm_unzipped";
-
-        private const int ExpectedNumberOfLinesPersistedInTsmLogs = 60833; // Total lines LogShark writes when processing this set
-        private const int ExpectedNumberOfLinesPersistedInTabadminLogs = 20068;
+        private const string UnzipDirTSM = "./TestData/EndToEndTests/logs_clean_tsm_unzipped";
+        private const string UnzipDirTabadmin = "./TestData/EndToEndTests/logs_clean_tabadmin_unzipped";
+        private const int ExpectedNumberOfLinesPersistedInTsmLogs = 60839; // Total lines LogShark writes when processing this set
+        private const int ExpectedNumberOfLinesPersistedInTabadminLogs = 20042;
 
         private static readonly Dictionary<string, int> ExpectedTabadminProcessingErrors = new Dictionary<string, int>
         {
@@ -89,14 +89,14 @@ namespace LogShark.Tests.E2E
         [Fact]
         public async void TSM_CSV_Unzipped()
         {
-            if (Directory.Exists(UnzipDir))
+            if (Directory.Exists(UnzipDirTSM))
             {
-                Directory.Delete(UnzipDir, true);
+                Directory.Delete(UnzipDirTSM, true);
             }
 
-            ZipFile.ExtractToDirectory(TsmLogSetPath, UnzipDir);
+            ZipFile.ExtractToDirectory(TsmLogSetPath, UnzipDirTSM);
 
-            var logSharkParams = GetTestParameters(UnzipDir);
+            var logSharkParams = GetTestParameters(UnzipDirTSM);
             var test = new EndToEndTest(logSharkParams, "./TestData/EndToEndTests/Expected/logs_clean_tsm_csv");
             await test.RunAndValidate(true, ExpectedNumberOfLinesPersistedInTsmLogs);
         }
@@ -104,14 +104,14 @@ namespace LogShark.Tests.E2E
         [Fact]
         public async void Tabadmin_CSV_Unzipped()
         {
-            if (Directory.Exists(UnzipDir))
+            if (Directory.Exists(UnzipDirTabadmin))
             {
-                Directory.Delete(UnzipDir, true);
+                Directory.Delete(UnzipDirTabadmin, true);
             }
 
-            ZipFile.ExtractToDirectory(TabadminLogSetPath, UnzipDir);
+            ZipFile.ExtractToDirectory(TabadminLogSetPath, UnzipDirTabadmin);
 
-            var logSharkParams = GetTestParameters(UnzipDir);
+            var logSharkParams = GetTestParameters(UnzipDirTabadmin);
             var test = new EndToEndTest(logSharkParams, "./TestData/EndToEndTests/Expected/logs_clean_tabadmin_csv", ExpectedTabadminProcessingErrors);
             await test.RunAndValidate(true, ExpectedNumberOfLinesPersistedInTabadminLogs);
         }

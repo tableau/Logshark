@@ -58,6 +58,11 @@ namespace LogShark.Plugins.Postgres
                 Severity = csvMapping.Sev,
                 Timestamp = csvMapping.Timestamp.ToUniversalTime(), // Postgres logs in GMT and includes timezone, so we need to save it as universal time to preserve original timestamp
                 Worker = logLine.LogFileInfo.Worker,
+                CommandTag = csvMapping.CommandTag,
+                Client = csvMapping.Client,
+                ApplicationName = csvMapping.ApplicationName,
+                Username = csvMapping.Username,
+                UserQueryLedToError = csvMapping.UserQueryLedToError
             };
 
             _writer.AddLine(@event);

@@ -292,7 +292,7 @@ namespace LogShark.Tests.Plugins.Backgrounder
                 LineNumber = 125,
                 ExpectedOutput = new
                 {
-                    Args = "Workbook, 9, Test COSMOS, 243, null",
+                    Args = "[Workbook, 9, Test COSMOS, 243, null]",
                     BackgrounderId = "1",
                     EndFile = (string) null,
                     EndLine = (int?) null,

@@ -29,8 +29,8 @@ namespace LogShark.Writers.Hyper
             Directory.CreateDirectory(_config.HyperLogDir);
             Directory.CreateDirectory(_config.TempDir);
             _server = new HyperProcess(Telemetry.DoNotSendUsageDataToTableau, null, new Dictionary<string, string> {
-                { "log-dir", _config.HyperLogDir },
-                { ":hyper_temp_directory_override", _config.TempDir },
+                { "log_dir", _config.HyperLogDir },
+                { "hyper_temp_directory_override", _config.TempDir },
             });
 
             (_outputDirectory, _workbooksDirectory) = OutputDirInitializer.InitDirs(_config.OutputDir, runId, _config.AppendTo, "hyper", loggerFactory, _config.ThrowIfOutputDirectoryExists);

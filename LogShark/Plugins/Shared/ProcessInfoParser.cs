@@ -37,6 +37,10 @@ namespace LogShark.Plugins.Shared
                     return "vizqlserver";
                 case LogType.Hyper:
                     return "hyper";
+                case LogType.flowprocessorCpp:
+                    return "flowprocessor";
+                case LogType.VizdataCpp:
+                    return "VizData";
                 default:
                     throw new ArgumentException($"Somebody forgot to add case for {logType} to {nameof(GetProcessName)}");
             }

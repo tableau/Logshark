@@ -170,6 +170,24 @@ namespace LogShark.Shared.LogReading
                     logType: LogType.Prep,
                     logReaderProvider: (stream, filePath) => new PrepLogReader(stream, filePath, processingNotificationsCollector),
                     fileLocations: PrepLogReader.PrepLogTypeMap.Keys.Select(x => new Regex(x)).ToList()),
+                 new LogTypeInfo(
+                    logType: LogType.flowprocessorCpp,
+                    logReaderProvider: (stream, filePath) => new NativeJsonLogsReader(stream, filePath, processingNotificationsCollector),
+                    fileLocations: new List<Regex>
+                    {
+                      
+                        TsmV0NativeLog("flowprocessor"), // TSMv0 - localhost\tabadminagent_0.20181.18.0510.14183743094502915100234\logs\vizportal\nativeapi_vizportal_2-0_2018_07_31_00_00_00.txt
+                        TsmNativeLog("flowprocessor"), // TSM - node1\vizportal_0.20182.18.0627.22304211226147125020104\logs\nativeapi_vizportal_1-0_2018_08_08_00_00_00.txt
+                    }),
+                   new LogTypeInfo(
+                    logType: LogType.flowprocessorJava,
+                    logReaderProvider: (stream, _) => new MultilineJavaLogReader(stream),
+                    fileLocations: new List<Regex>
+                    {
+                       
+                        TsmV0Log("flowprocessor"), // TSMv0 - localhost\tabadminagent_0.20181.18.0510.14183743094502915100234\logs\vizportal\vizportal_node2-0.log.2018-07-30
+                        TsmLog("flowprocessor"), // TSM - node1\vizportal_0.20182.18.0627.22304211226147125020104\logs\vizportal_node1-0.log
+                    }),
 
                 new LogTypeInfo(
                     logType: LogType.ProtocolServer,
@@ -233,7 +251,25 @@ namespace LogShark.Shared.LogReading
                         // TSMv0 doesn't include config info
                         Regex(@"config/tabadminagent[^/]+/tabsvc\.yml$") // TSM - node1\tabadminagent_0.20182.18.1001.21153436271280456730793\config\tabadminagent_0.20182.18.1001.2115\tabsvc.yml
                     }),
-                
+                 new LogTypeInfo(
+                    logType: LogType.VizdataCpp,
+                    logReaderProvider: (stream, filePath) => new NativeJsonLogsReader(stream, filePath, processingNotificationsCollector),
+                    fileLocations: new List<Regex>
+                    {
+                       
+                        TsmV0NativeLog("vizdata"), // TSMv0 - localhost\tabadminagent_0.20181.18.0510.14183743094502915100234\logs\vizportal\nativeapi_vizportal_2-0_2018_07_31_00_00_00.txt
+                        TsmNativeLog("vizdata"), // TSM - node1\vizportal_0.20182.18.0627.22304211226147125020104\logs\nativeapi_vizportal_1-0_2018_08_08_00_00_00.txt
+                    }),
+                   new LogTypeInfo(
+                    logType: LogType.VizdataJava,
+                    logReaderProvider: (stream, _) => new MultilineJavaLogReader(stream),
+                    fileLocations: new List<Regex>
+                    {
+                       
+                        TsmV0Log("vizdata"), // TSMv0 - localhost\tabadminagent_0.20181.18.0510.14183743094502915100234\logs\vizportal\vizportal_node2-0.log.2018-07-30
+                        TsmLog("vizdata"), // TSM - node1\vizportal_0.20182.18.0627.22304211226147125020104\logs\vizportal_node1-0.log
+                    }),
+
                 new LogTypeInfo(
                     logType: LogType.VizportalCpp,
                     logReaderProvider: (stream, filePath) => new NativeJsonLogsReader(stream, filePath, processingNotificationsCollector),
