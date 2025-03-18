@@ -13,7 +13,7 @@ Download LogShark
 ------------------
 Download and unzip the precompiled self-contained application using the following link:
 
-[![Download LogShark for Win](https://img.shields.io/badge/Download%20LogShark%20for%20Win-Version%204.2.3-blue.svg)](https://github.com/tableau/Logshark/releases/download/v4.2.3/LogShark.Win.4.2.3.zip)
+[Download LogShark for Win 4.2.4](https://github.com/tableau/Logshark/releases/download/v4.2.4/LogShark.Win.4.2.4.zip)
 
 Note that LogShark is configured by the LogSharkConfig.json file in the Config directory. If you are replacing an existing copy of LogShark, be mindful of any changes made to this configuration file.
 
