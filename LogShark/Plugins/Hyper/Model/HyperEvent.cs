@@ -34,14 +34,15 @@ namespace LogShark.Plugins.Hyper.Model
         // *-end, *-release, asio-continuation-slow
         public double? Elapsed { get; set; }
 
-        // query-end, query-end-cancelled
+        // query-end, query-end-cancelled, query-running-info
         public string ClientSessionId { get; set; }
         public string ClientRequestId { get; set; }
         public double? Columns { get; set; }
-        public bool? ExclusiveExecution { get; set; }
-        public double? LockAcquisitionTime { get; set; }
+        /*public bool? ExclusiveExecution { get; set; }
+        public double? LockAcquisitionTime { get; set; }*/
         public double? PeakResultBufferMemoryMb { get; set; }
-        public double? PeakTransactionMemoryMb { get; set; }
+        public double? PeakResultBufferDiskMb { get; set; }
+        /*public double? PeakTransactionMemoryMb { get; set; }*/
         public double? PlanCacheHitCount { get; set; }
         public string PlanCacheStatus { get; set; }
         public double? QueryCompilationTime { get; set; }
@@ -54,18 +55,54 @@ namespace LogShark.Plugins.Hyper.Model
         public string StatementId { get; set; }
         public double? TimeToSchedule { get; set; }
         public string TransactionId { get; set; }
-        public string TransactionVisibleId { get; set; }
+       /* public string TransactionVisibleId { get; set; }
         public double? CopyDataTime { get; set; }
-        public long? CopyDataSize { get; set; }
+        public long? CopyDataSize { get; set; }*/
+        public double? CommitTime { get; set; }
+        public bool? QuerySettingsActive { get; set; }
+        public string QueryHash { get; set; }
         public double? ExecThreadsCpuTime { get; set; }
         public double? ExecThreadsWaitTime { get; set; }
-        public double? ExecThreadsTotalTime { get; set; }
+        /*public double? ExecThreadsTotalTime { get; set; }*/
         public double? StorageAccessTime { get; set; }
         public long? StorageAccessCount { get; set; }
         public long? StorageAccessBytes { get; set; }
-        public double? StorageWriteTime { get; set; }
-        public long? StorageWriteCount { get; set; }
-        public long? StorageWriteBytes { get; set; }
+        public double? StorageWorkerBlockedTime { get; set; }
+        public long? StorageWorkerBlockedCount { get; set; }
+        public long? StorageCacheHitCount { get; set; }
+        public long? StorageCacheHitBytes { get; set; }
+        public long? StorageCacheBytesSaved { get; set; }
+        
+        // pre-execution
+        public double? PreExecParsingTime { get; set; }
+        public double? PreExecCompilationTime { get; set; }
+        public double? PreExecElapsed { get; set; }
+        public double? PreExecWaitTimeDBLock { get; set; }
+        public double? PreExecProcessedRows { get; set; }
+        public double? PreExecProcessedRowsBYOL { get; set; }
+        public double? PreExecProcessedRowsFileBYOL { get; set; }
+        public double? PreExecResultSpoolingNumBuiltChunks { get; set; }
+        public double? PreExecThreadTime { get; set; }
+        public double? PreExecThreadsCPUTime { get; set; }
+        public double? PreExecThreadsWaitTime { get; set; }
+        public double? PreExecPeakTransactionMemMb { get; set; }
+        
+        // execution
+        public double? ExecElapsed { get; set; }
+        public double? ExecWaitTimeObjLock { get; set; }
+        public double? ExecyWaitTimeDBLock { get; set; }
+        public double? ExecProcessedRows { get; set; }
+        public double? ExecProcessedRowsBYOL { get; set; }
+        public double? ExecProcessedRowsFileBYOL { get; set; }
+        public double? ExecResultSpoolingNumBuiltChunks { get; set; }
+        public double? ExecThreadTime { get; set; }
+        public double? ExecThreadsWaitTimeBuffBackPressure { get; set; }
+        public double? ExecPeakTransactionMemMb { get; set; }
+        
+        // adaptive-compilation
+        public double? ExecAdaptiveCompilationTime { get; set; }
+        public double? ExecAdaptiveCompilationOptExpected { get; set; }
+        public double? ExecAdaptiveCompilationOptActual { get; set; }
 
         // connection-startup-begin
         public string DbUser { get; set; }
@@ -162,5 +199,6 @@ namespace LogShark.Plugins.Hyper.Model
         public long? GlobalDiskStringpoolPeakMb { get; set; }
         public long? GlobalDiskTransactionCurrentMb { get; set; }
         public long? GlobalDiskTransactionPeakMb { get; set; }
+        public string Statement { get;  set; }
     }
 }

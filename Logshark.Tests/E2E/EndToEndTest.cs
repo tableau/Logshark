@@ -34,11 +34,7 @@ namespace LogShark.Tests.E2E
                 ["EnvironmentConfig:WorkbookTemplatesDir"] = "Workbooks",
                 ["PluginsConfiguration:Apache:IncludeGatewayChecks"] = "true",
                 ["PluginsConfiguration:VizqlDesktop:MaxQueryLength"] = "10000",
-                ["PluginsConfiguration:DefaultPluginSet:PluginsToExcludeFromDefaultSet"] = "Replayer",
-                ["Starfish:ArtifactUrl"] = "https://beta.artifacts.starfish.tsi.lan",
-                ["Starfish:IssueUrl"] = "https://report-issue.dev.tabint.net",
-                ["Starfish:PublishGbThreshold"] = "0",
-                ["Starfish:PublishWorkbooksToStarfish"] = "false"
+                ["PluginsConfiguration:DefaultPluginSet:PluginsToExcludeFromDefaultSet"] = "Replayer"
             };
 
             if (configOverrides != null)

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using LogShark.Containers;
 using LogShark.Shared;
 using LogShark.Shared.LogReading.Containers;
+using Newtonsoft.Json;
 
 namespace LogShark
 {
@@ -17,6 +18,8 @@ namespace LogShark
         public IList<ProcessingNotification> ProcessingWarningsDetails { get; }
         public int TotalWarningsReported { get; private set; }
 
+        public IList<string> missedLines { get; }
+
         private readonly object _errorLock;
         private readonly object _warningLock;
 
@@ -30,6 +33,7 @@ namespace LogShark
             WarningCountByReporter = new Dictionary<string, int>();
             ProcessingWarningsDetails = new List<ProcessingNotification>(MaxErrorsWithDetails);
             TotalWarningsReported = 0;
+            missedLines = new List<string>();
 
             _errorLock = new object();
             _warningLock = new object();
@@ -42,6 +46,7 @@ namespace LogShark
                 if (TotalErrorsReported < MaxErrorsWithDetails)
                 {
                     ProcessingErrorsDetails.Add(new ProcessingNotification(message, filePath, lineNumber, reportedBy));
+                   
                 }
 
                 ++TotalErrorsReported;
@@ -55,11 +60,17 @@ namespace LogShark
                     ErrorCountByReporter.Add(reportedBy, 1);
                 }
             }
+            
         }
-
+        public void ReportMissedLines(string lineString)
+        {
+            missedLines.Add(lineString);
+        }
         public void ReportError(string message, LogLine logLine, string reportedBy)
         {
             ReportError(message, logLine.LogFileInfo.FilePath, logLine.LineNumber, reportedBy);
+            ReportMissedLines(JsonConvert.SerializeObject(logLine));
+
         }
         
         public void ReportError(string message, string reportedBy)

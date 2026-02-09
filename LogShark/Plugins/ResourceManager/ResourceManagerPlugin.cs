@@ -45,7 +45,7 @@ namespace LogShark.Plugins.ResourceManager
                 _processingNotificationsCollector.ReportError(errorMessage, logLine, nameof(ResourceManagerPlugin));
                 return;
             }
-
+           
             if (!CanContainResourceManagerInfo(baseEvent, logType))
             {
                 return;
@@ -76,7 +76,8 @@ namespace LogShark.Plugins.ResourceManager
                                              && baseEvent.EventPayload.Type == JTokenType.String;
 
             var hyperLogAndMeetsRequirements = logType == LogType.Hyper
-                                               && baseEvent.EventType == "srm-internal";
+                                               && (baseEvent.EventType == "srm-internal" || baseEvent.EventType == "resource-metrics");
+            
 
             var prepLogAndMeetsRequirements = logType == LogType.flowprocessorCpp 
                                                 && baseEvent.EventType == "qp-minerva-service" 
@@ -91,17 +92,26 @@ namespace LogShark.Plugins.ResourceManager
             {
                 return baseEvent.EventPayload.ToObject<string>();
             }
-            
-            var message = baseEvent.EventPayload.GetStringFromPath("msg");
 
-            if (message == null)
+            // Handle different Hyper event types
+            if (baseEvent.EventType == "srm-internal")
             {
-                const string errorMessage = "Failed to read \"mgs\" property as string from payload of the message";
-                _processingNotificationsCollector.ReportError(errorMessage, logLine, nameof(ResourceManagerPlugin));
+                // For srm-internal events, extract the msg property
+                var message = baseEvent.EventPayload["msg"]?.ToObject<string>();
+                if (message == null)
+                {
+                    const string errorMessage = "Failed to read \"msg\" property as string from srm-internal payload";
+                    _processingNotificationsCollector.ReportError(errorMessage, logLine, nameof(ResourceManagerPlugin));
+                }
+                return message ?? string.Empty;
+            }
+            else if (baseEvent.EventType == "resource-metrics")
+            {
+                // For resource-metrics events, return the entire payload as JSON string for processing
+                return baseEvent.EventPayload.ToString();
             }
 
-            return message ?? string.Empty;
-
+            return string.Empty;
         }
     }
 }

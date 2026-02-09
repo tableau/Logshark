@@ -5,6 +5,7 @@ namespace LogShark.Shared
         Apache,
         BackgrounderCpp,
         BackgrounderJava,
+        Bridge,
         ClusterController,
         ControlLogsJava,
         CrashPackageLog,

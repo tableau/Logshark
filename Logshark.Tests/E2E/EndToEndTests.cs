@@ -123,6 +123,7 @@ namespace LogShark.Tests.E2E
             var configOverrides = new Dictionary<string, string>()
             {
                 ["EnvironmentConfig:AppendLogsetNameToOutput"] = "true",
+                ["HyperProcess:external_stream_timeout"] = "3h",
             };
             logSharkParams.WorkbookNameSuffixOverride = "_test";
 
@@ -137,6 +138,7 @@ namespace LogShark.Tests.E2E
             var configOverrides = new Dictionary<string, string>()
             {
                 ["EnvironmentConfig:AppendLogsetNameToOutput"] = "true",
+                ["HyperProcess:external_stream_timeout"] = "3h",
             };
 
             var test = new EndToEndTest(logSharkParams, "./TestData/EndToEndTests/Expected/logs_clean_tabadmin_hyper", ExpectedTabadminProcessingErrors, configOverrides);

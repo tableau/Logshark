@@ -207,6 +207,8 @@ Malay Peninsula Standard Time,08:00:00
 Malay Peninsula Daylight Time,09:00:00
 W. Australia Standard Time,08:00:00
 W. Australia Daylight Time,09:00:00
+South Sudan Standard Time,02:00:00
+South Sudan Daylight Time,02:00:00
 Taipei Standard Time,08:00:00
 Taipei Daylight Time,09:00:00
 Ulaanbaatar Standard Time,08:00:00
@@ -390,3 +392,4 @@ GMT+14:00,14:00:00
 +1245,12:45:00
 +1345,13:45:00
 +1400,14:00:00
+

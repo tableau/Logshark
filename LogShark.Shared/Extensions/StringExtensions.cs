@@ -10,6 +10,7 @@ namespace LogShark.Shared.Extensions
         private static readonly Regex TsmNodeNameCapture = new Regex(@"^node\d+", RegexOptions.Compiled);
         private static readonly Regex TabadminWorkerNameCapture = new Regex(@"^worker\d+", RegexOptions.Compiled);
         private static readonly Regex TsmV0WorkerNameCapture = new Regex(@"^(?<hostname>[^/]+)/tabadminagent.+/logs/.+", RegexOptions.Compiled);
+        private static readonly Regex BridgeHostNameCapture = new Regex(@"^Bridge*",RegexOptions.Compiled);
 
         public static string CleanControlCharacters(this string message)
         {
@@ -45,6 +46,13 @@ namespace LogShark.Shared.Extensions
                 : rawPath;
         }
         
+        public static string RemoveTarFromTail(this string rawPath)
+        {
+            return rawPath.EndsWith(".tar")
+                ? rawPath.Substring(0, rawPath.Length - ".tar".Length)
+                : rawPath;
+        }
+        
         public static string GetWorkerIdFromFilePath(this string fullPath)
         {
             if (string.IsNullOrWhiteSpace(fullPath))
@@ -67,6 +75,19 @@ namespace LogShark.Shared.Extensions
             {
                 return match.GetString("hostname");
             }
+            if(fullPath.Contains("Bridge") || fullPath.Contains("LiveQuery")) // Bridge Agents
+                    {
+                 var split = fullPath.Split('/');
+                if (split.Length > 1)
+                {
+                    var folderName = split[split.Length - 2];
+                    return folderName;
+                }else
+                {
+                    return "HostUnknown";
+                }
+            }
+
 
             return "worker0"; // Tabadmin primary or Desktop
         }

@@ -17,6 +17,23 @@ namespace LogShark.Plugins.Backgrounder.Model
         public long? TotalSize { get; set; }
         public long? TwbSize { get; set; }
         public string VizqlSessionId { get; set; }
+        public string status { get; set; }
+
+        public string refreshedAt { get; set; }
+        public string scheduleName { get; set; }
+        public string scheduleType { get; set; }
+
+        public string jobName { get; set; }
+        public string jobType { get; set; }
+        public string jobLuid { get; set; }
+
+        public long? totalTimeSeconds { get; set; }
+        public long? runTimeSeconds { get; set; }
+
+        public string queuedTime { get; set; }
+        public string startedTime { get; set; }
+        public string endTime { get; set; }
+
         public DateTime Timestamp { get; set; }
     }
 }

@@ -302,6 +302,15 @@ namespace LogShark
                 _logger.LogInformation(objectDisposedException, errorMessage);
                 return new ProcessStreamResult(linesProcessed, errorMessage, ExitReason.InserterDisposed);
             }
+            catch (InvalidOperationException invalidOperationException)
+                when (IsHyperTimeoutException(invalidOperationException))
+            {
+                var errorMessage = $"Hyper file writing failed due to external stream timeout while processing file `{logFileInfo.FilePath}`. " +
+                                 "This indicates that the Hyper database operations are taking longer than the configured timeout. " +
+                                 "Consider increasing the 'external_stream_timeout' configuration value or checking system resources.";
+                _logger.LogError(invalidOperationException, errorMessage);
+                return new ProcessStreamResult(linesProcessed, errorMessage, ExitReason.HyperTimeout);
+            }
             catch (Exception ex)
             {
                 var errorMessage = $"Unhandled exception occurred while processing file stream from file `{logFileInfo.FilePath}`. Aborting processing.";
@@ -429,6 +438,13 @@ namespace LogShark
                 errorMessage.AppendLine("\t* Remove file in question from the log set. (sometimes other files of the same type might contain the same wide line though)");
                 return errorMessage.ToString();
             }
+        }
+
+        private static bool IsHyperTimeoutException(Exception ex)
+        {
+            // Check for the specific Hyper timeout exception pattern
+            return ex.Message?.Contains("canceled after reaching timeout for external stream") == true ||
+                   (ex.InnerException?.Message?.Contains("canceled after reaching timeout for external stream") == true);
         }
 
         public void Dispose()

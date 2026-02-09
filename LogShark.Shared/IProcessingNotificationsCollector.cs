@@ -10,5 +10,6 @@ namespace LogShark.Shared
         void ReportWarning(string message, string filePath, int lineNumber, string reportedBy);
         void ReportWarning(string message, LogLine logLine, string reportedBy);
         void ReportWarning(string message, string reportedBy);
+        void ReportMissedLines(string lineString);
     }
 }

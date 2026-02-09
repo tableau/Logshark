@@ -33,7 +33,7 @@ namespace LogShark.Tests.Plugins.ResourceManagerPlugin
                 eventProcessor.ProcessEvent(_testBaseEvent, payload, _testLogLine, TestProcessName);
             }
             
-            _testWriterFactory.AssertAllWritersAreDisposedAndEmpty(5);
+            _testWriterFactory.AssertAllWritersAreDisposedAndEmpty(6);
         }
 
         [Theory]
@@ -52,7 +52,7 @@ namespace LogShark.Tests.Plugins.ResourceManagerPlugin
                 eventProcessor.ProcessEvent(_testBaseEvent, payload, _testLogLine, TestProcessName);
             }
             
-            var cpuSampleWriter = _testWriterFactory.GetOneWriterAndVerifyOthersAreEmptyAndDisposed<ResourceManagerCpuSample>("ResourceManagerCpuSamples", 5);
+            var cpuSampleWriter = _testWriterFactory.GetOneWriterAndVerifyOthersAreEmptyAndDisposed<ResourceManagerCpuSample>("ResourceManagerCpuSamples", 6);
 
             cpuSampleWriter.ReceivedObjects.Count.Should().Be(expectEvent ? 1 : 0);
             processingNotificationsCollector.TotalErrorsReported.Should().Be(expectEvent ? 0 : 1);
@@ -93,7 +93,7 @@ namespace LogShark.Tests.Plugins.ResourceManagerPlugin
                 eventProcessor.ProcessEvent(_testBaseEvent, payload, _testLogLine, TestProcessName);
             }
             
-            var memorySampleWriter = _testWriterFactory.GetOneWriterAndVerifyOthersAreEmptyAndDisposed<ResourceManagerMemorySample>("ResourceManagerMemorySamples", 5);
+            var memorySampleWriter = _testWriterFactory.GetOneWriterAndVerifyOthersAreEmptyAndDisposed<ResourceManagerMemorySample>("ResourceManagerMemorySamples", 6);
 
             memorySampleWriter.ReceivedObjects.Count.Should().Be(expectEvent ? 1 : 0);
             processingNotificationsCollector.TotalErrorsReported.Should().Be(expectEvent ? 0 : 1);
@@ -153,7 +153,7 @@ namespace LogShark.Tests.Plugins.ResourceManagerPlugin
                 eventProcessor.ProcessEvent(_testBaseEvent, payload, _testLogLine, TestProcessName);
             }
             
-            var memorySampleWriter = _testWriterFactory.GetOneWriterAndVerifyOthersAreEmptyAndDisposed<ResourceManagerAction>("ResourceManagerActions", 5);
+            var memorySampleWriter = _testWriterFactory.GetOneWriterAndVerifyOthersAreEmptyAndDisposed<ResourceManagerAction>("ResourceManagerActions", 6);
 
             memorySampleWriter.ReceivedObjects.Count.Should().Be(expectEvent ? 1 : 0);
             processingNotificationsCollector.TotalErrorsReported.Should().Be(expectEvent ? 0 : 1);
@@ -203,7 +203,7 @@ namespace LogShark.Tests.Plugins.ResourceManagerPlugin
                 eventProcessor.ProcessEvent(_testBaseEvent, payload, _testLogLine, TestProcessName);
             }
             
-            var memorySampleWriter = _testWriterFactory.GetOneWriterAndVerifyOthersAreEmptyAndDisposed<ResourceManagerThreshold>("ResourceManagerThresholds", 5);
+            var memorySampleWriter = _testWriterFactory.GetOneWriterAndVerifyOthersAreEmptyAndDisposed<ResourceManagerThreshold>("ResourceManagerThresholds", 6);
 
             memorySampleWriter.ReceivedObjects.Count.Should().Be(expectEvent ? 1 : 0);
             processingNotificationsCollector.TotalErrorsReported.Should().Be(expectEvent ? 0 : 1);
@@ -242,8 +242,8 @@ namespace LogShark.Tests.Plugins.ResourceManagerPlugin
             {
                 eventProcessor.ProcessEvent(_testBaseEvent, payload, _testLogLine, TestProcessName);
             }
-
-            var cpuUsageWriter = _testWriterFactory.GetOneWriterAndVerifyOthersAreEmptyAndDisposed<ResourceManagerHighCpuUsage>("ResourceManagerHighCpuUsages", 5);
+            
+            var cpuUsageWriter = _testWriterFactory.GetOneWriterAndVerifyOthersAreEmptyAndDisposed<ResourceManagerHighCpuUsage>("ResourceManagerHighCpuUsages", 6);
 
             cpuUsageWriter.ReceivedObjects.Count.Should().Be(expectEvent ? 1 : 0);
             processingNotificationsCollector.TotalErrorsReported.Should().Be(expectEvent ? 0 : 1);
@@ -256,7 +256,7 @@ namespace LogShark.Tests.Plugins.ResourceManagerPlugin
                     LineNumber = _testLogLine.LineNumber,
                     Timestamp = _testBaseEvent.Timestamp,
                     Worker = TestLogFileInfo.Worker,
-
+                    
                     ProcessId = _testBaseEvent.ProcessId,
                     ProcessIndex = (int?)null,
                     ProcessName = TestProcessName,
@@ -265,6 +265,104 @@ namespace LogShark.Tests.Plugins.ResourceManagerPlugin
                 };
                 cpuUsageWriter.ReceivedObjects[0].Should().BeEquivalentTo(expectedRecord);
             }
+        }
+
+        [Theory]
+        [InlineData("{\"has-load\":true,\"memory\":{\"total_physical_memory_mb\":130863.0,\"system_physical_memory_mb\":21637.3,\"process_physical_memory_mb\":181.449}}", 
+            true, true, 130863.0, 21637.3, 181.449)]
+        [InlineData("{\"has-load\":true,\"memory\":{\"total_virtual_memory_mb\":139055,\"system_virtual_memory_mb\":20825,\"process_virtual_memory_mb\":160.75,\"total_physical_memory_mb\":130863,\"system_physical_memory_mb\":21637.3,\"process_physical_memory_mb\":181.449,\"process_file_mappings_mb\":0},\"mem-trackers\":{\"memory_tracked_current_usage_mb\":{\"global\":66.6963,\"global_network_writebuffer\":5,\"global_tuple_data\":41.0088},\"memory_tracked_peak_usage_mb\":{\"global\":139.782,\"global_tuple_data\":93.9354}},\"load\":{\"overall_load\":0.0277778,\"scheduler_load\":0.0277778,\"workspace_load\":0,\"memory_load\":0.000642105,\"cpu_load\":0.0778158},\"scheduler-thread-count\":{\"scheduler_waiting_tasks_count\":0,\"scheduler_thread_count\":{\"active\":1,\"inactive\":53}}}", 
+            true, true, 130863.0, 21637.3, 181.449)]
+        [InlineData("{\"has-load\":true,\"memory\":{\"total_physical_memory_mb\":100.5,\"system_physical_memory_mb\":50.25}}", 
+            true, true, 100.5, 50.25, null)]
+        [InlineData("{\"has-load\":true,\"memory\":{\"process_physical_memory_mb\":75.123}}", 
+            true, true, null, null, 75.123)]
+        [InlineData("{\"has-load\":true,\"memory\":{}}", 
+            true, true, null, null, null)]
+        [InlineData("{\"has-load\":false,\"memory\":{\"total_physical_memory_mb\":130863.0}}", 
+            true, false, 130863.0, null, null)]
+        [InlineData("invalid json with has-load and memory", 
+            false, null, null, null, null)] // This will trigger AddHyperMemorySampleEvent but fail JSON parsing
+        [InlineData("{\"has-load\":true,\"memory\":{\"invalid\":\"structure\"}}", 
+            true, true, null, null, null)]
+        [InlineData("{\"has-load\":true}", 
+            false, null, null, null, null)] // No "memory" string, so won't call AddHyperMemorySampleEvent
+        [InlineData("no matching strings", 
+            false, null, null, null, null)] // No "has-load" or "memory" strings
+        public void ResourceMetricsMemorySampleEvents(string payload, bool expectEvent, bool? expectedHasLoad, 
+            double? expectedTotalPhysicalMemory, double? expectedSystemPhysicalMemory, double? expectedProcessPhysicalMemory)
+        {
+            var processingNotificationsCollector = new ProcessingNotificationsCollector(10);
+            using (var eventProcessor = new ResourceManagerEventsProcessor(_testWriterFactory, processingNotificationsCollector))
+            {
+                eventProcessor.ProcessEvent(_testBaseEvent, payload, _testLogLine, "hyper");
+            }
+            
+            var resourceMetricsWriter = _testWriterFactory.GetOneWriterAndVerifyOthersAreEmptyAndDisposed<ResourceMetricsMemorySample>("ResourceMetricsMemorySamples", 6);
+
+            resourceMetricsWriter.ReceivedObjects.Count.Should().Be(expectEvent ? 1 : 0);
+            
+            // Only expect errors when we actually call AddHyperMemorySample (i.e., when payload contains both "has-load" and "memory")
+            var shouldCallAddHyperMemorySample = payload.Contains("has-load") && payload.Contains("memory");
+            var shouldReportError = shouldCallAddHyperMemorySample && !expectEvent;
+            processingNotificationsCollector.TotalErrorsReported.Should().Be(shouldReportError ? 1 : 0);
+            
+            if (expectEvent)
+            {
+                var expectedRecord = new
+                {
+                    File = TestLogFileInfo.FileName,
+                    Line = _testLogLine.LineNumber,
+                    Timestamp = _testBaseEvent.Timestamp,
+                    ProcessName = "hyper",
+                    Worker = TestLogFileInfo.Worker,
+                    RequestId = (string)null,
+                    SessionId = (string)null,
+                    Site = (string)null,
+                    Username = (string)null,
+                    HasLoad = expectedHasLoad,
+                    TotalPhysicalMemoryGb = expectedTotalPhysicalMemory / 1024.0,
+                    SystemPhysicalMemoryGb = expectedSystemPhysicalMemory / 1024.0,
+                    ProcessPhysicalMemoryGb = expectedProcessPhysicalMemory / 1024.0,
+                };
+                resourceMetricsWriter.ReceivedObjects[0].Should().BeEquivalentTo(expectedRecord, options => options.ExcludingMissingMembers());
+            }
+        }
+
+        [Fact]
+        public void ComprehensiveResourceMetricsTest()
+        {
+            var comprehensiveJson = "{\"has-load\":true,\"memory\":{\"total_virtual_memory_mb\":139055,\"system_virtual_memory_mb\":20825,\"process_virtual_memory_mb\":160.75,\"total_physical_memory_mb\":130863,\"system_physical_memory_mb\":21637.3,\"process_physical_memory_mb\":181.449,\"process_file_mappings_mb\":0},\"mem-trackers\":{\"memory_tracked_current_usage_mb\":{\"global\":66.6963,\"global_network_writebuffer\":5,\"global_tuple_data\":41.0088},\"memory_tracked_peak_usage_mb\":{\"global\":139.782,\"global_tuple_data\":93.9354}},\"load\":{\"overall_load\":0.0277778,\"scheduler_load\":0.0277778,\"workspace_load\":0,\"memory_load\":0.000642105,\"cpu_load\":0.0778158},\"scheduler-thread-count\":{\"scheduler_waiting_tasks_count\":0,\"scheduler_thread_count\":{\"active\":1,\"inactive\":53}}}";
+            
+            var processingNotificationsCollector = new ProcessingNotificationsCollector(10);
+            using (var eventProcessor = new ResourceManagerEventsProcessor(_testWriterFactory, processingNotificationsCollector))
+            {
+                eventProcessor.ProcessEvent(_testBaseEvent, comprehensiveJson, _testLogLine, "hyper");
+            }
+            
+            var resourceMetricsWriter = _testWriterFactory.GetOneWriterAndVerifyOthersAreEmptyAndDisposed<ResourceMetricsMemorySample>("ResourceMetricsMemorySamples", 6);
+            resourceMetricsWriter.ReceivedObjects.Count.Should().Be(1);
+            
+            var result = (ResourceMetricsMemorySample)resourceMetricsWriter.ReceivedObjects[0];
+            
+            // Verify comprehensive fields are populated
+            result.HasLoad.Should().Be(true);
+            result.TotalVirtualMemoryGb.Should().Be(139055 / 1024.0);
+            result.SystemVirtualMemoryGb.Should().Be(20825 / 1024.0);
+            result.ProcessVirtualMemoryGb.Should().Be(160.75 / 1024.0);
+            result.ProcessFileMappingsGb.Should().Be(0 / 1024.0);
+            result.MemoryTrackedCurrentGlobalMb.Should().Be(66.6963);
+            result.MemoryTrackedCurrentGlobalNetworkWritebufferMb.Should().Be(5);
+            result.MemoryTrackedCurrentGlobalTupleDataMb.Should().Be(41.0088);
+            result.MemoryTrackedPeakGlobalMb.Should().Be(139.782);
+            result.MemoryTrackedPeakGlobalTupleDataMb.Should().Be(93.9354);
+            result.OverallLoad.Should().Be(0.0277778);
+            result.SchedulerLoad.Should().Be(0.0277778);
+            result.WorkspaceLoad.Should().Be(0);
+            result.MemoryLoad.Should().Be(0.000642105);
+            result.CpuLoad.Should().Be(0.0778158);
+            result.SchedulerWaitingTasksCount.Should().Be(0);
+            result.SchedulerThreadCountActive.Should().Be(1);
+            result.SchedulerThreadCountInactive.Should().Be(53);
         }
     }
 }

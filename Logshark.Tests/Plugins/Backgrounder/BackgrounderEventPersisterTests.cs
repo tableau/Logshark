@@ -27,7 +27,7 @@ namespace LogShark.Tests.Plugins.Backgrounder
         {
             _persister.AddErrorEvent(_errorEvent);
             _persister.Dispose();
-            var writer = _writerFactory.GetOneWriterAndVerifyOthersAreEmptyAndDisposed<BackgrounderJobError>("BackgrounderJobErrors", 4);
+            var writer = _writerFactory.GetOneWriterAndVerifyOthersAreEmptyAndDisposed<BackgrounderJobError>("BackgrounderJobErrors", 5);
             writer.ReceivedObjects.Count.Should().Be(1);
             writer.ReceivedObjects[0].Should().BeEquivalentTo(_errorEvent);
         }
@@ -43,7 +43,7 @@ namespace LogShark.Tests.Plugins.Backgrounder
             _persister.AddStartEvent(startEvent2);
             _persister.DrainEvents();
 
-            var jobWriter = _writerFactory.GetOneWriterAndVerifyOthersAreEmpty<BackgrounderJob>("BackgrounderJobs", 4);
+            var jobWriter = _writerFactory.GetOneWriterAndVerifyOthersAreEmpty<BackgrounderJob>("BackgrounderJobs", 5);
             jobWriter.ReceivedObjects.Count.Should().Be(2);
             startEvent1.MarkAsInvalidEnd();
             jobWriter.ReceivedObjects[0].Should().BeEquivalentTo(startEvent1);
@@ -59,7 +59,6 @@ namespace LogShark.Tests.Plugins.Backgrounder
             var startEvent2 = GetStartEvent("2", "refresh_extracts", 605); // Extract refresh without details
             var startEvent3 = GetStartEvent("3", "increment_extracts", 610); // Incremental refresh
             var startEvent4 = GetStartEvent("4", "some_other_job", 620); // Some other job type
-
             var endEvent1 = GetEndEvent("1");
             var endEvent2 = GetEndEvent("2");
             var endEvent3 = GetEndEvent("3");
@@ -163,7 +162,7 @@ namespace LogShark.Tests.Plugins.Backgrounder
             var endEvent3 = GetEndEvent("1", millisecond: 604);
             _persister.AddEndEvent(endEvent3);
 
-            var jobWriter = _writerFactory.GetOneWriterAndVerifyOthersAreEmpty<BackgrounderJob>("BackgrounderJobs", 4);
+            var jobWriter = _writerFactory.GetOneWriterAndVerifyOthersAreEmpty<BackgrounderJob>("BackgrounderJobs", 5);
             jobWriter.ReceivedObjects.Count.Should().Be(0);
 
             _persister.DrainEvents();
@@ -220,7 +219,7 @@ namespace LogShark.Tests.Plugins.Backgrounder
             var anotherRequeueEndEvent1 = GetEndEvent("1", millisecond: 609);
             _persister.AddEndEvent(anotherRequeueEndEvent1);
 
-            var jobWriter = _writerFactory.GetOneWriterAndVerifyOthersAreEmpty<BackgrounderJob>("BackgrounderJobs", 4);
+            var jobWriter = _writerFactory.GetOneWriterAndVerifyOthersAreEmpty<BackgrounderJob>("BackgrounderJobs", 5);
             jobWriter.ReceivedObjects.Count.Should().Be(0);
 
             _persister.DrainEvents();
@@ -275,7 +274,7 @@ namespace LogShark.Tests.Plugins.Backgrounder
             _persister.AddSubscriptionJobDetails(anotherRequeueSubdetailsEvent1[0]);
             _persister.AddEndEvent(anotherRequeueEndEvent1);
 
-            var jobWriter = _writerFactory.GetOneWriterAndVerifyOthersAreEmpty<BackgrounderJob>("BackgrounderJobs", 4);
+            var jobWriter = _writerFactory.GetOneWriterAndVerifyOthersAreEmpty<BackgrounderJob>("BackgrounderJobs", 5);
             jobWriter.ReceivedObjects.Count.Should().Be(0);
 
             _persister.DrainEvents();

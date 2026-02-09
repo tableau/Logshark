@@ -185,7 +185,7 @@ namespace LogShark
                 case "":
                 case "hyper":
                     _logger.LogInformation("Hyper Writer requested. Initializing writer factory...");
-                    return new HyperWriterFactory(runId, _config, _loggerFactory);
+                    return new HyperWriterFactory(runId, _config, _loggerFactory, _processingNotificationsCollector);
                 case "csv":
                     _logger.LogInformation("CSV Writer requested. Initializing writer factory...");
                     return new CsvWriterFactory(runId, _config, _loggerFactory);

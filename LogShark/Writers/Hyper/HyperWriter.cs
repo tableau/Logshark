@@ -6,6 +6,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using LogShark.Containers;
+using LogShark.Shared;
 using Tableau.HyperAPI;
 using static Tableau.HyperAPI.TableDefinition;
 using ILogger = Microsoft.Extensions.Logging.ILogger;
@@ -29,10 +30,12 @@ namespace LogShark.Writers.Hyper
         private readonly string _dbPath;
         private readonly Action<Inserter, T> _updateAction;
         private readonly Inserter _inserter;
+        private readonly string _externalStreamTimeout;
         
-        public HyperWriter(DataSetInfo dataSetInfo, Endpoint server, string hyperOutputDir, string tableName, ILogger logger)
-        : base(dataSetInfo, logger, nameof(HyperWriter<T>))
+        public HyperWriter(DataSetInfo dataSetInfo, Endpoint server, string hyperOutputDir, string tableName, ILogger logger, string externalStreamTimeout = null, IProcessingNotificationsCollector processingNotificationsCollector = null)
+        : base(dataSetInfo, logger, nameof(HyperWriter<T>), processingNotificationsCollector)
         {
+            _externalStreamTimeout = externalStreamTimeout;
             _updateAction = UpdateAction();
             _dbPath =  Path.Combine(Path.GetFullPath(hyperOutputDir), $"{tableName}.hyper");
 
@@ -68,7 +71,23 @@ namespace LogShark.Writers.Hyper
 
         protected override void CloseLogic()
         {
-            _inserter.Execute();
+            try
+            {
+                _inserter.Execute();
+            }
+            catch (Exception ex) when (IsHyperTimeoutException(ex))
+            {
+                var timeoutMessage = $"Hyper file writing failed due to external stream timeout. Database: {_dbPath}. " +
+                                   $"Current timeout setting: {GetExternalStreamTimeout()}. " +
+                                   "Consider increasing the 'external_stream_timeout' configuration value or checking system resources.";
+                
+                Logger.LogError(ex, timeoutMessage);
+                
+                // Report the error to the processing notifications collector so it appears in the final summary
+                _processingNotificationsCollector?.ReportError(timeoutMessage, nameof(HyperWriter<T>));
+                
+                throw new InvalidOperationException(timeoutMessage, ex);
+            }
         }
 
         public override void Dispose()
@@ -95,6 +114,18 @@ namespace LogShark.Writers.Hyper
 
                     return _columnSwitch[propertyType](property, false);
                 });
+        }
+
+        private static bool IsHyperTimeoutException(Exception ex)
+        {
+            // Check for the specific Hyper timeout exception pattern
+            return ex.Message?.Contains("canceled after reaching timeout for external stream") == true ||
+                   (ex.InnerException?.Message?.Contains("canceled after reaching timeout for external stream") == true);
+        }
+
+        private string GetExternalStreamTimeout()
+        {
+            return _externalStreamTimeout ?? "external_stream_timeout (check configuration file)";
         }
 
         private static Action<Inserter, T> UpdateAction()

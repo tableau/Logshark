@@ -11,6 +11,8 @@ namespace LogShark.Plugins.Backgrounder
         void AddEndEvent(BackgrounderJob endEvent);
         void AddExtractJobDetails(BackgrounderExtractJobDetail extractJobDetail);
         void AddSubscriptionJobDetails(BackgrounderSubscriptionJobDetail subscriptionJobDetail);
+
+        void AddFlowJobDetails(BackgrounderFlowJobDetail flowJobDetail);
         void AddErrorEvent(BackgrounderJobError jobError);
         IEnumerable<WriterLineCounts> DrainEvents();
     }

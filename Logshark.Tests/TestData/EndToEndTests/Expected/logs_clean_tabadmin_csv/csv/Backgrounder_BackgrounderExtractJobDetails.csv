@@ -1,3 +1,3 @@
-BackgrounderJobId,ExtractGuid,ExtractId,ExtractSize,ExtractUrl,JobNotes,ResourceName,ResourceType,ScheduleName,Site,TotalSize,TwbSize,VizqlSessionId,Timestamp
-142,,,,,,Large1,Workbook,,,,,,01/01/0001 00:00:00
-143,87D4CB01-185E-4ADE-9D35-2D9C5FD7FE98,b90f9de5-aa35-4341-a12f-36e963881956,97452032,Large1,,Large1,Workbook,,,97455404,3372,5CD209437D36441696EC85F495DF8FC5,08/12/2019 22:38:16
+BackgrounderJobId,ExtractGuid,ExtractId,ExtractSize,ExtractUrl,JobNotes,ResourceName,ResourceType,ScheduleName,Site,TotalSize,TwbSize,VizqlSessionId,status,refreshedAt,scheduleName,scheduleType,jobName,jobType,jobLuid,totalTimeSeconds,runTimeSeconds,queuedTime,startedTime,endTime,Timestamp
+142,,,,,,Large1,Workbook,,,,,,,,,,,,,,,,,,01/01/0001 00:00:00
+143,87D4CB01-185E-4ADE-9D35-2D9C5FD7FE98,b90f9de5-aa35-4341-a12f-36e963881956,97452032,Large1,,Large1,Workbook,,,97455404,3372,5CD209437D36441696EC85F495DF8FC5,,,,,,,,,,,,,08/12/2019 22:38:16

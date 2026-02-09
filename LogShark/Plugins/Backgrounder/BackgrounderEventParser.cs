@@ -98,8 +98,8 @@ namespace LogShark.Plugins.Backgrounder
                     \s(?:with\s)?(?:Subject\s)?
                     \""?(?<subscription_name>.*?)\""?$",
                 RegexOptions.ExplicitCapture | RegexOptions.Compiled | RegexOptions.IgnorePatternWhitespace);
-
-        private static readonly Regex ExtractJobDetailsParseRegex = new Regex(@"\|(?<key>[a-zA-Z]+)=(?<value>[\s\S]*?)(?=\|[a-zA-Z]*=|$)",
+        private static readonly Regex FlowRunEventRegex = new Regex(@"(?<key>[a-zA-Z_]*)=(?<value>[\s\S\*]*?)(?=\|[a-zA-Z_]*=|$)", RegexOptions.ExplicitCapture | RegexOptions.Compiled | RegexOptions.IgnorePatternWhitespace);
+        private static readonly Regex ExtractJobDetailsParseRegex = new Regex(@"\| (?<key>[a-zA-Z]+)=(?<value>[\s\S]*?)(?=\|[a-zA-Z]*=|$)",
             RegexOptions.ExplicitCapture | RegexOptions.Compiled | RegexOptions.IgnorePatternWhitespace);
 
         #endregion Regex
@@ -126,7 +126,7 @@ namespace LogShark.Plugins.Backgrounder
             var lineMatch = NewBackgrounderRegex.Match(logLineText);
             if (!lineMatch.Success)
             {
-                _processingNotificationsCollector.ReportError($"Failed to process string as Backgrounder event. This is expected for logs prior to 10.4", logLine, nameof(BackgrounderPlugin));
+                _processingNotificationsCollector.ReportWarning($"Failed to process string as Backgrounder event. Likely an exception message", logLine, nameof(BackgrounderPlugin));
                 return;
             }
 
@@ -168,6 +168,12 @@ namespace LogShark.Plugins.Backgrounder
             if (subscriptionJobDetails != null)
             {
                 _backgrounderEventPersister.AddSubscriptionJobDetails(subscriptionJobDetails);
+                return;
+            }
+            var flowJobDetails = TryMatchFlowJobDetails(lineMatch, jobId, logLine);
+            if (flowJobDetails != null)
+            {
+                _backgrounderEventPersister.AddFlowJobDetails(flowJobDetails);
                 return;
             }
         }
@@ -296,15 +302,21 @@ namespace LogShark.Plugins.Backgrounder
             var eventClass = lineMatch.Groups["class"].Value;
             var message = lineMatch.Groups["message"].Value;
             var timestamp = TimestampParsers.ParseJavaLogsTimestamp(lineMatch.Groups["ts"].Value);
-            switch (eventClass)
+
+            if (eventClass.Contains("VqlSessionService"))
             {
-                case "com.tableausoftware.model.workgroup.service.VqlSessionService":
-                    return TryMatchOlderFormatOfExtractJobDetails(message, jobId, lineMatch.Groups["vql_sess_id"].Value, timestamp);
-                case "com.tableausoftware.model.workgroup.workers.RefreshExtractsWorker":
-                    return TryMatchNewFormatOfExtractJobDetails(message, jobId, logLine, timestamp);
-                default:
+                return TryMatchOlderFormatOfExtractJobDetails(message, jobId, lineMatch.Groups["vql_sess_id"].Value, timestamp);
+            } 
+            else if (eventClass.Contains("RefreshExtractsWorker"))
+                { 
+            return TryMatchNewFormatOfExtractJobDetails(message, jobId, logLine, timestamp);
+                }
+            else { 
+
                     return null;
-            }
+            
+        }
+
         }
 
         //2019-04-30 06:16:53.626 -0400 (Enterprise Business Intelligence,,,3619ADAAA1B54302B9349F4368A3AAA3,4950695,:refresh_extracts,-) pool-19-thread-1 backgrounder: INFO  com.tableausoftware.model.workgroup.service.VqlSessionService - Storing to SOS: OPPE/extract reducedDataId:9eb94068-5e1f-437b-9c4d-a1b700414ca8 size:134352 (twb) + 3604480 (guid={0F1B99B6-71A2-48C8-A9BC-7BA6D447515E}) = 3738832
@@ -350,7 +362,7 @@ namespace LogShark.Plugins.Backgrounder
         // New format log example
         // 2019-08-09 21:50:17.641 +0000 (Default,,,,201,:refresh_extracts,ee6dd62e-f472-4252-a931-caf4dfb0009f) pool-12-thread-1 backgrounder: INFO  com.tableausoftware.model.workgroup.workers.RefreshExtractsWorker - |status=ExtractTimingSuccess|jobId=201|jobLuid=ee6dd62e-f472-4252-a931-caf4dfb0009f|siteName="Default"|workbookName="Large1"|refreshedAt="2019-08-09T21:50:17.638Z"|sessionId=F7162DFF82CB48D386850188BD5B190A-1:1|scheduleName="Weekday early mornings"|scheduleType="FullRefresh"|jobName="Refresh Extracts"|jobType="RefreshExtracts"|totalTimeSeconds=48|runTimeSeconds=46|queuedTime="2019-08-09T21:49:29.076Z"|startedTime="2019-08-09T21:49:31.262Z"|endTime="2019-08-09T21:50:17.638Z"|correlationId=65|priority=0|serialId=null|extractsSizeBytes=57016320|jobNotes="Finished refresh of extracts (new extract id:{78C1FCC2-E70E-4B25-BFFE-7B7F0096A4FE}) for Workbook 'Large1' "
         private static readonly Regex ExtractIdNewFormat = new Regex(
-            @"Finished refresh of extracts \(new extract id:{(?<extractGuid>[^\}]+)}\)",
+            @"\{(?<extractId>.*?)\}",
             RegexOptions.Compiled);
         private BackgrounderExtractJobDetail TryMatchNewFormatOfExtractJobDetails(string message, string jobId, LogLine logLine, DateTime timestamp)
         {
@@ -358,13 +370,13 @@ namespace LogShark.Plugins.Backgrounder
             {
                 return null;
             }
-            
+
             var messageParts = ExtractJobDetailsParseRegex.Matches(message).ToDictionary(m => m.Groups["key"].Value, m => m.Groups["value"].Value);
 
             var jobNotes = messageParts.GetStringValueOrNull("jobNotes").TrimSurroundingDoubleQuotes();
             var extractIdMatch = ExtractIdNewFormat.Match(jobNotes ?? string.Empty);
             var extractId = extractIdMatch.Success
-                ? extractIdMatch.Groups["extractGuid"].Value
+                ? extractIdMatch.Groups["extractId"].Value
                 : null;
 
             return new BackgrounderExtractJobDetail
@@ -381,8 +393,126 @@ namespace LogShark.Plugins.Backgrounder
                 TotalSize = null, // Not available in the new format
                 TwbSize = null, // Not available in the new format
                 VizqlSessionId = messageParts.GetStringValueOrNull("sessionId").TrimSurroundingDoubleQuotes(),
+                status = messageParts.GetStringValueOrNull("status"),
+                jobLuid = messageParts.GetStringValueOrNull("jobLuid"),
+                jobType = messageParts.GetStringValueOrNull("jobType").TrimSurroundingDoubleQuotes(),
+                jobName = messageParts.GetStringValueOrNull("jobName").TrimSurroundingDoubleQuotes(),
+                refreshedAt = messageParts.GetStringValueOrNull("refreshedAt").TrimSurroundingDoubleQuotes(),
+                scheduleName = messageParts.GetStringValueOrNull("scheduleName").TrimSurroundingDoubleQuotes(),
+                scheduleType = messageParts.GetStringValueOrNull("scheduleType").TrimSurroundingDoubleQuotes(),
+                totalTimeSeconds = messageParts.GetLongValueOrNull("totalTimeSeconds"),
+                runTimeSeconds = messageParts.GetLongValueOrNull("runTimeSeconds"),
+                startedTime = messageParts.GetStringValueOrNull("startedTime").TrimSurroundingDoubleQuotes(),
+                queuedTime = messageParts.GetStringValueOrNull("queuedTime").TrimSurroundingDoubleQuotes(),
+                endTime  = messageParts.GetStringValueOrNull("endTime").TrimSurroundingDoubleQuotes(),
                 Timestamp = timestamp
             };
+        }
+        private BackgrounderFlowJobDetail TryMatchFlowJobDetails(Match lineMatch, string jobId, LogLine logLine)
+        {
+            var message = lineMatch.Groups["message"].Value;
+            var @class = lineMatch.Groups["class"].Value;
+            var timestamp = TimestampParsers.ParseJavaLogsTimestamp(lineMatch.Groups["ts"].Value);
+
+            switch(@class)
+            {
+                case "com.tableausoftware.domain.content.flows.workers.RunFlowWorkerHelper" when message.Contains("FlowRunEvent") :
+                    Dictionary<string, string> flowRun;
+                    try
+                    {
+                        flowRun = FlowRunEventRegex.Matches(message).ToDictionary(m => m.Groups["key"].Value, m => m.Groups["value"].Value);
+                    }
+                    catch (ArgumentException ex) when (ex.Message.Contains("same key has already been added"))
+                    {
+                        _processingNotificationsCollector.ReportWarning($"Duplicate key found in FlowRunEvent message", logLine, nameof(BackgrounderPlugin));
+                        // Use the fixed version that handles duplicates
+                        flowRun = FlowRunEventRegex.Matches(message)
+                            .GroupBy(m => m.Groups["key"].Value)
+                            .ToDictionary(g => g.Key, g => g.Last().Groups["value"].Value);
+                    }
+                   
+                    DateTime? queuedTime = null;
+                    DateTime? startedTime = null;
+                    DateTime? endTime = null;
+
+                    var queuedTimeStr = flowRun.GetStringValueOrNull("queuedTime")?.TrimSurroundingDoubleQuotes();
+                    var startedTimeStr = flowRun.GetStringValueOrNull("startedTime")?.TrimSurroundingDoubleQuotes();
+                    var endTimeStr = flowRun.GetStringValueOrNull("endTime")?.TrimSurroundingDoubleQuotes();
+
+                    try
+                    {
+                        if (!string.IsNullOrEmpty(queuedTimeStr) && queuedTimeStr != "NA")
+                        {
+                            queuedTime = TryParseDateTime(queuedTimeStr);
+                        }
+
+                        if (!string.IsNullOrEmpty(startedTimeStr) && startedTimeStr != "NA")
+                        {
+                            startedTime = TryParseDateTime(startedTimeStr);
+                        }
+
+                        if (!string.IsNullOrEmpty(endTimeStr) && endTimeStr != "NA")
+                        {
+                            endTime = TryParseDateTime(endTimeStr);
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        // If any DateTime parsing fails, keep the times as null
+                        queuedTime = null;
+                        startedTime = null;
+                        endTime = null;
+                    }
+
+                    return new BackgrounderFlowJobDetail
+                    {
+                        BackgrounderJobId = jobId,
+                        jobName = flowRun.GetStringValueOrNull("jobName")?.TrimSurroundingDoubleQuotes(),
+                        status = flowRun.GetStringValueOrNull("status"),
+                        flowId = flowRun.GetStringValueOrNull("flowId"),
+                        queuedTime = queuedTime,
+                        queueTimeSeconds = (flowRun.GetLongValueOrNull("queueTimeSeconds")),
+                        startedTime = startedTime,
+                        endTime = endTime,
+                        totalTimeSeconds = flowRun.GetLongValueOrNull("totalTimeSeconds"),
+                        runTimeSeconds = flowRun.GetLongValueOrNull("runTimeSeconds"),
+                        runType = flowRun.GetStringValueOrNull("runType"),
+                        flowName = flowRun.GetStringValueOrNull("flowName")?.TrimSurroundingDoubleQuotes(),
+                        flowLuid = flowRun.GetStringValueOrNull("flowLuid")?.TrimSurroundingDoubleQuotes(),
+                        outputStepIds = flowRun.GetStringValueOrNull("outputStepIds"),
+                        rowsGenerated = flowRun.GetLongValueOrNull("rowsGenerated"),
+                        flowRunMode = flowRun.GetStringValueOrNull("flowRunMode")?.TrimSurroundingDoubleQuotes(),
+                        flow_run_error_type = flowRun.GetStringValueOrNull("flow_run_error_type"),
+                        tableau_error_code = flowRun.GetStringValueOrNull("tableau_error_code"),
+                        tableau_service_name = flowRun.GetStringValueOrNull("tableau_service_name")?.TrimSurroundingDoubleQuotes(),
+                        tableau_status_code = flowRun.GetStringValueOrNull("tableau_status_code"),
+                        errors = flowRun.GetStringValueOrNull("error"),
+                        rootCauseErrorMsg = flowRun.GetStringValueOrNull("rootCauseErrorMsg")?.TrimSurroundingDoubleQuotes(),
+                        Timestamp = timestamp
+                    };
+                    
+                default:
+                    return null;
+            }
+        }
+
+        private static DateTime? TryParseDateTime(string dateTimeStr)
+        {
+            string[] formats = {
+                "ddd MMM dd HH:mm:ss UTC yyyy",  // Wed Apr 03 03:00:27 UTC 2024
+                "yyyy-MM-dd HH:mm:ss.fff"        // 2024-04-03 03:00:35.408
+            };
+
+            foreach (var format in formats)
+            {
+                if (DateTime.TryParseExact(dateTimeStr, format, System.Globalization.CultureInfo.InvariantCulture, 
+                    System.Globalization.DateTimeStyles.None, out DateTime result))
+                {
+                    return result;
+                }
+            }
+            
+            return null;
         }
 
         private static BackgrounderSubscriptionJobDetail TryMatchSubscriptionJobDetails(Match lineMatch, string jobId)

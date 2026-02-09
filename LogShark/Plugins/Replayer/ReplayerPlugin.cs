@@ -92,6 +92,8 @@ namespace LogShark.Plugins.Replayer
 
         // file to read the time zones dictionary from
         private static string _timeZonesDictionaryFile = "/Resources/ReplayerTimeZonesDictionary.txt";
+        
+
 
         public void Configure(IWriterFactory writerFactory, IConfiguration pluginConfig, IProcessingNotificationsCollector processingNotificationsCollector, ILoggerFactory loggerFactory)
         {
@@ -143,13 +145,15 @@ namespace LogShark.Plugins.Replayer
             _logger.LogInformation("Processing {0} apache source lines and {1} begin command controller, {2} server telemetry, {3} lock session, {4} end bootstrap vizqlserver events",
                 _apacheEventCollection.Count, _beginCommandController.Count, _serverTelemetryTuples.Count, _lockSessionTuples.Count, _endBootstrapSessionTuples.Count);
 
+
+
             var browserSessions = new List<BrowserSession>();
 
             //get the time offset from the first access log entry
             if (_apacheEventCollection.Count > 0)
             {
                 var firstOffset = _apacheEventCollection.First().TimestampOffset;
-                _timeOffset = _timeZoneDictionary.GetValueOrDefault(firstOffset, new TimeSpan(0,0,0));
+                _timeOffset = GetTimezoneOffset(firstOffset);
             }
 
             var count = 1;
@@ -215,13 +219,26 @@ namespace LogShark.Plugins.Replayer
         private void ProcessApacheLogLine(LogLine logLine)
         {
             var apacheEvent = ApacheEventParser.ParseEvent(logLine);
-            if (apacheEvent != null && apacheEvent.RequestMethod == "GET" && apacheEvent.StatusCode != 302 && IsVizLoadAccessEvent(apacheEvent))
+            if (apacheEvent == null)
+            {
+                return;
+            }
+            
+            // Add "GET" requests for viz loading (original logic)
+            if (apacheEvent.RequestMethod == "GET" && apacheEvent.StatusCode != 302 && IsVizLoadAccessEvent(apacheEvent))
             {
                 _apacheEventCollection.Add(apacheEvent);
                 if (_apacheEventCollection.Count % 10000 == 0)
                 {
                     _logger.LogInformation("Added {0} Apache logs with GET request method", _apacheEventCollection.Count);
                 }
+            }
+            // ALSO add the "POST" request for starting a session (This is the new logic)
+            else if ("POST".Equals(apacheEvent.RequestMethod, StringComparison.OrdinalIgnoreCase) &&
+                     apacheEvent.RequestBody.Contains("/startSession/viewing"))
+            {
+                _apacheEventCollection.Add(apacheEvent);
+                _logger.LogInformation("Added modern startSession POST event. RequestId: {0}", apacheEvent.RequestId);
             }
         }
 
@@ -271,37 +288,252 @@ namespace LogShark.Plugins.Replayer
 
         /// <summary>
         /// Populates a dictionary with TimeSpan offsets for the timezone names.
-        /// This is needed because GetSystemTimeZones works only with Standard time zones - not Daylight Saving.
+        /// First loads from the static dictionary file, then dynamically adds any missing system timezones.
         /// </summary>
         private void PopulateTimeZoneDictionary()
         {
+            // Load from static dictionary file if it exists
+            LoadStaticTimeZoneDictionary();
+            
+            // Dynamically add any missing system timezones
+            PopulateMissingSystemTimeZones();
+        }
+
+        /// <summary>
+        /// Loads timezone offsets from the static dictionary file
+        /// </summary>
+        private void LoadStaticTimeZoneDictionary()
+        {
+            try
+        {
             string timeZonesDictionaryFileLocation = $"{Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location)}/{_timeZonesDictionaryFile}";
+                if (File.Exists(timeZonesDictionaryFileLocation))
+                {
             string[] timeZones = File.ReadAllLines(timeZonesDictionaryFileLocation);
             foreach (var tz in timeZones)
             {
+                        if (string.IsNullOrWhiteSpace(tz) || tz.StartsWith("#")) continue; // Skip empty lines and comments
+                        
                 var kvp = tz.Split(',');
-                _timeZoneDictionary.TryAdd(kvp[0], TimeSpan.Parse(kvp[1]));
+                        if (kvp.Length >= 2)
+                        {
+                            if (TimeSpan.TryParse(kvp[1], out var offset))
+                            {
+                                _timeZoneDictionary.TryAdd(kvp[0].Trim(), offset);
+                            }
+                        }
+                    }
+                    _logger.LogInformation("Loaded {0} timezone entries from static dictionary", _timeZoneDictionary.Count);
+                }
+                else
+                {
+                    _logger.LogWarning("Timezone dictionary file not found at {0}, will use dynamic timezone resolution only", timeZonesDictionaryFileLocation);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error loading static timezone dictionary, will use dynamic timezone resolution only");
             }
         }
 
+        /// <summary>
+        /// Dynamically populates missing system timezones using .NET TimeZoneInfo
+        /// </summary>
+        private void PopulateMissingSystemTimeZones()
+        {
+            try
+            {
+                var systemTimeZones = TimeZoneInfo.GetSystemTimeZones();
+                int addedCount = 0;
+                var addedTimezones = new List<string>();
+                
+                foreach (var timeZone in systemTimeZones)
+                {
+                    // Add standard time zone if not already present
+                    if (!_timeZoneDictionary.ContainsKey(timeZone.StandardName))
+                    {
+                        var standardOffset = timeZone.GetUtcOffset(DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Unspecified));
+                        _timeZoneDictionary.TryAdd(timeZone.StandardName, standardOffset);
+                        addedTimezones.Add($"{timeZone.StandardName} ({standardOffset})");
+                        addedCount++;
+                    }
+
+                    // Add daylight time zone if not already present and different from standard
+                    if (!_timeZoneDictionary.ContainsKey(timeZone.DaylightName) && 
+                        !string.Equals(timeZone.StandardName, timeZone.DaylightName, StringComparison.OrdinalIgnoreCase))
+                    {
+                        // For daylight time, we need to calculate the offset during DST period
+                        // We'll use a date in summer (July) to get the daylight offset
+                        var summerDate = new DateTime(2023, 7, 1, 12, 0, 0, DateTimeKind.Unspecified);
+                        var daylightOffset = timeZone.GetUtcOffset(summerDate);
+                        _timeZoneDictionary.TryAdd(timeZone.DaylightName, daylightOffset);
+                        addedTimezones.Add($"{timeZone.DaylightName} ({daylightOffset})");
+                        addedCount++;
+                    }
+                }
+                
+                if (addedCount > 0)
+                {
+                    _logger.LogInformation("Dynamically added {0} missing timezone entries from system timezones: {1}", 
+                        addedCount, string.Join(", ", addedTimezones));
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error dynamically populating system timezones");
+            }
+        }
+
+        /// <summary>
+        /// Checks for any remaining missing system timezones and logs them for reference
+        /// </summary>
         private void CheckForMissingSystemTimeZones()
         {
             var systemTimeZones = TimeZoneInfo.GetSystemTimeZones();
+            var missingTimeZones = new List<string>();
+            
             foreach (var timeZone in systemTimeZones)
             {
-                // check the standard time zone.
-                if (!_timeZoneDictionary.Keys.Contains(timeZone.StandardName))
+                // Check standard time zone
+                if (!_timeZoneDictionary.ContainsKey(timeZone.StandardName))
                 {
-                    _logger.LogWarning($"Provided time zone dictionary doesn't contain system time zone {timeZone.StandardName}.  Consider updating {_timeZonesDictionaryFile}");
+                    missingTimeZones.Add(timeZone.StandardName);
                 }
 
-                // since the system timezone collection doesn't contain the daylight time zones, add them.
-                if (!_timeZoneDictionary.Keys.Contains(timeZone.DaylightName))
+                // Check daylight time zone if different from standard
+                if (!_timeZoneDictionary.ContainsKey(timeZone.DaylightName) && 
+                    !string.Equals(timeZone.StandardName, timeZone.DaylightName, StringComparison.OrdinalIgnoreCase))
                 {
-                    _logger.LogWarning($"Provided time zone dictionary doesn't contain system time zone {timeZone.DaylightName}.  Consider updating {_timeZonesDictionaryFile}");
+                    missingTimeZones.Add(timeZone.DaylightName);
                 }
             }
+            
+            if (missingTimeZones.Count > 0)
+            {
+                _logger.LogWarning("Found {0} system timezones not in dictionary: {1}. These will use fallback offset (UTC+0).", 
+                    missingTimeZones.Count, string.Join(", ", missingTimeZones.Take(10)));
+                if (missingTimeZones.Count > 10)
+                {
+                    _logger.LogWarning("... and {0} more timezones not shown", missingTimeZones.Count - 10);
+                }
+            }
+            else
+            {
+                _logger.LogInformation("All system timezones are now available in the dictionary");
+            }
         }
+
+        /// <summary>
+        /// Gets the timezone offset for a given timezone name with proper fallback handling
+        /// </summary>
+        /// <param name="timezoneName">The timezone name to look up</param>
+        /// <returns>The timezone offset, or UTC+0 if not found</returns>
+        private TimeSpan GetTimezoneOffset(string timezoneName)
+        {
+            if (string.IsNullOrEmpty(timezoneName))
+            {
+                _logger.LogDebug("Empty timezone name provided, using UTC+0");
+                return TimeSpan.Zero;
+            }
+
+            if (_timeZoneDictionary.TryGetValue(timezoneName, out var offset))
+            {
+                return offset;
+            }
+
+            // Try to parse as timezone offset format first (e.g., "+0000", "-0800", "+05:30")
+            if (TryParseTimezoneOffset(timezoneName, out var parsedOffset))
+            {
+                // Cache this result for future use
+                _timeZoneDictionary.TryAdd(timezoneName, parsedOffset);
+                _logger.LogInformation("Dynamically parsed timezone offset '{0}' as {1} and cached it", timezoneName, parsedOffset);
+                return parsedOffset;
+            }
+
+            // Try to resolve using .NET TimeZoneInfo as a fallback
+            try
+            {
+                var timeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById(timezoneName);
+                var utcOffset = timeZoneInfo.GetUtcOffset(DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Unspecified));
+                
+                // Cache this result for future use
+                _timeZoneDictionary.TryAdd(timezoneName, utcOffset);
+                _logger.LogInformation("Dynamically resolved timezone '{0}' to offset {1} and cached it", timezoneName, utcOffset);
+                
+                return utcOffset;
+            }
+            catch (TimeZoneNotFoundException)
+            {
+                _logger.LogWarning("Timezone '{0}' not found in system timezones, using UTC+0 as fallback", timezoneName);
+                return TimeSpan.Zero;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "Error resolving timezone '{0}', using UTC+0 as fallback", timezoneName);
+                return TimeSpan.Zero;
+            }
+        }
+
+        /// <summary>
+        /// Tries to parse a timezone name as a timezone offset format
+        /// </summary>
+        /// <param name="timezoneName">The timezone name to parse</param>
+        /// <param name="offset">The parsed offset if successful</param>
+        /// <returns>True if parsing was successful</returns>
+        private bool TryParseTimezoneOffset(string timezoneName, out TimeSpan offset)
+        {
+            offset = TimeSpan.Zero;
+
+            if (string.IsNullOrEmpty(timezoneName))
+                return false;
+
+            // Handle common offset formats
+            var trimmed = timezoneName.Trim();
+            
+            // Handle formats like "+0000", "-0800", "+0530"
+            if (trimmed.Length == 5 && (trimmed[0] == '+' || trimmed[0] == '-'))
+            {
+                if (int.TryParse(trimmed.Substring(1, 2), out var hours) &&
+                    int.TryParse(trimmed.Substring(3, 2), out var minutes))
+                {
+                    var sign = trimmed[0] == '+' ? 1 : -1;
+                    offset = new TimeSpan(sign * hours, sign * minutes, 0);
+                    return true;
+                }
+            }
+            
+            // Handle formats like "+00:00", "-08:00", "+05:30"
+            if (trimmed.Length == 6 && (trimmed[0] == '+' || trimmed[0] == '-') && trimmed[3] == ':')
+            {
+                if (int.TryParse(trimmed.Substring(1, 2), out var hours) &&
+                    int.TryParse(trimmed.Substring(4, 2), out var minutes))
+                {
+                    var sign = trimmed[0] == '+' ? 1 : -1;
+                    offset = new TimeSpan(sign * hours, sign * minutes, 0);
+                    return true;
+                }
+            }
+            
+            // Handle formats like "+00", "-08", "+05"
+            if (trimmed.Length == 3 && (trimmed[0] == '+' || trimmed[0] == '-'))
+            {
+                if (int.TryParse(trimmed.Substring(1, 2), out var hours))
+                {
+                    var sign = trimmed[0] == '+' ? 1 : -1;
+                    offset = new TimeSpan(sign * hours, 0, 0);
+                    return true;
+                }
+            }
+
+            // Try to parse as TimeSpan directly
+            if (TimeSpan.TryParse(trimmed, out offset))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
 
         /// <summary>
         /// Filters the access request with "views" and "authoring" in their request body.
@@ -328,7 +560,10 @@ namespace LogShark.Plugins.Replayer
         private BrowserSession ProcessAccessRequest(Apache.ApacheEvent accessRequest)
         {
             var browserSession = new BrowserSession();
-            var browserStartTime = accessRequest.Timestamp - _timeZoneDictionary[accessRequest.TimestampOffset];
+            
+            // Get timezone offset with proper fallback handling
+            var timezoneOffset = GetTimezoneOffset(accessRequest.TimestampOffset);
+            var browserStartTime = accessRequest.Timestamp - timezoneOffset;
             browserSession.BrowserStartTime = browserStartTime.ToString(UtcDateFormat);
             browserSession.Url = accessRequest.RequestBody;
             browserSession.AccessRequestId = accessRequest.RequestId;
@@ -357,6 +592,7 @@ namespace LogShark.Plugins.Replayer
             var vizqlSessionIDs = new List<string>();
             _serverTelemetryTuples.TryGetValue(accessRequestId, out var vizqlServerSessionCollection);
 
+
             //if previous query did not result in finding a vizql session try looking for lock-session
             if (vizqlServerSessionCollection == null || vizqlServerSessionCollection.Count == 0)
             {
@@ -365,8 +601,10 @@ namespace LogShark.Plugins.Replayer
 
             if (vizqlServerSessionCollection == null || vizqlServerSessionCollection.Count == 0)
             {
+                _logger.LogInformation("No exact VizqlServer sessions found for Apache request ID: {0}", accessRequestId);
                 return vizqlSessionIDs;
             }
+
 
             foreach (var vizqlSessionId in vizqlServerSessionCollection)
             {

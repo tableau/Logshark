@@ -148,9 +148,10 @@ namespace LogShark
         public TelemetryLevel TelemetryLevel => _config.GetValue<TelemetryLevel?>("Telemetry:Level") ?? TelemetryLevel.None;
 
         public int TelemetryTimeout => _config.GetValue<int>("Telemetry:Timeout", 30);
-
+        public string ExternalStreamTimeout => _config.GetValue<string>("HyperProcess:external_stream_timeout");
         // Value needs to be cached because Path.GetTempPath is non-deterministic
         private string _tempDir;
+        
         public string TempDir
         {
             get
@@ -169,13 +170,5 @@ namespace LogShark
         public string UserProvidedRunId => _parameters.UserProvidedRunId;
 
         public string WorkbookTemplatesDirectory => _config.GetValueAndThrowAtNull<string>("EnvironmentConfig:WorkbookTemplatesDir").FullyQualifyPathIfRelative(_rootDir);
-
-        public string StarfishIssueUrl => _config.GetValueAndThrowAtNull<string>("Starfish:IssueUrl");
-
-        public string StarfishArtifactUrl => _config.GetValueAndThrowAtNull<string>("Starfish:ArtifactUrl");
-
-        public int StarfishPublishGbThreshold => _config.GetValueAndThrowAtNull<int>("Starfish:PublishGbThreshold");
-
-        public bool PublishWorkbooksToStarfish => _config.GetValueAndThrowAtNull<bool>("Starfish:PublishWorkbooksToStarfish");
     }
 }
