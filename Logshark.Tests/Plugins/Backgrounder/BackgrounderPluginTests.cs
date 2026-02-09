@@ -32,7 +32,7 @@ namespace LogShark.Tests.Plugins.Backgrounder
                 plugin.ProcessLogLine(nullContent, LogType.BackgrounderJava);
             }
 
-            testWriterFactory.AssertAllWritersAreDisposedAndEmpty(4);
+            testWriterFactory.AssertAllWritersAreDisposedAndEmpty(5);
             processingNotificationsCollector.TotalErrorsReported.Should().Be(2);
         }
 
@@ -57,7 +57,7 @@ namespace LogShark.Tests.Plugins.Backgrounder
                 .Where(@case => @case.ExpectedOutput != null)
                 .Select(@case => @case.ExpectedOutput)
                 .ToList();
-            var jobWriter = testWriterFactory.GetOneWriterAndVerifyOthersAreEmptyAndDisposed<BackgrounderJob>("BackgrounderJobs", 4);
+            var jobWriter = testWriterFactory.GetOneWriterAndVerifyOthersAreEmptyAndDisposed<BackgrounderJob>("BackgrounderJobs", 5);
             jobWriter.ReceivedObjects.Should().BeEquivalentTo(expectedOutput);
         }
 

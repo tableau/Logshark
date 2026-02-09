@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 using LogShark.Containers;
 using LogShark.Exceptions;
+using LogShark.Shared;
 using LogShark.Writers.Containers;
 using Microsoft.Extensions.Logging;
 
@@ -13,16 +15,18 @@ namespace LogShark.Writers
         private readonly DataSetInfo _dataSetInfo;
         private readonly string _writerName;
         private readonly object _writeLock;
+        protected readonly IProcessingNotificationsCollector _processingNotificationsCollector;
         
         private long _linesPersisted = 0;
         private long _nullLinesIgnored = 0;
         private bool _closed = false;
 
-        protected BaseWriter(DataSetInfo dataSetInfo, ILogger logger, string writerName)
+        protected BaseWriter(DataSetInfo dataSetInfo, ILogger logger, string writerName, IProcessingNotificationsCollector processingNotificationsCollector = null)
         {
             _dataSetInfo = dataSetInfo;
             Logger = logger;
             _writerName = writerName;
+            _processingNotificationsCollector = processingNotificationsCollector;
             _writeLock = new object();
         }
         
@@ -62,8 +66,24 @@ namespace LogShark.Writers
 
             lock (_writeLock)
             {
-                InsertNonNullLineLogic(objectToWrite);
-                ++_linesPersisted;
+                try
+                {
+                    InsertNonNullLineLogic(objectToWrite);
+                    ++_linesPersisted;
+                }
+                catch (Exception ex) when (IsHyperTimeoutException(ex))
+                {
+                    var timeoutMessage = $"Hyper file writing failed due to external stream timeout during data insertion. " +
+                                       $"Writer: {_writerName}<{typeof(T)}>, DataSet: {_dataSetInfo}. " +
+                                       "Consider increasing the 'external_stream_timeout' configuration value or checking system resources.";
+                    
+                    Logger.LogError(ex, timeoutMessage);
+                    
+                    // Report the error to the processing notifications collector so it appears in the final summary
+                    _processingNotificationsCollector?.ReportError(timeoutMessage, _writerName);
+                    
+                    throw new InvalidOperationException(timeoutMessage, ex);
+                }
             }
         }
 
@@ -109,6 +129,13 @@ namespace LogShark.Writers
             _closed = true;
             
             return new WriterLineCounts(_dataSetInfo, _linesPersisted, _nullLinesIgnored);
+        }
+
+        private static bool IsHyperTimeoutException(Exception ex)
+        {
+            // Check for the specific Hyper timeout exception pattern
+            return ex.Message?.Contains("canceled after reaching timeout for external stream") == true ||
+                   (ex.InnerException?.Message?.Contains("canceled after reaching timeout for external stream") == true);
         }
 
         public virtual void Dispose()

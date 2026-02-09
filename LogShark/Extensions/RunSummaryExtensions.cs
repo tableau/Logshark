@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -20,6 +21,7 @@ namespace LogShark.Extensions
             if (runSummary.ProcessingNotificationsCollector != null)
             {
                 GenerateProcessingErrorsSection(sb, runSummary);
+                GenerateProcessingWarningsSection(sb, runSummary);
             }
 
             if (runSummary.PublisherResults != null)
@@ -51,7 +53,11 @@ namespace LogShark.Extensions
             return runSummary?.ProcessingNotificationsCollector != null &&
                    runSummary.ProcessingNotificationsCollector.TotalErrorsReported > 0;
         }
-        
+        public static bool HasProcessingWarnings(this RunSummary runSummary)
+        {
+            return runSummary?.ProcessingNotificationsCollector != null &&
+                   runSummary.ProcessingNotificationsCollector.TotalWarningsReported > 0;
+        }
         public static bool HasWorkbookGeneratorErrors(this RunSummary runSummary)
         {
             return runSummary?.WorkbookGeneratorResults?.CompletedWorkbooks != null && 
@@ -106,6 +112,56 @@ namespace LogShark.Extensions
             
 
             return sb.ToString();
+        }
+        public static string ProcessingWarningsReport(this RunSummary runSummary)
+        {
+            if (!runSummary.HasProcessingWarnings())
+            {
+                return "No warnings occurred while processing log set";
+            }
+
+            var sb = new StringBuilder();
+            var errorsCollector = runSummary.ProcessingNotificationsCollector;
+            sb.AppendLine($"{errorsCollector.TotalWarningsReported} warnings occurred while processing log set:");
+
+             return sb.ToString();
+        }
+        public static void ProcessingErrorsLines(this RunSummary runSummary, string filePath)
+        {
+            if (!runSummary.HasProcessingErrors())
+            {
+                return ;
+            }
+
+            var sb = new StringBuilder();
+            var missedLines = runSummary.ProcessingNotificationsCollector.missedLines;
+           
+
+            if (missedLines.Count >0)
+            {
+                sb.AppendLine("Line which were skipped");
+                sb.AppendLine();
+                AppendMissedLinestoCSV(missedLines, sb,filePath);
+            }
+            else
+            {
+                sb.AppendLine("No lines were skipped");
+                sb.AppendLine();
+                AppendMissedLinestoCSV(missedLines, sb,filePath);
+            }
+
+
+           
+        }
+
+        private static void AppendMissedLinestoCSV(IList<string> missedLines, StringBuilder sb, string outputFile)
+        {
+            foreach (var line in missedLines ?? new List<string>())
+            {
+                sb.AppendLine(line);
+                //write every line to csv
+            }
+            File.WriteAllText(outputFile, sb.ToString());
         }
 
         public static string WorkbookGeneratorErrorsReport(this RunSummary runSummary)
@@ -204,7 +260,11 @@ namespace LogShark.Extensions
             sb.AppendLine(GenerateTitle("Processing errors"));
             sb.AppendLine(runSummary.ProcessingErrorsReport());
         }
-        
+        private static void GenerateProcessingWarningsSection(StringBuilder sb, RunSummary runSummary)
+        {
+            sb.AppendLine(GenerateTitle("Processing Warnings"));
+            sb.AppendLine(runSummary.ProcessingWarningsReport());
+        }
         private static void GeneratePublishingResultsSection(StringBuilder sb, RunSummary runSummary)
         {
             var publisherResults = runSummary.PublisherResults;

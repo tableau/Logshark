@@ -23,6 +23,9 @@
     "DefaultWriter": "hyper",
     "AppendLogsetNameToOutput": false
   },
+  "HyperProcess": {
+    "external_stream_timeout": "10h"
+  },
   "PostgresWriterDatabase": {
     "_comment": {
       "1": "If Postgres writer is used to store output, either provide `ConnectionString` or `Host`+`Database`+`Username`+`Password`. If `ConnectionString` and individual parameters are provided at the same time, individual parameters will override respective values in connection string",

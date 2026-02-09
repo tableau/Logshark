@@ -30,7 +30,7 @@ namespace LogShark.Plugins.Hyper
 
         private readonly HashSet<string> _eventTypes = new HashSet<string>() { "query-end", "query-end-cancelled", "query-end-canceled", "connection-startup-begin", "connection-startup-end", "cancel-request-received", "connection-close-request",
             "dbregistry-load", "dbregistry-release", "query-result-sent", "tcp-ip-client-allowed", "tcp-ip-client-rejected", "query-plan-slow", "query-plan-spooling", "query-plan-cancelled",
-            "startup-info", "resource-stats", "log-rate-limit-reached", "asio-continuation-slow" };
+            "startup-info", "resource-stats", "log-rate-limit-reached", "asio-continuation-slow","query-running-info" };
 
 
         public void Configure(IWriterFactory writerFactory, IConfiguration pluginConfig, IProcessingNotificationsCollector processingNotificationsCollector, ILoggerFactory loggerFactory)
@@ -127,7 +127,6 @@ namespace LogShark.Plugins.Hyper
                 }
             }
 
-
             var hyperQuery = new HyperEvent()
             {
                 FileName = logLine.LogFileInfo.FileName,
@@ -154,49 +153,95 @@ namespace LogShark.Plugins.Hyper
                 Source = payload["source"]?.ToString(),
 
                 // *-end, *-release
-                Elapsed = payload["elapsed"]?.ToObject<double>() ?? default(double?),
+                Elapsed = payload["elapsed"]?.ToObject<double>()
+                    ?? payload["current-elapsed"]?.ToObject<double>()
+                    ?? default(double?),
 
-                // query-end, query-end-cancelled
+                // query-end, query-end-cancelled, query-running-info
+
                 ClientSessionId = jsonEvent.ContextMetrics?.ClientSessionId ?? payload["client-session-id"]?.ToString(),
                 ClientRequestId = jsonEvent.ContextMetrics?.ClientRequestId,
-                Columns = payload["cols"]?.ToObject<double>() ?? default(double?),
-                CopyDataSize = payload["copydata-size"]?.ToObject<long>() ?? default(long?),
+               
+               /* CopyDataSize = payload["copydata-size"]?.ToObject<long>() ?? default(long?),
                 CopyDataTime = payload["copydata-time"]?.ToObject<double>() ?? default(double?),
                 ExclusiveExecution = payload["ExclusiveExecution"]?.ToObject<bool>() ?? default(bool?),
                 LockAcquisitionTime = payload["lock-acquisition-time"]?.ToObject<double>() ?? default(double?),
+               PeakTransactionMemoryMb = payload["peak-transaction-memory-mb"]?.ToObject<double>() ?? default(double?),*/
+                Columns = payload["cols"]?.ToObject<double>() ?? default(double?),
                 PeakResultBufferMemoryMb = payload["peak-result-buffer-memory-mb"]?.ToObject<double>() ?? default(double?),
-                PeakTransactionMemoryMb = payload["peak-transaction-memory-mb"]?.ToObject<double>() ?? default(double?),
+                PeakResultBufferDiskMb = payload["peak-result-buffer-Disk-mb"]?.ToObject<double>() ?? default(double?),
+                CommitTime = payload["commit-time"]?.ToObject<double>() ?? default(double?),
+                QuerySettingsActive = payload["query-settings-active"]?.ToObject<bool>() ?? default(bool?),
+                QueryHash = payload["query-hash"]?.ToString(),
+                
                 PlanCacheHitCount = payload["plan-cache-hit-count"]?.ToObject<double>() ?? default(double?),
                 PlanCacheStatus = payload["plan-cache-status"]?.ToString(),
-                QueryCompilationTime =
-                    payload["compilation-time"]?.ToObject<double>()
-                    ?? payload["query-compilation-time"]?.ToObject<double>()
-                    ?? default(double?),
+               //pre-execution
+                PreExecParsingTime = payload["pre-execution"]?["parsing-time"]?.ToObject<double>() ?? default(double),
+                PreExecCompilationTime = payload["pre-execution"]?["compilation-time"]?.ToObject<double>() ?? default(double),
+                PreExecElapsed = payload["pre-execution"]?["elapsed"]?.ToObject<double>() ?? default(double),
+                PreExecWaitTimeDBLock = payload["pre-execution"]?["wait-time-database-lock"]?.ToObject<double>() ?? default(double),
+                PreExecProcessedRows = payload["pre-execution"]?["processed-rows"]?.ToObject<double>() ?? default(double),
+                PreExecProcessedRowsBYOL = payload["pre-execution"]?["processed-rows-byol"]?.ToObject<double>() ?? default(double),
+                PreExecProcessedRowsFileBYOL = payload["pre-execution"]?["processed-rows-file-byol"]?.ToObject<double>() ?? default(double),
+                PreExecResultSpoolingNumBuiltChunks = payload["pre-execution"]?["result-spooling-number-built-chunks"]?.ToObject<double>() ?? default(double),
+                PreExecThreadTime = payload["pre-execution"]?["threads"]?["thread-time"]?.ToObject<double>() ?? default(double),
+                PreExecThreadsCPUTime = payload["pre-execution"]?["threads"]?["cpu-time"]?.ToObject<double>() ?? default(double),
+                PreExecThreadsWaitTime = payload["pre-execution"]?["threads"]?["wait-time"]?.ToObject<double>() ?? default(double),
+                PreExecPeakTransactionMemMb = payload["pre-execution"]?["peak-transaction-memory-mb"]?.ToObject<double>() ?? default(double),
+                //execution
+                ExecElapsed = payload["execution"]?["elapsed"]?.ToObject<double>() ?? default(double),
+                ExecWaitTimeObjLock = payload["execution"]?["wait-time-objects-lock"]?.ToObject<double>() ?? default(double),
+                ExecyWaitTimeDBLock = payload["execution"]?["wait-time-database-lock"]?.ToObject<double>() ?? default(double),
+                ExecProcessedRows = payload["execution"]?["processed-rows"]?.ToObject<double>() ?? default(double),
+                ExecProcessedRowsBYOL = payload["execution"]?["processed-rows-byol"]?.ToObject<double>() ?? default(double),
+                ExecProcessedRowsFileBYOL = payload["execution"]?["processed-rows-file-byol"]?.ToObject<double>() ?? default(double),
+                ExecResultSpoolingNumBuiltChunks = payload["execution"]?["result-spooling-number-built-chunks"]?.ToObject<double>() ?? default(double),
+                ExecThreadTime = payload["execution"]?["threads"]?["thread-time"]?.ToObject<double>() ?? default(double),
+                ExecThreadsCpuTime = payload["execution"]?["threads"]?["cpu-time"]?.ToObject<double>() ?? default(double),
+                ExecThreadsWaitTime = payload["execution"]?["threads"]?["wait-time"]?.ToObject<double>() ?? default(double),
+                ExecThreadsWaitTimeBuffBackPressure = payload["execution"]?["threads"]?["wait-time-write-buffer-backpressure"]?.ToObject<double>() ?? default(double),
+                ExecPeakTransactionMemMb = payload["execution"]?["peak-transaction-memory-mb"]?.ToObject<double>() ?? default(double),
+                //adaptive-compilation
+                ExecAdaptiveCompilationTime = payload["execution"]?["adaptive-compilation"]?["compilation-time"]?.ToObject<double>() ?? default(double),
+                ExecAdaptiveCompilationOptExpected = payload["execution"]?["adaptive-compilation"]?["optimized"]?["expected"]?.ToObject<double>() ?? default(double),
+                ExecAdaptiveCompilationOptActual = payload["execution"]?["adaptive-compilation"]?["optimized"]?["actual"]?.ToObject<double>() ?? default(double),
+                
+
+
+
+
                 QueryExecutionTime =
                     payload["execution-time"]?.ToObject<double>()
                     ?? payload["query-execution-time"]?.ToObject<double>()
                     ?? default(double?),
-                QueryParsingTime =
-                    payload["parsing-time"]?.ToObject<double>()
-                    ?? payload["query-parsing-time"]?.ToObject<double>()
-                    ?? default(double?),
+
                 QueryTrunc = payload["query-trunc"]?.ToString(),
                 ResultSizeMb = payload["result-size-mb"]?.ToObject<double>() ?? default(double?),
                 Rows = payload["rows"]?.ToObject<double>() ?? default(double?),
                 Spooling = payload["spooling"]?.ToObject<bool>() ?? default(bool?),
-                StatementId = payload["statement-id"]?.ToString(),
+                
+                Statement = payload["statement"]?.ToString(),
                 TimeToSchedule = payload["time-to-schedule"]?.ToObject<double>() ?? default(double?),
                 TransactionId = payload["transaction-id"]?.ToString(),
-                TransactionVisibleId = payload["transaction-visible-id"]?.ToString(),
+                StatementId = payload["statement-id"]?.ToString(),
+                /*TransactionVisibleId = payload["transaction-visible-id"]?.ToString(),
                 ExecThreadsCpuTime = payload["exec-threads"]?["cpu-time"]?.ToObject<double>() ?? default(double?),
                 ExecThreadsWaitTime = payload["exec-threads"]?["wait-time"]?.ToObject<double>() ?? default(double?),
-                ExecThreadsTotalTime = payload["exec-threads"]?["total-time"]?.ToObject<double>() ?? default(double?),
-                StorageAccessTime = payload["exec-threads"]?["storage"]?["access-time"]?.ToObject<double>() ?? default(double?),
-                StorageAccessCount = payload["exec-threads"]?["storage"]?["access-count"]?.ToObject<long>() ?? default(long?),
-                StorageAccessBytes = payload["exec-threads"]?["storage"]?["access-bytes"]?.ToObject<long>() ?? default(long?),
-                StorageWriteTime = payload["exec-threads"]?["storage"]?["write-time"]?.ToObject<double>() ?? default(double?),
-                StorageWriteCount = payload["exec-threads"]?["storage"]?["write-count"]?.ToObject<long>() ?? default(long?),
-                StorageWriteBytes = payload["exec-threads"]?["storage"]?["write-bytes"]?.ToObject<long>() ?? default(long?),
+               ExecThreadsTotalTime = payload["exec-threads"]?["total-time"]?.ToObject<double>() ?? default(double?),*/
+                StorageAccessTime = payload["execution"]?["storage"]?["access-time"]?.ToObject<double>() ?? default(double?),
+                StorageAccessCount = payload["execution"]?["storage"]?["access-count"]?.ToObject<long>() ?? default(long?),
+                StorageAccessBytes = payload["execution"]?["storage"]?["access-bytes"]?.ToObject<long>() ?? default(long?),
+                StorageWorkerBlockedTime = payload["execution"]?["storage"]?["worker-blocked-time"]?.ToObject<double>() ?? default(double?),
+                StorageWorkerBlockedCount = payload["execution"]?["storage"]?["worker-blocked-count"]?.ToObject<long>() ?? default(long?),
+                StorageCacheHitCount = payload["execution"]?["storage"]?["cache-hit-count"]?.ToObject<long>() ?? default(long?),
+
+
+                StorageCacheHitBytes = payload["execution"]?["storage"]?["cache-hit-bytes"]?.ToObject<long>() ?? default(long?),
+                StorageCacheBytesSaved = payload["execution"]?["storage"]?["cache-bytes-saved"]?.ToObject<long>() ?? default(long?),
+
+
+
 
                 // connection-startup-begin
                 DbUser = payload["db-user"]?.ToString(),
@@ -268,8 +313,8 @@ namespace LogShark.Plugins.Hyper
                 PhysicalTotalMb = payload["memory"]?["physical"]?["total-mb"]?.ToObject<long>() ?? default(long?),
                 PhysicalSystemMb = payload["memory"]?["physical"]?["system-mb"]?.ToObject<long>() ?? default(long?),
                 PhysicalProcessMb = payload["memory"]?["physical"]?["process-mb"]?.ToObject<long>() ?? default(long?),
-                GlobalCurrentMb = payload["mem-tracker"]?["global"]["current-mb"]?.ToObject<long>() ?? default(long?),
-                GlobalPeakMb = payload["mem-tracker"]?["global"]["peak-mb"]?.ToObject<long>() ?? default(long?),
+                GlobalCurrentMb = payload["mem-tracker"]?["global"]?["current-mb"]?.ToObject<long>() ?? default(long?),
+                GlobalPeakMb = payload["mem-tracker"]?["global"]?["peak-mb"]?.ToObject<long>() ?? default(long?),
                 GlobalNetworkReadbufferCurrentMb = payload["mem-tracker"]?["global_network_readbuffer"]?["current-mb"]?.ToObject<long>() ?? default(long?),
                 GlobalNetworkReadbufferPeakMb = payload["mem-tracker"]?["global_network_readbuffer"]?["peak-mb"]?.ToObject<long>() ?? default(long?),
                 GlobalNetworkWriteBufferCurrentMb = payload["mem-tracker"]?["global_network_writebuffer"]?["current-mb"]?.ToObject<long>() ?? default(long?),

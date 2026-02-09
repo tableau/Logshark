@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using LogShark.Containers;
 using LogShark.Plugins.Backgrounder.Model;
@@ -17,14 +18,16 @@ namespace LogShark.Plugins.Backgrounder
         private static readonly DataSetInfo JobErrorsDsi = new DataSetInfo("Backgrounder", "BackgrounderJobErrors");
         private static readonly DataSetInfo ExtractJobDetailsDsi = new DataSetInfo("Backgrounder", "BackgrounderExtractJobDetails");
         private static readonly DataSetInfo SubscriptionJobDetailsDsi = new DataSetInfo("Backgrounder", "BackgrounderSubscriptionJobDetails");
-        
+        private static readonly DataSetInfo FlowJobDetailsDsi = new DataSetInfo("Backgrounder", "BackgrounderFlowJobDetails");
+
         private static readonly HashSet<string> ExtractRefreshJobTypes = new HashSet<string> { "refresh_extracts", "increment_extracts" };
         private static readonly HashSet<string> SubscriptionJobTypes = new HashSet<string> { "single_subscription_notify" };
-        
+        private static readonly HashSet<string> FlowJobTypes = new HashSet<string> { "run_flow" };
         private readonly IWriter<BackgrounderJob> _jobWriter;
         private readonly IWriter<BackgrounderJobError> _jobErrorWriter;
         private readonly IWriter<BackgrounderExtractJobDetail> _extractJobDetailWriter;
         private readonly IWriter<BackgrounderSubscriptionJobDetail> _subscriptionJobDetailWriter;
+        private readonly IWriter<BackgrounderFlowJobDetail> _flowJobDetailWriter;
 
         public BackgrounderEventPersister(IWriterFactory writerFactory)
         {
@@ -32,6 +35,7 @@ namespace LogShark.Plugins.Backgrounder
             _jobErrorWriter = writerFactory.GetWriter<BackgrounderJobError>(JobErrorsDsi);
             _extractJobDetailWriter = writerFactory.GetWriter<BackgrounderExtractJobDetail>(ExtractJobDetailsDsi);
             _subscriptionJobDetailWriter = writerFactory.GetWriter<BackgrounderSubscriptionJobDetail>(SubscriptionJobDetailsDsi);
+            _flowJobDetailWriter = writerFactory.GetWriter<BackgrounderFlowJobDetail>(FlowJobDetailsDsi);
         }
 
         public void AddStartEvent(BackgrounderJob startEvent)
@@ -86,7 +90,30 @@ namespace LogShark.Plugins.Backgrounder
                 }
             }
         }
-        
+        public void AddFlowJobDetails(BackgrounderFlowJobDetail flowJobDetail)
+        {
+            lock (_events)
+            {
+                var dateTimeKey = flowJobDetail.Timestamp;
+                if (_events.ContainsKey(flowJobDetail.BackgrounderJobId))
+                {
+                    var existingDateTimeEvent = _events[flowJobDetail.BackgrounderJobId];
+                    while (existingDateTimeEvent.ContainsKey(dateTimeKey))
+                    {
+                        dateTimeKey = dateTimeKey.AddTicks(1);
+                    }
+                    existingDateTimeEvent.Add(dateTimeKey, new BackgrounderEvent { FlowJobDetails = flowJobDetail });
+
+                }
+                else
+                {
+                    var dateTimeEvents = new SortedList<DateTime, BackgrounderEvent>();
+                    dateTimeEvents.Add(flowJobDetail.Timestamp, new BackgrounderEvent { FlowJobDetails = flowJobDetail });
+
+                    _events.Add(flowJobDetail.BackgrounderJobId, dateTimeEvents);
+                }
+            }
+        }
         public void AddExtractJobDetails(BackgrounderExtractJobDetail extractJobDetail)
         {
             lock (_events)
@@ -152,6 +179,7 @@ namespace LogShark.Plugins.Backgrounder
             _jobErrorWriter?.Dispose();
             _extractJobDetailWriter?.Dispose();
             _subscriptionJobDetailWriter?.Dispose();
+            _flowJobDetailWriter?.Dispose();
         }
 
         private void PersistEvent(BackgrounderEvent @event, bool deleteFromDictionary = true)
@@ -190,7 +218,14 @@ namespace LogShark.Plugins.Backgrounder
             {
                 _subscriptionJobDetailWriter.AddLine(@event.SubscriptionJobDetails);
             }
-
+            if(FlowJobTypes.Contains(jobEvent.JobType) )
+            {
+                //Haven't figured this out but sometimes this event can be null
+                if (@event.FlowJobDetails != null)
+                {
+                    _flowJobDetailWriter.AddLine(@event.FlowJobDetails);
+                }
+            }
             if (deleteFromDictionary)
             {
                 _events.Remove(jobEvent.JobId);
@@ -253,6 +288,10 @@ namespace LogShark.Plugins.Backgrounder
                         {
                             newEvent.SetExtractJobDetail(e.ExtractJobDetails);
                         }
+                        if(e.FlowJobDetails != null && newEvent.StartEvent != null)
+                        {
+                            newEvent.SetFlowJobDetail(e.FlowJobDetails);
+                        }
                     }
 
                     if (newEvent.StartEvent != null)
@@ -266,7 +305,9 @@ namespace LogShark.Plugins.Backgrounder
                     _jobWriter.Close(),
                     _jobErrorWriter.Close(),
                     _extractJobDetailWriter.Close(),
-                    _subscriptionJobDetailWriter.Close()
+                    _subscriptionJobDetailWriter.Close(),
+                    _flowJobDetailWriter.Close()
+                   
                 };
             }
         }
@@ -278,6 +319,7 @@ namespace LogShark.Plugins.Backgrounder
             public BackgrounderJob EndEvent { get; set; }
             public BackgrounderExtractJobDetail ExtractJobDetails { get; set; }
             public BackgrounderSubscriptionJobDetail SubscriptionJobDetails { get; set; }
+            public BackgrounderFlowJobDetail FlowJobDetails { get; set; }
             public int RequeueExten { get; set; }
 
             public void AddSubscriptionDetail(BackgrounderSubscriptionJobDetail newDetail)
@@ -318,6 +360,12 @@ namespace LogShark.Plugins.Backgrounder
                 ExtractJobDetails = extractDetail;
                 if (RequeueExten != 0)
                     ExtractJobDetails.BackgrounderJobId = extractDetail.BackgrounderJobId + "-requeue-" + RequeueExten;
+            }
+            public void SetFlowJobDetail(BackgrounderFlowJobDetail flowJobDetail)
+            {
+                FlowJobDetails = flowJobDetail;
+                if (RequeueExten != 0)
+                    FlowJobDetails.BackgrounderJobId = flowJobDetail.BackgrounderJobId + "-requeue-" + RequeueExten;
             }
         }
 

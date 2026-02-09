@@ -105,6 +105,7 @@ namespace LogShark.Containers
         OutOfMemory,
         TaskCancelled,
         InserterDisposed,
+        HyperTimeout,
         UnclassifiedError,
         MultipleExitReasonsOnDifferentThreads
     }

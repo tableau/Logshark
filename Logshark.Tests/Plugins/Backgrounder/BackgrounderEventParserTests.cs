@@ -36,7 +36,9 @@ namespace LogShark.Tests.Plugins.Backgrounder
             parser.ParseAndPersistLine(logLine, "2018-08-08 11:17:13.491 +1000 (,,,,,:purge_expired_wgsessions,-) scheduled-background-job-runner-1 backgrounder: INFO  com.tableausoftware.backgrounder.runner.BackgroundJobRunner - Running job of type PurgeExpiredWgSessions; no timeout; priority: 0; id: 9; args: null"); // Good input, but not error nor has ID
 
             _persisterMock.VerifyNoOtherCalls();
-            processingNotificationsCollector.TotalErrorsReported.Should().Be(2);
+            //Changed expected to 1, there can be be exception lines which cannot be picked by regex, it can result in a lot of errors which can confuse the user
+            //Once regex is changed to handle exception messages this can be changed.
+            processingNotificationsCollector.TotalErrorsReported.Should().Be(1);
         }
 
 

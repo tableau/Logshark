@@ -7,6 +7,7 @@ using LogShark.Shared;
 using LogShark.Shared.LogReading.Containers;
 using LogShark.Writers;
 using LogShark.Writers.Containers;
+using Newtonsoft.Json.Linq;
 
 namespace LogShark.Plugins.ResourceManager
 {
@@ -15,12 +16,14 @@ namespace LogShark.Plugins.ResourceManager
         private static readonly DataSetInfo ActionsDataSetInfo = new DataSetInfo("ResourceManager", "ResourceManagerActions");
         private static readonly DataSetInfo CpuSamplesDataSetInfo = new DataSetInfo("ResourceManager", "ResourceManagerCpuSamples");
         private static readonly DataSetInfo MemorySamplesDataSetInfo = new DataSetInfo("ResourceManager", "ResourceManagerMemorySamples");
+        private static readonly DataSetInfo ResourceMetricsMemorySamplesDataSetInfo = new DataSetInfo("ResourceManager", "ResourceMetricsMemorySamples");
         private static readonly DataSetInfo ThresholdsDataSetInfo = new DataSetInfo("ResourceManager", "ResourceManagerThresholds");
         private static readonly DataSetInfo HighCpuUsageDataSetInfo = new DataSetInfo("ResourceManager", "ResourceManagerHighCpuUsages");
 
         private readonly IWriter<ResourceManagerAction> _actionsWriter;
         private readonly IWriter<ResourceManagerCpuSample> _cpuSamplesWriter;
         private readonly IWriter<ResourceManagerMemorySample> _memorySamplesWriter;
+        private readonly IWriter<ResourceMetricsMemorySample> _resourceMetricsMemorySamplesWriter;
         private readonly IWriter<ResourceManagerThreshold> _thresholdsWriters;
         private readonly IWriter<ResourceManagerHighCpuUsage> _cpuUsageWriter;
 
@@ -33,12 +36,22 @@ namespace LogShark.Plugins.ResourceManager
             _actionsWriter = writerFactory.GetWriter<ResourceManagerAction>(ActionsDataSetInfo);
             _cpuSamplesWriter = writerFactory.GetWriter<ResourceManagerCpuSample>(CpuSamplesDataSetInfo);
             _memorySamplesWriter = writerFactory.GetWriter<ResourceManagerMemorySample>(MemorySamplesDataSetInfo);
+            _resourceMetricsMemorySamplesWriter = writerFactory.GetWriter<ResourceMetricsMemorySample>(ResourceMetricsMemorySamplesDataSetInfo);
             _thresholdsWriters = writerFactory.GetWriter<ResourceManagerThreshold>(ThresholdsDataSetInfo);
             _cpuUsageWriter = writerFactory.GetWriter<ResourceManagerHighCpuUsage>(HighCpuUsageDataSetInfo);
         }
 
         public void ProcessEvent(NativeJsonLogsBaseEvent baseEvent, string message, LogLine logLine, string processName)
-        {
+        { 
+            if(processName== "hyper")
+            {
+                if (message.Contains("has-load") && message.Contains("memory"))
+                {
+                    AddHyperMemorySampleEvent(baseEvent,message,logLine,processName);
+                    return;
+                }
+               
+            }
             if (!message?.StartsWith("Resource Manager") ?? true)
             {
                 return;
@@ -94,6 +107,7 @@ namespace LogShark.Plugins.ResourceManager
                 _actionsWriter.Close(),
                 _cpuSamplesWriter.Close(),
                 _memorySamplesWriter.Close(),
+                _resourceMetricsMemorySamplesWriter.Close(),
                 _thresholdsWriters.Close(),
                 _cpuUsageWriter.Close()
             };
@@ -104,6 +118,7 @@ namespace LogShark.Plugins.ResourceManager
             _actionsWriter.Dispose();
             _cpuSamplesWriter.Dispose();
             _memorySamplesWriter.Dispose();
+            _resourceMetricsMemorySamplesWriter.Dispose();
             _thresholdsWriters.Dispose();
             _cpuUsageWriter.Dispose();
         }
@@ -151,7 +166,11 @@ namespace LogShark.Plugins.ResourceManager
         private static readonly Regex CurrentAndTotalMemoryUtilRegex = new Regex(@".*: (?<current_process_util>[\d,]+?) bytes.*;(?<tableau_total_util>[\d,]+?) bytes.*; (?<total_util>[\d,]+?) bytes", RegexOptions.Compiled | RegexOptions.ExplicitCapture);
         private void AddMemorySampleEvent(NativeJsonLogsBaseEvent baseEvent, string message, LogLine logLine, string processName)
         {
-            var currentAndTotalMatch = CurrentAndTotalMemoryUtilRegex.Match(message);
+            if (processName=="hyper") //due to a space after semicolon in hyper logs only - https://sourcegraph.prod.tableautools.com/github.com/sf-analyticscloud/monolith@252/tableau-2024-3/-/blob/modules/foundation/lego/tabsys/main/monitor/ResourceManagerImpl.cpp?L283-285
+            {
+                message = message.Replace("(current process); ", "(current process);");
+            }
+                var currentAndTotalMatch = CurrentAndTotalMemoryUtilRegex.Match(message);
             if (currentAndTotalMatch.Success)
             {
                 var record = ResourceManagerMemorySample.GetEventWithNullCheck(
@@ -169,7 +188,161 @@ namespace LogShark.Plugins.ResourceManager
 
             _processingNotificationsCollector.ReportError("Failed to process line as MemorySampleEvent.", logLine, nameof(ResourceManagerPlugin));
         }
-        
+
+        private void AddHyperMemorySampleEvent(NativeJsonLogsBaseEvent baseEvent, string message, LogLine logLine, string processName)
+        {
+            try
+            {
+                // Parse the JSON message to extract all resource metrics information
+                var jsonObject = JObject.Parse(message);
+                
+                // Extract has-load
+                bool? hasLoad = jsonObject["has-load"]?.ToObject<bool?>();
+                
+                // Extract memory information (convert from MB to GB)
+                var memoryObject = jsonObject["memory"];
+                double? totalVirtualMemoryGb = ConvertMbToGb(memoryObject?["total_virtual_memory_mb"]?.ToObject<double?>());
+                double? systemVirtualMemoryGb = ConvertMbToGb(memoryObject?["system_virtual_memory_mb"]?.ToObject<double?>());
+                double? processVirtualMemoryGb = ConvertMbToGb(memoryObject?["process_virtual_memory_mb"]?.ToObject<double?>());
+                double? totalPhysicalMemoryGb = ConvertMbToGb(memoryObject?["total_physical_memory_mb"]?.ToObject<double?>());
+                double? systemPhysicalMemoryGb = ConvertMbToGb(memoryObject?["system_physical_memory_mb"]?.ToObject<double?>());
+                double? processPhysicalMemoryGb = ConvertMbToGb(memoryObject?["process_physical_memory_mb"]?.ToObject<double?>());
+                double? processFileMappingsGb = ConvertMbToGb(memoryObject?["process_file_mappings_mb"]?.ToObject<double?>());
+                
+                // Extract memory trackers - current usage (keep in MB - not converted)
+                var memTrackersObject = jsonObject["mem-trackers"];
+                var currentUsageObject = memTrackersObject?["memory_tracked_current_usage_mb"];
+                double? memoryTrackedCurrentGlobalMb = currentUsageObject?["global"]?.ToObject<double?>();
+                double? memoryTrackedCurrentGlobalNetworkWritebufferMb = currentUsageObject?["global_network_writebuffer"]?.ToObject<double?>();
+                double? memoryTrackedCurrentDbcacheResourcesTrackerMb = currentUsageObject?["dbcache_resources_tracker"]?.ToObject<double?>();
+                double? memoryTrackedCurrentGlobalNetworkReadbufferMb = currentUsageObject?["global_network_readbuffer"]?.ToObject<double?>();
+                double? memoryTrackedCurrentGlobalMetricsMb = currentUsageObject?["global_metrics"]?.ToObject<double?>();
+                double? memoryTrackedCurrentGlobalStringpoolMb = currentUsageObject?["global_stringpool"]?.ToObject<double?>();
+                double? memoryTrackedCurrentGlobalTupleDataMb = currentUsageObject?["global_tuple_data"]?.ToObject<double?>();
+                double? memoryTrackedCurrentGlobalLockedMb = currentUsageObject?["global_locked"]?.ToObject<double?>();
+                double? memoryTrackedCurrentGlobalTransactionsMb = currentUsageObject?["global_transactions"]?.ToObject<double?>();
+                double? memoryTrackedCurrentGlobalPlanCacheMb = currentUsageObject?["global_plan_cache"]?.ToObject<double?>();
+                double? memoryTrackedCurrentGlobalExternalTableCacheMb = currentUsageObject?["global_external_table_cache"]?.ToObject<double?>();
+                double? memoryTrackedCurrentGlobalExternalMetadataMb = currentUsageObject?["global_external_metadata"]?.ToObject<double?>();
+                double? memoryTrackedCurrentGlobalDiskNetworkReadbufferMb = currentUsageObject?["global_disk_network_readbuffer"]?.ToObject<double?>();
+                double? memoryTrackedCurrentGlobalDiskNetworkWritebufferMb = currentUsageObject?["global_disk_network_writebuffer"]?.ToObject<double?>();
+                double? memoryTrackedCurrentGlobalDiskStringpoolMb = currentUsageObject?["global_disk_stringpool"]?.ToObject<double?>();
+                double? memoryTrackedCurrentGlobalDiskTransactionMb = currentUsageObject?["global_disk_transaction"]?.ToObject<double?>();
+                double? memoryTrackedCurrentStorageLayerUnflushedMemoryMb = currentUsageObject?["storage_layer_unflushed_memory"]?.ToObject<double?>();
+                double? memoryTrackedCurrentStorageLayerTempBuffersMb = currentUsageObject?["storage_layer_temp_buffers"]?.ToObject<double?>();
+                double? memoryTrackedCurrentIoCacheMb = currentUsageObject?["io_cache"]?.ToObject<double?>();
+                double? memoryTrackedCurrentGlobalDiskCacheMb = currentUsageObject?["global_disk_cache"]?.ToObject<double?>();
+                
+                // Extract memory trackers - peak usage (keep in MB - not converted)
+                var peakUsageObject = memTrackersObject?["memory_tracked_peak_usage_mb"];
+                double? memoryTrackedPeakGlobalMb = peakUsageObject?["global"]?.ToObject<double?>();
+                double? memoryTrackedPeakGlobalNetworkWritebufferMb = peakUsageObject?["global_network_writebuffer"]?.ToObject<double?>();
+                double? memoryTrackedPeakDbcacheResourcesTrackerMb = peakUsageObject?["dbcache_resources_tracker"]?.ToObject<double?>();
+                double? memoryTrackedPeakGlobalNetworkReadbufferMb = peakUsageObject?["global_network_readbuffer"]?.ToObject<double?>();
+                double? memoryTrackedPeakGlobalMetricsMb = peakUsageObject?["global_metrics"]?.ToObject<double?>();
+                double? memoryTrackedPeakGlobalStringpoolMb = peakUsageObject?["global_stringpool"]?.ToObject<double?>();
+                double? memoryTrackedPeakGlobalTupleDataMb = peakUsageObject?["global_tuple_data"]?.ToObject<double?>();
+                double? memoryTrackedPeakGlobalLockedMb = peakUsageObject?["global_locked"]?.ToObject<double?>();
+                double? memoryTrackedPeakGlobalTransactionsMb = peakUsageObject?["global_transactions"]?.ToObject<double?>();
+                double? memoryTrackedPeakGlobalPlanCacheMb = peakUsageObject?["global_plan_cache"]?.ToObject<double?>();
+                double? memoryTrackedPeakGlobalExternalTableCacheMb = peakUsageObject?["global_external_table_cache"]?.ToObject<double?>();
+                double? memoryTrackedPeakGlobalExternalMetadataMb = peakUsageObject?["global_external_metadata"]?.ToObject<double?>();
+                double? memoryTrackedPeakGlobalDiskNetworkReadbufferMb = peakUsageObject?["global_disk_network_readbuffer"]?.ToObject<double?>();
+                double? memoryTrackedPeakGlobalDiskNetworkWritebufferMb = peakUsageObject?["global_disk_network_writebuffer"]?.ToObject<double?>();
+                double? memoryTrackedPeakGlobalDiskStringpoolMb = peakUsageObject?["global_disk_stringpool"]?.ToObject<double?>();
+                double? memoryTrackedPeakGlobalDiskTransactionMb = peakUsageObject?["global_disk_transaction"]?.ToObject<double?>();
+                double? memoryTrackedPeakStorageLayerUnflushedMemoryMb = peakUsageObject?["storage_layer_unflushed_memory"]?.ToObject<double?>();
+                double? memoryTrackedPeakStorageLayerTempBuffersMb = peakUsageObject?["storage_layer_temp_buffers"]?.ToObject<double?>();
+                double? memoryTrackedPeakIoCacheMb = peakUsageObject?["io_cache"]?.ToObject<double?>();
+                double? memoryTrackedPeakGlobalDiskCacheMb = peakUsageObject?["global_disk_cache"]?.ToObject<double?>();
+                
+                // Extract load information
+                var loadObject = jsonObject["load"];
+                double? overallLoad = loadObject?["overall_load"]?.ToObject<double?>();
+                double? schedulerLoad = loadObject?["scheduler_load"]?.ToObject<double?>();
+                double? workspaceLoad = loadObject?["workspace_load"]?.ToObject<double?>();
+                double? memoryLoad = loadObject?["memory_load"]?.ToObject<double?>();
+                double? cpuLoad = loadObject?["cpu_load"]?.ToObject<double?>();
+                
+                // Extract scheduler thread count information
+                var schedulerThreadCountObject = jsonObject["scheduler-thread-count"];
+                int? schedulerWaitingTasksCount = schedulerThreadCountObject?["scheduler_waiting_tasks_count"]?.ToObject<int?>();
+                var threadCountObject = schedulerThreadCountObject?["scheduler_thread_count"];
+                int? schedulerThreadCountActive = threadCountObject?["active"]?.ToObject<int?>();
+                int? schedulerThreadCountInactive = threadCountObject?["inactive"]?.ToObject<int?>();
+
+                var record = ResourceMetricsMemorySample.GetEventWithNullCheck(
+                    baseEvent,
+                    logLine,
+                    processName,
+                    hasLoad,
+                    totalVirtualMemoryGb,
+                    systemVirtualMemoryGb,
+                    processVirtualMemoryGb,
+                    totalPhysicalMemoryGb,
+                    systemPhysicalMemoryGb,
+                    processPhysicalMemoryGb,
+                    processFileMappingsGb,
+                    memoryTrackedCurrentGlobalMb,
+                    memoryTrackedCurrentGlobalNetworkWritebufferMb,
+                    memoryTrackedCurrentDbcacheResourcesTrackerMb,
+                    memoryTrackedCurrentGlobalNetworkReadbufferMb,
+                    memoryTrackedCurrentGlobalMetricsMb,
+                    memoryTrackedCurrentGlobalStringpoolMb,
+                    memoryTrackedCurrentGlobalTupleDataMb,
+                    memoryTrackedCurrentGlobalLockedMb,
+                    memoryTrackedCurrentGlobalTransactionsMb,
+                    memoryTrackedCurrentGlobalPlanCacheMb,
+                    memoryTrackedCurrentGlobalExternalTableCacheMb,
+                    memoryTrackedCurrentGlobalExternalMetadataMb,
+                    memoryTrackedCurrentGlobalDiskNetworkReadbufferMb,
+                    memoryTrackedCurrentGlobalDiskNetworkWritebufferMb,
+                    memoryTrackedCurrentGlobalDiskStringpoolMb,
+                    memoryTrackedCurrentGlobalDiskTransactionMb,
+                    memoryTrackedCurrentStorageLayerUnflushedMemoryMb,
+                    memoryTrackedCurrentStorageLayerTempBuffersMb,
+                    memoryTrackedCurrentIoCacheMb,
+                    memoryTrackedCurrentGlobalDiskCacheMb,
+                    memoryTrackedPeakGlobalMb,
+                    memoryTrackedPeakGlobalNetworkWritebufferMb,
+                    memoryTrackedPeakDbcacheResourcesTrackerMb,
+                    memoryTrackedPeakGlobalNetworkReadbufferMb,
+                    memoryTrackedPeakGlobalMetricsMb,
+                    memoryTrackedPeakGlobalStringpoolMb,
+                    memoryTrackedPeakGlobalTupleDataMb,
+                    memoryTrackedPeakGlobalLockedMb,
+                    memoryTrackedPeakGlobalTransactionsMb,
+                    memoryTrackedPeakGlobalPlanCacheMb,
+                    memoryTrackedPeakGlobalExternalTableCacheMb,
+                    memoryTrackedPeakGlobalExternalMetadataMb,
+                    memoryTrackedPeakGlobalDiskNetworkReadbufferMb,
+                    memoryTrackedPeakGlobalDiskNetworkWritebufferMb,
+                    memoryTrackedPeakGlobalDiskStringpoolMb,
+                    memoryTrackedPeakGlobalDiskTransactionMb,
+                    memoryTrackedPeakStorageLayerUnflushedMemoryMb,
+                    memoryTrackedPeakStorageLayerTempBuffersMb,
+                    memoryTrackedPeakIoCacheMb,
+                    memoryTrackedPeakGlobalDiskCacheMb,
+                    overallLoad,
+                    schedulerLoad,
+                    workspaceLoad,
+                    memoryLoad,
+                    cpuLoad,
+                    schedulerWaitingTasksCount,
+                    schedulerThreadCountActive,
+                    schedulerThreadCountInactive
+                );
+
+                _resourceMetricsMemorySamplesWriter.AddLine(record);
+                return;
+            }
+            catch (Exception ex)
+            {
+                _processingNotificationsCollector.ReportError($"Failed to parse Hyper resource-metrics JSON: {ex.Message}", logLine, nameof(ResourceManagerPlugin));
+                return;
+            }
+        }
+
         // Extract an optionally comma-separated numeric total memory byte count value (and optional process memory byte count) from the end of a static Resource Manager string
         private static readonly Regex TotalMemoryUsageExceededRegex = new Regex(@"Resource Manager: Exceeded allowed memory usage across all processes\D+\s(?<process_usage>[\d,]+?)?\s?bytes\s\(current process\)\D+(?<tableau_usage>[\d,]+?)?\sbytes\s\(Tableau total\)\D+(?<total_usage>[\d,]+?)\sbytes\s\(total of all processes\)", RegexOptions.Compiled | RegexOptions.ExplicitCapture);
         // Extract an optionally comma-separated numeric process memory byte count value from the end of a static Resource Manager string
@@ -330,6 +503,26 @@ namespace LogShark.Plugins.ResourceManager
             }
 
             return parseSuccess ? parsedValue : (long?) null;
+        }
+        
+        private double? TryParseDoubleWithLogging(Match match, string groupName, LogLine logLine, bool optional = false)
+        {
+            var rawValue = match.Groups[groupName].Value;
+            var rawValueWithoutCommas = rawValue.Replace(",", "");
+            var parseSuccess = double.TryParse(rawValueWithoutCommas, out var parsedValue);
+
+            if (!parseSuccess && !optional)
+            {
+                var errorMessage = $"Failed to parse value `{rawValue}` of match group `{groupName}` as double";
+                _processingNotificationsCollector.ReportError(errorMessage, logLine, nameof(ResourceManagerPlugin));
+            }
+
+            return parseSuccess ? parsedValue : (double?) null;
+        }
+
+        private double? ConvertMbToGb(double? mbValue)
+        {
+            return mbValue.HasValue ? mbValue / 1024.0 : null;
         }
     }
 }

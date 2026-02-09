@@ -42,7 +42,7 @@ namespace LogShark.Tests.Plugins.ResourceManagerPlugin
                 plugin.ProcessLogLine(hyperAndMessage, LogType.Hyper);
             }
 
-            testWriterFactory.AssertAllWritersAreDisposedAndEmpty(5);
+            testWriterFactory.AssertAllWritersAreDisposedAndEmpty(6);
             processingNotificationsCollector.TotalErrorsReported.Should().Be(2);
         }
 
@@ -62,9 +62,69 @@ namespace LogShark.Tests.Plugins.ResourceManagerPlugin
             }
             
             var expectedOutput = _testCases.Select(testCase => testCase.ExpectedOutput).ToList();
-            testWriterFactory.Writers.Count.Should().Be(5);
-            var writerWithOutput = testWriterFactory.GetOneWriterAndVerifyOthersAreEmptyAndDisposed<ResourceManagerThreshold>("ResourceManagerThresholds", 5);
+            testWriterFactory.Writers.Count.Should().Be(6);
+            var writerWithOutput = testWriterFactory.GetOneWriterAndVerifyOthersAreEmptyAndDisposed<ResourceManagerThreshold>("ResourceManagerThresholds", 6);
             ((List<object>)writerWithOutput.ReceivedObjects).Should().BeEquivalentTo(expectedOutput);
+        }
+
+        [Fact]
+        public void HyperResourceMetricsTest()
+        {
+            var testWriterFactory = new TestWriterFactory();
+            using (var plugin = new LogShark.Plugins.ResourceManager.ResourceManagerPlugin())
+            {
+                plugin.Configure(testWriterFactory, null, null, new NullLoggerFactory());
+
+                // Test Hyper resource-metrics event
+                var hyperResourceMetrics = new LogLine(new ReadLogLineResult(126, new NativeJsonLogsBaseEvent
+                {
+                    EventType = "resource-metrics",
+                    EventPayload = JObject.Parse("{\"has-load\":true,\"memory\":{\"total_virtual_memory_mb\":139055,\"system_virtual_memory_mb\":20825,\"process_virtual_memory_mb\":160.75,\"total_physical_memory_mb\":130863,\"system_physical_memory_mb\":21637.3,\"process_physical_memory_mb\":181.449,\"process_file_mappings_mb\":0},\"mem-trackers\":{\"memory_tracked_current_usage_mb\":{\"global\":66.6963,\"global_network_writebuffer\":5,\"dbcache_resources_tracker\":0,\"global_network_readbuffer\":5.125,\"global_metrics\":0.176201,\"global_stringpool\":15.3125,\"global_tuple_data\":41.0088,\"global_locked\":0,\"global_transactions\":0.25,\"global_plan_cache\":17.0012,\"global_external_table_cache\":0,\"global_external_metadata\":0,\"global_disk_network_readbuffer\":0,\"global_disk_network_writebuffer\":0,\"global_disk_stringpool\":26,\"global_disk_transaction\":0,\"storage_layer_unflushed_memory\":0,\"storage_layer_temp_buffers\":0,\"io_cache\":0,\"global_disk_cache\":0},\"memory_tracked_peak_usage_mb\":{\"global\":139.782,\"global_network_writebuffer\":5,\"dbcache_resources_tracker\":0,\"global_network_readbuffer\":5.125,\"global_metrics\":0.176201,\"global_stringpool\":15.3125,\"global_tuple_data\":93.9354,\"global_locked\":0,\"global_transactions\":16.5625,\"global_plan_cache\":17.0012,\"global_external_table_cache\":0,\"global_external_metadata\":0,\"global_disk_network_readbuffer\":0,\"global_disk_network_writebuffer\":0,\"global_disk_stringpool\":26,\"global_disk_transaction\":0,\"storage_layer_unflushed_memory\":0,\"storage_layer_temp_buffers\":5.09839,\"io_cache\":0,\"global_disk_cache\":0}},\"volume-cache-trackers\":{\"volume_current_mb\":{},\"volume_peak_mb\":{}},\"load\":{\"overall_load\":0.0277778,\"scheduler_load\":0.0277778,\"workspace_load\":0,\"memory_load\":0.000642105,\"cpu_load\":0.0778158},\"cache-filesystem\":{\"cache_filesystem_available_mb\":{},\"cache_filesystem_size_mb\":{},\"cache_filesystem_cached_mb\":{},\"cache_filesystem_cached_peak_mb\":{},\"cache_filesystem_effectively_available_mb\":{}},\"scheduler-thread-count\":{\"scheduler_waiting_tasks_count\":0,\"scheduler_thread_count\":{\"active\":1,\"inactive\":53}}}"),
+                    ProcessId = 333,
+                    Timestamp = new DateTime(2019, 5, 6, 18, 0, 5, 816),
+                }), HyperFileInfo);
+
+                plugin.ProcessLogLine(hyperResourceMetrics, LogType.Hyper);
+            }
+            
+            testWriterFactory.Writers.Count.Should().Be(6);
+            var resourceMetricsWriter = testWriterFactory.GetOneWriterAndVerifyOthersAreEmptyAndDisposed<ResourceMetricsMemorySample>("ResourceMetricsMemorySamples", 6);
+            resourceMetricsWriter.ReceivedObjects.Count.Should().Be(1);
+            
+            var expectedRecord = new
+            {
+                File = HyperFileInfo.FileName,
+                Line = 126,
+                Timestamp = new DateTime(2019, 5, 6, 18, 0, 5, 816),
+                ProcessName = "hyper",
+                Worker = HyperFileInfo.Worker,
+                RequestId = (string)null,
+                SessionId = (string)null,
+                Site = (string)null,
+                Username = (string)null,
+                HasLoad = true,
+                TotalVirtualMemoryGb = 139055.0 / 1024.0,
+                SystemVirtualMemoryGb = 20825.0 / 1024.0,
+                ProcessVirtualMemoryGb = 160.75 / 1024.0,
+                TotalPhysicalMemoryGb = 130863.0 / 1024.0,
+                SystemPhysicalMemoryGb = 21637.3 / 1024.0,
+                ProcessPhysicalMemoryGb = 181.449 / 1024.0,
+                ProcessFileMappingsGb = 0.0 / 1024.0,
+                MemoryTrackedCurrentGlobalMb = 66.6963,
+                MemoryTrackedCurrentGlobalNetworkWritebufferMb = 5.0,
+                MemoryTrackedCurrentGlobalTupleDataMb = 41.0088,
+                MemoryTrackedPeakGlobalMb = 139.782,
+                MemoryTrackedPeakGlobalTupleDataMb = 93.9354,
+                OverallLoad = 0.0277778,
+                SchedulerLoad = 0.0277778,
+                WorkspaceLoad = 0.0,
+                MemoryLoad = 0.000642105,
+                CpuLoad = 0.0778158,
+                SchedulerWaitingTasksCount = 0,
+                SchedulerThreadCountActive = 1,
+                SchedulerThreadCountInactive = 53
+            };
+            resourceMetricsWriter.ReceivedObjects[0].Should().BeEquivalentTo(expectedRecord, options => options.ExcludingMissingMembers());
         }
 
         private readonly IList<PluginTestCase> _testCases = new List<PluginTestCase>
@@ -127,37 +187,7 @@ namespace LogShark.Tests.Plugins.ResourceManagerPlugin
                     PerProcessMemoryLimit = (long?) null,
                     TotalMemoryLimit = 130566496051,
                 }
-            },
-            
-            new PluginTestCase
-            {
-                LogContents = new NativeJsonLogsBaseEvent
-                {
-                    EventType = "srm-internal",
-                    EventPayload = JToken.FromObject(new { msg = "Resource Manager: All Processes Memory Limit: 130,566,496,051 bytes"}),
-                    ProcessId = 222,
-                    Timestamp = new DateTime(2019, 4, 10, 11, 04, 00, 321),
-                },
-                LogType = LogType.Hyper,
-                LogFileInfo = HyperFileInfo,
-                LineNumber = 125,
-                ExpectedOutput = new
-                {
-                    FileName = HyperFileInfo.FileName,
-                    FilePath = HyperFileInfo.FilePath,
-                    LineNumber = 125,
-                    Timestamp = new DateTime(2019, 4, 10, 11, 04, 00, 321),
-                    Worker = HyperFileInfo.Worker,
-                    
-                    ProcessId = 222,
-                    ProcessIndex = 4,
-                    ProcessName = "hyper",
-                    
-                    CpuLimit = (int?) null,
-                    PerProcessMemoryLimit = (long?) null,
-                    TotalMemoryLimit = 130566496051,
-                }
-            },
+            }
         };
     }
 }

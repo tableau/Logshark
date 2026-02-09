@@ -16,7 +16,7 @@
     <PackageReference Include="Npgsql" Version="8.0.5" />
     <PackageReference Include="Serilog.Extensions.Logging.File" Version="1.1.0" />
     <PackageReference Include="Tableau.HyperAPI.NET" Version="0.0.17971" />
-    <Reference Include="Tools.TableauServerRestApi">
+	<Reference Include="Tools.TableauServerRestApi">
 		<HintPath>..\thirdparty\Tools.TableauServerRestApi.dll</HintPath>
 	</Reference>
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
@@ -46,6 +46,11 @@
     <EmbeddedResource Remove="Output\**" />
     <EmbeddedResource Remove="Logs\**" />
     <EmbeddedResource Remove="TestLogs\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Properties\launchSettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Workbooks" />

@@ -3,6 +3,7 @@ using System.Linq;
 using FluentAssertions;
 using LogShark.Shared.LogReading.Containers;
 using LogShark.Shared.LogReading.Readers;
+using LogShark.Tests.Plugins.Helpers;
 using Xunit;
 
 namespace LogShark.Tests.LogParser
@@ -10,13 +11,15 @@ namespace LogShark.Tests.LogParser
     [Collection("ILogReader File-based Tests")]
     public class YamlConfigLogReaderTests : InvariantCultureTestsBase
     {
+        private readonly ProcessingNotificationsCollector _processingNotificationsCollector = new ProcessingNotificationsCollector(10);
+
         [Fact]
         public void ReadEmptyTestFile()
         {
             var expectedResult = new List<ReadLogLineResult> {new ReadLogLineResult(0, null)};
             using (var stream = TestLogFiles.OpenEmptyTestFile())
             {
-                var results = new YamlConfigLogReader(stream).ReadLines().ToList();
+                var results = new YamlConfigLogReader(stream, _processingNotificationsCollector).ReadLines().ToList();
                 results.Should().BeEquivalentTo(expectedResult);
             }
         }
@@ -27,7 +30,7 @@ namespace LogShark.Tests.LogParser
             var expectedResult = new List<ReadLogLineResult> {new ReadLogLineResult(0, null)};
             using (var stream = TestLogFiles.OpenTestFileWithPlainLines())
             {
-                var results = new YamlConfigLogReader(stream).ReadLines().ToList();
+                var results = new YamlConfigLogReader(stream, _processingNotificationsCollector).ReadLines().ToList();
                 results.Should().BeEquivalentTo(expectedResult);
             }
         }
@@ -37,7 +40,7 @@ namespace LogShark.Tests.LogParser
         {
             using (var stream = TestLogFiles.OpenTestFileWithYamlData())
             {
-                var results = new YamlConfigLogReader(stream).ReadLines().ToList();
+                var results = new YamlConfigLogReader(stream, _processingNotificationsCollector).ReadLines().ToList();
                 results.Should().BeEquivalentTo(ExpectedResults);
             }
         }

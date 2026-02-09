@@ -10,6 +10,7 @@ using LogShark.Metrics;
 using LogShark.Plugins;
 using LogShark.Shared.Common;
 using EnvironmentController = LogShark.Common.EnvironmentController;
+using Flurl.Util;
 
 namespace LogShark
 {
@@ -136,7 +137,8 @@ Usage Examples:
             var metricUploader = new MetricUploader(metricUploaderConfiguration, loggerFactory);
             var metricsConfig = new MetricsConfig(metricUploader, config);
             var metricsModule = new MetricsModule(metricsConfig, loggerFactory);
-
+            string filePath = config.HyperLogDir;
+            string missedFileName = Path.Combine(filePath, $"MissedLines_{Path.GetFileNameWithoutExtension(LogSetLocation)}_{DateTime.Now.ToString("dd-MM-yyyy-HH-mm-ss")}.txt");
             try
             {
                 if (ListPLugins)
@@ -160,6 +162,7 @@ Usage Examples:
                     EnvironmentController.SetExitCode(runSummary, false);
 
                     logger.LogInformation(runSummary.ToStringReport());
+                    runSummary.ProcessingErrorsLines(missedFileName);
                 }
             }
             finally
@@ -173,7 +176,9 @@ Usage Examples:
         
         private static ILoggerFactory ConfigureLogging(IConfiguration configRoot)
         {
+            
             var loggingConfig = configRoot.GetSection("Logging");
+           
             var loggerFactory = LoggerFactory.Create(builder =>
             {
                 builder

@@ -64,6 +64,28 @@ namespace LogShark.Shared.LogReading
                     }),
 
                 new LogTypeInfo(
+                    logType: LogType.Bridge,
+                    logReaderProvider: (stream, filePath) => new NativeJsonLogsReader(stream, filePath, processingNotificationsCollector),
+                    fileLocations: new List<Regex>
+                    {
+                        Regex(@"^TabBridgeClient.*\.log$"), // Bridge Client logs in root - TabBridgeClient_2025_06_25_22_28_11.log
+                        Regex(@"^TabBridgeClientWorker.*\.log$"), // Bridge Client Worker logs in root - TabBridgeClientWorker_2025_05_20_20_56_06.log
+                        Regex(@"^TabBridgeCliJob.*\.log$"), // Bridge CLI Job logs in root - TabBridgeCliJob_11892_2025_10_27_20_04_38.log
+                        Regex(@"^LiveQueryMetrics.*\.json"), //Bridge Live query metrics in root
+                        Regex(@".*[/\\]LiveQueryMetrics.*\.json"),// Bridge Live query metrics in subdirectories
+                        Regex(@".*[/\\]TabBridgeClient.*\.log$"), // Bridge Client logs in subdirectories - folder/TabBridgeClient_2025_06_25_22_28_11.log
+                        Regex(@".*[/\\]TabBridgeClientWorker.*\.log$"), // Bridge Client Worker logs in subdirectories - folder/TabBridgeClientWorker_2025_05_20_20_56_06.log
+                        Regex(@".*[/\\]TabBridgeCliJob.*\.log$"), // Bridge CLI Job logs in subdirectories - folder/TabBridgeCliJob_11892_2025_10_27_20_04_38.log
+                        // Additional patterns for deeply nested Bridge logs (bridgelogs.zip -> multiple .tar files -> tar folder -> log folder -> files)
+                        Regex(@".*[/\\]log[/\\]TabBridgeClient.*\.log$"), // Bridge Client logs in log folder - path/log/TabBridgeClient_2025_06_25_22_28_11.log
+                        Regex(@".*[/\\]log[/\\]TabBridgeClientWorker.*\.log$"), // Bridge Client Worker logs in log folder - path/log/TabBridgeClientWorker_2025_05_20_20_56_06.log
+                        Regex(@".*[/\\]log[/\\]TabBridgeCliJob.*\.log$"), // Bridge CLI Job logs in log folder - path/log/TabBridgeCliJob_11892_2025_10_27_20_04_38.log
+                        Regex(@".*[/\\]logs[/\\]TabBridgeClient.*\.log$"), // Bridge Client logs in logs folder - path/logs/TabBridgeClient_2025_06_25_22_28_11.log
+                        Regex(@".*[/\\]logs[/\\]TabBridgeClientWorker.*\.log$"), // Bridge Client Worker logs in logs folder - path/logs/TabBridgeClientWorker_2025_05_20_20_56_06.log
+                        Regex(@".*[/\\]logs[/\\]TabBridgeCliJob.*\.log$"), // Bridge CLI Job logs in logs folder - path/logs/TabBridgeCliJob_11892_2025_10_27_20_04_38.log
+                    }),
+
+                new LogTypeInfo(
                     logType: LogType.ClusterController,
                     logReaderProvider: (stream, _) => new MultilineJavaLogReader(stream),
                     fileLocations: new List<Regex>
@@ -244,7 +266,7 @@ namespace LogShark.Shared.LogReading
                 
                 new LogTypeInfo(
                     logType: LogType.TabsvcYml,
-                    logReaderProvider: (stream, filePath) => new YamlConfigLogReader(stream),
+                    logReaderProvider: (stream, filePath) => new YamlConfigLogReader(stream,processingNotificationsCollector),
                     fileLocations: new List<Regex>
                     {
                         Regex(@"^tabsvc\.yml$"), // pre-TSM - tabsvc.yml in the root of the archive
@@ -311,7 +333,7 @@ namespace LogShark.Shared.LogReading
                 
                 new LogTypeInfo(
                     logType: LogType.WorkgroupYml,
-                    logReaderProvider: (stream, filePath) => new YamlConfigLogReader(stream),
+                    logReaderProvider: (stream, filePath) => new YamlConfigLogReader(stream, processingNotificationsCollector),
                     fileLocations: new List<Regex>
                     {
                         Regex(@"config/workgroup\.yml$"), // pre-TSM & TSM. Pre TSM - config folder is at the root. TSM - node1\tabadminagent_0.20182.18.1001.21153436271280456730793\config\tabadminagent_0.20182.18.1001.2115\workgroup.yml
