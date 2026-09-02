@@ -14,6 +14,8 @@ The following table shows the list of available LogShark plugins and the names o
 
 To run a specific plugin, specify the name of the plugin with the LogShark **`--plugins`** option. To specify more than one plugin, list them separated by a semicolon, no spaces, and enclose the list in quotation marks (“ “).
 
+If --plugin arg is not specified, all plugins will run by default
+
 
 **Usage:**
 
@@ -40,6 +42,7 @@ To run a specific plugin, specify the name of the plugin with the LogShark **`--
 | Art | `Art.twbx`  | Analyze VizQLServer Activity Resource Tracing information for performance details of view loads. Similar to ServerTelemetry plugin. |
 | Apache                 | `Apache.twbx`                                   | Collect and analyze workbook statistics on Tableau Server from the Apache (http) log files, including viz load times, view counts, errors, and warnings.                                                                                                                                                                        |
 | Backgrounder           | `Backgrounder.twbx`                             | Displays information about Tableau Server background tasks and jobs, such as subscriptions and extract refreshes. Data is taken from the backgrounder log files.                                                                                                                                                                |
+| Bridge                 | `Bridge.twbx`                                   |Displays information for Bridge logs and jobs processed by Bridge client. Data is taken from every Bridge client to analyse the issues.                                                                                                                                                                                       |
 | ClusterController      | `ClusterController.twbx`                        | Displays information about Tableau Server Cluster Controller events and errors, taken from the clustercontroller and zookeeper log files. Also includes some information about disk performance.                                                                                                                                  |
 | Config                 | `Config.twbx`                                   | Displays the Tableau Server topology and configuration settings from the log files.  |
 | Filestore              | `Filestore.twbx`                                | Displays information about Tableau Server File Store events and errors.                                                  |
