@@ -12,7 +12,7 @@ Before you install and run LogShark on your computer, you'll need to make sure y
 System Requirements
 -------------------
 **For Windows**:
--   A computer running a 64-bit version of Windows (2008 R2 or later)
+-   A computer running a 64-bit version of Windows 10 (version 1607 or later), Windows 11, or Windows Server 2012 R2 or later
 -   An account with local administrator permissions on the computer where you will be installing LogShark.
 -   Tableau Desktop version 10.5 (or later) to view workbooks. You can download Tableau from: [http://www.tableau.com/products/desktop](http://www.tableau.com/products/desktop){:target="_blank"}
 
@@ -27,9 +27,14 @@ System Requirements
 
 
 **For macOS:** 
-- LogShark runs on macOS versions 10.12 "Sierra", 10.13 "High Sierra, and 10.14 "Mojave". 
-- For macOS 10.15 or later, you will need to run LogShark in Docker, here are the instructions on how to do that: [https://github.com/tableau/Logshark#build-and-run-it-using-docker](https://github.com/tableau/Logshark#build-and-run-it-using-docker){:target="_blank"}
+- LogShark runs on macOS 12 "Monterey" or later. 
 - Tableau Desktop version 10.5 (or later) to view workbooks. You can download Tableau from: [http://www.tableau.com/products/desktop](http://www.tableau.com/products/desktop){:target="_blank"}
+- Because LogShark isn't a notarized/signed application, macOS Gatekeeper may block it the first time you run it, with a message like *"**LogShark** cannot be opened because the developer cannot be verified."* To resolve this:
+    1. Click **Cancel** to dismiss the warning (do not click **Move to Trash**).
+    1. Open **Privacy & Security** (or **Security & Privacy** on older macOS versions) in System Settings/System Preferences.
+    1. Find the message that LogShark was blocked, and click **Allow Anyway** / **Open Anyway**.
+    1. Run **LogShark** again and click **Open** when prompted.
+    1. The same warning may reappear for individual runtime library files LogShark depends on the first time you run it — repeat the **Allow Anyway** step for each one until LogShark runs successfully.
 
 
 Tableau Log Requirements

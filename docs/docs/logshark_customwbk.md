@@ -5,42 +5,27 @@ title: Adding and Creating Your Own Custom Workbooks for LogShark
 
 ### Add Your Own Custom Workbooks
 
-LogShark provides an option to include your own custom workbooks in a LogShark run.  These workbooks will then be included in the run output if the CustomWorkbooks plugin is run and all of their dependencies are met.
+LogShark can include your own `.twbx` workbook templates in a run's output, alongside the built-in plugin workbooks.
 
-1. To configure this, first browse to your LogShark installation directory and open up the `CustomWorkbooks` folder.  
-2. Add your custom workbook (.twbx) files to this folder.  
-3. Additionally, you will need to edit `CustomWorkbookConfig.xml` file and add an `Workbook` entry for each custom workbook.  The required attributes and elements are the names of the workbooks and any dependencies they have on other workbooks.  
+1. In `LogSharkConfig.json` (in the `Config` directory of your LogShark installation), set `EnvironmentConfig.CustomWorkbookTemplatesDir` to the path of a folder containing your custom workbook templates.
 
     For example:
 
-
-
-```xml
-
-<!--
-  Custom Tableau workbooks can be placed alongside this config and they will be output at runtime if their dependencies are met.
-  Plugin dependencies must be declared for any plugins that generate a table that the custom workbook relies on.
-  To get a list of eligible plugin dependency names, invoke LogShark with the "listplugins" command line flag.
--->
-<CustomWorkbooks>
-  <!-- EXAMPLE
-  <Workbook name="MyCustomWorkbook.twbx">
-    <PluginDependency name="Apache" />
-    <PluginDependency name="Backgrounder" />
-  </Workbook>
-  -->
-
-  <Workbook name="MyCustomApacheAndBackgrounderWorkbook.twbx">
-    <PluginDependency name="Apache" />
-    <PluginDependency name="Backgrounder" />
-  </Workbook>
-
-</CustomWorkbooks>
-
+```json
+"EnvironmentConfig": {
+    "CustomWorkbookTemplatesDir": "C:\\LogShark\\CustomWorkbooks"
+}
 ```
 
+2. Add your custom workbook (.twbx) files to that folder.
 
-This entry will cause the file `MyCustomApacheAndBackgrounderWorkbook.twbx` to be output at the LogShark run with the appropriate data sources substituted.  NOTE: The `PluginDependency` entries in the example above will make it so that the workbook will only be output if both the Apache and Backgrounder plugins run successfully.  You can declare multiple plugin dependencies for a single workbook, so that you can include workbooks that join the output tables of multiple plugins.
+At run time, LogShark scans this folder (in addition to the built-in `Workbooks` folder) for `.twbx` files. There is no separate `CustomWorkbooks` plugin and no `CustomWorkbookConfig.xml` — LogShark determines dependencies directly from the `.hyper` data source extracts packaged inside each `.twbx` file, instead of a declared list of plugin names.
+
+- A custom workbook is only produced in the run output if every `.hyper` extract it references was actually generated during that run (i.e. the plugin(s) that produce those data sets ran and generated data). There's no separate dependency list to maintain — the dependency is simply whichever data source(s) you build the workbook against in Tableau Desktop.
+- To find valid extract/data source names to build your workbook against, open one of the built-in workbooks in `<LogShark_install_location>\Workbooks` (for example `Apache.twbx`) in Tableau Desktop and inspect its data source names — these correspond to the `.hyper` extracts LogShark's plugins generate.
+- Custom workbook output filenames are prefixed with `Custom\` to distinguish them from the built-in workbooks.
+
+Note: the `--workbookname <suffix>` command line option (and the `EnvironmentConfig.AppendLogsetNameToOutput` config setting) appends a suffix to the filenames of *all* generated workbooks, both built-in and custom — it is not specific to custom workbooks.
 
 
 ### Creating Your Own Custom Workbooks from LogShark Data
@@ -53,4 +38,3 @@ Currently, there isn’t a customer facing data dictionary for Tableau logs sinc
 4. View the traffic in Fiddler to determine the endpoints that were hit when performing that specific operation(s). Use this information, to find the corresponding request in the Apache httpd logs. (For Server File log locations see: https://onlinehelp.tableau.com/current/server/en-us/logs_loc.htm, for working with log files see: https://onlinehelp.tableau.com/current/server/en-us/logs_working_with.htm).
 5. Use the Session ID to trace and search this request across all the logs. Check to see if this answers your question for that individual request and make a note of all the logs that had information about your request.
 6. If so, run LogShark, start with the Apache workbook and filter down to your specific request. Explore the data fields related to your request ID and see if you can build a view to answer the same question with the LogShark data.
-

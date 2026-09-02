@@ -16,7 +16,6 @@ Example of config file
 
 ```xml
 {
-  "HyperServerLocation": "Hyper",
   "Logging": {
     "PathFormat": "Logs/LogShark-{Date}.log",
     "Json": false,
@@ -31,12 +30,14 @@ Example of config file
     }
   },
   "EnvironmentConfig": {
+    "NumberOfProcessingThreads": 2,
     "TempDirOverride": null,
     "OutputDir": "Output",
     "OutputDirMaxResults": null,
     "WorkbookTemplatesDir": "Workbooks",
     "CustomWorkbookTemplatesDir": null,
     "NumberOfErrorDetailsToKeep": 25,
+    "DefaultWriter": "hyper",
     "AppendLogsetNameToOutput": false
   },
   "TableauServer": {
@@ -50,6 +51,7 @@ Example of config file
       "Id": "",
       "Name": ""
     }
+  }
 }
 ```
 ----
@@ -92,6 +94,34 @@ If you are working on several logsets at the same time, having several Apache wo
 
 You can also override the config value in command line using  `--workbookname "<string>"`command. 
 
+
+----
+### Controlling which plugins run by default
+The `PluginsConfiguration.DefaultPluginSet` section controls which plugins are used when `--plugins` is not specified, or when `--plugins All` is requested:
+
+```xml
+"PluginsConfiguration": {
+    "DefaultPluginSet": {
+      "PluginsToRunByDefault": "",
+      "PluginsToExcludeFromDefaultSet": "Replayer"
+    }
+}
+```
+
+- `PluginsToRunByDefault` - semicolon-separated list of plugin names to run when plugins aren't specified (i.e. `"Apache;Backgrounder"`). Leave empty to use all available plugins by default.
+- `PluginsToExcludeFromDefaultSet` - semicolon-separated list of plugin names to exclude when "All" plugins are requested. By default this excludes the `Replayer` plugin, which must be requested explicitly with `--plugins Replayer`.
+
+This same section also holds per-plugin configuration (for example `Apache.IncludeGatewayChecks`, `VizqlDesktop.MaxQueryLength`), nested under `PluginsConfiguration:<PluginName>`.
+
+----
+### Hyper extract generation timeout
+The `HyperProcess` section controls the timeout for the underlying Hyper process used to generate `.hyper` extracts:
+
+```xml
+"HyperProcess": {
+    "external_stream_timeout": "10h"
+}
+```
 
 ----
 ### Changing format of LogShark's logs to JSON
