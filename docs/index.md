@@ -38,8 +38,17 @@ In this section:
 **Reference**
 - [LogShark Command Options](docs/logshark_cmds.md)
 - [LogShark Plugins and Generated Workbooks](docs/logshark_plugins.md)
+- [LogShark Apache Plugin](docs/logshark_apache.md)
 - [LogShark ART Plugin](docs/logshark_art.md)
+- [LogShark Backgrounder Plugin](docs/logshark_backgrounder.md)
+- [LogShark ClusterController Plugin](docs/logshark_clustercontroller.md)
+- [LogShark Config Plugin](docs/logshark_config.md)
 - [LogShark DataServer Plugin](docs/logshark_dataserver.md)
+- [LogShark Filestore Plugin](docs/logshark_filestore.md)
+- [LogShark Hyper Plugin](docs/logshark_hyper.md)
+- [LogShark Netstat Plugin](docs/logshark_netstat.md)
+- [LogShark Postgres Plugin](docs/logshark_postgresrepository.md)
+- [LogShark ResourceManager Plugin](docs/logshark_resourcemanager.md)
 - [LogShark TabadminController Plugin](docs/logshark_tabadmincontroller.md)
 
 
