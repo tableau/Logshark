@@ -25,17 +25,20 @@ Full usage can be viewed at any time by invoking `LogShark --help`.  The only 
 | --pg-db-name | Output database name for postgres writer |
 | --pg-db-pass | Output database password for postgres writer |
 | --pg-db-user | Output database username for postgres writer |
-| `-plugins all, --plugins <plugin1>;<plugin2>...` | (Default: All) List of plugins to run, to specify more than one plugin, list them separated by a semicolon, no spaces. Or "All" to run all applicable plugins. See LogShark plugins and generated workbooks |
+| --pg-embed-creds | Embed database credentials in the workbook on publish (postgres writer) |
+| --plugins <plugin1>;<plugin2>... | (Default: All) List of plugins to run, to specify more than one plugin, list them separated by a semicolon, no spaces. Or "All" to run all applicable plugins. See LogShark plugins and generated workbooks |
 | --site | Tableau server site name |
+| -t, --threads <THREADS> | Number of processing threads to run in parallel |
+| --ts-project-description-footer <TEXT> | Additional text (HTML allowed) to append to the description of the project created on Tableau Server |
 | --url | Tableau server URL | 
 | --username | Tableau server username | 
 | --workbookname <string> | Custom workbook name to append to the end of each workbook generated. | 
 | -?, -h, --help | Show help information | 
-| -a, --append-to <APPEND_TO>  | Append this run results to the results from a specified run id. Implementation varies by output writer. See <a href="logshark_postgres">Visualize Historical Trends of Your Logs for more info | 
+| -a, --append-to <APPEND_TO>  | Append this run results to the results from a specified run id. Implementation varies by output writer. See <a href="logshark_postgres">Visualize Historical Trends of Your Logs</a> for more info | 
 | -c, --config <CONFIG>  | Specify alternative config file to use. By default `<LogShark_Install_location.\Config\LogSharkConfig.json` is used | 
 | -l, --listplugins | Lists the LogShark plugins available for use with `--plugins` parameter |
 | -p, --publishworkbooks | (Default: False) Publish resulting workbooks to Tableau Server | 
-| `-w, --writer <WRITER>` | Select type of output writer to use (i.e. "csv", "postgres, "sql", etc) | 
+| --writer <WRITER> | Select type of output writer to use (i.e. "csv", "postgres, "sql", etc) | 
 {: .custom-class #custom-id}
  
 

@@ -29,8 +29,8 @@ Note that LogShark is configured by the LogSharkConfig.json file in the Config d
 
 ### Compile It Yourself
 
-LogShark is a .NET Core 3.1 application. To compile it yourself:
-1. Make sure you have .NET Core 3.1 SDK installed 
+LogShark is a .NET 8 application. To compile it yourself:
+1. Make sure you have the .NET 8 SDK installed 
 2. Clone or download the repository
 3. Run the following command from the directory where `LogShark.sln` file is. Make sure to replace `<insert_version>` with the actual version, i.e. `4.2.1`:
 

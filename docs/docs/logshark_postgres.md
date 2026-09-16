@@ -17,8 +17,8 @@ To write LogShark's output to PostgreSQL database, you need to provide the conne
 You will need:
 
 - System Requirements for [LogShark](\docs\LogShark_install.md)
-- PostgreSQL v9.6
-  - This feature has been tested to be compatible with PostgreSQL v9.6. Additional testing is underway.
+- PostgreSQL 12 or later
+  - LogShark uses the Npgsql .NET driver, which requires PostgreSQL 12 or later.
   - Download and install PostgreSQL on your machine
 
 ## Required permissions for the user 
@@ -58,8 +58,14 @@ To update config settings, navigate to config file `<LogShark_install_location>\
    "ConnectionString": "",
    "ServiceDatabaseName": "",
    "BatchSize": 100,
-   "ConnectionTimeoutSeconds": 30
-   ```
+   "ConnectionTimeoutSeconds": 30,
+   "EmbedCredentialsOnPublish": false,
+   "SkipDatabaseVerificationAndInitialization": false
+}
+```
+
+- `EmbedCredentialsOnPublish` - if `true`, embeds the Postgres username/password in the workbook when publishing to Tableau Server, instead of prompting for credentials on open. Can also be set with the `--pg-embed-creds` command line flag.
+- `SkipDatabaseVerificationAndInitialization` - if `true`, skips LogShark's normal check/creation of the output database, schema, and tables. Use this if the user provided doesn't have `CREATE`/`ALTER` permissions and the schema has already been set up.
 
 
 We recommend to use the `ConnectionString` field, as LogShark will just use the supplied value verbatim. However, if you want to supply the values piecemeal, feel free to use the fields above.
@@ -95,12 +101,13 @@ Each of the fields for the configuration may be supplied as a command line argum
 
 | Command | Description|
 |---------|------------|
-| -w,--writer <WRITER>  | Select type of output writer to use (i.e. "csv", "postgres", "sql", etc) |
+| --writer <WRITER>  | Select type of output writer to use (i.e. "csv", "postgres", "sql", etc) |
 |--pg-db-conn-string | Connection string for output database for postgres writer | 
 | --pg-db-host  | Output database hostname for postgres writer | 
 | --pg-db-name  | Output database name for postgres writer | 
 | --pg-db-user  | Output database username for postgres writer | 
 |  --pg-db-pass | Output database password for postgres writer | 
+| --pg-embed-creds | Embed database credentials in the workbook on publish |
 
 
 #### Results
