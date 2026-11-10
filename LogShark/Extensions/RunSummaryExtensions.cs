@@ -156,12 +156,17 @@ namespace LogShark.Extensions
 
         private static void AppendMissedLinestoCSV(IList<string> missedLines, StringBuilder sb, string outputFile)
         {
-            foreach (var line in missedLines ?? new List<string>())
-            {
-                sb.AppendLine(line);
-                //write every line to csv
+            if(missedLines.Count>0){
+                // Write the header from StringBuilder first
+                File.WriteAllText(outputFile, sb.ToString());
+
+                // Append missed lines directly to file instead of StringBuilder to avoid capacity issues
+                File.AppendAllLines(outputFile, missedLines);
             }
-            File.WriteAllText(outputFile, sb.ToString());
+            else
+            {
+                //no missed lines found
+            }
         }
 
         public static string WorkbookGeneratorErrorsReport(this RunSummary runSummary)

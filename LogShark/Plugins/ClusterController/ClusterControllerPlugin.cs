@@ -24,14 +24,14 @@ namespace LogShark.Plugins.ClusterController
         
         private IProcessingNotificationsCollector _processingNotificationsCollector;
 
-        public void Configure(IWriterFactory writerFactory, IConfiguration pluginConfig, IProcessingNotificationsCollector processingNotificationsCollector, ILoggerFactory loggerFactory)
+        public void Configure(IPluginWriterProvider writerProvider, IConfiguration pluginConfig, IProcessingNotificationsCollector processingNotificationsCollector, ILoggerFactory loggerFactory)
         {
-            _errorWriter = writerFactory.GetWriter<ClusterControllerError>(_errorDSI);
-            _postgresActionWriter = writerFactory.GetWriter<ClusterControllerPostgresAction>(_postgresActionDSI);
-            _diskSpaceSampleWriter = writerFactory.GetWriter<ClusterControllerDiskSpaceSample>(_diskSpaceSampleDSI);
-            _diskIOSampleWriter = writerFactory.GetWriter<ClusterControllerDiskIoSample>(_diskIOSampleDSI);
-            _zkErrorWriter = writerFactory.GetWriter<ZookeeperError>(_zkErrorDSI);
-            _zkFsyncLatencyWriter = writerFactory.GetWriter<ZookeeperFsyncLatency>(_zkFsyncLatencyDSI);
+            _errorWriter = writerProvider.GetWriter<ClusterControllerError>(_errorDSI);
+            _postgresActionWriter = writerProvider.GetWriter<ClusterControllerPostgresAction>(_postgresActionDSI);
+            _diskSpaceSampleWriter = writerProvider.GetWriter<ClusterControllerDiskSpaceSample>(_diskSpaceSampleDSI);
+            _diskIOSampleWriter = writerProvider.GetWriter<ClusterControllerDiskIoSample>(_diskIOSampleDSI);
+            _zkErrorWriter = writerProvider.GetWriter<ZookeeperError>(_zkErrorDSI);
+            _zkFsyncLatencyWriter = writerProvider.GetWriter<ZookeeperFsyncLatency>(_zkFsyncLatencyDSI);
 
             _processingNotificationsCollector = processingNotificationsCollector;
         }

@@ -62,6 +62,10 @@ namespace LogShark.Writers.Hyper
                 // Replace necessary hyper files in the workbook
                 ProcessPackagedWorkbook(finalWorkbookPath);
                 _logger.LogDebug("Workbook {completedWorkbookName} complete", templateInfo.Name);
+
+                var fileInfo = new FileInfo(finalWorkbookPath);
+                var fileSizeMb = fileInfo.Length / 1024.0 / 1024.0;
+                _logger.LogInformation("Generated workbook '{workbookName}' from template '{templateName}' ({fileSizeMb:F2} MB)", fileInfo.Name, templateInfo.Name, fileSizeMb);
                 return new CompletedWorkbookInfo(templateInfo, workbookNameToUse, finalWorkbookPath, hasAnyData);
             }
             catch (Exception ex)

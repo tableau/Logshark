@@ -18,7 +18,7 @@ namespace LogShark.Plugins.VizqlDesktop
         private VizqlDesktopEventProcessor _eventProcessor;
         private IProcessingNotificationsCollector _processingNotificationsCollector;
         
-        public void Configure(IWriterFactory writerFactory, IConfiguration pluginConfig, IProcessingNotificationsCollector processingNotificationsCollector, ILoggerFactory loggerFactory)
+        public void Configure(IPluginWriterProvider writerProvider, IConfiguration pluginConfig, IProcessingNotificationsCollector processingNotificationsCollector, ILoggerFactory loggerFactory)
         {
             var section = pluginConfig?.GetSection("MaxQueryLength");
             var sectionExists = section != null && section.Exists();
@@ -31,7 +31,7 @@ namespace LogShark.Plugins.VizqlDesktop
             }
             var maxQueryLength = parsedSuccessfully ? parsedMaxQueryLength : DefaultMaxQueryLength;
 
-            _eventProcessor = new VizqlDesktopEventProcessor(writerFactory, maxQueryLength);
+            _eventProcessor = new VizqlDesktopEventProcessor(writerProvider, maxQueryLength);
             _processingNotificationsCollector = processingNotificationsCollector;
         }
 

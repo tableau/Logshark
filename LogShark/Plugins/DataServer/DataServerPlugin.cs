@@ -25,10 +25,10 @@ namespace LogShark.Plugins.DataServer
         private IProcessingNotificationsCollector _processingNotificationsCollector;
         private IWriter<DataServerEvent> _writer;
         
-        public void Configure(IWriterFactory writerFactory, IConfiguration pluginConfig, IProcessingNotificationsCollector processingNotificationsCollector, ILoggerFactory loggerFactory)
+        public void Configure(IPluginWriterProvider writerProvider, IConfiguration pluginConfig, IProcessingNotificationsCollector processingNotificationsCollector, ILoggerFactory loggerFactory)
         {
             _processingNotificationsCollector = processingNotificationsCollector;
-            _writer = writerFactory.GetWriter<DataServerEvent>(OutputInfo);
+            _writer = writerProvider.GetWriter<DataServerEvent>(OutputInfo);
         }
 
         public void ProcessLogLine(LogLine logLine, LogType logType)

@@ -54,7 +54,7 @@ namespace LogShark.Plugins.TabadminController
 
         #endregion Regex
 
-        public void Configure(IWriterFactory writerFactory, IConfiguration pluginConfig, IProcessingNotificationsCollector processingNotificationsCollector, ILoggerFactory loggerFactory)
+        public void Configure(IPluginWriterProvider writerProvider, IConfiguration pluginConfig, IProcessingNotificationsCollector processingNotificationsCollector, ILoggerFactory loggerFactory)
         {
             _processingNotificationsCollector = processingNotificationsCollector;
             _buildTracker = new BuildTracker(processingNotificationsCollector);
@@ -62,8 +62,8 @@ namespace LogShark.Plugins.TabadminController
             _tabadminControllerEventParser = new TabadminControllerEventParser(_buildTracker, _processingNotificationsCollector);
             _tabadminAgentEventParser = new TabadminAgentEventParser(_processingNotificationsCollector);
 
-            _buildsWriter = writerFactory.GetWriter<TabadminControllerBuildRecord>(BuildsInfo);
-            _eventsWriter = writerFactory.GetWriter<TabadminControllerEvent>(EventsInfo);
+            _buildsWriter = writerProvider.GetWriter<TabadminControllerBuildRecord>(BuildsInfo);
+            _eventsWriter = writerProvider.GetWriter<TabadminControllerEvent>(EventsInfo);
         }
 
         public void ProcessLogLine(LogLine logLine, LogType logType)

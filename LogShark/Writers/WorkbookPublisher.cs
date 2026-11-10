@@ -10,12 +10,12 @@ using System.Threading.Tasks;
 using System.Web;
 using LogShark.Shared;
 using Polly;
-using Tools.TableauServerRestApi;
-using Tools.TableauServerRestApi.Containers;
-using Tools.TableauServerRestApi.Enums;
-using Tools.TableauServerRestApi.Exceptions;
-using Tools.TableauServerRestApi.Models;
-using static Tools.TableauServerRestApi.Containers.PublishWorkbookRequest;
+using Tableau.CDP.Tools.TableauServerRestApi;
+using Tableau.CDP.Tools.TableauServerRestApi.Containers;
+using Tableau.CDP.Tools.TableauServerRestApi.Enums;
+using Tableau.CDP.Tools.TableauServerRestApi.Exceptions;
+using Tableau.CDP.Tools.TableauServerRestApi.Models;
+using static Tableau.CDP.Tools.TableauServerRestApi.Containers.PublishWorkbookRequest;
 
 namespace LogShark.Writers
 {
@@ -54,8 +54,55 @@ namespace LogShark.Writers
             IEnumerable<CompletedWorkbookInfo> completedWorkbooks,
             IEnumerable<string> workbookTags)
         {
-            var tableauServerInfo = _publisherSettings.TableauServerInfo;
+            // TEMPORARY: Multi-publish to 10ax first, then to us-west-2a
+            // This hardcoded multi-publish feature will be reverted when us-west-2a is shut down
+            
+            // First publish to the migration server (10ax)
+            PublisherResults results = null;
+            var originalServerInfo = _publisherSettings.TableauServerInfo;
+            if (_config.TableauServerPublishToMigrationServer ?? false)
+            {
+                var tenAxServerInfo = new TableauServerInfo(
+                    "https://10ax.online.tableau.com",
+                    _config.TableauServerMigrationServerSite,
+                    originalServerInfo.Username,
+                    originalServerInfo.Password,
+                    _config.TableauServerTimeout,
+                    _config.TableauServerPublishingTimeout);
 
+                _logger.LogInformation("MULTI-PUBLISH: Publishing to migration server ({url}, site: {site})",
+                    tenAxServerInfo.Url, tenAxServerInfo.Site);
+                results = await PublishToServer(tenAxServerInfo, projectName, completedWorkbooks, workbookTags);
+
+                if (!results.CreatedProjectSuccessfully)
+                {
+                    _logger.LogError("MULTI-PUBLISH: Failed to publish to 10ax. Error: {error}",
+                        results.ExceptionCreatingProject?.Message ?? "Unknown error");
+                }
+                else
+                {
+                    _logger.LogInformation("MULTI-PUBLISH: Successfully published to 10ax");
+                }
+            }
+
+            // Now publish to the original server (us-west-2a)
+            if (_config.TableauServerPublishToOriginalServer ?? false)
+            {
+                _logger.LogInformation("MULTI-PUBLISH: Publishing to original server ({url}, site: {site})",
+                    originalServerInfo.Url, originalServerInfo.Site);
+                results = await PublishToServer(originalServerInfo, projectName, completedWorkbooks, workbookTags);
+            }
+
+            // Return the results of the last server published to
+            return results;
+        }
+
+        private async Task<PublisherResults> PublishToServer(
+            TableauServerInfo tableauServerInfo,
+            string projectName,
+            IEnumerable<CompletedWorkbookInfo> completedWorkbooks,
+            IEnumerable<string> workbookTags)
+        {
             try
             {
                 using var restApi = await Retry.DoWithRetries<RestApiException, TableauServerRestApi>(
@@ -77,7 +124,7 @@ namespace LogShark.Writers
                         await SetDefaultPermissions(restApi, newProjectInfo);
                         return newProjectInfo;
                     });
-                
+
                 var tags = workbookTags?.ToList();
                 var publishingResults = completedWorkbooks
                     .Select(cwi => PublishWorkbook(projectInfo.Id, cwi, restApi, tags).Result) // .Result here ensures that we publish one workbook at a time instead of trying to push 10+ of them at the same time

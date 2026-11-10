@@ -9,8 +9,8 @@ namespace LogShark.Plugins
             (?<ts_offset>[^\s]+)\s
             ?(?<pid>[^\s]*)\s
             \((?<site>[^,]*?), (?<user>[^,]*?), (?<sess>[^,]*?), (?<req>[^,\)]*?) (,(?<local_req_id>[^\)]*?))?\)\s
-            (?<thread>[^\s]*?)\s
-             (?<service>[^:]*?)?:\s
+            (?<thread>.*?)\s
+             (?<service>[^\s:]*?)?:\s
             (?<sev>[A-Z]+)(\s+)
             (?<class>[^\s]*?)\s-\s
             (?<message>(.|\n)*)",

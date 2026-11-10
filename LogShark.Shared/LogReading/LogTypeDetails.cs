@@ -41,7 +41,8 @@ namespace LogShark.Shared.LogReading
                         TabadminLog("httpd", "access"), // pre-TSM - httpd/access.*.log (access.2015_05_18_00_00_00.log)
                         TsmV0Log("httpd" , "access"), // TSMv0 - localhost\tabadminagent_0.20181.18.0404.16052600117725665315795\logs\httpd\access.2018_08_08_00_00_00.log
                         TsmLog("gateway" , "access"), // TSM - node2\gateway_0.20182.18.0627.22308342643935754496180\logs\access.2018_08_08_00_00_00.log
-                    }),
+                    },
+                    adhocFileLocations: AdhocList(Regex(@"^access.*\.log$"))),
 
                 new LogTypeInfo(
                     logType: LogType.BackgrounderCpp,
@@ -51,7 +52,8 @@ namespace LogShark.Shared.LogReading
                         TabadminNativeLog("backgrounder"), // pre-TSM - vizqlserver\Logs\backgrounder-0_2018_07_28_00_00_00.txt
                         TsmV0NativeLog("backgrounder"), // TSMv0 - localhost\tabadminagent_0.20181.18.0404.16052600117725665315795\logs\backgrounder\nativeapi_backgrounder_1-0_2018_08_07_00_00_00.txt
                         TsmNativeLog("backgrounder"), // TSM - node2\backgrounder_0.20182.18.0627.22306436150448756480580\logs\nativeapi_backgrounder_2-1_2018_08_08_00_00_00.txt
-                    }),
+                    },
+                    adhocFileLocations: AdhocList(AdhocNativeLog("backgrounder"))),
 
                 new LogTypeInfo(
                     logType: LogType.BackgrounderJava,
@@ -61,7 +63,8 @@ namespace LogShark.Shared.LogReading
                         TabadminLog("backgrounder"), // pre-TSM - backgrounder/backgrounder-*.log with optional date at the end (backgrounder-0.log.2015-05-18)
                         TsmV0Log("backgrounder"), // TSMv0 - localhost\tabadminagent_0.20181.18.0404.16052600117725665315795\logs\backgrounder\backgrounder_node1-1.log
                         TsmLog("backgrounder"), // TSM - node2\backgrounder_0.20182.18.0627.22306436150448756480580\logs\backgrounder_node2-1.log.2018-08-08
-                    }),
+                    },
+                    adhocFileLocations: AdhocList(AdhocJavaLog("backgrounder"))),
 
                 new LogTypeInfo(
                     logType: LogType.Bridge,
@@ -83,7 +86,12 @@ namespace LogShark.Shared.LogReading
                         Regex(@".*[/\\]logs[/\\]TabBridgeClient.*\.log$"), // Bridge Client logs in logs folder - path/logs/TabBridgeClient_2025_06_25_22_28_11.log
                         Regex(@".*[/\\]logs[/\\]TabBridgeClientWorker.*\.log$"), // Bridge Client Worker logs in logs folder - path/logs/TabBridgeClientWorker_2025_05_20_20_56_06.log
                         Regex(@".*[/\\]logs[/\\]TabBridgeCliJob.*\.log$"), // Bridge CLI Job logs in logs folder - path/logs/TabBridgeCliJob_11892_2025_10_27_20_04_38.log
-                    }),
+                    },
+                    adhocFileLocations: AdhocList(
+                        Regex(@"^TabBridgeClient.*\.log$"),
+                        Regex(@"^TabBridgeClientWorker.*\.log$"),
+                        Regex(@"^TabBridgeCliJob.*\.log$"),
+                        Regex(@"^LiveQueryMetrics.*\.json"))),
 
                 new LogTypeInfo(
                     logType: LogType.ClusterController,
@@ -93,7 +101,8 @@ namespace LogShark.Shared.LogReading
                         TabadminLog("clustercontroller"), // pre-TSM - clustercontroller/clustercontroller.log.2015-05-18
                         TsmV0Log("clustercontroller"), // TSMv0 - localhost\tabadminagent_0.20181.18.0404.16052600117725665315795\logs\clustercontroller\clustercontroller.log
                         TsmLog("clustercontroller"), // TSM - node2\clustercontroller_0.20182.18.0627.22301467407848617992908\logs\clustercontroller.log
-                    }),
+                    },
+                    adhocFileLocations: AdhocList(AdhocJavaLog("clustercontroller"))),
                 
                 new LogTypeInfo(
                     logType: LogType.ControlLogsJava,
@@ -102,7 +111,8 @@ namespace LogShark.Shared.LogReading
                     {
                         // Control logs are placed in the logs folder of the component they control, so dir can be anything
                         TsmLog("[^/]+", "control"), // node1/tabadminagent_0.20202.20.0818.08576654979113587254208/logs/control_tabadminagent_node1-0.log.2020-09-27
-                    }),
+                    },
+                    adhocFileLocations: AdhocList(AdhocJavaLog("control"))),
                 
                 new LogTypeInfo(
                     logType: LogType.CrashPackageLog,
@@ -129,7 +139,8 @@ namespace LogShark.Shared.LogReading
                         TabadminNativeLog("dataserver"), // pre-TSM - vizqlserver\Logs\dataserver-0_2018_07_28_00_00_00.txt
                         TsmV0NativeLog("dataserver"), // TSMv0 - localhost\tabadminagent_0.20181.18.0404.16052600117725665315795\logs\dataserver\nativeapi_dataserver_1-0_2018_08_07_00_00_00.txt
                         TsmNativeLog("dataserver"), // TSM - node2\dataserver_0.20182.18.0627.22301765668120146669553\logs\nativeapi_dataserver_2-1_2018_08_08_00_00_00.txt
-                    }),
+                    },
+                    adhocFileLocations: AdhocList(AdhocNativeLog("dataserver"))),
                 
                 new LogTypeInfo(
                     logType: LogType.DataserverJava,
@@ -139,7 +150,8 @@ namespace LogShark.Shared.LogReading
                         TabadminLog("dataserver"),
                         TsmV0Log("dataserver"),
                         TsmLog("dataserver")
-                    }),
+                    },
+                    adhocFileLocations: AdhocList(AdhocJavaLog("dataserver"))),
 
                 new LogTypeInfo(
                     logType: LogType.Filestore,
@@ -149,7 +161,8 @@ namespace LogShark.Shared.LogReading
                         TabadminLog("filestore"), // pre-TSM - filestore/filestore.log.2018-07-31
                         TsmV0Log("filestore"), // TSMv0 - localhost\tabadminagent_0.20181.18.0404.16052600117725665315795\logs\filestore\filestore.log
                         TsmLog("filestore"), // TSM - node1\filestore_0.20182.18.0627.22302895224363938766334\logs\filestore.log
-                    }),
+                    },
+                    adhocFileLocations: AdhocList(AdhocJavaLog("filestore"))),
                 
                 new LogTypeInfo(
                     logType: LogType.Hyper,
@@ -159,7 +172,8 @@ namespace LogShark.Shared.LogReading
                         TabadminLog("hyper"), // pre-TSM - hyper/hyper_2018_07_19_22_24_32.log
                         TsmV0Log("hyper"), // TSMv0 - localhost\tabadminagent_0.20181.18.0510.1418770265691097820228\logs\hyper\hyper_0_2018_07_30_08_08_24.log
                         TsmLog("hyper"), // TSM - node2\hyper_0.20182.18.0627.22308540150062437331610\logs\hyper_0_2018_08_08_15_07_26.log
-                    }),
+                    },
+                    adhocFileLocations: AdhocList(Regex(@"^hyper.*\.log$"))),
                 
                 new LogTypeInfo(
                     logType: LogType.NetstatLinux,
@@ -167,7 +181,8 @@ namespace LogShark.Shared.LogReading
                     fileLocations: new List<Regex>
                     {
                         Regex(@".+/netstat-anp\.txt$") // TSMv0 and TSM - (TSMv0 example: localhost\tabadminagent_0.20181.18.0510.1418770265691097820228\sysinfo\netstat-anp.txt)
-                    }),
+                    },
+                    adhocFileLocations: AdhocList(Regex(@"^netstat-anp\.txt$"))),
                 
                 new LogTypeInfo(
                     logType: LogType.NetstatWindows,
@@ -176,7 +191,8 @@ namespace LogShark.Shared.LogReading
                     {
                         Regex(@"netstat-info\.txt$"), // pre-TSM - netstat-info.txt in the root
                         Regex(@"/netstat-info\.txt$") // TSM - node1\tabadminagent_0.20182.18.1001.21153436271280456730793\netstat-info.txt
-                    }),
+                    },
+                    adhocFileLocations: AdhocList(Regex(@"^netstat-info\.txt$"))),
                 
                 new LogTypeInfo(
                     logType: LogType.PostgresCsv,
@@ -186,7 +202,8 @@ namespace LogShark.Shared.LogReading
                         TabadminLog("pgsql", "postgresql", "csv"), // pre-TSM - pgsql/postgresql-Sat.csv
                         TsmV0Log("pgsql", "postgresql", "csv"), // TSMv0 - localhost\tabadminagent_0.20181.18.0510.1418770265691097820228\logs\pgsql\postgresql-Mon.csv
                         TsmLog("pgsql", "postgresql", "csv"), // TSM - node2\pgsql_0.20182.18.0627.22303045353787439845635\logs\postgresql-Wed.csv
-                    }),
+                    },
+                    adhocFileLocations: AdhocList(Regex(@"^postgresql-.*\.csv$"))),
 
                 new LogTypeInfo(
                     logType: LogType.Prep,
@@ -200,7 +217,8 @@ namespace LogShark.Shared.LogReading
                       
                         TsmV0NativeLog("flowprocessor"), // TSMv0 - localhost\tabadminagent_0.20181.18.0510.14183743094502915100234\logs\vizportal\nativeapi_vizportal_2-0_2018_07_31_00_00_00.txt
                         TsmNativeLog("flowprocessor"), // TSM - node1\vizportal_0.20182.18.0627.22304211226147125020104\logs\nativeapi_vizportal_1-0_2018_08_08_00_00_00.txt
-                    }),
+                    },
+                    adhocFileLocations: AdhocList(AdhocNativeLog("flowprocessor"))),
                    new LogTypeInfo(
                     logType: LogType.flowprocessorJava,
                     logReaderProvider: (stream, _) => new MultilineJavaLogReader(stream),
@@ -209,7 +227,8 @@ namespace LogShark.Shared.LogReading
                        
                         TsmV0Log("flowprocessor"), // TSMv0 - localhost\tabadminagent_0.20181.18.0510.14183743094502915100234\logs\vizportal\vizportal_node2-0.log.2018-07-30
                         TsmLog("flowprocessor"), // TSM - node1\vizportal_0.20182.18.0627.22304211226147125020104\logs\vizportal_node1-0.log
-                    }),
+                    },
+                    adhocFileLocations: AdhocList(AdhocJavaLog("flowprocessor"))),
 
                 new LogTypeInfo(
                     logType: LogType.ProtocolServer,
@@ -227,7 +246,10 @@ namespace LogShark.Shared.LogReading
                         TsmProtocolLog("dataserver"),   // TSM - Dataserver
                         TsmProtocolLog("vizportal"),    // TSM - Vizportal - node1\vizportal_0.20182.18.0627.22304211226147125020104\logs\tabprotosrv_vizportal_1-0.txt
                         TsmProtocolLog("vizqlserver"),  // TSM - Vizqlserver - node1\vizqlserver_0.20182.18.0627.22305268092790927660381\logs\tabprotosrv_vizqlserver_1-1.txt
-                    }),
+                    },
+                    adhocFileLocations: AdhocList(
+                        Regex(@"^tabprotosrv.*\.txt$"), // Server & Desktop protocol logs - tabprotosrv_backgrounder_2-0.txt / tabprotosrv.txt
+                        Regex(@"^[Ll]ogs.tabprotosrv.*\.txt$"))), // Desktop, zipped Logs folder flattened
                 
                 new LogTypeInfo(
                     logType: LogType.SearchServer,
@@ -237,7 +259,8 @@ namespace LogShark.Shared.LogReading
                         TabadminLog("searchserver"), // pre-TSM - searchserver/searchserver-0.log.2018-07-19
                         TsmV0Log("searchserver"), // TSMv0 - localhost\tabadminagent_0.20181.18.0510.1418770265691097820228\logs\searchserver\searchserver_node1-0.log.2018-07-30
                         TsmLog("searchserver"), // TSM - node1\searchserver_0.20182.18.0627.22308531537836253176995\logs\searchserver_node1-0.log
-                    }),
+                    },
+                    adhocFileLocations: AdhocList(AdhocJavaLog("searchserver"))),
 
                 new LogTypeInfo(
                     logType: LogType.Tabadmin,
@@ -246,7 +269,8 @@ namespace LogShark.Shared.LogReading
                     {
                         Regex(@"logs/tabadmin\.log"), // pre-TSM - logs/tabadmin.log
                         Regex(@"tabadmin/tabadmin.*\.log.*") // pre-TSM
-                    }),
+                    },
+                    adhocFileLocations: AdhocList(AdhocJavaLog("tabadmin"))),
                 
                 new LogTypeInfo(
                     logType: LogType.TabadminAgentJava,
@@ -254,7 +278,8 @@ namespace LogShark.Shared.LogReading
                     fileLocations: new List<Regex>
                     {
                         TsmLog("tabadminagent", "tabadminagent_node") // node1/tabadminagent_0.20202.20.0818.08576654979113587254208/logs/tabadminagent_node1-0.log.2020-09-26
-                    }),
+                    },
+                    adhocFileLocations: AdhocList(AdhocJavaLog("tabadminagent"))),
                 
                 new LogTypeInfo(
                     logType: LogType.TabadminControllerJava,
@@ -262,7 +287,8 @@ namespace LogShark.Shared.LogReading
                     fileLocations: new List<Regex>
                     {
                         TsmLog("tabadmincontroller") // node1/tabadmincontroller_0.20201.20.0913.21097164108816806990865/logs/tabadmincontroller_node1-0.log
-                    }),
+                    },
+                    adhocFileLocations: AdhocList(AdhocJavaLog("tabadmincontroller"))),
                 
                 new LogTypeInfo(
                     logType: LogType.TabsvcYml,
@@ -272,7 +298,8 @@ namespace LogShark.Shared.LogReading
                         Regex(@"^tabsvc\.yml$"), // pre-TSM - tabsvc.yml in the root of the archive
                         // TSMv0 doesn't include config info
                         Regex(@"config/tabadminagent[^/]+/tabsvc\.yml$") // TSM - node1\tabadminagent_0.20182.18.1001.21153436271280456730793\config\tabadminagent_0.20182.18.1001.2115\tabsvc.yml
-                    }),
+                    },
+                    adhocFileLocations: AdhocList(Regex(@"^tabsvc\.yml$"))),
                  new LogTypeInfo(
                     logType: LogType.VizdataCpp,
                     logReaderProvider: (stream, filePath) => new NativeJsonLogsReader(stream, filePath, processingNotificationsCollector),
@@ -281,7 +308,8 @@ namespace LogShark.Shared.LogReading
                        
                         TsmV0NativeLog("vizdata"), // TSMv0 - localhost\tabadminagent_0.20181.18.0510.14183743094502915100234\logs\vizportal\nativeapi_vizportal_2-0_2018_07_31_00_00_00.txt
                         TsmNativeLog("vizdata"), // TSM - node1\vizportal_0.20182.18.0627.22304211226147125020104\logs\nativeapi_vizportal_1-0_2018_08_08_00_00_00.txt
-                    }),
+                    },
+                    adhocFileLocations: AdhocList(AdhocNativeLog("vizdata"))),
                    new LogTypeInfo(
                     logType: LogType.VizdataJava,
                     logReaderProvider: (stream, _) => new MultilineJavaLogReader(stream),
@@ -290,7 +318,8 @@ namespace LogShark.Shared.LogReading
                        
                         TsmV0Log("vizdata"), // TSMv0 - localhost\tabadminagent_0.20181.18.0510.14183743094502915100234\logs\vizportal\vizportal_node2-0.log.2018-07-30
                         TsmLog("vizdata"), // TSM - node1\vizportal_0.20182.18.0627.22304211226147125020104\logs\vizportal_node1-0.log
-                    }),
+                    },
+                    adhocFileLocations: AdhocList(AdhocJavaLog("vizdata"))),
 
                 new LogTypeInfo(
                     logType: LogType.VizportalCpp,
@@ -300,7 +329,8 @@ namespace LogShark.Shared.LogReading
                         TabadminNativeLog("vizportal"), // pre-TSM - vizqlserver\Logs\vizportal_0-0_2018_08_01_00_00_00.txt
                         TsmV0NativeLog("vizportal"), // TSMv0 - localhost\tabadminagent_0.20181.18.0510.14183743094502915100234\logs\vizportal\nativeapi_vizportal_2-0_2018_07_31_00_00_00.txt
                         TsmNativeLog("vizportal"), // TSM - node1\vizportal_0.20182.18.0627.22304211226147125020104\logs\nativeapi_vizportal_1-0_2018_08_08_00_00_00.txt
-                    }),
+                    },
+                    adhocFileLocations: AdhocList(AdhocNativeLog("vizportal"))),
                 
                 new LogTypeInfo(
                     logType: LogType.VizportalJava,
@@ -310,7 +340,8 @@ namespace LogShark.Shared.LogReading
                         TabadminLog("vizportal"), // pre-TSM - vizportal/vizportal-0.log.2018-07-22
                         TsmV0Log("vizportal"), // TSMv0 - localhost\tabadminagent_0.20181.18.0510.14183743094502915100234\logs\vizportal\vizportal_node2-0.log.2018-07-30
                         TsmLog("vizportal"), // TSM - node1\vizportal_0.20182.18.0627.22304211226147125020104\logs\vizportal_node1-0.log
-                    }),
+                    },
+                    adhocFileLocations: AdhocList(AdhocJavaLog("vizportal"))),
 
                 new LogTypeInfo(
                     logType: LogType.VizqlserverCpp,
@@ -320,7 +351,8 @@ namespace LogShark.Shared.LogReading
                         TabadminNativeLog("vizqlserver"), // pre-TSM
                         TsmV0NativeLog("vizqlserver"), // TSMv0 - locahost\tabadminagent_0.20181.18.0510.14183743094502915100234\logs\vizqlserver\nativeapi_vizqlserver_2-1_2018_07_30_00_00_00.txt
                         TsmNativeLog("vizqlserver"), // TSM - node2\vizqlserver_0.20182.18.0627.22306727828712986214311\logs\nativeapi_vizqlserver_2-0_2018_08_08_00_00_00.txt
-                    }),
+                    },
+                    adhocFileLocations: AdhocList(AdhocNativeLog("vizqlserver"))),
                 
                 new LogTypeInfo(
                     logType: LogType.VizqlDesktop,
@@ -329,7 +361,8 @@ namespace LogShark.Shared.LogReading
                     {
                         Regex(@"^log[^/]*\.txt"), // If somebody zipped files, log files are in root
                         Regex(@"^[Ll]ogs/log.*\.txt"), // If somebody zipped whole Logs folder
-                    }),
+                    },
+                    adhocFileLocations: AdhocList(Regex(@"^log.*\.txt$"))),
                 
                 new LogTypeInfo(
                     logType: LogType.WorkgroupYml,
@@ -339,7 +372,8 @@ namespace LogShark.Shared.LogReading
                         Regex(@"config/workgroup\.yml$"), // pre-TSM & TSM. Pre TSM - config folder is at the root. TSM - node1\tabadminagent_0.20182.18.1001.21153436271280456730793\config\tabadminagent_0.20182.18.1001.2115\workgroup.yml
                         // TSMv0 doesn't include config info
                         Regex(@"config/tabadminagent[^/]+/workgroup\.yml$") // TSM - node1\tabadminagent_0.20182.18.1001.21153436271280456730793\config\tabadminagent_0.20182.18.1001.2115\workgroup.yml
-                    }),
+                    },
+                    adhocFileLocations: AdhocList(Regex(@"^workgroup\.yml$"))),
                 
                 new LogTypeInfo(
                     logType: LogType.Zookeeper,
@@ -349,7 +383,8 @@ namespace LogShark.Shared.LogReading
                         TabadminLog("zookeeper"), // pre-TSM - zookeeper/zookeeper-0.log.2018-07-19
                         TsmV0Log("appzookeeper"),// TSMv0 - localhost\tabadminagent_0.20181.18.0404.16052600117725665315795\logs\appzookeeper\appzookeeper_node1-0.log
                         TsmLog("appzookeeper"), // TSM - node1\appzookeeper_1.20182.18.0627.22308155521326766729002\logs\appzookeeper_node1-0.log.2018-08-08
-                    }),
+                    },
+                    adhocFileLocations: AdhocList(AdhocJavaLog("appzookeeper"), AdhocJavaLog("zookeeper"))),
             };
         }
 
@@ -399,6 +434,27 @@ namespace LogShark.Shared.LogReading
         private static Regex TsmProtocolLog(string name)
         {
             return TsmLog(name, "tabprotosrv_" + name, "txt");
+        }
+
+        // Adhoc helpers: filename-only patterns used when files are dumped flat (no folder structure).
+        // They mirror the filename portion of the structured patterns above.
+
+        private static List<Regex> AdhocList(params Regex[] regexes)
+        {
+            return regexes.ToList();
+        }
+
+        private static Regex AdhocNativeLog(string name)
+        {
+            // TSM/TSMv0: nativeapi_backgrounder_2-1_2018_08_08_00_00_00.txt
+            // pre-TSM:   backgrounder-0_2018_07_28_00_00_00.txt
+            return Regex(string.Format(@"^(nativeapi_)?{0}[-_].*\.txt$", name));
+        }
+
+        private static Regex AdhocJavaLog(string name)
+        {
+            // backgrounder_node2-1.log.2018-08-08 / backgrounder-0.log.2015-05-18 / clustercontroller.log
+            return Regex(string.Format(@"^{0}([-_].*)?\.log.*", name));
         }
     }
 }

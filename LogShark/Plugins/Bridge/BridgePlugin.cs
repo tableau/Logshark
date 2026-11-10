@@ -34,12 +34,14 @@ namespace LogShark.Plugins.Bridge
         private static readonly DataSetInfo JobEnvironmentOutputInfo = new DataSetInfo("Bridge", "BridgeJobEnvironment");
         private static readonly DataSetInfo LiveQueryMetricsInfo = new DataSetInfo("Bridge", "LiveQueryMetrics");
         private static readonly DataSetInfo ProtocolQueryInfo = new DataSetInfo("Bridge", "ProtocolQueryInfo");
+        private static readonly DataSetInfo BridgeCommsInfo = new DataSetInfo("Bridge", "BridgeComms");
         private IWriter<BridgeClientWorkerEvent> _clientWorkerWriter;
         private IWriter<BridgeClientEvent> _clientWriter;
         private IWriter<BridgeJobDetails> _jobDetailsWriter;
         private IWriter<BridgeJobEnvironment> _jobEnvironmentWriter;
         private IWriter<LiveQueryMetricsEvent> _liveQueryMetricsWriter;
         private IWriter<ProtocolQueryEvent> _protocolQueryWriter;
+        private IWriter<BridgeCommsEvent> _bridgeCommsWriter;
         private IProcessingNotificationsCollector _processingNotificationsCollector;
 
         // Track job details and environments
@@ -52,16 +54,19 @@ namespace LogShark.Plugins.Bridge
         private readonly ConcurrentDictionary<string, BridgeJobEnvironment> _jobEnvironments = new ConcurrentDictionary<string, BridgeJobEnvironment>();
 
         private readonly object _jobDetailsLock = new object();
+        private bool _tabBridgeClientWorkerFilesFound = false;
+        private bool _anyBridgeFilesProcessed = false;
 
 
-        public void Configure(IWriterFactory writerFactory, IConfiguration pluginConfig, IProcessingNotificationsCollector processingNotificationsCollector, ILoggerFactory loggerFactory)
+        public void Configure(IPluginWriterProvider writerProvider, IConfiguration pluginConfig, IProcessingNotificationsCollector processingNotificationsCollector, ILoggerFactory loggerFactory)
         {
-            _clientWorkerWriter = writerFactory.GetWriter<BridgeClientWorkerEvent>(ClientWorkerOutputInfo);
-            _clientWriter = writerFactory.GetWriter<BridgeClientEvent>(ClientOutputInfo);
-            _jobDetailsWriter = writerFactory.GetWriter<BridgeJobDetails>(JobDetailsOutputInfo);
-            _jobEnvironmentWriter = writerFactory.GetWriter<BridgeJobEnvironment>(JobEnvironmentOutputInfo);
-            _liveQueryMetricsWriter = writerFactory.GetWriter<LiveQueryMetricsEvent>(LiveQueryMetricsInfo);
-            _protocolQueryWriter = writerFactory.GetWriter<ProtocolQueryEvent>(ProtocolQueryInfo);
+            _clientWorkerWriter = writerProvider.GetWriter<BridgeClientWorkerEvent>(ClientWorkerOutputInfo);
+            _clientWriter = writerProvider.GetWriter<BridgeClientEvent>(ClientOutputInfo);
+            _jobDetailsWriter = writerProvider.GetWriter<BridgeJobDetails>(JobDetailsOutputInfo);
+            _jobEnvironmentWriter = writerProvider.GetWriter<BridgeJobEnvironment>(JobEnvironmentOutputInfo);
+            _liveQueryMetricsWriter = writerProvider.GetWriter<LiveQueryMetricsEvent>(LiveQueryMetricsInfo);
+            _protocolQueryWriter = writerProvider.GetWriter<ProtocolQueryEvent>(ProtocolQueryInfo);
+            _bridgeCommsWriter = writerProvider.GetWriter<BridgeCommsEvent>(BridgeCommsInfo);
             _processingNotificationsCollector = processingNotificationsCollector;
         }
 
@@ -82,18 +87,23 @@ namespace LogShark.Plugins.Bridge
                 {
                     if (fileName.StartsWith("TabBridgeClientWorker"))
                     {
+                        _anyBridgeFilesProcessed = true;
+                        _tabBridgeClientWorkerFilesFound = true;
                         ProcessClientWorkerEvent(logLine, baseEvent);
                     }
                     else if (fileName.StartsWith("TabBridgeClient"))
                     {
+                        _anyBridgeFilesProcessed = true;
                         ProcessClientEvent(logLine, baseEvent);
                     }
                     else if (fileName.StartsWith("TabBridgeCliJob"))
                     {
+                        _anyBridgeFilesProcessed = true;
                         ProcessCliJobEvent(logLine, baseEvent);
                     }
                     else if (fileName.StartsWith("LiveQueryMetrics"))
                     {
+                        _anyBridgeFilesProcessed = true;
                         ProcessLiveQueryMetrics(logLine, baseEvent);
                     }
                     else
@@ -122,6 +132,51 @@ namespace LogShark.Plugins.Bridge
 
         private void ProcessClientWorkerEvent(LogLine logLine, NativeJsonLogsBaseEvent baseEvent)
         {
+            // Process BridgeComms events - check EventType first (cheap)
+            if (baseEvent.EventType == "msg")
+            {
+                // Get message content - safe, no exception
+                var message = baseEvent.EventPayload?.ToString();
+
+                // Early filter with string check (cheap, no exception)
+                if (!string.IsNullOrEmpty(message) && message.Contains("DataSync::RAPSConnection::Send:"))
+                {
+                    // Find JSON start position
+                    var jsonStartIdx = message.IndexOf('{');
+                    if (jsonStartIdx >= 0 && jsonStartIdx < message.Length - 1)
+                    {
+                        var jsonString = message.Substring(jsonStartIdx);
+
+                        // Only try-catch around JSON parsing - the ONLY operation that can throw
+                        JObject dataSyncMessage = null;
+                        try
+                        {
+                            dataSyncMessage = JObject.Parse(jsonString);
+                        }
+                        catch (Newtonsoft.Json.JsonException ex)
+                        {
+                            // Log parsing error and skip this line
+                            _processingNotificationsCollector?.ReportError(
+                                $"Failed to parse DataSync JSON: {ex.Message}",
+                                logLine,
+                                nameof(BridgePlugin));
+                        }
+
+                        // If parsing succeeded, check body type and write
+                        if (dataSyncMessage != null)
+                        {
+                            var bodyType = dataSyncMessage["body"]?["type"]?.ToString();
+
+                            // Filter: only process SelfReportingStatusUpdate
+                            if (bodyType == "SelfReportingStatusUpdate")
+                            {
+                                var bridgeCommsEvent = new BridgeCommsEvent(logLine, baseEvent, dataSyncMessage);
+                                _bridgeCommsWriter.AddLine(bridgeCommsEvent);
+                            }
+                        }
+                    }
+                }
+            }
 
             if (baseEvent.EventType == "live-query") //only process lines with live-query key
             {
@@ -230,9 +285,9 @@ namespace LogShark.Plugins.Bridge
             if (!string.IsNullOrEmpty(jobId))
             {
                 // Create or get existing job details for this jobID
-                if (!_jobDetails.ContainsKey(jobId) )
+                if (!_jobDetails.ContainsKey(jobId))
                 {
-                    _jobDetails[jobId] = new BridgeJobDetails(jobId, baseEvent.Timestamp, baseEvent.ProcessId, baseEvent.ThreadId ?? "0");
+                    _jobDetails[jobId] = new BridgeJobDetails(jobId, baseEvent.Timestamp, baseEvent.ProcessId, baseEvent.ThreadId ?? "0", logLine);
                 }
                 foreach (var jobDetail in _jobDetails)
                 {
@@ -241,7 +296,7 @@ namespace LogShark.Plugins.Bridge
 
                     if (jobFinished && jobDetail.Value.HostName != null)
                     {
-                        
+
                         bool removed = _jobDetails.TryRemove(jobDetail.Key, out _); //Remove the jobID from list when job is detected as finished
                         if (removed)
                         {
@@ -333,7 +388,7 @@ namespace LogShark.Plugins.Bridge
                 {
                     try
                     {
-                        _jobEnvironments[key] = new BridgeJobEnvironment(key);
+                        _jobEnvironments[key] = new BridgeJobEnvironment(key, logLine);
                     }
                     catch (Exception ex)
                     {
@@ -486,6 +541,41 @@ namespace LogShark.Plugins.Bridge
                             }
                         }
                     }
+                    else if (baseEvent.EventType == "extract-refresh-metrics")
+                    {
+                        // Extract jobID from refreshInformation nested JSON
+                        var payload = baseEvent.EventPayload as Newtonsoft.Json.Linq.JObject;
+                        if (payload != null)
+                        {
+                            var refreshInfoToken = payload["refreshInformation"];
+                            if (refreshInfoToken != null)
+                            {
+                                var refreshInfoStr = refreshInfoToken.ToString();
+                                try
+                                {
+                                    var refreshInfo = Newtonsoft.Json.Linq.JObject.Parse(refreshInfoStr);
+                                    var jobIdToken = refreshInfo["jobID"];
+                                    if (jobIdToken != null)
+                                    {
+                                        var jobId = jobIdToken.ToString();
+                                        if (!string.IsNullOrEmpty(jobId))
+                                        {
+                                            return CleanJobId(jobId);
+                                        }
+                                    }
+                                }
+                                catch (Exception)
+                                {
+                                    // If JSON parsing fails, try regex
+                                    var jobIdMatch = System.Text.RegularExpressions.Regex.Match(refreshInfoStr, @"""jobID""\s*:\s*""([a-fA-F0-9-]+)""", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+                                    if (jobIdMatch.Success)
+                                    {
+                                        return CleanJobId(jobIdMatch.Groups[1].Value);
+                                    }
+                                }
+                            }
+                        }
+                    }
                     else
                     {
                         //unknown event
@@ -578,6 +668,25 @@ namespace LogShark.Plugins.Bridge
             var jobEnvironmentStatistics = _jobEnvironmentWriter.Close();
             var liveQueryMetricsStatistics = _liveQueryMetricsWriter.Close();
             var protocolQueryStatistics = _protocolQueryWriter.Close();
+            var bridgeCommsStatistics = _bridgeCommsWriter.Close();
+
+            // Only report error if we processed Bridge files but didn't find TabBridgeClientWorker files
+            // If no Bridge files were processed at all, we're likely dealing with Tableau Server logs
+            if (_anyBridgeFilesProcessed && !_tabBridgeClientWorkerFilesFound)
+            {
+                _processingNotificationsCollector.ReportError(
+                    "No TabBridgeClientWorker log files found. Bridge plugin requires TabBridgeClientWorker logs to generate meaningful results.",
+                    nameof(BridgePlugin));
+            }
+
+            // Only report error if we processed Bridge files but didn't find TabBridgeClientWorker files
+            // If no Bridge files were processed at all, we're likely dealing with Tableau Server logs
+            if (_anyBridgeFilesProcessed && !_tabBridgeClientWorkerFilesFound)
+            {
+                _processingNotificationsCollector.ReportError(
+                    "No TabBridgeClientWorker log files found. Bridge plugin requires TabBridgeClientWorker logs to generate meaningful results.",
+                    nameof(BridgePlugin));
+            }
 
             return new SinglePluginExecutionResults(new List<WriterLineCounts>
             {
@@ -586,7 +695,8 @@ namespace LogShark.Plugins.Bridge
                 jobDetailsStatistics,
                 jobEnvironmentStatistics,
                 liveQueryMetricsStatistics,
-                protocolQueryStatistics
+                protocolQueryStatistics,
+                bridgeCommsStatistics
             });
         }
 
@@ -598,6 +708,7 @@ namespace LogShark.Plugins.Bridge
             _jobEnvironmentWriter?.Dispose();
             _liveQueryMetricsWriter?.Dispose();
             _protocolQueryWriter?.Dispose();
+            _bridgeCommsWriter?.Dispose();
         }
     }
 }

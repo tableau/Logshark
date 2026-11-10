@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <TargetLatestRuntimePatch>true</TargetLatestRuntimePatch>
     <Company>Tableau Software</Company>
     <Authors>Customer Data Platform</Authors>
@@ -11,17 +11,14 @@
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Flurl.Http" Version="2.4.2" />
+    <PackageReference Include="Flurl.Http" Version="4.0.2" />
     <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="3.0.0" />
-    <PackageReference Include="Npgsql" Version="8.0.5" />
-    <PackageReference Include="Serilog.Extensions.Logging.File" Version="1.1.0" />
+    <PackageReference Include="Npgsql" Version="10.0.3" />
+    <PackageReference Include="Spectre.Console" Version="0.49.1" />
     <PackageReference Include="Tableau.HyperAPI.NET" Version="0.0.17971" />
-	<Reference Include="Tools.TableauServerRestApi">
-		<HintPath>..\thirdparty\Tools.TableauServerRestApi.dll</HintPath>
-	</Reference>
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="10.0.14" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="10.0.14" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="10.0.14" />
   </ItemGroup>
   <ItemGroup>
     <None Update="Config\**">
@@ -48,14 +45,12 @@
     <EmbeddedResource Remove="TestLogs\**" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Properties\launchSettings.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
     <Folder Include="Workbooks" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\LogShark.Shared\LogShark.Shared.csproj" />
   </ItemGroup>
+  <!-- Internal-only package references live in this file. It is not part of the public export, where the export supplies an equivalent reference instead. -->
+  <Import Project="LogShark.Private.props" Condition="Exists('LogShark.Private.props')" />
+  <Import Project="LogShark.Public.props" Condition="Exists('LogShark.Public.props')" />
 </Project>

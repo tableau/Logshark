@@ -1,4 +1,5 @@
 using System;
+using LogShark.Shared.LogReading.Containers;
 using Newtonsoft.Json;
 
 namespace LogShark.Plugins.Bridge.Model
@@ -7,7 +8,9 @@ namespace LogShark.Plugins.Bridge.Model
     {
         // Core job identification
         public string JobId { get; set; }
-        
+        public string FileName { get; set; }
+        public string FilePath { get; set; }
+
         // Startup info fields
         public string Domain { get; set; }
         public string Hostname { get; set; }
@@ -15,19 +18,21 @@ namespace LogShark.Plugins.Bridge.Model
         public string ProcessId { get; set; }
         public string StartTime { get; set; }
         public string TableauVersion { get; set; }
-        
+
         // Environment fields
         public string Username { get; set; }
-        
+
         // CPU info
         public string CpuName { get; set; }
-        
+
         // Proxy settings
         public bool? EnableProxyCookie { get; set; }
 
-        public BridgeJobEnvironment(string jobId)
+        public BridgeJobEnvironment(string jobId, LogLine logLine)
         {
             JobId = jobId?.Trim('{', '}').ToLowerInvariant() ?? jobId;
+            FileName = logLine?.LogFileInfo?.FileName;
+            FilePath = logLine?.LogFileInfo?.FilePath;
         }
 
         public void UpdateFromStartupInfo(object eventPayload)

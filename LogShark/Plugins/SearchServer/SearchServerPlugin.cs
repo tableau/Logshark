@@ -31,9 +31,9 @@ namespace LogShark.Plugins.SearchServer
         public IList<LogType> ConsumedLogTypes => new List<LogType> { LogType.SearchServer };
         public string Name => "SearchServer";
 
-        public void Configure(IWriterFactory writerFactory, IConfiguration pluginConfig, IProcessingNotificationsCollector processingNotificationsCollector, ILoggerFactory loggerFactory)
+        public void Configure(IPluginWriterProvider writerProvider, IConfiguration pluginConfig, IProcessingNotificationsCollector processingNotificationsCollector, ILoggerFactory loggerFactory)
         {
-            _writer = writerFactory.GetWriter<SearchServerEvent>(OutputInfo);
+            _writer = writerProvider.GetWriter<SearchServerEvent>(OutputInfo);
             _processingNotificationsCollector = processingNotificationsCollector;
         }
 

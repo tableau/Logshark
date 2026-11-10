@@ -30,11 +30,11 @@ namespace LogShark.Plugins.Art
         private IWriter<FlattenedArtEvent> _serverWriter;
         private JsonSerializer _jsonSerializer;
 
-        public void Configure(IWriterFactory writerFactory, IConfiguration pluginConfig, IProcessingNotificationsCollector processingNotificationsCollector, ILoggerFactory loggerFactory)
+        public void Configure(IPluginWriterProvider writerProvider, IConfiguration pluginConfig, IProcessingNotificationsCollector processingNotificationsCollector, ILoggerFactory loggerFactory)
         {
             _processingNotificationsCollector = processingNotificationsCollector;
-            _desktopWriter = writerFactory.GetWriter<FlattenedArtEvent>(DesktopOutputInfo);
-            _serverWriter = writerFactory.GetWriter<FlattenedArtEvent>(ServerOutputInfo);
+            _desktopWriter = writerProvider.GetWriter<FlattenedArtEvent>(DesktopOutputInfo);
+            _serverWriter = writerProvider.GetWriter<FlattenedArtEvent>(ServerOutputInfo);
             _jsonSerializer = JsonSerializer.Create();
         }
 

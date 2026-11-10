@@ -95,7 +95,7 @@ namespace LogShark.Plugins.Replayer
         
 
 
-        public void Configure(IWriterFactory writerFactory, IConfiguration pluginConfig, IProcessingNotificationsCollector processingNotificationsCollector, ILoggerFactory loggerFactory)
+        public void Configure(IPluginWriterProvider writerProvider, IConfiguration pluginConfig, IProcessingNotificationsCollector processingNotificationsCollector, ILoggerFactory loggerFactory)
         {
             _logger = loggerFactory.CreateLogger<ReplayerPlugin>();
             _processingNotificationsCollector = processingNotificationsCollector;

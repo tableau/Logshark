@@ -1,7 +1,7 @@
 {
   "Logging": {
-    "PathFormat": "Logs/LogShark-{Date}.log",
-    "Json": false,
+    "Directory": "Logs",
+    "FileNamePrefix": "LogShark",
     "FileSizeLimitBytes": 10485760,
     "RetainedFileCountLimit": 5,
     "LogLevel": {
@@ -21,20 +21,23 @@
     "CustomWorkbookTemplatesDir": null,
     "NumberOfErrorDetailsToKeep": 25,
     "DefaultWriter": "hyper",
-    "AppendLogsetNameToOutput": false
+    "AppendLogsetNameToOutput": false,
+    "_DynamicPluginsDirectory_comment": "Directory to scan for external plugin assemblies (.dll). Set to null to disable. Relative paths resolve from the LogShark installation directory. Can be overridden by --dynamic-plugins-dir on the command line.",
+    "DynamicPluginsDirectory": null
   },
   "HyperProcess": {
     "external_stream_timeout": "10h"
   },
   "PostgresWriterDatabase": {
     "_comment": {
-      "1": "If Postgres writer is used to store output, either provide `ConnectionString` or `Host`+`Database`+`Username`+`Password`. If `ConnectionString` and individual parameters are provided at the same time, individual parameters will override respective values in connection string",
+      "1": "If Postgres writer is used to store output, either provide `ConnectionString` or `Host`+`Database`+`Username`+`Password`. If `ConnectionString` and individual parameters are provided at the same time, individual parameters will override respective values in connection string. `Port` defaults to 5432 if not specified; it can also be set through the command line via `--pg-db-port`",
       "2": "`DatabaseName` is where output should be stored (database will be created if does not exist).",
       "3": "`ServiceDatabaseName` must always be specified - this is the database LogShark will log into in order to create output database if necessary. For most PostgreSQL instances the service database is named `postgres`",
       "4": "Most of the values can also be specified through command line parameters. In this case command line values override values from this file",
       "5": "`ConnectionTimeoutSeconds` parameter defines how long driver will wait for initial response from the database. It does NOT affect how long we wait for query results"
     },
     "Host": "",
+    "Port": "",
     "DatabaseName": "",
     "Username": "",
     "Password": "",
@@ -65,7 +68,9 @@
       "Name": ""
     },
     "ProjectDescriptionFooterHtml": "",
-    "SkipPublishingEmptyWorkbooks": true
+    "SkipPublishingEmptyWorkbooks": true,
+    "PublishToOriginalServer": false,
+    "PublishToMigrationServer": true
   },
   "PluginsConfiguration": {
     "DefaultPluginSet": {

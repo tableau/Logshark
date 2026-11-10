@@ -14,22 +14,27 @@ namespace LogShark
         private readonly object _dictionaryLock;
         private readonly Dictionary<string, Queue<ZipArchive>> _openedZipFiles;
         private readonly ILogger _logger;
+        private readonly bool _suppressLogs;
 
         private int _checkedOutArchivesCount;
 
-        public ZipArchivePool(ILogger logger)
+        public ZipArchivePool(ILogger logger, bool suppressLogs = false)
         {
             _dictionaryLock = new object();
             _openedZipFiles = new Dictionary<string, Queue<ZipArchive>>();
             _checkedOutArchivesCount = 0;
-            
+
             _logger = logger;
+            _suppressLogs = suppressLogs;
         }
 
         public ZipArchiveFromPool CheckOut(string zipPath)
         {
-            _logger.LogDebug("Got request for ZipArchive for file `{zipPath}`. Currently checked out ZipArchive count is {currentZipArchiveCount}", zipPath, _checkedOutArchivesCount);
-            
+            if (!_suppressLogs)
+            {
+                _logger.LogDebug("Got request for ZipArchive for file `{zipPath}`. Currently checked out ZipArchive count is {currentZipArchiveCount}", zipPath, _checkedOutArchivesCount);
+            }
+
             lock (_dictionaryLock)
             {
                 ++_checkedOutArchivesCount; // Incrementing here as all code paths in this method should return a ZipArchive
@@ -56,8 +61,11 @@ namespace LogShark
 
         private void Return(string zipPath, ZipArchive zipArchive)
         {
-            _logger.LogDebug("Received return request for ZipArchive for path `{zipPath}`. Currently checked out ZipArchive count is {currentZipArchiveCount}.", zipPath, _checkedOutArchivesCount);
-            
+            if (!_suppressLogs)
+            {
+                _logger.LogDebug("Received return request for ZipArchive for path `{zipPath}`. Currently checked out ZipArchive count is {currentZipArchiveCount}.", zipPath, _checkedOutArchivesCount);
+            }
+
             lock (_dictionaryLock)
             {
                 if (!_openedZipFiles.ContainsKey(zipPath))

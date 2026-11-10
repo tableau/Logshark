@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using LogShark.Containers;
 using LogShark.Writers.Containers;
-using static Tools.TableauServerRestApi.Containers.PublishWorkbookRequest;
+using static Tableau.CDP.Tools.TableauServerRestApi.Containers.PublishWorkbookRequest;
 
 namespace LogShark.Writers
 {

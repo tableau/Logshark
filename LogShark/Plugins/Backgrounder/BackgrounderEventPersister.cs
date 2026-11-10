@@ -19,6 +19,7 @@ namespace LogShark.Plugins.Backgrounder
         private static readonly DataSetInfo ExtractJobDetailsDsi = new DataSetInfo("Backgrounder", "BackgrounderExtractJobDetails");
         private static readonly DataSetInfo SubscriptionJobDetailsDsi = new DataSetInfo("Backgrounder", "BackgrounderSubscriptionJobDetails");
         private static readonly DataSetInfo FlowJobDetailsDsi = new DataSetInfo("Backgrounder", "BackgrounderFlowJobDetails");
+        private static readonly DataSetInfo DataInserterDsi = new DataSetInfo("Backgrounder", "BackgrounderExtractDataInserter");
 
         private static readonly HashSet<string> ExtractRefreshJobTypes = new HashSet<string> { "refresh_extracts", "increment_extracts" };
         private static readonly HashSet<string> SubscriptionJobTypes = new HashSet<string> { "single_subscription_notify" };
@@ -28,14 +29,65 @@ namespace LogShark.Plugins.Backgrounder
         private readonly IWriter<BackgrounderExtractJobDetail> _extractJobDetailWriter;
         private readonly IWriter<BackgrounderSubscriptionJobDetail> _subscriptionJobDetailWriter;
         private readonly IWriter<BackgrounderFlowJobDetail> _flowJobDetailWriter;
+        private readonly IWriter<BackgrounderExtractDataInserter> _dataInserterWriter;
 
-        public BackgrounderEventPersister(IWriterFactory writerFactory)
+        // request_id -> job_id, harvested from Java lines. Used to link native inserter events to a job.
+        private readonly Dictionary<string, string> _requestIdToJobId = new Dictionary<string, string>();
+        private readonly object _requestMapLock = new object();
+
+        // Native inserter events awaiting their complementary half, keyed by req + table-name.
+        private readonly Dictionary<string, BackgrounderExtractDataInserter> _pendingInserters = new Dictionary<string, BackgrounderExtractDataInserter>();
+        private readonly List<BackgrounderExtractDataInserter> _completedInserters = new List<BackgrounderExtractDataInserter>();
+        private readonly object _inserterLock = new object();
+
+        // Resolved at drain time: job_id -> inserter rows. Only extract-refresh jobs get written.
+        private Dictionary<string, List<BackgrounderExtractDataInserter>> _inserterRowsByJobId;
+
+        public BackgrounderEventPersister(IPluginWriterProvider writerProvider)
         {
-            _jobWriter = writerFactory.GetWriter<BackgrounderJob>(JobsDsi);
-            _jobErrorWriter = writerFactory.GetWriter<BackgrounderJobError>(JobErrorsDsi);
-            _extractJobDetailWriter = writerFactory.GetWriter<BackgrounderExtractJobDetail>(ExtractJobDetailsDsi);
-            _subscriptionJobDetailWriter = writerFactory.GetWriter<BackgrounderSubscriptionJobDetail>(SubscriptionJobDetailsDsi);
-            _flowJobDetailWriter = writerFactory.GetWriter<BackgrounderFlowJobDetail>(FlowJobDetailsDsi);
+            _jobWriter = writerProvider.GetWriter<BackgrounderJob>(JobsDsi);
+            _jobErrorWriter = writerProvider.GetWriter<BackgrounderJobError>(JobErrorsDsi);
+            _extractJobDetailWriter = writerProvider.GetWriter<BackgrounderExtractJobDetail>(ExtractJobDetailsDsi);
+            _subscriptionJobDetailWriter = writerProvider.GetWriter<BackgrounderSubscriptionJobDetail>(SubscriptionJobDetailsDsi);
+            _flowJobDetailWriter = writerProvider.GetWriter<BackgrounderFlowJobDetail>(FlowJobDetailsDsi);
+            _dataInserterWriter = writerProvider.GetWriter<BackgrounderExtractDataInserter>(DataInserterDsi);
+        }
+
+        public void RegisterRequestToJobId(string requestId, string jobId)
+        {
+            if (string.IsNullOrEmpty(requestId) || requestId == "-" || string.IsNullOrEmpty(jobId))
+            {
+                return;
+            }
+
+            lock (_requestMapLock)
+            {
+                _requestIdToJobId[requestId] = jobId;
+            }
+        }
+
+        public void AddDataInserterEvent(BackgrounderExtractDataInserter dataInserter)
+        {
+            // req + table-name is unique per table-insert within a job (req is unique per job run).
+            if (dataInserter?.RequestId == null || dataInserter.TableName == null)
+            {
+                return;
+            }
+
+            var key = dataInserter.RequestId + "|" + dataInserter.TableName;
+            lock (_inserterLock)
+            {
+                if (_pendingInserters.TryGetValue(key, out var existing))
+                {
+                    existing.FillMissingFrom(dataInserter);
+                    _completedInserters.Add(existing);
+                    _pendingInserters.Remove(key);
+                }
+                else
+                {
+                    _pendingInserters[key] = dataInserter;
+                }
+            }
         }
 
         public void AddStartEvent(BackgrounderJob startEvent)
@@ -180,6 +232,7 @@ namespace LogShark.Plugins.Backgrounder
             _extractJobDetailWriter?.Dispose();
             _subscriptionJobDetailWriter?.Dispose();
             _flowJobDetailWriter?.Dispose();
+            _dataInserterWriter?.Dispose();
         }
 
         private void PersistEvent(BackgrounderEvent @event, bool deleteFromDictionary = true)
@@ -194,7 +247,10 @@ namespace LogShark.Plugins.Backgrounder
                 {
                     BackgrounderJobId = @event.StartEvent.JobId,
                 };
-                    
+
+                // Stamp the worker from the matched job so every detail datasource carries it (see WorkerId doc).
+                extractDetails.WorkerId = jobEvent.WorkerId;
+
                 var argChunks = jobEvent.Args?
                     .Replace("[", "")
                     .Replace("]", "")
@@ -212,10 +268,20 @@ namespace LogShark.Plugins.Backgrounder
                 }
 
                 _extractJobDetailWriter.AddLine(extractDetails);
+
+                // Native inserter rows are only emitted for extract-refresh jobs (per design).
+                if (_inserterRowsByJobId != null && _inserterRowsByJobId.TryGetValue(jobEvent.JobId, out var inserterRows))
+                {
+                    foreach (var inserterRow in inserterRows)
+                    {
+                        _dataInserterWriter.AddLine(inserterRow);
+                    }
+                }
             }
                 
             if (SubscriptionJobTypes.Contains(jobEvent.JobType) && @event.SubscriptionJobDetails != null)
             {
+                @event.SubscriptionJobDetails.WorkerId = jobEvent.WorkerId;
                 _subscriptionJobDetailWriter.AddLine(@event.SubscriptionJobDetails);
             }
             if(FlowJobTypes.Contains(jobEvent.JobType) )
@@ -223,6 +289,7 @@ namespace LogShark.Plugins.Backgrounder
                 //Haven't figured this out but sometimes this event can be null
                 if (@event.FlowJobDetails != null)
                 {
+                    @event.FlowJobDetails.WorkerId = jobEvent.WorkerId;
                     _flowJobDetailWriter.AddLine(@event.FlowJobDetails);
                 }
             }
@@ -254,6 +321,8 @@ namespace LogShark.Plugins.Backgrounder
 
         private IEnumerable<WriterLineCounts> DrainAllEvents()
         {
+            _inserterRowsByJobId = ResolveInserterRowsByJobId();
+
             lock (_events)
             {
                 foreach (var (jobId, @event) in _events)
@@ -306,10 +375,48 @@ namespace LogShark.Plugins.Backgrounder
                     _jobErrorWriter.Close(),
                     _extractJobDetailWriter.Close(),
                     _subscriptionJobDetailWriter.Close(),
-                    _flowJobDetailWriter.Close()
-                   
+                    _flowJobDetailWriter.Close(),
+                    _dataInserterWriter.Close()
                 };
             }
+        }
+
+        // Flushes any unpaired native inserter events and groups all inserter rows by the job_id their
+        // req resolves to. Rows whose req matches no job (orphans) are dropped: without a job we cannot
+        // confirm they belong to an extract refresh.
+        private Dictionary<string, List<BackgrounderExtractDataInserter>> ResolveInserterRowsByJobId()
+        {
+            var result = new Dictionary<string, List<BackgrounderExtractDataInserter>>();
+
+            lock (_inserterLock)
+            {
+                foreach (var pending in _pendingInserters.Values)
+                {
+                    _completedInserters.Add(pending);
+                }
+                _pendingInserters.Clear();
+
+                lock (_requestMapLock)
+                {
+                    foreach (var row in _completedInserters)
+                    {
+                        if (row.RequestId == null || !_requestIdToJobId.TryGetValue(row.RequestId, out var jobId))
+                        {
+                            continue;
+                        }
+
+                        row.BackgrounderJobId = jobId;
+                        if (!result.TryGetValue(jobId, out var rows))
+                        {
+                            rows = new List<BackgrounderExtractDataInserter>();
+                            result[jobId] = rows;
+                        }
+                        rows.Add(row);
+                    }
+                }
+            }
+
+            return result;
         }
 
         private class BackgrounderEvent

@@ -7,7 +7,7 @@ using LogShark.Writers.Containers;
 using LogShark.Writers.Sql.Connections;
 using LogShark.Writers.Sql.Connections.Npgsql;
 using Microsoft.Extensions.Logging;
-using static Tools.TableauServerRestApi.Containers.PublishWorkbookRequest;
+using static Tableau.CDP.Tools.TableauServerRestApi.Containers.PublishWorkbookRequest;
 
 namespace LogShark.Writers.Sql
 {
@@ -96,11 +96,19 @@ namespace LogShark.Writers.Sql
                 if (r.Success)
                 {
                     host = r.Groups["host"].Value;
-                    port = r.Groups["port"].Value;
+                    if (!string.IsNullOrWhiteSpace(r.Groups["port"].Value))
+                    {
+                        port = r.Groups["port"].Value;
+                    }
                 }
             }
             connectionStringBuilder.Add("Host", host);
             _dbHost = host;
+
+            if (string.IsNullOrWhiteSpace(port) && connectionStringBuilder.ContainsKey("Port"))
+            {
+                port = (string)connectionStringBuilder["Port"];
+            }
 
             if (string.IsNullOrWhiteSpace(port))
             {
@@ -141,14 +149,14 @@ namespace LogShark.Writers.Sql
 
         private async Task InitializeRunSummaryTable(string runSummaryIdColumnName)
         {
-            await _repository.CreateTableIfNotExist<TRunSummary>();
-            await _repository.CreateColumnWithPrimaryKeyIfNotExist<TRunSummary>(runSummaryIdColumnName);
-            await _repository.CreateColumnsForTypeIfNotExist<TRunSummary>();
+            await _repository.CreateTableIfNotExist<TRunSummary>(null);
+            await _repository.CreateColumnWithPrimaryKeyIfNotExist<TRunSummary>(null, runSummaryIdColumnName);
+            await _repository.CreateColumnsForTypeIfNotExist<TRunSummary>(null);
         }
 
         private async Task WriteRunSummary()
         {
-            _runSummaryId = await _repository.InsertRowWithReturnValue<TRunSummary, int>(_runSummaryRecord, _runSummaryIdColumnName, null, new [] { _runSummaryIdColumnName });
+            _runSummaryId = await _repository.InsertRowWithReturnValue<TRunSummary, int>(null, _runSummaryRecord, _runSummaryIdColumnName, null, new [] { _runSummaryIdColumnName });
         }
 
         public IWriter<T> GetWriter<T>(DataSetInfo dataSetInfo)

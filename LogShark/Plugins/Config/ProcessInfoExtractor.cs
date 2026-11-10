@@ -45,6 +45,7 @@ namespace LogShark.Plugins.Config
 
             // Add process info records that work differently than other processes
             processInfoRecords.AddRange(GetPostgresProcessDetails());
+            processInfoRecords.AddRange(GetAppZookeeperProcessDetails());
 
             return processInfoRecords;
         }
@@ -171,7 +172,70 @@ namespace LogShark.Plugins.Config
 
             return postgresProcessInfo;
         }
-                
+
+        private IEnumerable<ConfigProcessInfo> GetAppZookeeperProcessDetails()
+        {
+            const string coordinationServiceHostsKey = "coordinationservice.hosts";
+            var appZookeeperProcessInfo = new List<ConfigProcessInfo>();
+
+            if (!_workgroupYml.Values.ContainsKey(coordinationServiceHostsKey))
+            {
+                return appZookeeperProcessInfo;
+            }
+
+            var coordinationServiceHosts = _workgroupYml.Values[coordinationServiceHostsKey];
+
+            // Parse the coordinationservice.hosts value which can be:
+            // Single node: "hostname:port"
+            // Multiple nodes: "hostname1:port1,hostname2:port2,hostname3:port3"
+            var hostPortPairs = coordinationServiceHosts.Split(',');
+
+            foreach (var hostPortPair in hostPortPairs)
+            {
+                var parts = hostPortPair.Trim().Split(':');
+                if (parts.Length != 2)
+                {
+                    continue;
+                }
+
+                var hostname = parts[0].Trim();
+                if (!int.TryParse(parts[1].Trim(), out var port))
+                {
+                    continue;
+                }
+
+                // Map hostname to node name
+                var node = "node0"; // Default value
+                if (_hostnameNodeMapping != null && _hostnameNodeMapping.TryGetValue(hostname, out var nodeMapping))
+                {
+                    node = nodeMapping.ToKeyValuePairs().First().Key;
+                }
+                else
+                {
+                    // Try to find worker index by matching hostname
+                    var workerIndex = _hostnameMap
+                        .Where(pair => pair.Value.Equals(hostname, StringComparison.InvariantCultureIgnoreCase))
+                        .Select(pair => pair.Key)
+                        .Cast<int?>()
+                        .FirstOrDefault();
+
+                    if (workerIndex.HasValue)
+                    {
+                        node = "worker" + workerIndex.Value.ToString();
+                    }
+                }
+
+                appZookeeperProcessInfo.Add(new ConfigProcessInfo(
+                    _workgroupYml.LogFileInfo.LastModifiedUtc,
+                    hostname,
+                    port,
+                    "appzookeeper",
+                    node));
+            }
+
+            return appZookeeperProcessInfo;
+        }
+
         private int? GetProcessCount(int workerIndex, string processName)
         {
             var processKeyPrefix = $"worker{workerIndex}.{processName}".ToLowerInvariant();

@@ -15,8 +15,22 @@ namespace LogShark.Shared
             int secondRetryDelaySeconds = 60)
             where TException : Exception
         {
+            return await DoWithRetries<TException, TResult>(
+                componentNameForLogging, logger, whatToRun, shouldRetry: null,
+                firstRetryDelaySeconds, secondRetryDelaySeconds);
+        }
+
+        public static async Task<TResult> DoWithRetries<TException, TResult>(
+            string componentNameForLogging,
+            ILogger logger,
+            Func<Task<TResult>> whatToRun,
+            Func<TException, bool> shouldRetry,
+            int firstRetryDelaySeconds = 30,
+            int secondRetryDelaySeconds = 60)
+            where TException : Exception
+        {
             return await Policy
-                .Handle<TException>()
+                .Handle<TException>(ex => shouldRetry == null || shouldRetry(ex))
                 .WaitAndRetryAsync(
                     new[]
                     {

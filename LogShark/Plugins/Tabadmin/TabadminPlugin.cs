@@ -59,11 +59,11 @@ namespace LogShark.Plugins.Tabadmin
         private IWriter<TabadminError> _tabadminErrorWriter;
         private IProcessingNotificationsCollector _processingNotificationsCollector;
         
-        public void Configure(IWriterFactory writerFactory, IConfiguration pluginConfig, IProcessingNotificationsCollector processingNotificationsCollector, ILoggerFactory loggerFactory)
+        public void Configure(IPluginWriterProvider writerProvider, IConfiguration pluginConfig, IProcessingNotificationsCollector processingNotificationsCollector, ILoggerFactory loggerFactory)
         {
-            _tabadminActionWriter = writerFactory.GetWriter<TabadminAction>(TabadminActionOutputInfo);
-            _tableauServerVersionWriter = writerFactory.GetWriter<TableauServerVersion>(TableauServerVersionOutputInfo);
-            _tabadminErrorWriter = writerFactory.GetWriter<TabadminError>(TabadminErrorOutputInfo);
+            _tabadminActionWriter = writerProvider.GetWriter<TabadminAction>(TabadminActionOutputInfo);
+            _tableauServerVersionWriter = writerProvider.GetWriter<TableauServerVersion>(TableauServerVersionOutputInfo);
+            _tabadminErrorWriter = writerProvider.GetWriter<TabadminError>(TabadminErrorOutputInfo);
             _versionsDict = new Dictionary<string, List<TableauServerVersion>>();
             _processingNotificationsCollector = processingNotificationsCollector;
         }
