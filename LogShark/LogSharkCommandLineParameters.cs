@@ -12,10 +12,12 @@ namespace LogShark
         public string DatabaseHost { get; set; }
         public string DatabaseName { get; set; }
         public string DatabasePassword { get; set; }
+        public string DatabasePort { get; set; }
         public string DatabaseUsername { get; set; }
         public bool EmbedCredentialsOnPublish { get; set; }
         public bool ForceRunId { get; set; }
         public string LogSetLocation { get; set; }
+        public bool AdhocMode { get; set; }
         public int? NumberOfParallelThreads { get; set; }
 
         public string OriginalFileName
@@ -32,6 +34,7 @@ namespace LogShark
 
         public bool PublishWorkbooks { get; set; }
         public string RequestedPlugins { get; set; }
+        public bool ShowProgress { get; set; }
         public string RequestedWriter { get; set; }
         public string UserProvidedRunId { get; set; }
         public string TableauServerUsername { get; set; }
@@ -40,6 +43,7 @@ namespace LogShark
         public string TableauServerSite { get; set; }
         public string TableauServerUrl { get; set; }
         public string WorkbookNameSuffixOverride { get; set; }
+        public string DynamicPluginsDirectory { get; set; }
 
         public LogSharkCommandLineParameters GetShallowCopy()
         {

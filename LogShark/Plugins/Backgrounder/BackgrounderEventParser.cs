@@ -1,6 +1,7 @@
 using LogShark.Plugins.Backgrounder.Model;
 using LogShark.Plugins.Shared;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using LogShark.Extensions;
@@ -8,6 +9,7 @@ using LogShark.Shared;
 using LogShark.Shared.Extensions;
 using LogShark.Shared.LogReading.Containers;
 using System;
+using Newtonsoft.Json.Linq;
 
 namespace LogShark.Plugins.Backgrounder
 {
@@ -143,6 +145,11 @@ namespace LogShark.Plugins.Backgrounder
             }
 
             string jobId = jobIdInt.ToString();
+
+            // Harvest the request_id <-> job_id link so nativeapi inserter events (which only carry
+            // req) can be tied back to this job. Every Java line carries local_req_id in its context block.
+            _backgrounderEventPersister.RegisterRequestToJobId(lineMatch.Groups["local_req_id"].Value, jobId);
+
             var startEvent = TryMatchStartMessage(lineMatch, logLine, backgrounderId.ToString(), jobId);
             if (startEvent != null)
             {
@@ -176,6 +183,120 @@ namespace LogShark.Plugins.Backgrounder
                 _backgrounderEventPersister.AddFlowJobDetails(flowJobDetails);
                 return;
             }
+        }
+
+        // Parses nativeapi (BackgrounderCpp) lines, extracting the two Hyper data-load events used to
+        // measure extract-insert speed. Both carry the request id (req), which the persister later
+        // resolves to a job_id and merges into one row per table-insert.
+        //   data-inserter-summary -> {"elapsed":"0.09", ..., "rows":"10,194", "size-bytes":"2,998,255", "table-name":"Orders$"}
+        //   hyper-api/inserter-end -> {"inserter-end":"{\"table-name\":\"Orders$\",\"elapsed-msec\":44,\"chunk-count\":1,\"byte-count\":2998255,\"mb-per-sec\":68.14}"}
+        public void ParseAndPersistNativeApiLine(LogLine logLine, NativeJsonLogsBaseEvent baseEvent)
+        {
+            if (baseEvent == null)
+            {
+                _processingNotificationsCollector.ReportError($"{nameof(BackgrounderEventParser)} received null nativeapi event", logLine, nameof(BackgrounderPlugin));
+                return;
+            }
+
+            BackgrounderExtractDataInserter dataInserter = baseEvent.EventType switch
+            {
+                "data-inserter-summary" => TryParseDataInserterSummary(baseEvent, logLine),
+                "hyper-api" => TryParseInserterEnd(baseEvent, logLine),
+                _ => null
+            };
+
+            if (dataInserter != null)
+            {
+                _backgrounderEventPersister.AddDataInserterEvent(dataInserter);
+            }
+        }
+
+        private static BackgrounderExtractDataInserter TryParseDataInserterSummary(NativeJsonLogsBaseEvent baseEvent, LogLine logLine)
+        {
+            if (!(baseEvent.EventPayload is JObject payload))
+            {
+                return null;
+            }
+
+            return new BackgrounderExtractDataInserter
+            {
+                RequestId = baseEvent.RequestId,
+                WorkerId = logLine.LogFileInfo.Worker,
+                VizqlSessionId = baseEvent.SessionId,
+                Site = baseEvent.Site,
+                User = baseEvent.Username,
+                ProcessId = baseEvent.ProcessId,
+                Timestamp = baseEvent.Timestamp,
+                TableName = payload["table-name"]?.Value<string>(),
+                Rows = ParseLongWithSeparators(payload["rows"]?.Value<string>()),
+                SizeBytes = ParseLongWithSeparators(payload["size-bytes"]?.Value<string>()),
+                Elapsed = ParseDoubleInvariant(payload["elapsed"]?.Value<string>()),
+                ElapsedRead = ParseDoubleInvariant(payload["elapsed-read"]?.Value<string>()),
+                ElapsedGetBuilders = ParseDoubleInvariant(payload["elapsed-get-builders"]?.Value<string>()),
+                ElapsedFinish = ParseDoubleInvariant(payload["elapsed-finish"]?.Value<string>()),
+                ProtocolId = payload["protocol-id"]?.Value<string>(),
+            };
+        }
+
+        private BackgrounderExtractDataInserter TryParseInserterEnd(NativeJsonLogsBaseEvent baseEvent, LogLine logLine)
+        {
+            var inserterEndToken = (baseEvent.EventPayload as JObject)?["inserter-end"];
+            if (inserterEndToken == null)
+            {
+                return null; // Other hyper-api events are not of interest
+            }
+
+            JObject inserterEnd;
+            try
+            {
+                // inserter-end payload is a JSON object encoded as a string
+                inserterEnd = JObject.Parse(inserterEndToken.Value<string>());
+            }
+            catch (Exception)
+            {
+                _processingNotificationsCollector.ReportWarning("Failed to parse inserter-end payload as JSON", logLine, nameof(BackgrounderPlugin));
+                return null;
+            }
+
+            return new BackgrounderExtractDataInserter
+            {
+                RequestId = baseEvent.RequestId,
+                WorkerId = logLine.LogFileInfo.Worker,
+                VizqlSessionId = baseEvent.SessionId,
+                Site = baseEvent.Site,
+                User = baseEvent.Username,
+                ProcessId = baseEvent.ProcessId,
+                Timestamp = baseEvent.Timestamp,
+                TableName = inserterEnd["table-name"]?.Value<string>(),
+                ElapsedMsec = inserterEnd["elapsed-msec"]?.Value<long?>(),
+                ChunkCount = inserterEnd["chunk-count"]?.Value<long?>(),
+                SizeBytes = inserterEnd["byte-count"]?.Value<long?>(),
+                MbPerSec = inserterEnd["mb-per-sec"]?.Value<double?>(),
+            };
+        }
+
+        private static long? ParseLongWithSeparators(string value)
+        {
+            if (string.IsNullOrEmpty(value))
+            {
+                return null;
+            }
+
+            return long.TryParse(value.Replace(",", ""), NumberStyles.Any, CultureInfo.InvariantCulture, out var parsed)
+                ? parsed
+                : (long?)null;
+        }
+
+        private static double? ParseDoubleInvariant(string value)
+        {
+            if (string.IsNullOrEmpty(value))
+            {
+                return null;
+            }
+
+            return double.TryParse(value.Replace(",", ""), NumberStyles.Any, CultureInfo.InvariantCulture, out var parsed)
+                ? parsed
+                : (double?)null;
         }
 
         private int? GetBackgrounderId(LogLine logLine)
@@ -217,6 +338,7 @@ namespace LogShark.Plugins.Backgrounder
             return new BackgrounderJobError
             {
                 BackgrounderJobId = backgrounderJobIdLong == null ? null : backgrounderJobIdLong.ToString(),
+                WorkerId = logLine.LogFileInfo.Worker,
                 Class = lineMatch.Groups["class"].Value,
                 File = logLine.LogFileInfo.FileName,
                 Line = logLine.LineNumber,

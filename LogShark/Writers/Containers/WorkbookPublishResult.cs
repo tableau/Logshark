@@ -1,5 +1,5 @@
 using System;
-using Tools.TableauServerRestApi.Models;
+using Tableau.CDP.Tools.TableauServerRestApi.Models;
 
 namespace LogShark.Writers.Containers
 {

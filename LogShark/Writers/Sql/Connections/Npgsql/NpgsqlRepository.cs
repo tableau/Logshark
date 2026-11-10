@@ -47,9 +47,9 @@ namespace LogShark.Writers.Sql.Connections.Npgsql
             return await _context.ExecuteScalarToServiceDatabase<bool>(commandText);
         }
 
-        public async Task CreateColumnsForTypeIfNotExist<T>()
+        public async Task CreateColumnsForTypeIfNotExist<T>(DataSetInfo dataSetInfo)
         {
-            var typeProjection = _typeProjector.GetTypeProjection<T>();
+            var typeProjection = _typeProjector.GetTypeProjection<T>(dataSetInfo);
             foreach (var typePropertyProjection in typeProjection.TypePropertyProjections)
             {
                 if (!await DoesColumnExist(typeProjection.Schema, typeProjection.TableName, typePropertyProjection.ColumnName))
@@ -62,10 +62,10 @@ namespace LogShark.Writers.Sql.Connections.Npgsql
             }
         }
 
-        public async Task CreateColumnWithForeignKeyIfNotExist<TSource, TTarget>(string sourceColumnName, string targetColumnName)
+        public async Task CreateColumnWithForeignKeyIfNotExist<TSource, TTarget>(DataSetInfo sourceDataSetInfo, DataSetInfo targetDataSetInfo, string sourceColumnName, string targetColumnName)
         {
-            var sourceTypeProjection = _typeProjector.GetTypeProjection<TSource>();
-            var targetTypeProjection = _typeProjector.GetTypeProjection<TTarget>();
+            var sourceTypeProjection = _typeProjector.GetTypeProjection<TSource>(sourceDataSetInfo);
+            var targetTypeProjection = _typeProjector.GetTypeProjection<TTarget>(targetDataSetInfo);
             if (!await DoesColumnExist(sourceTypeProjection.Schema, sourceTypeProjection.TableName, sourceColumnName))
             {
                 var commandText =
@@ -76,9 +76,9 @@ namespace LogShark.Writers.Sql.Connections.Npgsql
             }
         }
 
-        public async Task CreateColumnWithPrimaryKeyIfNotExist<T>(string columnName)
+        public async Task CreateColumnWithPrimaryKeyIfNotExist<T>(DataSetInfo dataSetInfo, string columnName)
         {
-            var typeProjection = _typeProjector.GetTypeProjection<T>();
+            var typeProjection = _typeProjector.GetTypeProjection<T>(dataSetInfo);
             if (!await DoesColumnExist(typeProjection.Schema, typeProjection.TableName, columnName))
             {
                 var commandText =
@@ -103,23 +103,23 @@ namespace LogShark.Writers.Sql.Connections.Npgsql
             return await _context.ExecuteScalar<bool>(commandText);
         }
 
-        public async Task CreateSchemaIfNotExist<T>()
+        public async Task CreateSchemaIfNotExist<T>(DataSetInfo dataSetInfo)
         {
-            var typeProjection = _typeProjector.GetTypeProjection<T>();
+            var typeProjection = _typeProjector.GetTypeProjection<T>(dataSetInfo);
             var commandText = $@"CREATE SCHEMA IF NOT EXISTS ""{typeProjection.Schema}"";";
             await _context.ExecuteNonQuery(commandText);
         }
 
-        public async Task CreateTableIfNotExist<T>()
+        public async Task CreateTableIfNotExist<T>(DataSetInfo dataSetInfo)
         {
-            var typeProjection = _typeProjector.GetTypeProjection<T>();
+            var typeProjection = _typeProjector.GetTypeProjection<T>(dataSetInfo);
             var commandText = $@"CREATE TABLE IF NOT EXISTS ""{typeProjection.Schema}"".""{typeProjection.TableName}""();";
             await _context.ExecuteNonQuery(commandText);
         }
 
-        public async Task InsertRow<T>(T row, Dictionary<string, object> valueOverrides = null)
+        public async Task InsertRow<T>(DataSetInfo dataSetInfo, T row, Dictionary<string, object> valueOverrides = null)
         {
-            var typeProjection = _typeProjector.GetTypeProjection<T>();
+            var typeProjection = _typeProjector.GetTypeProjection<T>(dataSetInfo);
             var values = GenerateValues(row, typeProjection, valueOverrides);
             await _insertCommandBuffer.Insert(
                 typeProjection.Schema,
@@ -127,9 +127,9 @@ namespace LogShark.Writers.Sql.Connections.Npgsql
                 values);
         }
 
-        public async Task<TReturn> InsertRowWithReturnValue<T, TReturn>(T row, string returnColumnName, Dictionary<string, object> valueOverrides = null, IEnumerable<string> excludeColumns = null)
+        public async Task<TReturn> InsertRowWithReturnValue<T, TReturn>(DataSetInfo dataSetInfo, T row, string returnColumnName, Dictionary<string, object> valueOverrides = null, IEnumerable<string> excludeColumns = null)
         {
-            var typeProjection = _typeProjector.GetTypeProjection<T>();
+            var typeProjection = _typeProjector.GetTypeProjection<T>(dataSetInfo);
             var values = GenerateValues(row, typeProjection, valueOverrides, excludeColumns);
 
             var columnNames = values.Keys;

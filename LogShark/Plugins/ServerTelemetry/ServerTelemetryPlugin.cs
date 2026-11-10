@@ -26,10 +26,10 @@ namespace LogShark.Plugins.ServerTelemetry
         private static readonly DataSetInfo MetricsDsi = new DataSetInfo("ServerTelemetry", "ServerTelemetryMetrics");
         private static readonly DataSetInfo EventsDsi = new DataSetInfo("ServerTelemetry", "ServerTelemetryEvents");
         
-        public void Configure(IWriterFactory writerFactory, IConfiguration pluginConfig, IProcessingNotificationsCollector processingNotificationsCollector, ILoggerFactory loggerFactory)
+        public void Configure(IPluginWriterProvider writerProvider, IConfiguration pluginConfig, IProcessingNotificationsCollector processingNotificationsCollector, ILoggerFactory loggerFactory)
         {
-            _eventWriter = writerFactory.GetWriter<ServerTelemetryEvent>(EventsDsi);
-            _metricWriter = writerFactory.GetWriter<ServerTelemetryMetric>(MetricsDsi);
+            _eventWriter = writerProvider.GetWriter<ServerTelemetryEvent>(EventsDsi);
+            _metricWriter = writerProvider.GetWriter<ServerTelemetryMetric>(MetricsDsi);
             _processingNotificationsCollector = processingNotificationsCollector;
         }
 

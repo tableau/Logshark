@@ -31,6 +31,7 @@ namespace LogShark
         private readonly SemaphoreSlim _semaphore;
         private readonly ZipArchivePool _zipArchivePool;
         private TableauLogsExtractor _logsExtractor;
+        private readonly Progress.ProgressTracker _progressTracker;
 
         public TableauLogsProcessor(
             LogSharkConfiguration config,
@@ -38,7 +39,8 @@ namespace LogShark
             IWriterFactory writerFactory,
             ILogTypeDetails logTypeDetails,
             IProcessingNotificationsCollector processingNotificationsCollector,
-            ILoggerFactory loggerFactory)
+            ILoggerFactory loggerFactory,
+            Progress.ProgressTracker progressTracker = null)
         {
             _config = config;
             _loggerFactory = loggerFactory;
@@ -47,8 +49,9 @@ namespace LogShark
             _pluginManager = pluginManager;
             _processingNotificationsCollector = processingNotificationsCollector;
             _writerFactory = writerFactory;
-            
-            _zipArchivePool = new ZipArchivePool(loggerFactory.CreateLogger<ZipArchivePool>());
+            _progressTracker = progressTracker;
+
+            _zipArchivePool = new ZipArchivePool(loggerFactory.CreateLogger<ZipArchivePool>(), config.ShowProgress);
             _cancellationTokenSource = new CancellationTokenSource();
             _semaphore = new SemaphoreSlim(_config.NumberOfParallelThreads);
             _logsExtractor = new TableauLogsExtractor(_config.LogSetLocation, _config.TempDir, _processingNotificationsCollector, _loggerFactory.CreateLogger<TableauLogsExtractor>());
@@ -70,26 +73,49 @@ namespace LogShark
             
             var processedLogTypes = string.Join(", ", requiredLogTypes.OrderBy(name => name));
             _logger.LogInformation("Based on requested plugins, the following log types will be processed: {processedLogTypes}", processedLogTypes);
-            
-            _logger.LogInformation("Generating list of tasks to process all logs files");
+
+            if (!_config.ShowProgress)
+            {
+                _logger.LogInformation("Generating list of tasks to process all logs files");
+            }
             ProcessLogTypeResult failedLogTypeResult = null;
             Dictionary<LogType, ProcessLogTypeResult> logProcessingStatistics = null;
             HashSet<string> pluginsReceivedAnyData = null;
             try
-            { 
+            {
                 var tasksToPerform = new List<Task<ProcessFileResult>>();
+                var fileCountsByLogType = new Dictionary<LogType, int>();
+
                 foreach (var logType in requiredLogTypes)
                 {
                     var logTypeInfo = _logTypeDetails.GetInfoForLogType(logType);
                     var applicablePlugins = GetApplicablePluginsForLogType(loadedPlugins, logType);
-                    
-                    _logger.LogInformation("Generating tasks for {logType} logs", logType);
+
+                    if (!_config.ShowProgress)
+                    {
+                        _logger.LogInformation("Generating tasks for {logType} logs", logType);
+                    }
                     var tasksForLogType = GenerateTasksForLogType(_logsExtractor.LogSetParts, logTypeInfo, applicablePlugins);
                     tasksToPerform.AddRange(tasksForLogType);
-                    _logger.LogInformation("Generated {taskCount} tasks for {logType} logs", tasksForLogType.Count, logType);
+                    if (!_config.ShowProgress)
+                    {
+                        _logger.LogInformation("Generated {taskCount} tasks for {logType} logs", tasksForLogType.Count, logType);
+                    }
+
+                    // Track file counts for progress tracking
+                    if (tasksForLogType.Count > 0)
+                    {
+                        fileCountsByLogType[logType] = tasksForLogType.Count;
+                    }
                 }
-                
-                _logger.LogInformation("A total of {tasksTotal} tasks generated. Waiting for all tasks to complete", tasksToPerform.Count);
+
+                // Initialize progress tracker with file counts
+                _progressTracker?.Initialize(fileCountsByLogType);
+
+                if (!_config.ShowProgress)
+                {
+                    _logger.LogInformation("A total of {tasksTotal} tasks generated. Waiting for all tasks to complete", tasksToPerform.Count);
+                }
                 Task.WaitAll(tasksToPerform.ToArray());
                 logProcessingStatistics = await CombineProcessingResults(tasksToPerform);
                 pluginsReceivedAnyData = CalculatePluginsReceivedAnyData(logProcessingStatistics, loadedPlugins);
@@ -144,6 +170,7 @@ namespace LogShark
         
         private IEnumerable<Task<ProcessFileResult>> AddDirTasks(LogSetInfo logSetInfo, LogTypeInfo logTypeInfo, IList<IPlugin> plugins)
         {
+            var adhocMode = _config.IsAdhocMode;
             return logSetInfo.FilePaths
                 .Select(filePath => new
                 {
@@ -151,7 +178,8 @@ namespace LogShark
                     FileSizeBytes = new FileInfo(filePath).Length,
                     NormalizedPath = filePath.NormalizePath(logSetInfo.Path)
                 })
-                .Where(pair => logTypeInfo.FileBelongsToThisType(pair.NormalizedPath))
+                // In adhoc mode files are dumped flat, so log types are identified by filename only.
+                .Where(pair => logTypeInfo.FileBelongsToThisType(adhocMode ? pair.NormalizedPath.ExtractFileName() : pair.NormalizedPath, adhocMode))
                 .Select(pair => Task.Run(() => ProcessUnzippedFileTask(pair.FilePath, pair.NormalizedPath, pair.FileSizeBytes, logTypeInfo, plugins, _cancellationTokenSource.Token)));
         }
         
@@ -181,10 +209,13 @@ namespace LogShark
                 );
             
                 // currently because of how zips store (or don't) timezone info for entries, the zipped and unzipped versions of this method produce different output.  Perhaps we can do better in the future.
-                
+
                 _logger.BeginScope(logTypeInfo.LogType);
                 _logger.BeginScope(filePathWithPrefix);
-                _logger.LogInformation("Starting to process log file {logFileName}", filePathWithPrefix);
+                if (!_config.ShowProgress)
+                {
+                    _logger.LogInformation("Starting to process log file {logFileName}", filePathWithPrefix);
+                }
                 var stopwatch = Stopwatch.StartNew();
                 await using var stream = fileEntry.Open();
                 var processStreamResult = ProcessStream(stream, logTypeInfo, logFileInfo, plugins, cancellationToken);
@@ -197,8 +228,9 @@ namespace LogShark
                 else
                 {
                     LogFileProcessingResults(filePath, fileEntry.Length, processFileResult, elapsed);
+                    _progressTracker?.OnFileCompleted(logTypeInfo.LogType, fileEntry.Length, elapsed);
                 }
-                
+
                 return processFileResult;
             }
             finally
@@ -217,15 +249,18 @@ namespace LogShark
                 {
                     return new ProcessFileResult(logTypeInfo.LogType, "Task cancelled", ExitReason.TaskCancelled);
                 }
-                
+
                 _logger.BeginScope(logTypeInfo.LogType);
-                _logger.LogInformation("Starting to process log file {logFileName}", normalizedFilePath);
+                if (!_config.ShowProgress)
+                {
+                    _logger.LogInformation("Starting to process log file {logFileName}", normalizedFilePath);
+                }
                 var stopwatch = Stopwatch.StartNew();
                 var fileInfo = new FileInfo(rawFilePath);
                 var logFileInfo = new LogFileInfo(
                     fileInfo.Name,
                     normalizedFilePath,
-                    normalizedFilePath.GetWorkerIdFromFilePath(),
+                    normalizedFilePath.GetWorkerIdFromFilePath(_config.IsAdhocMode),
                     new DateTimeOffset(fileInfo.LastWriteTime.Ticks, TimeSpan.Zero).UtcDateTime
                 );
 
@@ -241,6 +276,7 @@ namespace LogShark
                 else
                 {
                     LogFileProcessingResults(normalizedFilePath, fileSize, processFileResult, elapsed);
+                    _progressTracker?.OnFileCompleted(logTypeInfo.LogType, fileSize, elapsed);
                 }
 
                 return processFileResult;
@@ -323,12 +359,18 @@ namespace LogShark
 
         private void LogFileProcessingResults(string filePath, long fileSizeBytes, ProcessFileResult processFileResult, TimeSpan elapsed)
         {
+            // Skip logging per-file results when progress is enabled (progress bar shows this info)
+            if (_config.ShowProgress)
+            {
+                return;
+            }
+
             var fileSizeMb = fileSizeBytes / 1024 / 1024;
             var mbPerSecond = elapsed.TotalSeconds > 0
                 ? fileSizeMb / elapsed.TotalSeconds
                 : fileSizeMb;
-            
-            _logger.LogInformation("Completed processing file {logFile} in {logFileElapsed} ({logFileSizeMb} MB, {logFileLines} lines, {logFileMbPerSecond:F2} MB/s)", filePath, elapsed, fileSizeMb, processFileResult.LinesProcessed, mbPerSecond);           
+
+            _logger.LogInformation("Completed processing file {logFile} in {logFileElapsed} ({logFileSizeMb} MB, {logFileLines} lines, {logFileMbPerSecond:F2} MB/s)", filePath, elapsed, fileSizeMb, processFileResult.LinesProcessed, mbPerSecond);
         }
         
         private (string, ExitReason) GetExitReasonAndErrorMessageIfApplicable(ProcessLogTypeResult failedProcessLogTypeResult, Dictionary<LogType, ProcessLogTypeResult> logProcessingStatistics)

@@ -18,7 +18,7 @@ namespace LogShark.Plugins.Config
     {
         private static readonly DataSetInfo ConfigEntriesOutputInfo = new DataSetInfo("Config", "ConfigEntries");
         private static readonly DataSetInfo ProcessTopologyOutputInfo = new DataSetInfo("Config", "ProcessTopology");
-        private static readonly Dictionary<string,string> HostnameNodeMapping = new Dictionary<string,string>();
+        private static readonly Dictionary<string,string> HostnameNodeMapping = new Dictionary<string,string>(StringComparer.OrdinalIgnoreCase);
 
         private static readonly List<LogType> ConsumedLogTypesStatic = new List<LogType> {LogType.TabsvcYml, LogType.WorkgroupYml};
 
@@ -31,10 +31,10 @@ namespace LogShark.Plugins.Config
         private ILogger _logger;
         private IProcessingNotificationsCollector _processingNotificationsCollector;
 
-        public void Configure(IWriterFactory writerFactory, IConfiguration pluginConfig, IProcessingNotificationsCollector processingNotificationsCollector, ILoggerFactory loggerFactory)
+        public void Configure(IPluginWriterProvider writerProvider, IConfiguration pluginConfig, IProcessingNotificationsCollector processingNotificationsCollector, ILoggerFactory loggerFactory)
         {
-            _configEntriesWriter = writerFactory.GetWriter<ConfigEntry>(ConfigEntriesOutputInfo);
-            _processTopologyWriter = writerFactory.GetWriter<ConfigProcessInfo>(ProcessTopologyOutputInfo);
+            _configEntriesWriter = writerProvider.GetWriter<ConfigEntry>(ConfigEntriesOutputInfo);
+            _processTopologyWriter = writerProvider.GetWriter<ConfigProcessInfo>(ProcessTopologyOutputInfo);
             _processedConfigFiles = new ConcurrentQueue<ConfigFile>();
             _logger = loggerFactory.CreateLogger<ConfigPlugin>();
             _processingNotificationsCollector = processingNotificationsCollector;

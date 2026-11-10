@@ -5,6 +5,9 @@ namespace LogShark.Plugins.Backgrounder.Model
     public class BackgrounderExtractJobDetail
     {
         public string BackgrounderJobId { get; set; }
+        // Worker (node) that ran this job, stamped from the matched BackgrounderJob at drain time. Lets
+        // extract-job rows be linked to the rest of a worker's activity, consistent with BackgrounderJob.WorkerId.
+        public string WorkerId { get; set; }
         public string ExtractGuid { get; set; }
         public string ExtractId { get; set; }
         public long? ExtractSize { get; set; }

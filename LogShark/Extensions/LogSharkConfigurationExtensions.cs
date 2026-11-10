@@ -1,5 +1,5 @@
 using LogShark.Writers.Containers;
-using Tools.TableauServerRestApi.Containers;
+using Tableau.CDP.Tools.TableauServerRestApi.Containers;
 
 namespace LogShark.Extensions
 {

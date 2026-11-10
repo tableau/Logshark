@@ -23,9 +23,9 @@ namespace LogShark.Plugins.Vizportal
         private IWriter<VizportalEvent> _writer;
         private IProcessingNotificationsCollector _processingNotificationsCollector;
 
-        public void Configure(IWriterFactory writerFactory, IConfiguration pluginConfig, IProcessingNotificationsCollector processingNotificationsCollector, ILoggerFactory loggerFactory)
+        public void Configure(IPluginWriterProvider writerProvider, IConfiguration pluginConfig, IProcessingNotificationsCollector processingNotificationsCollector, ILoggerFactory loggerFactory)
         {
-            _writer = writerFactory.GetWriter<VizportalEvent>(OutputInfo);
+            _writer = writerProvider.GetWriter<VizportalEvent>(OutputInfo);
             _processingNotificationsCollector = processingNotificationsCollector;
         }
 

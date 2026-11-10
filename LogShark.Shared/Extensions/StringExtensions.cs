@@ -9,6 +9,10 @@ namespace LogShark.Shared.Extensions
     {
         private static readonly Regex TsmNodeNameCapture = new Regex(@"^node\d+", RegexOptions.Compiled);
         private static readonly Regex TabadminWorkerNameCapture = new Regex(@"^worker\d+", RegexOptions.Compiled);
+        // Adhoc mode: files are dumped flat, so any node/worker token lives inside the filename rather
+        // than at the start of a folder path. Search for it anywhere in the filename.
+        private static readonly Regex AdhocNodeNameCapture = new Regex(@"node\d+", RegexOptions.Compiled);
+        private static readonly Regex AdhocWorkerNameCapture = new Regex(@"worker\d+", RegexOptions.Compiled);
         private static readonly Regex TsmV0WorkerNameCapture = new Regex(@"^(?<hostname>[^/]+)/tabadminagent.+/logs/.+", RegexOptions.Compiled);
         private static readonly Regex BridgeHostNameCapture = new Regex(@"^Bridge*",RegexOptions.Compiled);
 
@@ -27,8 +31,10 @@ namespace LogShark.Shared.Extensions
 
         public static string NormalizePath(this string rawPath, string prefixToRemove)
         {
-            var trimmedPath = rawPath.StartsWith(prefixToRemove) // Removing root from the start of the path (if present). Using length helps with the different dir separators on different platforms
-                ? rawPath.Substring(prefixToRemove.Length + 1) // +1 for dir separator               
+            // Root may be supplied with a trailing separator (i.e. C:\logs\), which must not make us strip an extra character of the file name
+            var prefix = prefixToRemove.TrimEnd('/', '\\');
+            var trimmedPath = rawPath.StartsWith(prefix) // Removing root from the start of the path (if present). Using length helps with the different dir separators on different platforms
+                ? rawPath.Substring(prefix.Length).TrimStart('/', '\\') // Dropping the dir separator after the root
                 : rawPath;
             
             return trimmedPath.NormalizeSeparatorsToUnix(); // To keep it consistent. "Directory" on Windows produce \, but ZipFile on Windows produce /
@@ -53,13 +59,42 @@ namespace LogShark.Shared.Extensions
                 : rawPath;
         }
         
+        public static string GetWorkerIdFromFilePath(this string fullPath, bool adhocMode)
+        {
+            if (!adhocMode)
+            {
+                return fullPath.GetWorkerIdFromFilePath();
+            }
+
+            if (string.IsNullOrWhiteSpace(fullPath))
+            {
+                return null;
+            }
+
+            // Reuse the existing node/worker conventions, but match the token anywhere in the flat
+            // filename (e.g. backgrounder_node2-1.log -> node2). No config/hostname lookup is available
+            // in adhoc mode, so anything without a token falls back to the standard worker0 default.
+            Match adhocMatch;
+            if ((adhocMatch = AdhocNodeNameCapture.Match(fullPath)).Success)
+            {
+                return adhocMatch.Value;
+            }
+
+            if ((adhocMatch = AdhocWorkerNameCapture.Match(fullPath)).Success)
+            {
+                return adhocMatch.Value;
+            }
+
+            return "worker0";
+        }
+
         public static string GetWorkerIdFromFilePath(this string fullPath)
         {
             if (string.IsNullOrWhiteSpace(fullPath))
             {
                 return null;
             }
-            
+
             Match match;
             if ((match = TsmNodeNameCapture.Match(fullPath)).Success) // All TSM Nodes
             {

@@ -31,9 +31,9 @@ namespace LogShark.Plugins.ResourceManager
         private ResourceManagerEventsProcessor _eventsProcessor;
         private IProcessingNotificationsCollector _processingNotificationsCollector;
         
-        public void Configure(IWriterFactory writerFactory, IConfiguration pluginConfig, IProcessingNotificationsCollector processingNotificationsCollector, ILoggerFactory loggerFactory)
+        public void Configure(IPluginWriterProvider writerProvider, IConfiguration pluginConfig, IProcessingNotificationsCollector processingNotificationsCollector, ILoggerFactory loggerFactory)
         {
-            _eventsProcessor = new ResourceManagerEventsProcessor(writerFactory, processingNotificationsCollector);
+            _eventsProcessor = new ResourceManagerEventsProcessor(writerProvider, processingNotificationsCollector);
             _processingNotificationsCollector = processingNotificationsCollector;
         }
 

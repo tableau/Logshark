@@ -7,6 +7,8 @@ namespace LogShark.Plugins.Bridge.Model
     public class BridgeJobDetails
     {
         public string JobId { get; set; }
+        public string FileName { get; set; }
+        public string FilePath { get; set; }
         public DateTime? FirstSeen { get; set; }
         public DateTime? LastSeen { get; set; }
         public DateTime? JobStartTime { get; set; }
@@ -26,12 +28,14 @@ namespace LogShark.Plugins.Bridge.Model
         public string HostName { get; set; }
         public DateTime Timestamp { get; set; }
 
-        public BridgeJobDetails(string jobId, DateTime timestamp, int processId, string threadId)
+        public BridgeJobDetails(string jobId, DateTime timestamp, int processId, string threadId, LogLine logLine)
         {
             JobId = jobId;
             ProcessId = processId.ToString();
             ThreadId = threadId;
             Timestamp = timestamp;
+            FileName = logLine?.LogFileInfo?.FileName;
+            FilePath = logLine?.LogFileInfo?.FilePath;
         }
         public bool getHostDetails(object eventPayload, DateTime timestamp, string eventTypeParam = null)
         {
@@ -60,7 +64,22 @@ namespace LogShark.Plugins.Bridge.Model
                 // Check if this event contains our jobID (either in the jobID field or in the message text)
                 var jobIdToken = payload["jobID"];
                 eventJobId = jobIdToken?.ToString() ?? "";
-                
+
+                // For extract-refresh-metrics, jobID is nested in refreshInformation
+                if (string.IsNullOrEmpty(eventJobId) && eventTypeParam == "extract-refresh-metrics")
+                {
+                    var refreshInfoToken = payload["refreshInformation"];
+                    if (refreshInfoToken != null)
+                    {
+                        var refreshInfoStr = refreshInfoToken.ToString();
+                        var jobIdMatch = System.Text.RegularExpressions.Regex.Match(refreshInfoStr, @"""jobID""\s*:\s*""([a-fA-F0-9-]+)""", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+                        if (jobIdMatch.Success)
+                        {
+                            eventJobId = jobIdMatch.Groups[1].Value;
+                        }
+                    }
+                }
+
                 // Also check if the event type contains our jobID (for events like "job-send-request-{jobID}")
                 if (string.IsNullOrEmpty(eventJobId) && !string.IsNullOrEmpty(eventTypeParam))
                 {
@@ -176,8 +195,20 @@ namespace LogShark.Plugins.Bridge.Model
                                     }
                                     else if (state == "RefreshFailed")
                                     {
+                                        // If job failed without ever starting, set start time to same as end time
+                                        if (JobStartTime == null)
+                                        {
+                                            JobStartTime = timestamp;
+                                        }
                                         JobEndTime = timestamp;
-                                        
+
+                                        // Capture error-type when RefreshFailed is detected
+                                        var errorTypeToken = statusValue["error-type"];
+                                        if (errorTypeToken != null)
+                                        {
+                                            ErrorType = errorTypeToken.ToString();
+                                        }
+
                                     }
                                     else //We do not know when this job is ended, so we assume the same time as started time.
                                     {
@@ -190,7 +221,13 @@ namespace LogShark.Plugins.Bridge.Model
                     else if (messageType == "request-legacy")
                     {
                         //currently this is where the jobid stops appearing. This needs to be improved.
-                        return true;
+                        // Don't mark job as finished if we haven't captured start time yet
+                        // (extract-refresh-metrics may arrive later with timing data)
+                        if (JobStartTime != null)
+                        {
+                            return true;
+                        }
+                        return false;
                     }
                 }
                
@@ -245,7 +282,55 @@ namespace LogShark.Plugins.Bridge.Model
                     return false;
                 }
 
-                
+                // RefreshFailedToStart - look for "Failed to start the job"
+                if (messageText.Contains("Failed to start the job"))
+                {
+                    JobStartTime = timestamp;
+                    JobEndTime = timestamp;
+                    State = "RefreshFailedToStart";
+                    return false;
+                }
+
+                // RefreshFailedToStart - check extract-refresh-metrics for "Bridge client failed to start execution of refresh workflow"
+                if (payload != null)
+                {
+                    var refreshInfoToken = payload["refreshInformation"];
+                    if (refreshInfoToken != null)
+                    {
+                        var refreshInfoStr = refreshInfoToken.ToString();
+                        if (refreshInfoStr.Contains("Bridge client failed to start execution of refresh workflow"))
+                        {
+                            try
+                            {
+                                var refreshInfo = Newtonsoft.Json.Linq.JObject.Parse(refreshInfoStr);
+                                if (refreshInfo != null)
+                                {
+                                    // Parse startTime and endTime from refreshInformation
+                                    var startTimeToken = refreshInfo["startTime"];
+                                    if (startTimeToken != null && JobStartTime == null)
+                                    {
+                                        JobStartTime = DateTime.Parse(startTimeToken.ToString());
+                                    }
+                                    var endTimeToken = refreshInfo["endTime"];
+                                    if (endTimeToken != null && JobEndTime == null)
+                                    {
+                                        JobEndTime = DateTime.Parse(endTimeToken.ToString());
+                                    }
+                                    State = "RefreshFailedToStart";
+                                }
+                            }
+                            catch (Exception)
+                            {
+                                // If parsing fails, fall back to using the event timestamp
+                                JobStartTime = timestamp;
+                                JobEndTime = timestamp;
+                                State = "RefreshFailedToStart";
+                            }
+                            return false;
+                        }
+                    }
+                }
+
                 // RefreshType - look for "refresh-type" in payload or messageText
                 if (payload != null && string.IsNullOrEmpty(RefreshType))
                 {

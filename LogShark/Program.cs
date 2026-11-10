@@ -1,7 +1,9 @@
 ﻿using LogShark.Extensions;
+using LogShark.HostExtensions;
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using System;
 using System.IO;
 using System.Threading;
@@ -9,6 +11,7 @@ using System.Threading.Tasks;
 using LogShark.Metrics;
 using LogShark.Plugins;
 using LogShark.Shared.Common;
+using LogShark.Shared.HostExtensions;
 using EnvironmentController = LogShark.Common.EnvironmentController;
 using Flurl.Util;
 
@@ -21,6 +24,15 @@ Usage Examples:
   logshark C:\logs\logset --plugins ""Backgrounder;ClusterController""    | Runs specified plugins on existing unzipped log directory.
   logshark logs.zip -p                                                  | Runs logshark and publishes to Tableau Server.
   logshark logs.zip -c CustomLogSharkConfig.json                        | Runs logshark with a custom config file.
+  logshark logs.zip --plugins ""Apache;MyPlugin"" --dynamic-plugins-dir C:\plugins | Loads external plugins from directory.
+
+Dynamic Plugins:
+  External plugins can be loaded at runtime from a directory of .NET assemblies.
+  Each plugin must reference LogShark.Shared and implement the IPlugin interface.
+  Use --dynamic-plugins-dir to specify the directory, or set DynamicPluginsDirectory
+  in LogSharkConfig.json. Relative paths are resolved from the LogShark installation
+  directory, not the current working directory - use absolute paths to avoid confusion.
+  If a dynamic plugin has the same name as a built-in plugin, the built-in takes precedence.
 "
 )]
     class Program
@@ -82,7 +94,10 @@ Usage Examples:
         
         [Option("--pg-db-name", Description = "Output database name for postgres writer")]
         public string SqlDbName { get; set; }
-        
+
+        [Option("--pg-db-port", Description = "Output database port for postgres writer")]
+        public string SqlDbPort { get; set; }
+
         [Option("--pg-db-user", Description = "Output database username for postgres writer")]
         public string SqlDbUser { get; set; }
         
@@ -95,18 +110,54 @@ Usage Examples:
         [Option("-t|--threads", Description = "Number of processing threads to run in parallel")]
         public int? NumberOfThreads { get; set; }
 
+        [Option("--progress", Description = "Display real-time progress with ETA estimates")]
+        public bool ShowProgress { get; set; }
+
+        [Option("--dynamic-plugins-dir", Description = "Directory containing dynamically loaded plugin assemblies. Absolute paths recommended; relative paths resolve from the LogShark installation directory, not the working directory")]
+        public string DynamicPluginsDirectory { get; set; }
+
+        [Option("--adhoc", Description = "Adhoc mode: path to a directory of loose Tableau log files (read recursively). Files are classified by filename and the worker id is taken from the filename. Usage: logshark --adhoc <dir> [<runId>]")]
+        public string AdhocDir { get; set; }
+
         #endregion Command Line Arguments
 
         private async Task<int> OnExecute()
         {
-            var exeDir = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-            var configuration = new ConfigurationBuilder()
-                .SetBasePath(exeDir)
-                .AddJsonFile(Config ?? "Config/LogSharkConfig.json", optional: false, reloadOnChange: false)
-                .Build();
+            var exeDir = AppContext.BaseDirectory;
+            ILogSharkHostExtension hostExtension;
+            IConfigurationRoot configuration;
+            try
+            {
+                hostExtension = HostExtensionLoader.Load(exeDir, NullLogger.Instance);
+                configuration = LogSharkConfigurationLoader.Build(exeDir, Config ?? "Config/LogSharkConfig.json", hostExtension?.ConfigOverlayPath);
+            }
+            catch (HostExtensionLoadException ex)
+            {
+                // Logging is not configured yet (it depends on the overlay this extension provides)
+                await Console.Error.WriteLineAsync(ex.Message);
+                return EnvironmentController.SetExitCode(ExitCode.ERROR);
+            }
 
-            var loggerFactory = ConfigureLogging(configuration);
+            var loggerFactory = ConfigureLogging(configuration, ShowProgress, LogSetLocation);
             var logger = loggerFactory.CreateLogger<Program>();
+            if (hostExtension == null)
+            {
+                logger.LogDebug("No host extension loaded; artifact publishing disabled");
+            }
+            else
+            {
+                logger.LogInformation("Host extension loaded: {hostExtensionType}", hostExtension.GetType().FullName);
+            }
+
+            // Adhoc mode: --adhoc holds the directory of loose files. In that case the first positional
+            // argument (normally the logset location) is treated as the optional run id instead.
+            var adhocMode = !string.IsNullOrWhiteSpace(AdhocDir);
+            var effectiveLogSetLocation = adhocMode ? AdhocDir : LogSetLocation;
+            var effectiveRunId = RunId;
+            if (adhocMode && string.IsNullOrWhiteSpace(effectiveRunId) && !string.IsNullOrWhiteSpace(LogSetLocation))
+            {
+                effectiveRunId = LogSetLocation;
+            }
 
             var clParameters = new LogSharkCommandLineParameters
             {
@@ -115,21 +166,25 @@ Usage Examples:
                 DatabaseConnectionString = SqlDbConnectionString,
                 DatabaseHost = SqlDbHost,
                 DatabasePassword = SqlDbPassword,
+                DatabasePort = SqlDbPort,
                 DatabaseUsername = SqlDbUser,
                 EmbedCredentialsOnPublish = SqlEmbedCreds,
                 ForceRunId = ForceRunId,
-                LogSetLocation = LogSetLocation,
+                LogSetLocation = effectiveLogSetLocation,
+                AdhocMode = adhocMode,
                 NumberOfParallelThreads = NumberOfThreads,
                 PublishWorkbooks = PublishWorkbooks,
                 RequestedPlugins = RequestedPlugins,
-                UserProvidedRunId = RunId,
+                UserProvidedRunId = effectiveRunId,
                 RequestedWriter = Writer,
+                ShowProgress = ShowProgress,
                 TableauServerUsername = TableauServerUsername,
                 TableauServerPassword = TableauServerPassword,
                 TableauServerSite = TableauServerSite,
                 TableauServerUrl = TableauServerUrl,
                 TableauServerProjectDescriptionFooterHtml = TableauServerProjectDescriptionFooterHtml,
                 WorkbookNameSuffixOverride = WorkbookNameSuffixOverride,
+                DynamicPluginsDirectory = DynamicPluginsDirectory,
             };
             var config = new LogSharkConfiguration(clParameters, configuration, loggerFactory);
 
@@ -137,8 +192,18 @@ Usage Examples:
             var metricUploader = new MetricUploader(metricUploaderConfiguration, loggerFactory);
             var metricsConfig = new MetricsConfig(metricUploader, config);
             var metricsModule = new MetricsModule(metricsConfig, loggerFactory);
+            IArtifactPublisher artifactPublisher;
+            try
+            {
+                artifactPublisher = HostExtensionLoader.CreateArtifactPublisher(hostExtension, configuration, loggerFactory);
+            }
+            catch (HostExtensionLoadException ex)
+            {
+                await Console.Error.WriteLineAsync(ex.Message);
+                return EnvironmentController.SetExitCode(ExitCode.ERROR);
+            }
             string filePath = config.HyperLogDir;
-            string missedFileName = Path.Combine(filePath, $"MissedLines_{Path.GetFileNameWithoutExtension(LogSetLocation)}_{DateTime.Now.ToString("dd-MM-yyyy-HH-mm-ss")}.txt");
+            string missedFileName = Path.Combine(filePath, $"MissedLines_{Path.GetFileNameWithoutExtension(effectiveLogSetLocation)}_{DateTime.Now.ToString("dd-MM-yyyy-HH-mm-ss")}.txt");
             try
             {
                 if (ListPLugins)
@@ -150,14 +215,14 @@ Usage Examples:
                     }
                     return EnvironmentController.SetExitCode(ExitCode.OK);
                 }
-                else if (string.IsNullOrWhiteSpace(LogSetLocation))
+                else if (string.IsNullOrWhiteSpace(effectiveLogSetLocation))
                 {
-                    Console.WriteLine("The LogSetLocation field is required.\nSpecify --help for a list of available options and commands.");
+                    Console.WriteLine("The LogSetLocation field is required (or use --adhoc <dir>).\nSpecify --help for a list of available options and commands.");
                     return EnvironmentController.SetExitCode(ExitCode.ERROR);
                 }
                 else
                 {
-                    var runner = new LogSharkRunner(config, metricsModule, loggerFactory);
+                    var runner = new LogSharkRunner(config, metricsModule, artifactPublisher, loggerFactory);
                     var runSummary = await runner.Run();
                     EnvironmentController.SetExitCode(runSummary, false);
 
@@ -174,18 +239,30 @@ Usage Examples:
             return Environment.ExitCode;
         }
         
-        private static ILoggerFactory ConfigureLogging(IConfiguration configRoot)
+        public static Progress.SpectreConsoleLoggerProvider SpectreLoggerProvider { get; private set; }
+
+        private static ILoggerFactory ConfigureLogging(IConfiguration configRoot, bool showProgress, string logSetLocation)
         {
-            
             var loggingConfig = configRoot.GetSection("Logging");
-           
+
             var loggerFactory = LoggerFactory.Create(builder =>
             {
-                builder
-                    .AddConfiguration(loggingConfig)
-                    .AddConsole();
+                // When progress is enabled, use Spectre.Console-aware logger without any filtering
+                if (showProgress)
+                {
+                    // Set minimum log level to Trace (lowest) to ensure no filtering
+                    builder.SetMinimumLevel(LogLevel.Trace);
+                    SpectreLoggerProvider = new Progress.SpectreConsoleLoggerProvider(LogLevel.Trace);
+                    builder.AddProvider(SpectreLoggerProvider);
+                }
+                else
+                {
+                    // When not showing progress, use standard configuration with filters from config file
+                    builder.AddConfiguration(loggingConfig);
+                    builder.AddConsole();
+                }
             });
-            loggerFactory.AddFile(loggingConfig);
+            loggerFactory.AddProvider(new Logging.RollingFileLoggerProvider(loggingConfig, logSetLocation));
             return loggerFactory;
         }
     }

@@ -3,8 +3,8 @@ using System.Threading.Tasks;
 using LogShark.Containers;
 using LogShark.Writers.Containers;
 using Microsoft.Extensions.Logging;
-using Tools.TableauServerRestApi;
-using static Tools.TableauServerRestApi.Containers.PublishWorkbookRequest;
+using Tableau.CDP.Tools.TableauServerRestApi;
+using static Tableau.CDP.Tools.TableauServerRestApi.Containers.PublishWorkbookRequest;
 
 namespace LogShark.Writers.Csv
 {

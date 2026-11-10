@@ -23,12 +23,12 @@ namespace LogShark.Plugins.VizqlDesktop
         private readonly SessionTracker _sessionTracker;
         private readonly int _maxQueryLength;
 
-        public VizqlDesktopEventProcessor(IWriterFactory writerFactory, int maxQueryLength)
+        public VizqlDesktopEventProcessor(IPluginWriterProvider writerProvider, int maxQueryLength)
         {
-            _sessionsWriter = writerFactory.GetWriter<VizqlDesktopSession>(SessionsDsi);
-            _errorsWriter = writerFactory.GetWriter<VizqlDesktopErrorEvent>(ErrorsDsi);
-            _endQueryEventsWriter = writerFactory.GetWriter<VizqlEndQueryEvent>(EndQueryEventsDsi);
-            _performanceEventsWriter = writerFactory.GetWriter<VizqlPerformanceEvent>(PerformanceEventsDsi);
+            _sessionsWriter = writerProvider.GetWriter<VizqlDesktopSession>(SessionsDsi);
+            _errorsWriter = writerProvider.GetWriter<VizqlDesktopErrorEvent>(ErrorsDsi);
+            _endQueryEventsWriter = writerProvider.GetWriter<VizqlEndQueryEvent>(EndQueryEventsDsi);
+            _performanceEventsWriter = writerProvider.GetWriter<VizqlPerformanceEvent>(PerformanceEventsDsi);
             _sessionTracker = new SessionTracker();
             _maxQueryLength = maxQueryLength;
         }

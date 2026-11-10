@@ -12,6 +12,29 @@ namespace LogShark.Plugins.Shared
         private static readonly object RegexListLock = new object();
         private static readonly IList<Regex> RegexList = new List<Regex>
             {
+                // 2025.3+ format with Dynatrace metadata
+                new Regex(@"^
+                            (?<request_ip>[^\s]+)\s
+                            (?<requester>[^\s]+)\s
+                            (?<remote_user>[^\s]+)\s
+                            (?<ts>\d{4}-\d{2}-\d{2}[T\s]\d{2}:\d{2}:\d{2}\.\d{3})\s
+                            ""?(?<ts_offset>[^""]*)""?\s
+                            (?<port>\d{1,5})\s
+                            ""(((?<request_method>[A-Z]+)\s)?(?<resource>.+?)(\sHTTP\/(?<http_version>.+?))?)?""\s
+                            ""(?<x_forwarded_for>.+?)""\s
+                            (?<status_code>\d{3})\s
+                            (?<response_size>[^\s]+)\s
+                            ""((?<content_length>-?[0-9]*?)|(.*?))""\s
+                            (?<request_time>\d+)\s
+                            (?<request_id>[^\s]+)\s
+                            (?<tableau_error_source>[^\s]+)\s
+                            (?<tableau_status_code>[\d-]+)\s
+                            (?<tableau_error_code>[^\s]+)\s
+                            (?<tableau_service_name>[^\s]+)\s*
+                            ""(?<tableau_trace>.+?)""\s
+                            (\s*\[!dt\s+(?<dynatrace_metadata>.*?)\])?\s*$",
+                    RegexOptions.ExplicitCapture | RegexOptions.IgnorePatternWhitespace | RegexOptions.Compiled),
+              
                 // 2021.3+ format
                 new Regex(@"^
                             (?<request_ip>[^\s]+)\s

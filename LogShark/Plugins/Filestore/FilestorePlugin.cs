@@ -32,9 +32,9 @@ namespace LogShark.Plugins.Filestore
                         (?<message>(.|\n)*)",
             RegexOptions.ExplicitCapture | RegexOptions.IgnorePatternWhitespace | RegexOptions.Compiled);
         
-        public void Configure(IWriterFactory writerFactory, IConfiguration pluginConfig, IProcessingNotificationsCollector processingNotificationsCollector, ILoggerFactory loggerFactory)
+        public void Configure(IPluginWriterProvider writerProvider, IConfiguration pluginConfig, IProcessingNotificationsCollector processingNotificationsCollector, ILoggerFactory loggerFactory)
         {
-            _writer = writerFactory.GetWriter<FilestoreEvent>(OutputInfo);
+            _writer = writerProvider.GetWriter<FilestoreEvent>(OutputInfo);
             _processingNotificationsCollector = processingNotificationsCollector;
         }
 

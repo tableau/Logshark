@@ -23,7 +23,7 @@ namespace LogShark.Plugins
         public PluginManager(LogSharkConfiguration config, ILoggerFactory loggerFactory)
         {
             _config = config;
-            _pluginFactory = new PluginFactory(_config);
+            _pluginFactory = new PluginFactory(_config, loggerFactory);
             _loggerFactory = loggerFactory;
             _logger = loggerFactory.CreateLogger<PluginManager>();
 
@@ -44,7 +44,7 @@ namespace LogShark.Plugins
             return !badPluginNames.Any();
         }
 
-        public IEnumerable<IPlugin> CreatePlugins(IWriterFactory writerFactory, IProcessingNotificationsCollector processingNotificationsCollector)
+        public IEnumerable<IPlugin> CreatePlugins(IPluginWriterProvider writerProvider, IProcessingNotificationsCollector processingNotificationsCollector)
         {
             var pluginNamesToLoad = GetPluginNamesToLoad().ToList();
             _logger.LogInformation($"Loading plugins: {string.Join(';', pluginNamesToLoad)}");
@@ -65,7 +65,7 @@ namespace LogShark.Plugins
                 try
                 {
                     var pluginConfiguration = _config.GetPluginConfiguration(plugin.Name);
-                    plugin.Configure(writerFactory, pluginConfiguration, processingNotificationsCollector, _loggerFactory);
+                    plugin.Configure(writerProvider, pluginConfiguration, processingNotificationsCollector, _loggerFactory);
                 }
                 catch (Exception ex)
                 {

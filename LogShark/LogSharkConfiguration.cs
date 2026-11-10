@@ -64,9 +64,11 @@ namespace LogShark
 
         public string FoghornTopicArn => _config.GetValue<string>("FoghornTopicArn");
 
-        public string HyperLogDir => Path.GetDirectoryName(_config.GetValue<string>("Logging:PathFormat", "Logs/"));
+        public string HyperLogDir => _config.GetValue("Logging:Directory", "Logs");
 
         public string LogSetLocation => _parameters.LogSetLocation;
+
+        public bool IsAdhocMode => _parameters.AdhocMode;
 
         public string MetricsNamespace => _config.GetValue<string>("MetricsNamespace");
 
@@ -110,7 +112,7 @@ namespace LogShark
 
         public string PostgresPassword => _parameters.DatabasePassword ?? _config.GetValue<string>("PostgresWriterDatabase:Password");
 
-        public string PostgresPort => _parameters.DatabaseHost ?? _config.GetValue<string>("PostgresWriterDatabase:Port");
+        public string PostgresPort => _parameters.DatabasePort ?? _config.GetValue<string>("PostgresWriterDatabase:Port");
 
         public string PostgresServiceDatabaseName => _config.GetValue<string>("PostgresWriterDatabase:ServiceDatabaseName");
         
@@ -123,6 +125,8 @@ namespace LogShark
         public string RequestedPlugins => _parameters.RequestedPlugins;
 
         public string RequestedWriter => _parameters.RequestedWriter ?? _config.GetValue<string>("EnvironmentConfig:DefaultWriter");
+
+        public bool ShowProgress => _parameters.ShowProgress;
 
         public bool SkipPublishingEmptyWorkbooks => _config.GetConfigurationValueOrDefault("TableauServer:SkipPublishingEmptyWorkbooks", true, _logger);
 
@@ -138,6 +142,9 @@ namespace LogShark
         public string TableauServerUrl => _parameters.TableauServerUrl ?? _config.GetValueAndThrowAtNull<string>("TableauServer:Url");
 
         public string TableauServerUsername => _parameters.TableauServerUsername ?? _config.GetValueAndThrowAtNull<string>("TableauServer:Username");
+        public bool? TableauServerPublishToOriginalServer => _config.GetValue<bool?>("TableauServer:PublishToOriginalServer");
+        public bool? TableauServerPublishToMigrationServer => _config.GetValue<bool?>("TableauServer:PublishToMigrationServer");
+        public string TableauServerMigrationServerSite => _config.GetValue<string>("TableauServer:MigrationServerSite");
 
         public string TelemetryApplication => _config.GetValue<string>("Telemetry:Application");
 
@@ -166,7 +173,18 @@ namespace LogShark
 
         public bool ThrowIfOutputDirectoryExists => _config.GetConfigurationValueOrDefault("EnvironmentConfig:ThrowIfOutputDirectoryExists", true);
         public bool UsePluginsFromLogSharkAssembly => _config.GetConfigurationValueOrDefault("EnvironmentConfig:UsePluginsFromLogSharkAssembly", true);
-        
+
+        public string DynamicPluginsDirectory
+        {
+            get
+            {
+                var dir = _parameters.DynamicPluginsDirectory ?? _config.GetValue<string>("EnvironmentConfig:DynamicPluginsDirectory");
+                if (string.IsNullOrWhiteSpace(dir))
+                    return null;
+                return Path.IsPathRooted(dir) ? dir : Path.Combine(_rootDir, dir);
+            }
+        }
+
         public string UserProvidedRunId => _parameters.UserProvidedRunId;
 
         public string WorkbookTemplatesDirectory => _config.GetValueAndThrowAtNull<string>("EnvironmentConfig:WorkbookTemplatesDir").FullyQualifyPathIfRelative(_rootDir);

@@ -1,4 +1,5 @@
 using System;
+using LogShark.Shared.HostExtensions;
 using LogShark.Writers.Containers;
 
 namespace LogShark.Containers
@@ -13,6 +14,7 @@ namespace LogShark.Containers
         public ProcessLogSetResult ProcessLogSetResult { get; }
         public ProcessingNotificationsCollector ProcessingNotificationsCollector { get; }
         public PublisherResults PublisherResults { get; }
+        public ArtifactPublishResults ArtifactPublishResult { get; }
         public string ReasonForFailure { get; }
         public string RunId { get; }
 
@@ -22,7 +24,8 @@ namespace LogShark.Containers
             ProcessingNotificationsCollector processingNotificationsCollector,
             ProcessLogSetResult processLogSetResult,
             WorkbookGeneratorResults workbookGeneratorResults,
-            PublisherResults publisherResults)
+            PublisherResults publisherResults,
+            ArtifactPublishResults artifactPublishResult)
         {
             return new RunSummary(
                 runId,
@@ -31,6 +34,7 @@ namespace LogShark.Containers
                 processLogSetResult,
                 workbookGeneratorResults,
                 publisherResults,
+                artifactPublishResult,
                 null,
                 ExitReason.CompletedSuccessfully);
         }
@@ -52,6 +56,7 @@ namespace LogShark.Containers
                 processLogSetResult,
                 workbookGeneratorResults,
                 publisherResults,
+                null,
                 errorMessage,
                 exitReason);
         }
@@ -63,6 +68,7 @@ namespace LogShark.Containers
             ProcessLogSetResult processLogSetResult,
             WorkbookGeneratorResults workbookGeneratorResults,
             PublisherResults publisherResults,
+            ArtifactPublishResults artifactPublishResult,
             string reasonForFailure,
             ExitReason exitReason)
         {
@@ -73,6 +79,7 @@ namespace LogShark.Containers
             WorkbookGeneratorResults = workbookGeneratorResults;
             ProcessLogSetResult = processLogSetResult;
             PublisherResults = publisherResults;
+            ArtifactPublishResult = artifactPublishResult;
             ReasonForFailure = reasonForFailure;
         }
 

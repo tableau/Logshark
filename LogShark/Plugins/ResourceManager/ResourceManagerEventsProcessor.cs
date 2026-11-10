@@ -29,16 +29,16 @@ namespace LogShark.Plugins.ResourceManager
 
         private readonly IProcessingNotificationsCollector _processingNotificationsCollector;
 
-        public ResourceManagerEventsProcessor(IWriterFactory writerFactory, IProcessingNotificationsCollector processingNotificationsCollector)
+        public ResourceManagerEventsProcessor(IPluginWriterProvider writerProvider, IProcessingNotificationsCollector processingNotificationsCollector)
         {
             _processingNotificationsCollector = processingNotificationsCollector;
             
-            _actionsWriter = writerFactory.GetWriter<ResourceManagerAction>(ActionsDataSetInfo);
-            _cpuSamplesWriter = writerFactory.GetWriter<ResourceManagerCpuSample>(CpuSamplesDataSetInfo);
-            _memorySamplesWriter = writerFactory.GetWriter<ResourceManagerMemorySample>(MemorySamplesDataSetInfo);
-            _resourceMetricsMemorySamplesWriter = writerFactory.GetWriter<ResourceMetricsMemorySample>(ResourceMetricsMemorySamplesDataSetInfo);
-            _thresholdsWriters = writerFactory.GetWriter<ResourceManagerThreshold>(ThresholdsDataSetInfo);
-            _cpuUsageWriter = writerFactory.GetWriter<ResourceManagerHighCpuUsage>(HighCpuUsageDataSetInfo);
+            _actionsWriter = writerProvider.GetWriter<ResourceManagerAction>(ActionsDataSetInfo);
+            _cpuSamplesWriter = writerProvider.GetWriter<ResourceManagerCpuSample>(CpuSamplesDataSetInfo);
+            _memorySamplesWriter = writerProvider.GetWriter<ResourceManagerMemorySample>(MemorySamplesDataSetInfo);
+            _resourceMetricsMemorySamplesWriter = writerProvider.GetWriter<ResourceMetricsMemorySample>(ResourceMetricsMemorySamplesDataSetInfo);
+            _thresholdsWriters = writerProvider.GetWriter<ResourceManagerThreshold>(ThresholdsDataSetInfo);
+            _cpuUsageWriter = writerProvider.GetWriter<ResourceManagerHighCpuUsage>(HighCpuUsageDataSetInfo);
         }
 
         public void ProcessEvent(NativeJsonLogsBaseEvent baseEvent, string message, LogLine logLine, string processName)
@@ -166,7 +166,7 @@ namespace LogShark.Plugins.ResourceManager
         private static readonly Regex CurrentAndTotalMemoryUtilRegex = new Regex(@".*: (?<current_process_util>[\d,]+?) bytes.*;(?<tableau_total_util>[\d,]+?) bytes.*; (?<total_util>[\d,]+?) bytes", RegexOptions.Compiled | RegexOptions.ExplicitCapture);
         private void AddMemorySampleEvent(NativeJsonLogsBaseEvent baseEvent, string message, LogLine logLine, string processName)
         {
-            if (processName=="hyper") //due to a space after semicolon in hyper logs only - https://sourcegraph.prod.tableautools.com/github.com/sf-analyticscloud/monolith@252/tableau-2024-3/-/blob/modules/foundation/lego/tabsys/main/monitor/ResourceManagerImpl.cpp?L283-285
+            if (processName=="hyper") //due to a space after semicolon in hyper logs only (hyper's ResourceManager memory-sample format emits "(current process); " with a trailing space)
             {
                 message = message.Replace("(current process); ", "(current process);");
             }

@@ -4,12 +4,15 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
+using System.Threading;
 using System.Threading.Tasks;
 using LogShark.Containers;
 using LogShark.Extensions;
 using LogShark.Metrics;
 using LogShark.Plugins;
 using LogShark.Shared.Extensions;
+using LogShark.Shared.HostExtensions;
 using LogShark.Shared.LogReading;
 using LogShark.Writers;
 using LogShark.Writers.Containers;
@@ -18,6 +21,7 @@ using LogShark.Writers.Hyper;
 using LogShark.Writers.Sql;
 using LogShark.Writers.Sql.Models;
 using Microsoft.Extensions.Logging;
+using Spectre.Console;
 
 namespace LogShark
 {
@@ -29,12 +33,16 @@ namespace LogShark
         private readonly ProcessingNotificationsCollector _processingNotificationsCollector;
         private readonly MetricsModule _metricsModule;
 
+        private readonly IArtifactPublisher _artifactPublisher;
+
+
         private readonly ILogger _logger;
         private readonly ILoggerFactory _loggerFactory;
 
-        public LogSharkRunner(LogSharkConfiguration config, MetricsModule metricsModule, ILoggerFactory loggerFactory)
+        public LogSharkRunner(LogSharkConfiguration config, MetricsModule metricsModule, IArtifactPublisher artifactPublisher, ILoggerFactory loggerFactory)
         {
             CultureInfo.DefaultThreadCurrentCulture = CultureInfo.InvariantCulture;
+            _artifactPublisher = artifactPublisher ?? new NullArtifactPublisher();
 
             _loggerFactory = loggerFactory;
             _logger = loggerFactory.CreateLogger<LogSharkRunner>();
@@ -92,7 +100,14 @@ namespace LogShark
             {
                 if (ex.Message.Contains("Context: 0x86a93465"))
                 {
-                    _logger.LogError("Microsoft Visual C++ Runtime required to run LogShark. Please download and install it from 'https://support.microsoft.com/en-us/help/2977003/the-latest-supported-visual-c-downloads' and rerun application");
+                    if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                    {
+                        _logger.LogError("Microsoft Visual C++ Runtime required to run LogShark. Please download and install it from 'https://support.microsoft.com/en-us/help/2977003/the-latest-supported-visual-c-downloads' and rerun application");
+                    }
+                    else
+                    {
+                        _logger.LogError("Hyper failed to start. On macOS/Linux this is usually caused by the 'hyperd' binary missing execute permissions (run 'chmod +x' on hyperd and its shared library in the LogShark install directory) or by an incompatible CPU architecture. Check the hyperd log for more details");
+                    }
                 }
 
                 var error = $"Exception occurred while initializing writer factory for writer '{_config.RequestedWriter ?? "null"}'. Exception message: {ex.Message}";
@@ -104,12 +119,53 @@ namespace LogShark
             using (_logger.BeginScope(runId))
             using (writerFactory)
             {
-                ProcessLogSetResult logSetProcessingResults;
-                using (var pluginManager = new PluginManager(_config, _loggerFactory))
+                ProcessLogSetResult logSetProcessingResults = null;
+
+                // Wrap processing in Spectre.Console LiveDisplay if requested
+                if (_config.ShowProgress)
                 {
-                    var logTypeDetails = new LogTypeDetails(_processingNotificationsCollector);
-                    using var tableauLogsReader = new TableauLogsProcessor(_config, pluginManager, writerFactory, logTypeDetails, _processingNotificationsCollector, _loggerFactory);
-                    logSetProcessingResults = await tableauLogsReader.ProcessLogSet();
+                    var renderer = new Progress.ConsoleProgressRenderer(Program.SpectreLoggerProvider);
+                    var progressTracker = new Progress.ProgressTracker(renderer);
+
+                    await AnsiConsole.Live(renderer.Render())
+                        .AutoClear(false)
+                        .StartAsync(async ctx =>
+                        {
+                            // Set up a background task to refresh the display periodically
+                            var refreshTimer = new System.Threading.Timer(_ =>
+                            {
+                                ctx.UpdateTarget(renderer.Render());
+                            }, null, TimeSpan.FromMilliseconds(100), TimeSpan.FromMilliseconds(100));
+
+                            try
+                            {
+                                using (var pluginManager = new PluginManager(_config, _loggerFactory))
+                                {
+                                    var logTypeDetails = new LogTypeDetails(_processingNotificationsCollector);
+                                    using var tableauLogsReader = new TableauLogsProcessor(_config, pluginManager, writerFactory, logTypeDetails, _processingNotificationsCollector, _loggerFactory, progressTracker);
+                                    logSetProcessingResults = await tableauLogsReader.ProcessLogSet();
+                                }
+
+                                progressTracker.Complete();
+                                ctx.UpdateTarget(renderer.Render());
+                            }
+                            finally
+                            {
+                                refreshTimer?.Dispose();
+                            }
+                        });
+
+                    // LiveDisplay has ended - flush logs and switch to direct output mode
+                    Program.SpectreLoggerProvider?.OnLiveDisplayEnded();
+                }
+                else
+                {
+                    using (var pluginManager = new PluginManager(_config, _loggerFactory))
+                    {
+                        var logTypeDetails = new LogTypeDetails(_processingNotificationsCollector);
+                        using var tableauLogsReader = new TableauLogsProcessor(_config, pluginManager, writerFactory, logTypeDetails, _processingNotificationsCollector, _loggerFactory);
+                        logSetProcessingResults = await tableauLogsReader.ProcessLogSet();
+                    }
                 }
 
                 if (logSetProcessingResults.IsSuccessful)
@@ -135,8 +191,22 @@ namespace LogShark
                 }
 
                 PublisherResults publisherResults = null;
+                ArtifactPublishResults artifactPublishResult = null;
                 if (_config.PublishWorkbooks)
                 {
+                    if (_artifactPublisher.IsEnabled)
+                    {
+                        _logger.LogInformation("Publishing large workbooks to artifact store");
+                        var artifactWorkbooks = generatorResults.CompletedWorkbooks
+                            .Select(workbook => new ArtifactWorkbook(workbook.FinalWorkbookName, workbook.WorkbookPath, workbook.HasAnyData))
+                            .ToList();
+                        artifactPublishResult = await _artifactPublisher.PublishLargeWorkbooks(runId, artifactWorkbooks);
+                    }
+                    else
+                    {
+                        _logger.LogInformation("Skipping publishing to artifact store");
+                    }
+
                     var workbookPublisher = writerFactory.GetWorkbookPublisher(_publisherSettings);
                     
                     publisherResults = await workbookPublisher.PublishWorkbooks(
@@ -152,7 +222,7 @@ namespace LogShark
                 }
 
                 _logger.LogInformation("Done processing {logSetPath}. Whole run took {fullRunElapsedTime}", _config.LogSetLocation, totalElapsedTimer.Elapsed);
-                return RunSummary.SuccessfulRunSummary(runId, totalElapsedTimer.Elapsed, _processingNotificationsCollector, logSetProcessingResults, generatorResults, publisherResults);
+                return RunSummary.SuccessfulRunSummary(runId, totalElapsedTimer.Elapsed, _processingNotificationsCollector, logSetProcessingResults, generatorResults, publisherResults, artifactPublishResult);
             }
         }
 

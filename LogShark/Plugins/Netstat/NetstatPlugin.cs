@@ -20,9 +20,9 @@ namespace LogShark.Plugins.Netstat
         public IList<LogType> ConsumedLogTypes => new List<LogType> { LogType.NetstatLinux, LogType.NetstatWindows };
         public string Name => "Netstat";
 
-        public void Configure(IWriterFactory writerFactory, IConfiguration pluginConfig, IProcessingNotificationsCollector processingNotificationsCollector, ILoggerFactory loggerFactory)
+        public void Configure(IPluginWriterProvider writerProvider, IConfiguration pluginConfig, IProcessingNotificationsCollector processingNotificationsCollector, ILoggerFactory loggerFactory)
         {
-            _writer = writerFactory.GetWriter<NetstatActiveConnection>(OutputInfo);
+            _writer = writerProvider.GetWriter<NetstatActiveConnection>(OutputInfo);
             _processingNotificationsCollector = processingNotificationsCollector;
         }
 

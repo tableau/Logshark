@@ -23,14 +23,19 @@ TestLogs/
 *.zip
 .vscode/
 
-# code coverage
+# Code coverage
 coverage.json
 coverage.cobertura.xml
 
-#Other
+# Dynamic plugins - build artifacts and published output
+DynamicPlugins/output/
+DynamicPlugins/NativeApacheBridge/native/apache_parser.dll
+
+# Other
 *.bak
-/LogShark/Properties/launchSettings.local.json
 /LogShark/Properties/launchSettings.json
+/LogShark/Properties/launchSettings.local.json
 /LogShark/.vs
-.DS_Store
-docs/.DS_Store
+.claude/
+/claude_generated/*
+LogShark/.DS_Store

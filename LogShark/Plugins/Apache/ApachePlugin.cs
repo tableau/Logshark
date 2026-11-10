@@ -23,9 +23,9 @@ namespace LogShark.Plugins.Apache
         private IProcessingNotificationsCollector _processingNotificationsCollector;
         private bool _includeGatewayHealthChecks;
 
-        public void Configure(IWriterFactory writerFactory, IConfiguration pluginConfig, IProcessingNotificationsCollector processingNotificationsCollector, ILoggerFactory loggerFactory)
+        public void Configure(IPluginWriterProvider writerProvider, IConfiguration pluginConfig, IProcessingNotificationsCollector processingNotificationsCollector, ILoggerFactory loggerFactory)
         {
-            _writer = writerFactory.GetWriter<ApacheEvent>(OutputInfo);
+            _writer = writerProvider.GetWriter<ApacheEvent>(OutputInfo);
             var section = pluginConfig?.GetSection("IncludeGatewayChecks");
             var sectionExists = section != null && section.Exists();
             if (!sectionExists)

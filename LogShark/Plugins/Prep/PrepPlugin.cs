@@ -34,9 +34,9 @@ namespace LogShark.Plugins.Prep
             return new SinglePluginExecutionResults(writerStatistics);
         }
 
-        public void Configure(IWriterFactory writerFactory, IConfiguration pluginConfig, IProcessingNotificationsCollector processingNotificationsCollector, ILoggerFactory loggerFactory)
+        public void Configure(IPluginWriterProvider writerProvider, IConfiguration pluginConfig, IProcessingNotificationsCollector processingNotificationsCollector, ILoggerFactory loggerFactory)
         {
-            _writer = writerFactory.GetWriter<PrepEvent>(OutputInfo);
+            _writer = writerProvider.GetWriter<PrepEvent>(OutputInfo);
             _processingNotificationsCollector = processingNotificationsCollector;
         }
 

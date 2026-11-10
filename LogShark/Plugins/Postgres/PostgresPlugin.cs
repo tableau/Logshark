@@ -23,9 +23,9 @@ namespace LogShark.Plugins.Postgres
         private IWriter<PostgresEvent> _writer;
         private IProcessingNotificationsCollector _processingNotificationsCollector;
 
-        public void Configure(IWriterFactory writerFactory, IConfiguration pluginConfig, IProcessingNotificationsCollector processingNotificationsCollector, ILoggerFactory loggerFactory)
+        public void Configure(IPluginWriterProvider writerProvider, IConfiguration pluginConfig, IProcessingNotificationsCollector processingNotificationsCollector, ILoggerFactory loggerFactory)
         {
-            _writer = writerFactory.GetWriter<PostgresEvent>(OutputInfo);
+            _writer = writerProvider.GetWriter<PostgresEvent>(OutputInfo);
             _processingNotificationsCollector = processingNotificationsCollector;
         }
 

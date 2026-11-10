@@ -11,13 +11,13 @@ namespace LogShark.Writers.Sql.Connections
         string DatabaseName { get; }
 
         Task CreateDatabaseIfNotExist();
-        Task CreateTableIfNotExist<T>();
-        Task CreateColumnsForTypeIfNotExist<T>();
-        Task CreateColumnWithPrimaryKeyIfNotExist<T>(string columnName);
-        Task CreateColumnWithForeignKeyIfNotExist<TSource, TTarget>(string sourceColumnName, string targetColumnName);
-        Task CreateSchemaIfNotExist<T>();
-        Task InsertRow<T>(T row, Dictionary<string, object> valueOverrides = null);
-        Task<TReturn> InsertRowWithReturnValue<T, TReturn>(T row, string returnColumnName, Dictionary<string, object> valueOverrides = null, IEnumerable<string> excludeColumns = null);
+        Task CreateTableIfNotExist<T>(DataSetInfo dataSetInfo);
+        Task CreateColumnsForTypeIfNotExist<T>(DataSetInfo dataSetInfo);
+        Task CreateColumnWithPrimaryKeyIfNotExist<T>(DataSetInfo dataSetInfo, string columnName);
+        Task CreateColumnWithForeignKeyIfNotExist<TSource, TTarget>(DataSetInfo sourceDataSetInfo, DataSetInfo targetDataSetInfo, string sourceColumnName, string targetColumnName);
+        Task CreateSchemaIfNotExist<T>(DataSetInfo dataSetInfo);
+        Task InsertRow<T>(DataSetInfo dataSetInfo, T row, Dictionary<string, object> valueOverrides = null);
+        Task<TReturn> InsertRowWithReturnValue<T, TReturn>(DataSetInfo dataSetInfo, T row, string returnColumnName, Dictionary<string, object> valueOverrides = null, IEnumerable<string> excludeColumns = null);
         Task Flush();
         void RegisterType<T>(DataSetInfo outputInfo);
     }

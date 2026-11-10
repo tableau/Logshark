@@ -11,30 +11,32 @@ namespace LogShark.Writers.Sql.Connections.Npgsql
 {
     class NpgsqlTypeProjector
     {
-        private Dictionary<Type, object> _typeProjections;
+        // Keyed by (Type, DataSetInfo) rather than just Type, since multiple writers can share the same POCO type
+        // (e.g. Art plugin uses FlattenedArtEvent for both its "Art" and "ArtDesktop" data sets).
+        private Dictionary<(Type Type, DataSetInfo DataSetInfo), object> _typeProjections;
 
         public NpgsqlTypeProjector()
         {
-            _typeProjections = new Dictionary<Type, object>();
+            _typeProjections = new Dictionary<(Type, DataSetInfo), object>();
         }
 
         public void GenerateTypeProjection<T>(DataSetInfo outputInfo)
         {
-            var type = typeof(T);
-            if (!_typeProjections.ContainsKey(type))
+            var key = (typeof(T), outputInfo);
+            if (!_typeProjections.ContainsKey(key))
             {
-                _typeProjections[type] = new NpgsqlTypeProjection<T>(outputInfo);
+                _typeProjections[key] = new NpgsqlTypeProjection<T>(outputInfo);
             }
         }
 
-        public NpgsqlTypeProjection<T> GetTypeProjection<T>()
+        public NpgsqlTypeProjection<T> GetTypeProjection<T>(DataSetInfo outputInfo)
         {
-            var type = typeof(T);
-            if (!_typeProjections.ContainsKey(type))
+            var key = (typeof(T), outputInfo);
+            if (!_typeProjections.ContainsKey(key))
             {
-                throw new Exception($"TypeProjection for type '{typeof(T).FullName}' has not been generated. Call '{nameof(GenerateTypeProjection)}' first.");
+                throw new Exception($"TypeProjection for type '{typeof(T).FullName}' and data set '{outputInfo}' has not been generated. Call '{nameof(GenerateTypeProjection)}' first.");
             }
-            return _typeProjections[type] as NpgsqlTypeProjection<T>;
+            return _typeProjections[key] as NpgsqlTypeProjection<T>;
         }
     }
 }

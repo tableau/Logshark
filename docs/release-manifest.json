@@ -1,0 +1,18 @@
+{
+    "version":  "4.3.0",
+    "internalSha":  "c7a3e2273cf7e3f7550b50af341a6ac9a23955de",
+    "createdUtc":  "2026-11-10T22:17:55Z",
+    "draftable":  true,
+    "artifacts":  [
+                      {
+                          "name":  "LogShark.Win.4.3.0.zip",
+                          "sha256":  "361adad8e5afa8a78a83ddc7e0b41624cd3634579174e7a40ee952048b6a41ff"
+                      }
+                  ],
+    "thirdParty":  [
+                       {
+                           "name":  "Tableau.CDP.Tools.TableauServerRestApi 2.0.0.10042399+2415512b",
+                           "sha256":  "10131fa7e279aedfb56b1c8ab6eb56025a24f2aed54909ac0bc2dd7b94b55ae8"
+                       }
+                   ]
+}

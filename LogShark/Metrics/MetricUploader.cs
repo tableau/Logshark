@@ -44,9 +44,9 @@ namespace LogShark.Metrics
                 var serializedPayload = JsonConvert.SerializeObject(payload, _jsonSerializerSettings);
 
                 var response = await Retry.DoWithRetries<FlurlHttpException, HttpResponseMessage>(nameof(MetricUploader), _logger, async () =>
-                     await _config.EndpointUrl
+                     (await _config.EndpointUrl
                         .WithTimeout(_config.UploadTimeout)
-                        .PostAsync(new StringContent(serializedPayload, Encoding.UTF8, "application/json")));
+                        .PostAsync(new StringContent(serializedPayload, Encoding.UTF8, "application/json"))).ResponseMessage);
 
                 if (!response.IsSuccessStatusCode)
                 {
@@ -55,7 +55,8 @@ namespace LogShark.Metrics
             }
             catch (Exception ex)
             {
-                _logger.LogWarning(ex, "Exception occurred during telemetry upload.");
+                // Never pass ex itself: the CDP JSON formatter serializes the whole object graph, and a Flurl exception carries the request body (metrics payload incl. notification email / case number)
+                _logger.LogWarning("Exception occurred during telemetry upload. Exception type: `{exceptionType}`. Message: `{exceptionMessage}`", ex.GetType().FullName, ex.Message ?? "(null)");
             }
         }
     }

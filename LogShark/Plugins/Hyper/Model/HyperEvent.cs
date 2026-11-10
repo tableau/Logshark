@@ -78,7 +78,8 @@ namespace LogShark.Plugins.Hyper.Model
         public double? PreExecCompilationTime { get; set; }
         public double? PreExecElapsed { get; set; }
         public double? PreExecWaitTimeDBLock { get; set; }
-        public double? PreExecProcessedRows { get; set; }
+        public double? PreExecProcessedRowsNative { get; set; }
+        public double? PreExecProcessedRowsTotal { get; set; }
         public double? PreExecProcessedRowsBYOL { get; set; }
         public double? PreExecProcessedRowsFileBYOL { get; set; }
         public double? PreExecResultSpoolingNumBuiltChunks { get; set; }
@@ -91,7 +92,8 @@ namespace LogShark.Plugins.Hyper.Model
         public double? ExecElapsed { get; set; }
         public double? ExecWaitTimeObjLock { get; set; }
         public double? ExecyWaitTimeDBLock { get; set; }
-        public double? ExecProcessedRows { get; set; }
+        public double? ExecProcessedRowsTotal { get; set; }
+        public double? ExecProcessedRowsNative { get; set; }
         public double? ExecProcessedRowsBYOL { get; set; }
         public double? ExecProcessedRowsFileBYOL { get; set; }
         public double? ExecResultSpoolingNumBuiltChunks { get; set; }
