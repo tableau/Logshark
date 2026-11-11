@@ -17,8 +17,8 @@ Example of config file
 ```xml
 {
   "Logging": {
-    "PathFormat": "Logs/LogShark-{Date}.log",
-    "Json": false,
+    "Directory": "Logs",
+    "FileNamePrefix": "LogShark",
     "FileSizeLimitBytes": 10485760,
     "RetainedFileCountLimit": 5,
     "LogLevel": {
@@ -38,7 +38,8 @@ Example of config file
     "CustomWorkbookTemplatesDir": null,
     "NumberOfErrorDetailsToKeep": 25,
     "DefaultWriter": "hyper",
-    "AppendLogsetNameToOutput": false
+    "AppendLogsetNameToOutput": false,
+    "DynamicPluginsDirectory": null
   },
   "TableauServer": {
     "Url": "<EnterServerUrlHere>",
@@ -124,10 +125,33 @@ The `HyperProcess` section controls the timeout for the underlying Hyper process
 ```
 
 ----
-### Changing format of LogShark's logs to JSON
-LogShark generates saves run summaries as logs in the LogShark’s `<LogShark_install_location>\Logs` folder. You can specify the format to be JSON by flipping the Json switch to true. 
+### LogShark's own log files
+LogShark saves a log of each run (useful for troubleshooting) in the `Logs` folder of the LogShark install location. Each run creates a file named `<FileNamePrefix>-<timestamp>-<logset name>.log`. Use the `Logging` section of the config file to control this:
 
- 
 ```xml
-"Json": true,
+"Logging": {
+    "Directory": "Logs",
+    "FileNamePrefix": "LogShark",
+    "FileSizeLimitBytes": 10485760,
+    "RetainedFileCountLimit": 5
+}
 ```
+
+- `Directory` - folder where LogShark writes its log files.
+- `FileNamePrefix` - text each log file name starts with.
+- `FileSizeLimitBytes` - size at which LogShark starts a new numbered file for the same run (default: 10 MB).
+- `RetainedFileCountLimit` - number of log files LogShark keeps (default: 5).
+
+**Note:** Older versions of LogShark used `PathFormat` and `Json` settings in this section. These are no longer used. If you are carrying over a config file from an earlier version, replace them with the settings above.
+
+----
+### Loading additional plugins
+LogShark can load additional plugins from a folder at run time. Set `DynamicPluginsDirectory` in the `EnvironmentConfig` section to the folder containing the plugin assemblies (`.dll` files), or use the `--dynamic-plugins-dir` command line option, which takes priority over the config file. Leave the setting as `null` to disable this feature.
+
+```xml
+"EnvironmentConfig": {
+    "DynamicPluginsDirectory": "C:\\LogSharkPlugins"
+}
+```
+
+Use an absolute path. A relative path is resolved from the LogShark install location, not from the folder you run LogShark in. Once loaded, an additional plugin is run like any other, by adding its name to `--plugins`. If an additional plugin has the same name as a built-in plugin, the built-in plugin is used.
