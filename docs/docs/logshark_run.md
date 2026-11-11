@@ -38,7 +38,13 @@ LogShark D:\logs.zip                                                  | Runs Log
 LogShark C:\logs\logset --plugins "Backgrounder;ClusterController"    | Runs specified plugins on existing unzipped log directory.
 LogShark logs.zip -p                                                  | Runs LogShark and publishes to Tableau Server.
 LogShark logs.zip -c CustomLogSharkConfig.json                        | Runs LogShark with a custom config file.
+LogShark logs.zip --progress                                          | Runs LogShark and shows progress with estimated time remaining.
+LogShark --adhoc C:\logs\loosefiles MyRun                             | Runs LogShark on a folder of loose log files (no zip or full log set needed).
 ```
+
+**Processing loose log files (`--adhoc`)**
+
+If you only have a handful of individual log files rather than a full Tableau Server log set, point LogShark at the folder with `--adhoc`. LogShark searches the folder and its subfolders, and identifies each file's log type and worker from its file name, so keep the original Tableau file names (for example `backgrounder_node2-1.log.2018-08-08`, `nativeapi_backgrounder_2-1_2018_08_08_00_00_00.txt`, or `workgroup.yml`). If a file name has no node or worker number in it, LogShark treats it as coming from `worker0`.
 
 For more information, see the [LogShark command options](logshark_cmds).
 

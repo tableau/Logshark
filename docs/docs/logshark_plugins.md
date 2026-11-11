@@ -37,6 +37,8 @@ If the `--plugins` arg is not specified, all plugins run by default, **except** 
    
  
 
+Additional plugins can be loaded from a folder at run time with the `--dynamic-plugins-dir` option. See [Loading additional plugins]({{ site.baseurl }}/docs/logshark_configure#loading-additional-plugins).
+
 | Plugin name            | Workbook                                     | Description  
 |------------------------|----------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | Art | `Art.twbx` (server), `ArtDesktop.twbx` (desktop)  | Analyze VizQLServer Activity Resource Tracing information for performance details of view loads. Similar to ServerTelemetry plugin. See the [Art workbook guide]({{ site.baseurl }}/docs/logshark_art) for details. |

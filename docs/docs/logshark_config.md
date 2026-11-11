@@ -26,7 +26,7 @@ The Config workbook (`Config.twbx`) visualizes the Tableau Server configuration 
 
 ### Server Topology
 
-Displays the Tableau Server process topology, as described in `workgroup.yml`.
+Displays the Tableau Server process topology, as described in `workgroup.yml`. This includes the Coordination Service (`appzookeeper`) instances listed in the `coordinationservice.hosts` setting.
 
 **Views:**
 - ***Process Topology table***: One row per process type, showing its total Process Count across the deployment, and a grid of checkmarks by Worker/Hostname. Each checkmark represents one running instance of that process on that worker; a process type with multiple checkmarks under the same worker (e.g. `dataserver`, `vizqlserver`) has multiple instances running there.
