@@ -11,7 +11,9 @@ In this section:
 ## What is it?
 The Backgrounder workbook (`Backgrounder.twbx`) visualizes the Tableau Server backgrounder logs — the process responsible for running asynchronous background jobs such as extract refreshes, Prep flow runs, and subscription deliveries. It shows which jobs ran, how long they took, whether they succeeded or failed, and the errors logged along the way, broken out by job type (extract, flow, subscription) as well as by worker and backgrounder process.
 
-The Backgrounder plugin only consumes the backgrounder Java logs, and writes out several related datasets: one row per job (start/end, worker, backgrounder process, run time, success/failure), plus job-type-specific detail (extract job detail, flow job detail, subscription job detail), and a separate dataset of error/fatal log lines (some of which can't be tied back to a specific job ID).
+The Backgrounder plugin consumes the backgrounder Java logs and the backgrounder native (`nativeapi_backgrounder`) logs, and writes out several related datasets: one row per job (start/end, worker, backgrounder process, run time, success/failure), plus job-type-specific detail (extract job detail, flow job detail, subscription job detail), and a separate dataset of error/fatal log lines (some of which can't be tied back to a specific job ID).
+
+For extract refreshes, LogShark also writes an extract data inserter dataset (`BackgrounderExtractDataInserter`) with one row per table loaded into the extract: rows and bytes written, time taken (with a read / get builders / finish breakdown), chunk count, and throughput in MB/s. Rows are linked to their job by job ID and worker. Use it to find which tables make an extract refresh slow.
 
 ## Glossary of Important Terms to Understand Backgrounder Workbook Data and Dashboards
 

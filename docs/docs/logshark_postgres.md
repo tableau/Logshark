@@ -52,6 +52,7 @@ To update config settings, navigate to config file `<LogShark_install_location>\
 ```xml
 "PostgresWriterDatabase": {   
    "Host": "localhost",
+   "Port": "",
    "DatabaseName": "myDataBase",
    "Username": "myUserName",
    "Password": "myPassword",
@@ -64,6 +65,7 @@ To update config settings, navigate to config file `<LogShark_install_location>\
 }
 ```
 
+- `Port` - port of the PostgreSQL server. Defaults to 5432 if left empty. Can also be set with the `--pg-db-port` command line option.
 - `EmbedCredentialsOnPublish` - if `true`, embeds the Postgres username/password in the workbook when publishing to Tableau Server, instead of prompting for credentials on open. Can also be set with the `--pg-embed-creds` command line flag.
 - `SkipDatabaseVerificationAndInitialization` - if `true`, skips LogShark's normal check/creation of the output database, schema, and tables. Use this if the user provided doesn't have `CREATE`/`ALTER` permissions and the schema has already been set up.
 
@@ -105,6 +107,7 @@ Each of the fields for the configuration may be supplied as a command line argum
 |--pg-db-conn-string | Connection string for output database for postgres writer | 
 | --pg-db-host  | Output database hostname for postgres writer | 
 | --pg-db-name  | Output database name for postgres writer | 
+| --pg-db-port  | Output database port for postgres writer (default: 5432) | 
 | --pg-db-user  | Output database username for postgres writer | 
 |  --pg-db-pass | Output database password for postgres writer | 
 | --pg-embed-creds | Embed database credentials in the workbook on publish |

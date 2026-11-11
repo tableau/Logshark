@@ -19,14 +19,18 @@ Full usage can be viewed at any time by invoking `LogShark --help`.  The only 
 | **Options** | Description  |
 |-------------|--------------|
  --force-run-id |LogShark prefixes RunId with timestamp even if RunId provided by the user. This flag prevents timestamps from being added to user-supplied RunId. In this case, you are responsible for providing unique RunId for each run |
+| --adhoc <DIRECTORY> | Process a folder of loose Tableau log files instead of a full log set (zip or directory). LogShark reads the folder recursively and works out each file's log type and worker from its file name. When you use this option, the optional `RunId` is the only positional argument. See <a href="logshark_run">Run LogShark</a> for an example |
+| --dynamic-plugins-dir <DIRECTORY> | Folder containing additional (external) plugins to load for this run. Overrides `EnvironmentConfig.DynamicPluginsDirectory` from the config file. Use an absolute path. See <a href="logshark_plugins">LogShark plugins</a> |
 | --password | Tableau server password |
 | --pg-db-conn-string | Connection string for output database for postgres writer |
 | --pg-db-host | Output database hostname for postgres writer |
 | --pg-db-name | Output database name for postgres writer |
 | --pg-db-pass | Output database password for postgres writer |
+| --pg-db-port | Output database port for postgres writer (default: 5432) |
 | --pg-db-user | Output database username for postgres writer |
 | --pg-embed-creds | Embed database credentials in the workbook on publish (postgres writer) |
 | --plugins <plugin1>;<plugin2>... | (Default: All) List of plugins to run, to specify more than one plugin, list them separated by a semicolon, no spaces. Or "All" to run all applicable plugins. See LogShark plugins and generated workbooks |
+| --progress | Show real-time progress with estimated time remaining while LogShark runs |
 | --site | Tableau server site name |
 | -t, --threads <THREADS> | Number of processing threads to run in parallel |
 | --ts-project-description-footer <TEXT> | Additional text (HTML allowed) to append to the description of the project created on Tableau Server |
